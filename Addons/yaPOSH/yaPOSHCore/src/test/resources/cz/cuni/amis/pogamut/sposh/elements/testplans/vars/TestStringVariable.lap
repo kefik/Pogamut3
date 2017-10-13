@@ -1,0 +1,9 @@
+(
+    (AP testAP vars($who="Enemies of the peace!", $why="who_cares", $when=13.4, $method="brutal")
+        (action1($who, "killAllHumans", 12.6, $when) action2)
+    )
+    (RDC PoshBot (goal ((fail)))
+        (drives ((stay testAP("Friends of peace.", $when="now", $who="just_first_player")))
+        )
+    )
+)

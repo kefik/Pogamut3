@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="QUIT" extends="CommandMessage" name="Quit" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <documentation>
+		Will shutdown the connection and potentialy kill and remove the
+		bot from a game (if sent to bot), the same can be achieved just
+		by closing the connection.
+	</documentation>
+   <!-- List of all properties of this command. !--><!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

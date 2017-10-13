@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="TEAMCHANGE" name="TeamChanged" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Aynchronous message. Response of the CHANGETEAM command.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+    <property name="Id" type="UnrealId" category="local">
+        <documentation>
+			Sent only for ControlServer connections, so they know which bot changed the team.                        
+        </documentation>
+    </property>
+
+   <property name="Success" type="boolean" category="local">
+      <documentation>
+			If true team change was succesfull (it won't be succesfull if
+			we are changing to a team we already are in).
+		</documentation>
+   </property>
+   <property name="DesiredTeam" type="int" category="local">
+      <documentation>
+			This is the team we wanted to change to (0 for red,1 for
+			blue, etc..).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

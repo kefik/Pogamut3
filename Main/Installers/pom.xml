@@ -1,0 +1,747 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cz.cuni.amis.pogamut</groupId>
+        <artifactId>pogamut-pom</artifactId>
+        <version>3.7.1-SNAPSHOT</version>
+        <relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
+    </parent>
+
+    <groupId>cz.cuni.amis.pogamut</groupId>
+    <artifactId>installer</artifactId>
+    <version>3.7.1-SNAPSHOT</version>
+
+    <name>Pogamut Installer</name>
+
+    <packaging>pom</packaging>
+
+
+    <profiles>
+    <!-- Profile for download of UT2004 specific files. !-->
+        <profile>
+            <id>ut2004-download</id>
+            <activation>
+                <property>
+                    <name>ut2004</name>
+                </property>
+            </activation>
+        
+            <build>
+                <plugins>
+                    <!-- Download Gamebots from SVN !-->
+                    <plugin>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>svn-gamebots-ut2004-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${gamebots.ut2004.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/GameBotsUT2004</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>svn-gbscenario-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${gamebots.ut2004.scenario.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/GameBotsUT2004Scenario</checkoutDirectory>
+                            <!--<checkoutDirectory>${staging.dir}/gbscenario</checkoutDirectory>!-->
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>svn-ut2004archetypes-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${ut2004.archetypes.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/archetypes/ut2004</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Download UT2004 patch !-->
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-ut2004-bundle-dependencies</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.epicgames</groupId>
+                                            <artifactId>ut2004-winpatch</artifactId>
+                                            <version>3369</version>
+                                            <type>zip</type>
+                                            <outputDirectory>${staging.dir}/utpatch</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+		
+    <!-- Profile for download of UT3 specific files. !-->
+        <profile>
+            <id>ut3-download</id>
+            <activation>
+                <property>
+                    <name>ut3</name>
+                </property>
+            </activation>
+        
+            <build>
+                <plugins>
+                    <!-- Download Gamebots from SVN !-->
+                    <plugin>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>svn-gamebots-ut3-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${gamebots.ut3.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/GameBotsUT3</checkoutDirectory>
+                                </configuration>
+                            </execution>                            
+                            <execution>
+                              <id>svn-ut3archetypes-to-staging</id>
+                              <phase>process-resources</phase>
+                              <goals>
+                                <goal>checkout</goal>
+                              </goals>
+                              <configuration>
+                                <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                <connectionUrl>
+                                  scm:svn:${ut3.archetypes.svn}
+                                </connectionUrl>
+                                <checkoutDirectory>${staging.dir}/archetypes/ut3</checkoutDirectory>
+                              </configuration>
+                            </execution>                
+                        </executions>
+                    </plugin>  
+                </plugins>
+            </build>
+        </profile>		
+        
+        <!-- Profile for UE2Runtime !-->
+        <profile>
+            <id>ue2-download</id>
+            <activation>
+                <property>
+                    <name>ue2</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>svn-gamebots-ue2-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${gamebots.ue2.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/GameBotsUE2</checkoutDirectory>
+
+                            <!--  ${ue2runtime.dir}/UnrealEngine2RuntimeDemo!-->
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>svn-gbemohawk-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${gamebots.emohawk.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/GameBotsUE2Emohawk</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                            
+                            <execution>
+                                <id>svn-ue2archetypes-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${ue2.archetypes.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/archetypes/ue2</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Download UE2 Runtime !-->
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-bundle-dependencies-ue2</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <!-- Downloads additional models and maps for UE2. !-->
+                                        <artifactItem>
+                                            <groupId>com.epicgames</groupId>
+                                            <artifactId>unreal-engine-2-emohawk</artifactId>
+                                            <version>1.0.0-SNAPSHOT</version>
+                                            <type>zip</type>
+                                            <classifier>binary</classifier>
+                                            <outputDirectory>${ue2runtime.dir}</outputDirectory>
+                                        </artifactItem>
+                                        <!-- Downloads the UE2 itself. !-->
+                                         <artifactItem>
+                                            <groupId>com.epicgames</groupId>
+                                            <artifactId>unreal-engine-2</artifactId>
+                                            <version>1.0.0</version>
+                                            <type>zip</type>
+                                            <classifier>binary</classifier>
+                                            <outputDirectory>${ue2runtime.dir}</outputDirectory>
+                                        </artifactItem>                                        
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                            
+                            <!-- Downloads GOAL agent architecture. 
+                            <execution>
+                            <id>copy-bundle-dependencies-ue2</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                              <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                              <artifactItems>
+                                
+                                <artifactItem>
+                                  <groupId>nl.tudelft.goal</groupId>
+                                  <artifactId>goal-ut2004-environment</artifactId>
+                                  <version>3.7.1-SNAPSHOT</version>
+                                  <type>jar</type>
+                                  <classifier>eis_environment</classifier>
+                                  <outputDirectory>${ue2runtime.dir}/GOAL</outputDirectory>
+                                 </artifactItem>										
+                              </artifactItems>                              
+                            </configuration>
+                          </execution>
+                          !-->
+                        </executions>
+                    </plugin>
+                    
+                        <!-- Execute compilation of UE2 gamebots !-->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>copy-gamebots-to-UE2</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <copy todir="${ue2runtime.dir}/UnrealEngine2RuntimeDemo">
+                                            <fileset dir="${staging.dir}/GameBotsUE2"/>
+                                        </copy>
+                                        <copy todir="${ue2runtime.dir}/UnrealEngine2RuntimeDemo">
+                                            <fileset dir="${staging.dir}/GameBotsUE2Emohawk"/>
+                                        </copy>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>udk-download</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>svn-udkarchetypes-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${udk.archetypes.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/archetypes/udk</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-udk-bundle-dependencies</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>cz.cuni.amis.pogamut</groupId>
+                                            <artifactId>udk-with-gamebots</artifactId>
+                                            <version>${gbudk.version}</version>
+                                            <type>zip</type>
+                                            <classifier>installer</classifier>
+                                            <outputDirectory>${staging.dir}/gb-udk</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    
+      <profile>
+            <id>defcon-download</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-scm-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>svn-defconarchetypes-to-staging</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>checkout</goal>
+                                </goals>
+                                <configuration>
+                                    <skipCheckoutIfExists>false</skipCheckoutIfExists>
+                                    <connectionUrl>
+                                        scm:svn:${defcon.archetypes.svn}
+                                    </connectionUrl>
+                                    <checkoutDirectory>${staging.dir}/archetypes/defcon</checkoutDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+           
+                </plugins>
+            </build>
+        </profile>
+   
+    
+        <profile>
+            <id>common-download</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-common-bundle-dependencies</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>cz.cuni.amis.pogamut</groupId>
+                                            <artifactId>pogamut-netbeans-suite</artifactId>
+                                            <version>${nb.plugin.version}</version>
+                                            <type>zip</type>
+                                            <classifier>nbm-updates</classifier>
+                                            <outputDirectory>${staging.dir}/NB/netbeans_site</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.apache</groupId>
+                                            <artifactId>maven</artifactId>
+                                            <version>${bundled.maven.version}</version>
+                                            <classifier>bin</classifier>
+                                            <type>zip</type>    
+                                            <outputDirectory>${staging.dir}/maven</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+       
+    
+            <!-- Create installer with all packs. !-->
+        <profile>
+            <id>installer-all</id>
+            <build>
+                <finalName>PogamutInstaller</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install.xml</descriptor>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>installer-ue2emohawk</id>
+            <build>
+                <finalName>PogamutEmohawkInstaller</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                <!-- common configuration by all executions -->
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install-ue2emohawk.xml</descriptor>                     
+                        </configuration>
+                    </plugin>
+            <!-- Upload this as an artifact into repository when deploying. !-->
+             <!--       <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/PogamutInstaller-standard.jar</file>
+                                            <type>jar</type>
+                                            <classifier>installer</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    !-->
+                </plugins>
+            </build>
+        </profile>
+    
+        <profile>
+            <id>installer-ut2004</id>
+            <build>
+                <finalName>PogamutUT2004Installer</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install-ut2004.xml</descriptor>                     
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>installer-ut3</id>
+            <build>
+                <finalName>PogamutUT3Installer</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install-ut3.xml</descriptor>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+		
+        <profile>
+            <id>installer-udk</id>
+            <build>
+                <finalName>PogamutUDKInstaller</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install-udk.xml</descriptor>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>installer-defcon</id>
+            <build>
+                <finalName>PogamutDefconInstaller</finalName>
+                <defaultGoal>package</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-maven-plugin</artifactId>
+                        <configuration>
+                            <descriptor>${basedir}/src/main/izpack/install-defcon.xml</descriptor>                     
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>    
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+        <plugins>
+           
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <id>copy-install-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${staging.dir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/izpack</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/izpack</directory>
+                                    <filtering>false</filtering>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                </resource>
+                                
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        <!-- Fetch Gamebots from SVN
+            TODO change checkout to export !-->
+            <plugin>
+                <artifactId>maven-scm-plugin</artifactId>
+                <version>1.5</version>
+                <configuration>
+                    <providerImplementations>
+                        <svn>javasvn</svn>
+                    </providerImplementations>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+                        <artifactId>maven-scm-provider-svnjava</artifactId>
+                        <version>1.9</version>
+                    </dependency>
+                </dependencies>
+            </plugin>     
+     
+            <plugin>
+                <groupId>org.codehaus.izpack</groupId>
+                <artifactId>izpack-maven-plugin</artifactId>
+                <version>1.0-alpha-5</version>
+
+                <!-- common configuration by all executions -->
+                <configuration>
+                    <izpackBasedir>${staging.dir}</izpackBasedir>
+                    
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>standard-installer</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                    </execution>
+                    <!-- Build web installer !-->
+                    <execution>
+                        <id>web-installer</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                        <configuration>
+                            <kind>web</kind>
+                            <installerFile>${project.build.directory}/${project.build.finalName}-web-${version}.jar</installerFile>
+                        </configuration>
+
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-standalone-compiler</artifactId>
+                        <version>4.3.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <executions>
+                    <execution>
+                        <id>upload-web-installer</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>upload</goal>
+                        </goals>
+                        <configuration>
+                            <fromDir>${project.build.directory}</fromDir>
+                            <includes>${project.build.finalName}-web-*</includes>
+                            <url>scp://${web.installer.server}/</url>
+                            <toDir>/var/www/html/${web.installer.http.path}/${version}/</toDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <app.group>${project.groupId}</app.group>
+        <app.title>${project.name}</app.title>
+        <app.subpath>${project.artifactId}-${project.version}</app.subpath>
+        <app.version>${project.version}</app.version>
+
+        <staging.dir>${project.build.directory}/staging</staging.dir>
+        <download.dir>${project.build.directory}/downloads</download.dir>
+
+        <pogamut.trunk.svn>svn://artemis.ms.mff.cuni.cz/pogamut/trunk</pogamut.trunk.svn>
+
+        <artemis.gb.svn>${pogamut.trunk.svn}/project/Main/Gamebots</artemis.gb.svn>
+
+        <gamebots.ut2004.svn>${artemis.gb.svn}/GameBotsUT2004</gamebots.ut2004.svn>
+        <gamebots.ut2004.scenario.svn>${artemis.gb.svn}/GameBotsUT2004Scenario</gamebots.ut2004.scenario.svn>
+		<gamebots.ut3.svn>${artemis.gb.svn}/GameBotsUT3</gamebots.ut3.svn>
+        <gamebots.ue2.svn>${artemis.gb.svn}/GameBotsUE2</gamebots.ue2.svn>
+        <gamebots.emohawk.svn>${artemis.gb.svn}/GameBotsUE2Emohawk</gamebots.emohawk.svn>
+        <ue2.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/UE2</ue2.archetypes.svn>
+        <ut3.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/UT3</ut3.archetypes.svn>
+        <ut2004.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/UT2004</ut2004.archetypes.svn>
+        <defcon.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/DEFCON</defcon.archetypes.svn>
+        <udk.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/UDK</udk.archetypes.svn>
+
+        <nb.plugin.version>3.7.1-SNAPSHOT</nb.plugin.version>
+        <gbudk.version>3.7.1-SNAPSHOT</gbudk.version>
+
+        <ue2runtime.dir>${staging.dir}/UE2Runtime</ue2runtime.dir>
+
+
+        <web.installer.server>diana.ms.mff.cuni.cz</web.installer.server>
+        <web.installer.http.path>pogamut_files/repo/installer</web.installer.http.path>
+        <!-- Home directory for the web installer. Under this directory there should
+        be directories named after versions and finally in this dir there will be jars with packs !-->
+        <web.installer.http>http://${web.installer.server}/${web.installer.http.path}/</web.installer.http>
+        <bundled.maven.version>3.0.4</bundled.maven.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>amis-artifactory</id>
+            <name>AMIS Artifactory</name>
+            <url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+        </repository>
+    </repositories>
+    
+</project>

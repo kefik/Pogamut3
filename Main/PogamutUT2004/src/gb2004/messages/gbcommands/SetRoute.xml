@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETROUTE" extends="CommandMessage" name="SetRoute" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Set whether you want to draw blue lines between supported locations in the game. You need
+		to enable this in the HUD by pressing ALT + R. (Works in UnrealRuntime2 for now). The lines
+		are drawn between neighbouring points. First is point 0.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Erase" type="boolean">
+      <documentation>
+			If true will erase previously set points.
+		</documentation>
+   </property>
+   <property name="P0" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P1" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P2" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P3" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P4" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P5" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P6" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P7" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P8" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P9" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P10" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P11" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P12" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P13" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P14" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P15" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P16" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P17" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P18" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P19" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P20" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P21" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P22" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P23" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P24" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P25" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P26" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P27" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P28" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P29" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P30" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <property name="P31" type="Location">
+      <documentation>
+			Location point.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   <extra>
+      <code>
+      	<java>
+      		public SetRoute setRoute(List&lt;? extends ILocated&gt; route) {
+      			if (route.size() == 0) return this;
+      			setP0(route.get(0).getLocation());
+      			if (route.size() == 1) return this;
+      			setP1(route.get(1).getLocation());
+      			if (route.size() == 2) return this;
+      			setP2(route.get(2).getLocation());
+      			if (route.size() == 3) return this;
+      			setP3(route.get(3).getLocation());
+      			if (route.size() == 4) return this;
+      			setP4(route.get(4).getLocation());
+      			if (route.size() == 5) return this;
+      			setP5(route.get(5).getLocation());
+      			if (route.size() == 6) return this;
+      			setP6(route.get(6).getLocation());
+      			if (route.size() == 7) return this;
+      			setP7(route.get(7).getLocation());
+      			if (route.size() == 8) return this;
+      			setP8(route.get(8).getLocation());
+      			if (route.size() == 9) return this;
+      			setP9(route.get(9).getLocation());
+      			if (route.size() == 10) return this;
+      			setP10(route.get(10).getLocation());
+      			if (route.size() == 11) return this;
+      			setP11(route.get(11).getLocation());
+      			if (route.size() == 12) return this;
+      			setP12(route.get(12).getLocation());
+      			if (route.size() == 13) return this;
+      			setP13(route.get(13).getLocation());
+      			if (route.size() == 14) return this;
+      			setP14(route.get(14).getLocation());
+      			if (route.size() == 15) return this;
+      			setP15(route.get(15).getLocation());
+      			if (route.size() == 16) return this;
+      			setP16(route.get(16).getLocation());
+      			if (route.size() == 17) return this;
+      			setP17(route.get(17).getLocation());
+      			if (route.size() == 18) return this;
+      			setP18(route.get(18).getLocation());
+      			if (route.size() == 19) return this;
+      			setP19(route.get(19).getLocation());
+      			if (route.size() == 20) return this;
+      			setP20(route.get(20).getLocation());
+      			if (route.size() == 21) return this;
+      			setP21(route.get(21).getLocation());
+      			if (route.size() == 22) return this;
+      			setP22(route.get(22).getLocation());
+      			if (route.size() == 23) return this;
+      			setP23(route.get(23).getLocation());
+      			if (route.size() == 24) return this;
+      			setP24(route.get(24).getLocation());
+      			if (route.size() == 25) return this;
+      			setP25(route.get(25).getLocation());
+      			if (route.size() == 26) return this;
+      			setP26(route.get(26).getLocation());
+      			if (route.size() == 27) return this;
+      			setP27(route.get(27).getLocation());
+      			if (route.size() == 28) return this;
+      			setP28(route.get(28).getLocation());
+      			if (route.size() == 29) return this;
+      			setP29(route.get(29).getLocation());
+      			if (route.size() == 30) return this;
+      			setP30(route.get(30).getLocation());
+      			if (route.size() == 31) return this;
+      			setP31(route.get(31).getLocation());
+      			return this;
+      		}
+      	</java>
+      </code>
+   </extra>
+</commandobject>

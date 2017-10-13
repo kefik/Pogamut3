@@ -1,0 +1,9 @@
+(
+    (AP testAP vars($who="everyone", $why="who_cares", $when="anytime", $method="brutal")
+        (murder("killAllHumans", 12.6, $when,$method=$method,$baka=$who))
+    )
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testAP("Sekal", $when="Tomorrow", $why="Collaborator"))))
+    )
+)
+

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="SetupPogamutWithEclipse"
+		xmlns="http://docbook.org/ns/docbook"		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Setup Pogamut with Eclipse</title>
+
+  <section>
+    <title>Setting up Pogamut with Eclipse IDE</title>  
+	
+	<para>This section shows you how to set up Pogamut 3 with Eclipse IDE. It covers all the steps from Eclipse installation to launching a Pogamut bot within Eclipse. All credits go to Clement Liew.</para>
+		
+	<para><guimenuitem>Step 1. Install Eclipse 3.6, 3.7 or newer. </guimenuitem>
+	<itemizedlist> 
+        <listitem>
+          <para>Download <link xlink:href="http://www.eclipse.org/downloads/"> Eclipse IDE for Java Development</link>  </para>
+        </listitem>	
+        <listitem>
+          <para>Unpack it to some place, e.g. c:\eclipse</para>
+        </listitem>
+        <listitem>
+          <para>Turn off UAC (some plugins are having problems with UAC during installation)</para>
+        </listitem>
+	</itemizedlist> 
+	</para>
+	
+	<para><guimenuitem>Step 2. Install Subclipse plugin.</guimenuitem> 
+		<itemizedlist> 
+        <listitem>
+          <para>See <link xlink:href="http://subclipse.tigris.org/"> Subclipse</link> Download and Install web page  </para>
+        </listitem>	
+        <listitem>
+          <para>Copy to clipboard correct update site, e.g. http://subclipse.tigris.org/update_1.8.x
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-01.png"></imagedata>
+				</imageobject>
+			</mediaobject>		  
+		  </para>
+        </listitem>
+        <listitem>
+          <para>Startup Eclipse, go to <guimenuitem>Menu->Help->Install New Software</guimenuitem>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-02.png"></imagedata>
+				</imageobject>
+			</mediaobject>	
+			</para>
+        </listitem>
+        <listitem>
+          <para>Click on <guimenuitem>Add</guimenuitem> button on the right-upper side of the dialog </para>
+        </listitem>			
+        <listitem>
+          <para>Add new update site (name it Subclipse and provide link from the clipboard from the Subclipse site)
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-03.png"></imagedata>
+				</imageobject>
+			</mediaobject>	
+			</para>
+        </listitem>		
+        <listitem>
+          <para>List your new site from the combobox</para>
+        </listitem>					
+        <listitem>
+          <para>Install Subclipse plugins
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-04.png"></imagedata>
+				</imageobject>
+			</mediaobject>	
+			</para>
+        </listitem>			
+	</itemizedlist> 
+	</para>
+	
+	<para><guimenuitem>Step 3. Install M2Eclipse plugin</guimenuitem> (this step is not required as of Eclipse 3.7.2 version that has M2E bundled, applies if you're using IDE for Java Developers version of Eclipse)
+		<itemizedlist> 
+        <listitem>
+          <para>Similar operation to installing Subclipse but different update site
+		  </para>
+        </listitem>		
+        <listitem>
+          <para>See <link xlink:href="http://eclipse.org/m2e/"> m2ecplise</link> web page, particularly <link xlink:href="http://eclipse.org/m2e/download/"> m2ecplise Download section</link> </para>
+        </listitem>	
+        <listitem>
+          <para>Pick their update site, e.g.: <link xlink:href="http://download.eclipse.org/technology/m2e/releases"> http://download.eclipse.org/technology/m2e/releases</link> </para>
+        </listitem>	
+        <listitem>
+          <para>Install plugins from their update site</para>
+        </listitem>
+	</itemizedlist> 		
+	</para>
+	
+	<para><guimenuitem>Step 4.</guimenuitem> Now it is advised to use  <link xlink:href="http://tortoisesvn.net/"> Tortoise SVN</link> (or some other SVN client) to checkout desired Pogamut project from the SVN
+		<itemizedlist> 
+         <listitem>
+          <para>Use <link xlink:href="svn://artemis.ms.mff.cuni.cz/pogamut/project"> svn://artemis.ms.mff.cuni.cz/pogamut/project</link> for all projects 
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-05.png"></imagedata>
+				</imageobject>
+			</mediaobject>			  
+		  </para>
+        </listitem>	
+	</itemizedlist> 		
+	</para>
+
+	<para><guimenuitem>Step 5.</guimenuitem> In Eclipse, right-click empty space in Package explorer window (usually located on the left upper side of Eclipse), click Import, choose Existing Maven Project and browse for folder where you have checked out the Pogamut SVN
+		<itemizedlist> 
+        <listitem>
+          <para>Eclipse should load all Maven projects into the list and you may select which one you want to import
+		  </para>
+        </listitem>		
+	</itemizedlist> 		
+	</para>
+	
+	<para><guimenuitem>Step 6.</guimenuitem> Alternatively, you may specify new remote catalog of archetypes via Eclipse->Window->Preferences->Maven->Archetypes
+		<itemizedlist> 
+        <listitem>
+          <para>Click <guimenuitem>Add Remote Catalog</guimenuitem>
+		  </para>
+        </listitem>		
+        <listitem>
+          <para>Fill in catalog URL: <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml</link> </para>
+        </listitem>	
+        <listitem>
+          <para>Name it as: Pogamut Archetypes</para>
+        </listitem>	
+        <listitem>
+          <para>Click <guimenuitem>OK</guimenuitem>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-06.png"></imagedata>
+				</imageobject>
+			</mediaobject>				  
+		  </para>
+        </listitem>
+        <listitem>
+          <para>After that you may create new Maven project based on archetype from the catalog, note that we're regularly updating the catalog with each release of the Pogamut platform</para>
+        </listitem>						
+	</itemizedlist> 		
+	</para>
+	
+	<para><guimenuitem>Step 7. An illustrated guide to running an example bot</guimenuitem>
+		<itemizedlist> 
+        <listitem>
+          <para>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-07.png"></imagedata>
+				</imageobject>
+			</mediaobject>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-08.png"></imagedata>
+				</imageobject>
+			</mediaobject>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-09.png"></imagedata>
+				</imageobject>
+			</mediaobject>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-10.png"></imagedata>
+				</imageobject>
+			</mediaobject>		  
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-11.png"></imagedata>
+				</imageobject>
+			</mediaobject>		  			
+		  </para>
+        </listitem>	
+        <listitem>
+          <para>Assuming successful installation of Pogamut for NetBeans previously, head to the following (or respective) directory and run DM Server, may need to run as admin
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-12.png"></imagedata>
+				</imageobject>
+			</mediaobject>				  
+		  </para>
+        </listitem>		
+        <listitem>
+          <para>Server up and running
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-13.png"></imagedata>
+				</imageobject>
+			</mediaobject>				  
+		  </para>
+        </listitem>		
+        <listitem>
+          <para>Run HunterBot.java
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-14.png"></imagedata>
+				</imageobject>
+			</mediaobject>				  
+		  </para>
+        </listitem>				
+        <listitem>
+          <para>Open UT2004->Join Game->Lan
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="media/install/setup-eclipse-example-15.png"></imagedata>
+				</imageobject>
+			</mediaobject>				  
+		  </para>
+        </listitem>
+	</itemizedlist> 		
+	</para>
+	
+  </section>
+</chapter>

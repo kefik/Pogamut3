@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <p>This package contains factories and interfaces related to presentation of widgets in the scene. The presenter is responsible for presentation of its widget.</p>
+        <p>Presenters is created during creation of the widget and usually listens for various events in the Yaposh tree. When the widget is created, associated presenter registers its listeners and when widget is removed, presenter removes its listeners.</p>
+        <p>Presenter factory is using interface so I can display same tree in two different ways:</p>
+        <ul>
+            <li>In Dash, presenters are responsible for adding breakpoints and showing the source</li>
+            <li>In Shed, presenters are responsible for manipulation of the tree</li>
+        </ul>
+    </body>
+</html>

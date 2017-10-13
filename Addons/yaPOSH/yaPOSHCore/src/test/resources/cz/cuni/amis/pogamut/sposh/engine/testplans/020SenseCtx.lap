@@ -1,0 +1,18 @@
+(
+
+    (C testC vars($who="everyone", $why="who_cares", $when="anytime", $method="brutal")
+        (elements
+            (
+                (ce1 (trigger ((playerClose(12.4, $second=$method, $third="lala")))) doNothing)
+            )
+        )
+    )
+
+	(SDC EmptyBot
+		(drives
+                ((cde testC))
+		;((nothing (trigger ((playerClose(300.3, "zzz")))) jump ))
+                ;((nothing jump(12.3, "zzz") ))
+		)
+	)
+)

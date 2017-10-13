@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ADG" name="AdrenalineGained" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <!-- DocBook tags can be used inside <documentation> tag. If you arent familiar
+		with DocBook then refere to www.docbook.org !--><documentation>
+		Asynchronous message. Whenever we get new adrenaline - by pickup
+		or by killing someone.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Amount" type="int" category="local">
+      <documentation>Amount of adrenaline gained.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

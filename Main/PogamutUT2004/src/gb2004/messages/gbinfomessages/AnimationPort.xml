@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ANIMPORT" name="AnimationPort" type="Event">
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Message by server to announce open port for
+		binary animation connection.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Port" type="int" default="3002" category="local">
+      <documentation>Port number.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

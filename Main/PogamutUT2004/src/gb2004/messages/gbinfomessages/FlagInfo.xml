@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="FLG" name="FlagInfo" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. FlagInfo contains all info about the flag
+		in the CTF game mode. Is not sent in other game types.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   
+   <interface name="ILocated">
+        <classcategory name="base" />
+		<classcategory name="shared" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			An unique Id for this flag, assigned by the game.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared" nullable="false">
+      <documentation>
+			An absolute location of the flag (Sent if we can actually
+			see the flag).
+		</documentation>
+   </property>
+   <property name="Holder" type="UnrealId" category="shared">
+      <documentation>
+			Id of player/bot holding the flag. (Sent if we can actually
+			see the flag and the flag is being carried, or if the flag
+			is being carried by us).
+		</documentation>
+   </property>
+   <property name="Team" type="Integer" category="shared">
+      <documentation>The owner team of this flag.</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>True if the bot can see the flag.</documentation>
+   </property>
+   <property name="State" type="String" category="shared">
+      <documentation>
+			Represents the state the flag is in. Can be "Held",
+			"Dropped" or "Home" (note that the first letter does not have to be in upper case!).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

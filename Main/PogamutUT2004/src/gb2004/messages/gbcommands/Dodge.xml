@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DODGE" extends="CommandMessage" name="Dodge" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Causes the bot to dodge to supported direction. Only one (successful) dodge per second allowed.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Direction" type="Location">
+      <documentation>
+			Relative vector, will be normalized. The direction of the
+			dodge will be added to current bot rotation.
+		</documentation>
+   </property>
+   <property name="FocusPoint" type="Location">
+      <documentation>
+			Point the bot should focus after dodge command. Note that if not specified, this will be set automatically by dodge command to 1200 ut units in front of the bot at the time when the dodge command is issued.
+		</documentation>
+   </property>
+   <property name="Wall" type="boolean">
+      <documentation>
+			Attemtps to do a wall dodge. There has to be a wall in the opposite direction of the dodge. If there isn't, nothing will happen! This switch overrides "Double" dodge switch.
+		</documentation>
+   </property>
+   <property name="Double" type="boolean">
+      <documentation>
+			If true performs a double dodge in specified direction.
+		</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

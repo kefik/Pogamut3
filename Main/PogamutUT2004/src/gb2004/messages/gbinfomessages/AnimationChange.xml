@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="CHANGEANIM" name="AnimationChange" type="Event">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Bot starts or finishes custom played animation. If a list of animation was supported, this
+		message will come each time an animation in the list starts or stops playing.
+	</documentation>
+   <property name="Name" type="String" category="local">
+      <documentation>
+			Name of the animation.
+		</documentation>
+   </property>
+   <property name="AnimStart" type="boolean" category="local">
+      <documentation>
+			True if this animation has now started.
+		</documentation>
+   </property>
+   <property name="AnimEnd" type="boolean" category="local">
+      <documentation>
+			True if this animation has ended.
+		</documentation>
+   </property>      
+   <property name="Time" type="double" category="local">
+      <documentation>
+			Time of the animation change.
+		</documentation>
+   </property>         
+   <!-- List of all properties of this message. !--><!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

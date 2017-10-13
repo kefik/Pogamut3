@@ -1,0 +1,108 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+	  	<artifactId>pogamut-ut2004-pom</artifactId>
+	  	<version>3.7.1-SNAPSHOT</version>
+		<relativePath>../../Poms/PogamutUT2004Pom/pom.xml</relativePath>
+	</parent>
+
+    <groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+    <artifactId>navigation-evaluator</artifactId>
+    <version>3.7.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>navigation-evaluator</name>
+    <url>http://maven.apache.org</url>
+    
+    <organization>
+        <name>AMIS research group, Faculty of Mathematics and Physics, Charles University in Prague, Czech Republic</name>
+        <url>http://amis.mff.cuni.cz</url>
+    </organization>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- MANIFEST PROPERTIES -->
+        <manifest.specification.vendor>AMIS research group</manifest.specification.vendor>
+        <manifest.implementation.vendor>AMIS research group</manifest.implementation.vendor>
+
+          <!-- Lets NetBeans now, that new files should have GPL 3.0 license -->
+        <netbeans.hint.license>gpl30</netbeans.hint.license>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>cz.cuni.amis.pogamut.ut2004.navigation.evaluator.ServerRunner</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.6</version>
+            <executions>
+                <execution>
+                    <id>copy-resources</id>
+                    <phase>validate</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>src/main/resources</directory>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		                    
+        <dependency>
+            <groupId>cz.cuni.amis.utils</groupId>
+            <artifactId>process-execution</artifactId>
+            <version>3.7.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-zip</artifactId>
+            <version>1.6</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+    
+</project>

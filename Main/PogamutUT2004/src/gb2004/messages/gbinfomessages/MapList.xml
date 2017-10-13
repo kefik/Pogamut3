@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="IMAP" name="MapList" type="Batch">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Info batch message. Starts with SMAP message, ends with EMAP
+		message. Hold information about available maps on the server
+		(maps to which we can change the game).
+	</documentation>
+        <implements interfaces="cz.cuni.amis.pogamut.unreal.communication.messages.gbinfomessages.IMapList"/>
+   <!-- List of all properties of this message. !--><property name="Name" type="String" category="shared">
+      <documentation>
+			Name of one map in map list on the server.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

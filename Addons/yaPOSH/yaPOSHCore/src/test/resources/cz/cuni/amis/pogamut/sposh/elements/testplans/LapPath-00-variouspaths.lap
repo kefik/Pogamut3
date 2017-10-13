@@ -1,0 +1,39 @@
+(
+	(C zero
+		(elements
+			((choice1 two))
+		)
+	)
+	(C one
+		(elements
+			((choice11 (trigger ((tr1))) ap11))
+			((choice12 (trigger ((choice12Sense0) (choice12Sense1))) two))
+			((choice13 doNothing))
+		)
+	)
+	(C two
+		(elements
+			((choice21 (trigger ((choice21Sense0))) ap2))
+			((choice22 (trigger ((choice22Sense0) (choice22Sense1))) choice22Action))
+		)
+	)
+	(AP ap11 (okA1 ap2 okA3 ap3 ap2))
+
+	(AP ap2 (ac1 ac2 ac3 ac4 ac5))
+
+	(AP ap3 (okC1 okC2 okC3 fail1 last))
+
+	(AP ap4 (okD1 okD last))
+
+    (AD ad0 ( (goal(ad0sense0)) (two) ) )
+
+	(DC life (goal ((goalSense0) (goalSense1)))
+		(drives 
+			  ((drive0 (trigger ((drive0Sense0))) zero))
+			  ((drive1 (trigger ((choice22Sense0) (choice22Sense1))) driveAction))
+			  ((drive2 ap11))
+			  ((drive3 one))
+			  ((drive4 ad0))
+		)
+	)
+)

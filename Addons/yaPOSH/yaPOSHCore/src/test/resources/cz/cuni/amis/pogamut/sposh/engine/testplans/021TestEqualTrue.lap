@@ -1,0 +1,8 @@
+(
+	(SDC EmptyBot (goal ((fail)))
+		(drives
+			  ((something (trigger ((succeed true ==))) something ) )
+			  ((nothing (trigger ((succeed))) doNothing ) )
+		)
+	)
+)

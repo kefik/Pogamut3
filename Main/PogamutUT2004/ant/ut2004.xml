@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<project name="GB2004 SCM">
+
+	<property name="source.encoding" value="utf-8" />
+	
+	<!-- Passed compile-classpath from the maven containing antlr. -->
+	
+	<path id="maven.passed.classpath">
+		<path path="${compile-classpath}" />
+	</path>
+		
+	<property name="maven.passed.classpath.property" refid="maven.passed.classpath"/>
+	<echo>Using java classpath: ${maven.passed.classpath.property}</echo>
+
+	<!-- ANT-CONTRIB -->
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties" >
+		<classpath refid="maven.passed.classpath" />
+	</taskdef>
+			
+	<!-- SVN repository -->
+	<property name="repository.gb2004.URL" value="svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project/Main/Gamebots/GameBots2004" />
+
+	<!-- Paths to UT2004 & GameBots2004 -->
+	<property name="target.dir"                value="../target" />	
+	<property name="ut2004-windows.dir"        value="${target.dir}/ut2004-windows/UT2004-Dedicated-3369-Windows" />
+	<property name="ut2004-windows-system.dir" value="${ut2004-windows.dir}/System" />
+	<property name="gb2004-windows.file"       value="${ut2004-windows-system.dir}/GameBots2004.u" />	
+	<property name="ut2004-linux.dir"          value="${target.dir}/ut2004-linux/UT2004-Dedicated-3369-Linux" />
+	<property name="ut2004-linux-system.dir"   value="${ut2004-linux.dir}/System" />
+	<property name="gb2004-linux.file"         value="${ut2004-linux-system.dir}/GameBots2004.u" />	
+	
+	<target name="init">			
+	</target>
+	
+	<target name="gb2004-windows" depends="init">
+		<echo>Target: gb2004-windows</echo>
+		<echo>Checking existence of GameBots2004.u file...</echo>		
+		<available file="${gb2004-windows.file}" property="gb2004-exists"/>
+		
+		<property name="chosen-ut2004-system.dir" value="${ut2004-windows-system.dir}" />
+		
+		<if>
+		  <equals arg1="${gb2004-exists}" arg2="true"/>
+		  <then>
+		  	<!-- GB2004 are already checked out ... just update. -->
+		  	<echo>GameBots2004.u file exists, UPDATING...</echo>
+		  	<antcall target="gb2004-update" inheritAll="true" inheritRefs="true" />
+		  </then>
+		  <else>
+		  	<!-- GB2004 are NOT checked out ... check out. -->
+		  	<echo>GameBots2004.u file does not exists, CHECKING OUT...</echo>
+		  	<antcall target="gb2004-checkout" inheritAll="true" inheritRefs="true" />
+		  </else>
+		</if>
+	</target>
+	
+	<target name="gb2004-linux" depends="init">
+		<echo>Target: gb2004-linux</echo>
+		<echo>Checking existence of GameBots2004.u file...</echo>		
+		<available file="${gb2004-linux.file}" property="gb2004-exists"/>
+		
+		<property name="chosen-ut2004-system.dir" value="${ut2004-linux-system.dir}" />
+		
+		<if>
+		  <equals arg1="${gb2004-exists}" arg2="true"/>
+		  <then>
+		  	<!-- GB2004 are already checked out ... just update. -->
+		  	<echo>GameBots2004.u file exists, UPDATING...</echo>
+		  	<antcall target="gb2004-update" inheritAll="true" inheritRefs="true" />
+		  </then>
+		  <else>
+		  	<!-- GB2004 are NOT checked out ... check out. -->
+		  	<echo>GameBots2004.u file does not exists, CHECKING OUT...</echo>
+		  	<antcall target="gb2004-checkout" inheritAll="true" inheritRefs="true" />
+		  </else>
+		</if>
+	</target>
+	
+	<target name="gb2004-checkout">
+	    <java classname="org.tmatesoft.svn.cli.SVN"
+	          dir="${chosen-ut2004-system.dir}" 
+	    	  fork="true"
+	    	  classpathref="maven.passed.classpath"	
+	    >
+	      <arg value="co"/>
+	      <arg value="${repository.gb2004.URL}"/>
+	      <arg value="."/>
+	    </java>
+	</target>
+	
+	<target name="gb2004-update">
+	    <java classname="org.tmatesoft.svn.cli.SVN"
+	          dir="${chosen-ut2004-system.dir}" 
+	    	  fork="true"
+	    	  classpathref="maven.passed.classpath"	
+	    >
+	      <arg value="update"/>
+	    </java>
+	</target>
+
+</project>

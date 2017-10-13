@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0"  xml:id="03-RaycastingBot"
+          xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>A raycasting bot - navigating without navigation graph</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>Raycasting</para>
+        </listitem>
+
+        <listitem>
+          <para>Configuring rays in Pogamut</para>
+        </listitem>
+
+        <listitem>
+          <para>Using rays for navigation</para>
+        </listitem>
+      </itemizedlist>Estimated time for completing this tutorial is X
+    minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before taking this tutorial it is expected that you are familiar
+    with:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>00-EmptyBot</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+<section>
+    <title>Video</title>
+
+    <para>This tutorial also has its short
+    <link xlink:href="http://www.youtube.com/watch?v=bjtFVhVVHd0">video version</link>. Note that the video may show older version of the GUI and that the API could also have changed.</para>
+</section>
+
+  <section>
+    <title>Tutorial body</title>
+
+    <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to 
+    PogamutUT2004 and will mostly hold in PogamutUDK examples. </para>
+
+    <para>Previous tutorial has shown us how to use navigation graph for
+    planning movement of the bot. This tutorial presents an alternative
+    approach that can be used when you don't have navigation graph at all or
+    when the graph doesn't provide all the necessary information.</para>
+    <section>
+      <title>Setting up the example</title>
+
+      <para>This example is installed by Pogamut UT2004 installer. In NetBeans click New Project -&gt; Maven -&gt; Project From Archetype -&gt; Local Archetypes Catalog and select 03-raycasting-bot-archetype project.
+	  Moreover, as Pogamut 3 has been fully mavenized, you can try and run this example even without installing the Pogamut NetBeans plugin. However in that case you won't be able to
+      use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link>. This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 03-raycasting-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	For UDK example only change <guimenuitem>Group Id:</guimenuitem> to cz.cuni.amis.pogamut.udk.examples and <guimenuitem>Version:</guimenuitem> 3.2.5-SNAPSHOT . The rest remains the same.	
+	</para>
+      
+     <para><guimenuitem>Note:</guimenuitem> You will find up-to-date list of available archetypes in 
+     <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link> </para>               
+    </section>  
+    <section>
+      <title>Raycasting</title>
+
+      <para>Raycasting is technique commonly known from computer graphics
+      based on analytical geometry. The goal of raycasting is to compute
+      intersection of a <literal>ray</literal> and the
+      <literal>geometry</literal> of the world. Simple high school analytical
+      geometry can be used for implementation of raycasting but this isn't
+      topic of this tutorial. If you are interested in math behind raycasting
+      you can read <link
+      xlink:href="http://www.permadi.com/tutorial/raycast/index.html">this
+      site</link>. This tutorial is concerned with using raycasting in Pogamut
+      and Unreal Tournament.</para>
+    </section>
+
+    <section>
+      <title>Configuring rays - low level API</title>
+
+      <para>The basic low-level API provided by Pogamut requires these 3
+      stages:<orderedlist>
+          <listitem>
+            <para><emphasis role="bold">Enable raycasting feature and rays
+            visualization</emphasis></para>
+
+            <para>If you want to start continuous computation of ray X world
+            intersections set <literal>AutoTrace</literal> parameter of the
+            bot to <code>true</code>, you can do this by
+            <code>getAct().act(new Configuration().setAutoTrace(true));</code>
+            method call.</para>
+
+            <para>For debugging it is handy to enable also DrawTraceLines
+            feature. This feature will visualize the rays you will set up in
+            UT. Thus, you can extend the previous call to
+            <code>getAct().act(new
+            Configuration().setDrawTraceLines(true).setAutoTrace(true))</code>.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Initialize rays</emphasis></para>
+
+            <para>Set the ray by <classname>AddRay</classname> command, eg. by
+            <code>getAct().act(new AddRay("left45Ray", new Vector3d(1, -1, 0),
+            500, true, true, true));</code>. Exact meaning of the parameters
+            is described in JavaDoc.</para>
+          </listitem>
+
+          <listitem>
+            <para><emphasis role="bold">Handle results</emphasis></para>
+
+            <para>Once the <classname>AddRay</classname> was send, the UT
+            computes the result and returns it in
+            <classname>AutoTraceRay</classname> message. You can obtain this
+            object by:<itemizedlist>
+                <listitem>
+                  <para>registering a listener that will be notified each time when a new
+                  ray is received from the environment</para>
+
+                  <para><programlisting language="java">        IWorldObjectEventListener&lt;AutoTraceRay, WorldObjectFirstEncounteredEvent&lt;AutoTraceRay&gt;&gt; rayListener = new IWorldObjectEventListener&lt;AutoTraceRay, WorldObjectFirstEncounteredEvent&lt;AutoTraceRay&gt;&gt;() {
+            public void notify(WorldObjectFirstEncounteredEvent&lt;AutoTraceRay&gt; event) {
+                //check which ray it is
+                if (event.getObject().getId().getStringId().equals("left45Ray")) {
+                    //do something with the ray
+                }
+            }
+        };
+
+
+                //don't forget to register listener above to the WorldView! (best in botInitialized() method)
+                getWorldView().addObjectListener(AutoTraceRay.class,
+                WorldObjectFirstEncounteredEvent.class,
+                rayListener);
+        </programlisting></para>
+                </listitem>
+
+                <listitem>
+                  <para>OR by checking presence of the object in world view
+                  periodically, eg. in <methodname>logic()</methodname>
+                  method</para>
+
+                  <programlisting language="java">
+                          AutoTraceRay ray = null;
+        ...
+
+        if (ray == null) {
+            // ray has not been initialized yet, try to obtain the instance
+            ray = getWorldView().getAll(AutoTraceRay.class).get(UnrealId.get("left45Ray"));
+        }
+            </programlisting>
+                </listitem>
+                <listitem>
+                  <para>Note that you may easilly go through all rays in the world view by using
+				  the following construct:</para>
+
+                  <programlisting language="java">
+            for (AutoTraceRay ray : getWorldView().getAll(AutoTraceRay.class).values()) {
+                System.out.println("Ray: " + ray);    
+            }
+            </programlisting>
+                </listitem>				
+              </itemizedlist>Once you obtain the
+            <classname>AutoTraceRay</classname> object, this object will be
+            automatically updated by the platform when new results are
+            available.</para>
+          </listitem>
+        </orderedlist></para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Configuring rays - Raycasting facade</title>
+
+      <para>As you can see the process of initializing rays is quite complex.
+      To ease this process there is <classname>Raycasting</classname> class
+      that is utilized also by 03-RaycastingBot example. First, let's open the
+      example, you will find it under <guimenu>File</guimenu> →
+      <guimenuitem>New Project ...</guimenuitem> →
+      <guimenuitem>Samples</guimenuitem> → <guimenuitem>Pogamut</guimenuitem>
+      → <guimenuitem>03-RaycastingBot</guimenuitem>.</para>
+
+      <para>Raycasting class is automatically instanciated in <classname>UT2004BotModuleController</classname>
+      class. Through this class we will set up the rays. This has several stages:<orderedlist>
+          <listitem>
+            <para>Initialize multiple rays at once, RaycastingBot does this in
+            <methodname>botInitialized()</methodname> method but you can do it
+            in <methodname>logic()</methodname> or
+            <methodname>botSpawned()</methodname> as well. Do not do it in <methodname>prepareBot() </methodname>
+            method (it won't work because the connection to the environment is not ready
+            at the time of execution of <methodname>prepareBot() </methodname>).<programlisting
+            language="java">            // 1. remove all previous rays, each bot starts by default with three
+            // rays, for educational purposes we will set them manually
+            getAct().act(new RemoveRay("All"));
+
+            // 2. create new rays
+            raycasting.createRay(LEFT90, new Vector3d(0, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+            raycasting.createRay(LEFT45, new Vector3d(1, -1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+            raycasting.createRay(FRONT, new Vector3d(1, 0, 0), rayLength, fastTrace, floorCorrection, traceActor);
+            raycasting.createRay(RIGHT45, new Vector3d(1, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+            raycasting.createRay(RIGHT90, new Vector3d(0, 1, 0), rayLength, fastTrace, floorCorrection, traceActor);
+</programlisting></para>
+
+            <para>You can notice that two things has happened. First, all
+            previously added rays were removed (this is done just to be sure
+            that we are starting on clear ground). Then, five new rays were
+            created.</para>
+          </listitem>
+
+          <listitem>
+            <para>Register the listener that will be called after all rays
+            were initialized (the first result of computation come from
+            UT):</para>
+
+            <programlisting language="java">            // register listener called when all rays are set up in the UT engine
+            raycasting.getAllRaysInitialized().addListener(new FlagListener&lt;Boolean&gt;() {
+
+                public void flagChanged(Boolean changedValue) {
+                    // once all rays were initialized store the AutoTraceRay objects
+                    // that will come in response in local variables, it is just
+                    // for convenience
+                    left = raycasting.getRay(LEFT45);
+                    front = raycasting.getRay(FRONT);
+                    right = raycasting.getRay(RIGHT45);
+                }
+            });</programlisting>
+
+            <para>This is the advantage of using Raycasting object over
+            previously presented low level API. You don't have to manually
+            code the mechanism that will wait for initialization of all
+            rays.</para>
+          </listitem>
+
+          <listitem>
+            <para>Inform Raycasting instance that you don't intend to register
+            any new rays (so the counting of incoming AutoTraceRay objects may
+            start):</para>
+
+            <programlisting language="java">            // 3. declare that we are not going to setup any other rays
+            raycasting.endRayInitSequence();
+</programlisting>
+          </listitem>
+        </orderedlist></para>
+    </section>
+
+    <section>
+      <title>Navigating using raycasting</title>
+
+      <para>Navigation bot uses a simple reactive algorithm of navigation that
+      can be in brief described as <literal>IF no ray is signalling THEN go
+      forward ELSE move in opposite direction of the signalling ray</literal>.
+      The algorithm is coded in <methodname>logic()</methodname>
+      method.</para>
+    </section>
+
+    <section>
+      <title>Observing raycasting bot in UT</title>
+
+      <para>Now, let's see how the bot is doing. Start the server with
+      DM-TrainingDay map by executing
+      <filename>startGamebotsDMServer.bat</filename>. Then switch to spectate
+      mode by right clicking the server node in Netbeans and selecting
+      <guimenuitem>Spectate</guimenuitem> action. After the UT client loads,
+      you will see the raycasting bot navigating through the environment. The
+      bot will have five rays; however, only three of them are used by the
+      navigation algorithm. When the ray is green then the ray hasn't collided
+      with any wall or actor, otherwise the will turn red.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+
+    <para>This is all for now.</para>
+  </section>
+</chapter>

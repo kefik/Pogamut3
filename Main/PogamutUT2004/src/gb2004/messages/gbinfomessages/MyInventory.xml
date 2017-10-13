@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="MYINV" name="MyInventory" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		An object in the observed player's inventory.
+    </documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the item. This Id represents the item in the inventory.
+		</documentation>
+   </property>
+   <property name="CurrentAmmo" type="int" category="local">
+      <documentation>
+			If this item is a weapon, this holds the amount of primary ammo.
+		</documentation>
+   </property>
+   <property name="CurrentAltAmmo" type="int" category="local">
+      <documentation>
+			If this item is a weapon, this holds the amount of secondary ammo.
+		</documentation>
+   </property>
+   <property name="Amount" type="int" category="local">
+      <documentation>
+			If this item is ammo or armor, this holds the amount of the item the player has.
+		</documentation>
+   </property>
+   <property name="Type" type="ItemType" category="static">
+      <documentation>
+			Class of the item (e.g. xWeapons.FlakCannonPickup).
+		</documentation>
+      <extra>
+         <code>
+            <yylex>
+				((MyInventoryMessage)actObj).Descriptor = itemDescriptorValue(((MyInventoryMessage)actObj).Type);
+			</yylex>
+         </code>
+      </extra>
+   </property>
+   <property name="Descriptor" type="ItemDescriptor" jflex="no" category="static">
+      <documentation>
+			Descriptor of the item - according the ItemType you may cast this to various XYZDescriptor.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

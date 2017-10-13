@@ -1,0 +1,11 @@
+(
+    (RDC PoshBot (goal ((fail)))
+	(drives ((driveName testCompetence)))
+    )
+    (C testCompetence
+        (elements 
+            ((dupl action1))
+            ((dupl action2))
+        )
+    )
+)

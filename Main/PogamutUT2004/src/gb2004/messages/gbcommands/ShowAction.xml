@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SHACT" extends="CommandMessage" name="ShowAction" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Show current action the player is performing.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Action" type="String">
+      <documentation>The action that should be shown.</documentation>
+   </property>
+   <property name="Completed" type="Boolean">
+      <documentation>Whether the current action is completed or not.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

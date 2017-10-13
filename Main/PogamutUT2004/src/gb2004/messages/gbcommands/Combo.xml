@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="COMBO" extends="CommandMessage" name="Combo" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Causes bot to perform desired adrenaline combo (only if it has enough adrenaline usually &gt;= 100). Combo cannot be turned off when triggered. 
+     Combo will consume bot adrenaline slowly, when it reaches 0 combo stops. Combo can modify bots abilities or appearance. Combos can be xGame.ComboBerserk (bigger damage), xGame.ComboDefensive (every few seconds adds health), xGame.ComboInvis (bot is invisible and is very hard to spot) or xGame.ComboSpeed (bots speed is increased).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Type" type="String">
+      <documentation>
+			Holds the class name of the desired adrenaline combo (can be
+			xGame.ComboBerserk, xGame.ComboDefensive, xGame.ComboInvis
+			or xGame.ComboSpeed).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

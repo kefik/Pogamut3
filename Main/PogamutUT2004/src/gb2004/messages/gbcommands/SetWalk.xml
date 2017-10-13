@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETWALK" extends="CommandMessage" name="SetWalk" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Set whether you are walking or running (default is run).
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Walk" type="boolean">
+      <documentation>
+			True or false to enable/disable bot walking.
+		</documentation>
+   </property>
+   <property name="WalkAnim" type="String">
+      <documentation>
+			Change name of walking animation. Supported in UE2.
+		</documentation>
+   </property>
+   <property name="RunAnim" type="String">
+      <documentation>
+			Change name of running animation. Supported in UE2
+		</documentation>
+   </property>	
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

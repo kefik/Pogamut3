@@ -1,0 +1,9 @@
+(
+    (C testC
+        (elements ((testCE action)))
+    )
+
+    (DC testDC
+        (drives ((testDE testC)))
+    )
+)

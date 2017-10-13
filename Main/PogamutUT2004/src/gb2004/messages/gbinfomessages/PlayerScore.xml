@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PLS" name="PlayerScore" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. Contains the info about player score.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="lastSeenTime" type="double" jflex="no" category="all">
+      <documentation>
+			When was the last time we've received info about this
+			object.
+		</documentation>
+   </property>
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of the player.</documentation>
+   </property>
+   <property name="Score" type="int" category="shared">
+      <documentation>
+			Number of player frags (how many times the player killed
+			other players) or number of victory points (player frags +
+			some special measurement that can differ from game type to
+			game type).
+		</documentation>
+   </property>
+   <property name="Deaths" type="int" category="shared">
+      <documentation>Number of players deaths.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

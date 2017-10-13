@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ACT" extends="CommandMessage" name="PlayAnimation" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Will trigger some of the native animations.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Name" type="String">
+      <documentation>Name of the animation. Possible animations: gesture_beckon, gesture_cheer, gesture_halt, gesture_point, Gesture_Taunt01, PThrust, AssSmack, ThroatCut, Specific_1, Gesture_Taunt02, Idle_Character02, Idle_Character03, Gesture_Taunt03.</documentation>
+   </property>
+	<property name="Loop" type="boolean">
+      <documentation>When true the animation will be played in loop. Supported un GameBotsUE2.</documentation>
+   </property>    
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="JUMP" name="JumpPerformed" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Sent when the observed player jumps.
+    </documentation>
+   <property name="DoubleJump" type="boolean" category="local">
+      <documentation>
+			Whether this is a double jump.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

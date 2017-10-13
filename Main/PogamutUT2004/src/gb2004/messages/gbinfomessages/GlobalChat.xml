@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="VMS" name="GlobalChat" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		tAsynchronous message. Recieved message from global chat channel
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="local">
+      <documentation>
+			Unique UnrealId of the sender.
+		</documentation>
+   </property>
+   <property name="Name" type="String" category="local">
+      <documentation>
+			Human readable name of the sender.
+		</documentation>
+   </property>
+   <property name="ControlServer" type="Boolean" category="local">
+      <documentation>
+			True if this message was sent by control server - in that case the id will be id of control server (that has no physical appearance in the game).
+		</documentation>
+   </property>   
+   <property name="Text" type="String" category="local">
+      <documentation>
+			A human readable message sent by another player in the game
+			on the global channel.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

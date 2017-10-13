@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cz.cuni.amis</groupId>
+		<artifactId>amis-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../Poms/AmisPom/pom.xml</relativePath>
+	</parent>
+
+	<groupId>cz.cuni.amis.utils</groupId>
+	<artifactId>process-execution</artifactId>
+	<version>3.7.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>process-execution</name>
+	<url>http://diana.ms.mff.cuni.cz</url>
+
+	<dependencies>
+		<!-- 
+			
+			RUNTIME DEPENDENCIES
+		
+		 -->
+		 
+		<!--
+			WORLD DEPENDENCIES 
+		 -->
+		<dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+		 		
+		<!--
+			AMIS DEPENDENCIES 
+		 -->
+		<dependency>
+			<groupId>cz.cuni.amis</groupId>
+			<artifactId>amis-utils</artifactId>
+			<version>3.7.1-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>amis-artifactory</id>
+			<name>AMIS Artifactory</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+</project>

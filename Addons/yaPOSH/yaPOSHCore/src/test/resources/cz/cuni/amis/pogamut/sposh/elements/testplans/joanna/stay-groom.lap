@@ -1,0 +1,41 @@
+(
+(documentation "stay-groom.lap" "from moog.lap -- if you're being groomed, don't move." "
+$Log: stay-groom.lap,v $
+Revision 1.2  2002/05/27 21:13:09  jbryson
+finally fixed stack bug, slight progress on tubes, fuller colony results
+
+Revision 1.1  2002/03/13 18:38:11  jbryson
+more work on lap file locations
+
+
+Started trying to combine receive into `grooming', but that made
+triggers too tricky, so made a seperate drive.
+
+(AP groom-note (Seconds 1) (notify-groomee groom))
+
+")
+(RDC
+ LIFE
+ (GOAL (fail))
+ (DRIVES
+  ((unstacking (TRIGGER ((overlap-nearest))) get-off-primate))
+  ((grooming (TRIGGER ((want-to-groom))) groom-comp))
+  ((receive-grooming (TRIGGER ((being-groomed))) tolerate-grooming))
+  ((exploring explore-comp))))
+
+(C
+ groom-comp
+ (ELEMENTS ((groom-gp (TRIGGER ((partner-chosen) (aligned-w-target))) groom-note))
+	((new-partner-gp (TRIGGER ((being-groomed))) choose-groomer-as-partner))
+        ((align-w-gp (TRIGGER ((partner-chosen) (touching-target))) engage))
+        ((touch-gp (TRIGGER ((partner-chosen))) approach))
+        ((choose-gp choose-grooming-partner))
+	))
+(C
+ explore-comp
+ (ELEMENTS ((get-moving (TRIGGER ((want-new-loc)(place-chosen)(touching-explore-target))) lose-explore-place))
+	   ((move-away (TRIGGER ((want-new-loc)(place-chosen))) explore))
+           ((choose-explore (TRIGGER (want-new-loc)) choose-explore-place))
+	   ((sit wait))
+	   ))
+)

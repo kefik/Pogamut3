@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="TRG" name="Trigger" type="Event">
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. When we trigger some trigger. TODO:
+		Experiment message.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Actor" type="String" category="all">
+      <documentation>
+			Should be the trigger we have triggered.
+		</documentation>
+   </property>
+   <property name="EventInstigator" type="UnrealId" category="local">
+      <documentation>
+			Should be the Id of the player who triggered this
+			(ourself?).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

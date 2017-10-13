@@ -1,0 +1,18 @@
+<RewriteFilesConfig>
+			<globals>
+				<includeFile>*.c</includeFile>
+				<includeFile>*.h</includeFile>
+				<!--
+				<excludeDir>.svn</excludeDir>
+				-->
+				<substitutions>
+					<substitution>
+						<match>#include &lt;bluetooth/</match>
+						<replace>#include &lt;net/bluetooth/</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+				</substitutions>
+				<fixLineEndings windowsStyle="false" onlyIfRewritten="true" />
+			</globals>
+			<include dir="d:/Temp/bluediving-0.9/tools" />			
+</RewriteFilesConfig>

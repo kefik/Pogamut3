@@ -1,0 +1,12 @@
+(
+    (node root "Root node for rabbit"
+        (100  (hungry) (look-for-food) )
+        (50   (succeed) (animate "Rabbit-idle.ani") )
+        ((scared)   (succeed) (run-from-closest-enemy))
+    )
+
+    (node look-for-food "Go around the forrest and look for edible stuff"
+        (10 1 (turn-around))
+        (20 (see-food) (stop-turning))
+    )
+)

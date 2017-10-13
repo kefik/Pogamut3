@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="CWP" name="ChangedWeapon" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Bot changed weapon. Possibly as a result
+		of a command sent by you. Here we will get the new weapon - the weapon the
+        bot has changed to.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="String" category="local">
+      <documentation>
+			Unique Id of new weapon, based on the inventory weapon's
+			name (this is different from the Id of the weapon that can
+			be picked up in the map).
+		</documentation>
+   </property>
+   <property name="PrimaryAmmo" type="int" category="local">
+      <documentation>
+			Holding current primary ammo of the new weapon.
+		</documentation>
+   </property>
+   <property name="SecondaryAmmo" type="int" category="local">
+      <documentation>
+			Holding current secondary ammo of the new weapon.
+		</documentation>
+   </property>
+   <property name="Type" type="String" category="local">
+      <documentation>
+			A string representing the type of the weapon.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

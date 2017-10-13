@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE settings SYSTEM "../GBMessages.dtd">
+
+<settings>
+<!-- settings for the Java part of the messages -->
+	
+	<javasettings>
+	<!-- package where the message objects belong to -->
+		<javapackageinfomessages package="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages" />
+		<javapackagecommands package="cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands" />
+	
+	<!-- follows the list of classes that will be imported for each message -->
+		<javaimport import="java.util.*" />
+		<javaimport import="javax.vecmath.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.messages.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.event.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.object.*" />
+		<javaimport import="cz.cuni.amis.pogamut.multi.communication.worldview.object.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.translator.event.*" />		                    
+		<javaimport import="cz.cuni.amis.pogamut.multi.communication.translator.event.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.base3d.worldview.object.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base3d.worldview.object.event.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.messages.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.worldview.objects.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004multi.communication.worldview.objects.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.translator.itemdescriptor.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType.Category" />
+		<javaimport import="cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId" />
+        <javaimport import="cz.cuni.amis.utils.exception.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.translator.event.IWorldObjectUpdateResult.Result" />
+		<javaimport import="cz.cuni.amis.utils.SafeEquals" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.base.agent.*" />
+		<javaimport import="cz.cuni.amis.pogamut.multi.agent.*" />
+		
+		<javaimport import="cz.cuni.amis.pogamut.multi.communication.worldview.property.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004multi.communication.worldview.property.*" />
+		
+		<javaimport import="cz.cuni.amis.utils.token.*" />
+		<javaimport import="cz.cuni.amis.utils.*" />
+	</javasettings>
+	
+	
+	<jflexsettings>
+	<!-- settings for the JFlex part of the messages -->
+		<jflexpackage package="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages" />
+	
+	<!-- follows the list of classes that will be imported for each message -->
+		<javaimport import="java.util.*" />
+		<javaimport import="javax.vecmath.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.translator.*"/>
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.translator.event.*"/>
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.translator.itemdescriptor.*" />				                   
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.parser.*"/>
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.parser.exception.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.parser.impl.yylex.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.messages.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.event.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base.communication.worldview.object.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base3d.worldview.object.*" />
+		<javaimport import="cz.cuni.amis.pogamut.base3d.worldview.object.event.*" />
+		<javaimport import="cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId" />
+        <javaimport import="cz.cuni.amis.pogamut.ut2004.communication.parser.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.messages.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType.Category" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.communication.worldview.objects.*" />
+		<javaimport import="cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils" />		
+		<javaimport import="java.lang.reflect.Method"/>
+		<javaimport import="cz.cuni.amis.utils.exception.*" />
+		<javaimport import="cz.cuni.amis.pogamut.multi.agent.*" />
+	</jflexsettings>
+</settings>

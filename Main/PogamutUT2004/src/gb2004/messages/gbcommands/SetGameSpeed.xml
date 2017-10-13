@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETGAMESPEED" extends="CommandMessage" name="SetGameSpeed"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>Will set speed of the game.</documentation>
+   <!-- List of all properties of this command. !--><property name="Speed" type="double">
+      <documentation>
+			Can range from 0.1 to 50. 1 is normal game speed. The
+			reasonable speeding up is around 10. The game engine stops
+			catching up at higher values.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

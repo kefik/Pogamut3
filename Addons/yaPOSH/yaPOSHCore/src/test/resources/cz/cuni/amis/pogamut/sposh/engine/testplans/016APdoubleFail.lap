@@ -1,0 +1,11 @@
+(
+    (RDC testPlan
+	(drives ((test testAP1)))
+    )
+
+    (AP testAP1 (action0 testAP2 action4))
+
+    ; action2 will fail
+    (AP testAP2 (action1 action2 action3))
+
+)

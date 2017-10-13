@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ADDINV" extends="CommandMessage" name="AddInventory" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		We can add custom inventory for specified bot. This command can
+		be issued also by bot on the bot itself (in this case Id
+		attribute is not parsed). Issuing by bot is allowed just when
+		the game has allowed cheating (bAllowCheats = True in GameBots2004.ini
+		file).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the target bot. Is used just when sending command to
+			the server. If sending command to the bot Id is ignored and
+			ADDINV command is executed on the bot (if bAllowCheats ==
+			True).
+		</documentation>
+   </property>
+   <property name="Type" type="String">
+      <documentation>
+			Class of the item we want to add. Must be pickup class (e.g.
+			xWeapons.FlakCannonPickup).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

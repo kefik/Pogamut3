@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ROTATE" extends="CommandMessage" name="Rotate" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>Turns the bot by a specified amount.</documentation>
+   <!-- List of all properties of this command. !--><property name="Amount" type="int">
+      <documentation>
+			Amount in UT units to rotate. May be negative to rotate
+			counter clockwise. This rotation is relatively added to bot current rotation, then the shortest turn to achieve this new rotation will be performed (so the maximum turn you can achive is to turn back by supporting value 32767 or -32767).
+		</documentation>
+   </property>
+   <property name="Axis" type="String">
+      <documentation>
+			If provided as "Vertical", rotation will be done to Pitch
+			(up/down). Any other value, or not provided, and rotation
+			will be to Yaw (left/right).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

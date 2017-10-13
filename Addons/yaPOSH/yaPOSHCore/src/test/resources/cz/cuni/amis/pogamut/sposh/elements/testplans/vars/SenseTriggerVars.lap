@@ -1,0 +1,12 @@
+(
+    (C testCompetence vars($var1="default", $var2=12.6, $var3=nil, $var4="stringvalue")
+        (elements 
+            ((test (trigger((testSense0($var1, $var1)) testSense1 (testSense2($var1, 12.5, "ahoj", $var4)))) runSomething))
+        )
+    )
+
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testCompetence)))
+    )
+)
+

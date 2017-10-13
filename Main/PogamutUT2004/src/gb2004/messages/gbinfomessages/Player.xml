@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PLR" name="Player" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. Contains information about other players in
+		the game, like their current velocity, position, weapon and
+		reachability. Only reports those players that are visible.
+		(within field of view and not occluded).
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <!--  cz.cuni.amis.pogamut.unreal.communication.messages.gbinfomessages.Player-->
+   <interface name="IPerson">
+   	<classcategory name="base" />
+   	<classtype name="abstract" />
+   </interface>
+   <interface name="cz.cuni.amis.pogamut.unreal.communication.messages.gbinfomessages.IPlayer">
+    <classcategory name="base" />
+   	<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all" jason="yes">
+      <documentation>Unique Id of the player.</documentation>
+   </property>
+   <property name="Jmx" type="String" category="local">
+      <documentation>
+			Exported just for control server. Holds jmx address we need to connect to
+            when we want to debug our bot.
+		</documentation>
+   </property>
+   <property name="Name" type="String" category="shared" jason="yes">
+      <documentation>
+			Human readable name of the player.
+		</documentation>
+   </property>
+   <property name="Spectator" type="Boolean" category="shared"  default="false">
+      <documentation>
+			Whether this player is in SPECTATE mode. Humans can change the mode during runtime!
+		</documentation>
+   </property>
+   <property name="Action" type="String" category="shared">
+      <documentation>
+			Atomic action this bot is doing (BDI).
+		</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local" default="true" jason="yes">
+      <documentation>
+            If the player is in the field of view of the bot.
+        </documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="shared">
+      <documentation>
+			Which direction the player is facing in absolute terms.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared" nullable="false" jason="yes">
+      <documentation>
+			An absolute location of the player within the map.
+		</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+      <documentation>
+			Absolute velocity of the player as a vector of movement per one
+			game second.
+		</documentation>
+   </property>
+   <property name="Team" type="int" category="shared" jason="yes">
+      <documentation>
+			What team the player is on. 255 is no team. 0-3 are red,
+			blue, green, gold in that order.
+		</documentation>
+   </property>
+   <property name="Weapon" type="String" category="shared">
+      <documentation>
+			Class of the weapon the player is holding. Weapon strings to
+			look for include: "AssaultRifle", "ShieldGun", "FlakCannon",
+			"BioRifle", "ShockRifle", "LinkGun", "SniperRifle",
+			"RocketLauncher", "Minigun", "LightingGun", "Translocator".
+			TODO: Look if this is all.
+		</documentation>
+   </property>
+   <property name="Crouched" type="boolean" category="shared">
+      <documentation>
+			True if the bot is crouched.
+		</documentation>
+   </property>   
+   <property name="Firing" type="int" category="shared">
+      <documentation>
+			0 means is not firing, 1 - firing in primary mode, 2 -
+			firing in secondary mode (alt firing).
+		</documentation>
+   </property>
+   <property name="EmotLeft" type="String" category="shared">
+      <documentation>
+			For UE2. Holds left emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="EmotCenter" type="String" category="shared">
+      <documentation>
+			For UE2. Holds center emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="EmotRight" type="String" category="shared">
+      <documentation>
+			For UE2. Holds right emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="Bubble" type="String" category="shared">
+      <documentation>
+			For UE2. Holds the bubble of the emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="Anim" type="String" category="shared">
+      <documentation>
+			For UE2. Current played animation of the bot.
+		</documentation>
+   </property>  
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

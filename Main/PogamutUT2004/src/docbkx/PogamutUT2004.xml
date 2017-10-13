@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <title>Pogamut Unreal Tournament 2004 Manual</title>
+
+  <chapter>
+    <title>Pogamut UT2004</title>
+
+    <para></para>
+
+    <section>
+      <title>Agents and World</title>
+
+      <para>TODO Describe the Unreal Tournament 2004 and Bots</para>
+    </section>
+
+    <section>
+      <title>Library architecture</title>
+
+      <para></para>
+
+      <section>
+        <title>Gamebots</title>
+
+        <para>Gamebots documentation is in standalone file.</para>
+      </section>
+
+      <section>
+        <title>WorldView</title>
+
+        <para>These features are specific to the</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Asynchronous events implement InfoMessageObject, WorldEvent
+            and WorldViewEvent.</para>
+          </listitem>
+
+          <listitem>
+            <para>Object updating events implement InfoMessageObject,
+            WorldEvent and WorldViewObject.</para>
+          </listitem>
+
+          <listitem>
+            <para>Path and other (TODO) more complex objects implements
+            InfoMessageObject only. The following object (in terms of the
+            message passing) has to be hand coded.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Agent's Memory</title>
+
+        <para>TODO describe memory modules</para>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Pogamut UT2004 Development</title>
+
+    <para></para>
+
+    <section>
+      <title>GB &lt;-&gt; PogamutUT2004 communication</title>
+
+      <para>Communication between the GB and the Pogamut Java client can be
+      described by a finite state machine.</para>
+
+      <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="../../../docs/documentation/architecture/PogamutUT2004/img/BotFSM.gif"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>State diagram of communication between bot and the GB</para>
+          </caption>
+        </mediaobject><mediaobject>
+          <imageobject>
+            <imagedata fileref="../../../docs/documentation/architecture/PogamutUT2004/img/ServerFSM.gif"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>State diagram of communication between server and the
+            GB</para>
+          </caption>
+        </mediaobject></para>
+    </section>
+
+    <section>
+      <title>Unit Tests</title>
+
+      <para>Unit tests are fundamental part of open source software
+      development. Before every commit test the functionality you have
+      changed, ideally test the whole project, however running all the tests
+      can take a lot of time since some tests include executing the UT2004
+      server and performing tests inside the environemnt (eg.
+      navigation).</para>
+
+      <para></para>
+
+      <section>
+        <title>Configuring environment for running the test</title>
+
+        <para>Some test need to have a running UCC server with Gamebots
+        installed. Fortunately ou don't have to run the server manually each
+        time you want to execute the tests.. Instead you simply set two
+        pogamut platform variables:<itemizedlist>
+            <listitem>
+              <para>pogamut.unreal.home - points to the install directory of
+              UT2004, eg. c:\games\UT2004</para>
+            </listitem>
+
+            <listitem>
+              <para>pogamut.unreal.serverexec - specifies the ucc executable,
+              on Windows it is probably <code>ucc.exe</code>, in Linux just
+              <code>ucc</code>.</para>
+            </listitem>
+          </itemizedlist> Tests will ten execute the UCC on their own.</para>
+
+        <para>For setting the property values see <xref
+        linkend="platform.config" /></para>
+      </section>
+
+      <section>
+        <title>Coding new tests</title>
+
+        <para>The tests are implemented in JUnit 4.5, for tutorial on writing
+        a basic test see
+        <uri>http://junit.sourceforge.net/doc/cookbook/cookbook.htm</uri></para>
+
+        <para>Pogamut provides a few base classes that provide infrastructure
+        for writing PogamutUT2004 test cases. These test base classes are
+        located in package <code>cz.cuni.amis.pogamut.ut2004.testbase</code>.
+        See Javadoc of these classes.</para>
+
+        <para><itemizedlist>
+            <listitem>
+              <para></para>
+            </listitem>
+          </itemizedlist></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Installer</title>
+
+      <para>Installation of Pogamut platform is performet through IzPack
+      installation software (http://izpack.org/). Installation script is in
+      TODO dir. Installer package is created by:</para>
+
+      <para><command>ant -f build-install.xml make-installer</command></para>
+    </section>
+  </chapter>
+</book>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ANIMATIONBOTID" name="AnimationBotID"
+               type="Event">
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Message by server to announce id for animation of a bot.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="id" type="int" default="0" category="local">
+      <documentation>id for animation of a bot.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,48 @@
+; This is modified from clean-dog.lap to make the dogs act more like sheep -- they flock with the sheep (but at a greater distance)
+; and with each other, so they spend less time on top of each other.  To make this really look smart though a) the sheep need to move away
+; from the dogs more, and the dogs need to pick up strays
+(
+  (documentation "sheep-dog" "JJB Feb 08" "Make the dogs 'flock' with the sheep")
+  (C c-rest
+     (elements
+      (
+       (fidget (trigger ((has_rest_spot) (rest_spot_old))) set_rest_spot)
+       )
+      (
+       (resting (trigger ((in_rest_spot))) rest)
+       )
+      (
+       (has-rest-spot (trigger ((has_rest_spot))) move_to_rest_spot)
+       )
+      (
+       (set-rest-spot (trigger ((succeed))) set_rest_spot)
+       )
+      ))
+
+  (AP ap-flock (dog_flock_with_sheep lose_target))
+
+; is there a problem with goals?  deleted this: herd_too_wide false
+  (C c-herd
+     (elements
+      (
+       (herding (trigger ((sheep_close))) dog_flock_with_sheep)
+       )
+      (
+       (has-sheep-target (trigger ((has_target))) move_to_sheep_target)
+       )
+      (
+       (set-sheep-target (trigger ((succeed))) select_sheep_target)
+       )
+      ))
+
+  (SDC life (goal ((s_fail)))
+      (drives
+       (
+		(herd (trigger ((herd_too_wide))) c-herd)
+		; (herd (trigger ((herd_too_wide))) dog_flock_with_sheep)
+		)
+       (
+		(default-behavior (trigger ((succeed))) c-rest)
+		)
+       ))
+)

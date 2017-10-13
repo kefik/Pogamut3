@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Yaposh library</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <p>This library contains Yaposh, dynamic planner based on <a href="http://www.cs.bath.ac.uk/~jjb/web/posh.html">SPOSH</a>.</p>
+
+    <p>This library contains</p>
+    <ul>
+        <li><dfn>PoshParser</dfn> &mdash; parser of Yaposh plans.</li>
+        <li><dfn>PoshPlan</dfn> &mdash; Structure holding the parsed Yaposh plan.</li>
+        <li><dfn>Engine</dfn> &mdash; Engine that is executing the plan</li>
+        <li><dfn>Primitives</dfn> &mdash; Primitives (actions and senses) are classes that actually interact with environment, the goal of the plan is to select which actions to perform.</li>
+        <li><dfn>IWorkExecutor</dfn> &mdash; Executor is responsible for executing the primitives, when plan requests it.</li>
+        <li><dfn>LapPath</dfn> &mdash; Mostly auxiliry class, but quite important. The LapPath represents some element in the plan. If you supply plan to the path, you can get the element of plan the path is pointing to.</li>
+    </ul>
+    
+    <h2>Structure of Yaposh plan</h2>
+    
+    <p>Yaposh is quite similar to behavior trees, the plan itself is a Directed Acyclic Graphs (DAG). The root node of Yaposh plan is called <code>DriveCollection</code> (DC).</p>
+
+    <p>DC is a root of the plan, but not the object that stores all nodes of the plan, that would be <code>PoshPlan</code>. The <code>PoshPlan</code> contains DC of plan and all action patterns, comepetnces and adopts of the plan.</p>
+    
+    <p>The DC has several children (at least one) called drives (<code>DriveElement</code>). Each drive consists from its name, trigger and reference to some other node. The trigger is a condition that must be satisfied in order for drive to be elegible for selection.</p>
+
+    <p>DC can also have a goal, condition that specifies when the agent has fulfilled its goal in the environment. If goal is satisfied, there is no need to evaluate the rest of the plan.</p>
+        
+    <p>The reference to some other node is called <code>TriggeredAction</code>. The referenced node can be action(A), competence (C) or action pattern (AP), but not CompetenceElement or DriveElement nor Sense. Each node that can be referenced (A/AP/C) has a name. When <code>TriggeredAction</code> references another node, it specifies name of referenced node and arguments passed to the referenced node (e.g. name "move-home" and argument $speed=5). The engine will take the name (e.g. "move-home") and finds node with identical name (A/AP/C).</p>
+    
+    <p>Action node is a leaf that is not defined in the plan. It is defined outside of the plan and it is responsibility of the <code>IWorkExecutor</code> to connect referenced name to correct action and execute the action. Actions of Yaposh are classes implementing the <code>IAction</code> interface.</p>
+
+    <p>Action patterns (AP) are nodes that represent sequence, each AP has a list of references to other nodes (actions or another APs) and its job is to execute referenced nodes in specified sequence.</p>
+
+    <p>Competence node is a priority selector, the competence has several (at least one) children of type <code>CompetenceElement</code> called choices. The choice consists from name of choice, trigger and reference to another node. Job of competence is to select one of its choices.</p>
+
+    <p>User shouldn't use constructors of nodes, but <code>LapElementsFactory</code> factory instead.</p>
+
+
+    <h2>Execution of the plan</h2>
+
+    <p>The plan works by executing nodes. Each drive has its own stack of executors, note that thare are multiple stacks. The plan is executed in steps, in each step, stack of some drive is changed. Step of the plan starts with selection of drive that should be executed. That is done by selecting first drive (i.e. the one with highest priority) with satisfied trigger.</p>
+    
+    <p>Once drive is selected, we look at its stack and if it is empty, add executor of referenced node to the top of the stack. If drive stack is not empty, take the executor at the top of the stack and execute it. It will do execute the node and return value that says how should engine change the drive stack (e.g. add executor for another element at the top, remove top executor, clear the stack...).</p>
+    
+    <p>We will now describe executors for nodes (they are being executed is they are on top of the drive stack).</p>
+    
+    <p>Executor of action will take the name of action and asks <code>IWorkExecutor</code> to execute the action and according to returned <code>ActionResult</code> change stack (running - remove the executor on the top, failed - clear stack).</p>
+    
+    <p>Executor of action pattern keeps an index into the list of its node references. Each time it is executed, it takes the referenced node with specified index and adds its executor to the top of stack. If executor has executed all its references, it removes itself from the stack.</p>
+    
+    <p>Executor of competence finds its first choice with satisfied trigger and adds executor of the referenced node from the choice to the top of the stack.</p>
+
+    <pre>
+        // plan id is used by LapPath, e.g. /P:1/.. is plan with id 1 
+        int planId = 0;
+        PoshPlan plan = parsePlan(planSource);
+        ITimer timer = new SystemClockTimer(); 
+        PoshEngine = new PoshEngine(planId, plan, timer, Logger.getLogger("Yaposh"));
+        
+        
+        // Work executor that actually executes the primitives
+        IWorkExecutor workExecutor = getWorkExecutor();
+        // Execute the executor of the selected drive
+        EvaluationResultInfo result = engine.evaluatePlan(workExecutor);
+    </pre>
+        
+
+    <h2>Parsing Yaposh plan</h2>
+    <p>You can parse plan using <code>PoshParser</code>, see grammar file <code>poshParser.jj</code>.</p>    
+    <pre>
+        Reader planReader = new StringReader(....);
+        PoshParser parser = new PoshParser(planReader);
+        PoshPlan parsedPlan = parser.parsePlan();
+    </pre>
+
+    <h2>Primitives</h2>
+    <p>Action and sense nodes of the plan are called primitives, they are the only nodes that actually interact with the environment or agent, either by retrieving info (sense) or by changing something (action).</p>
+
+    <p>Primitives are executed by a class implementing <code>IWorkExecutor</code>, best one is <code>StateWorkExecutor</code> (also used by Yaposh). This executor uses instances of classes as primitives, classes implementing <code>ISense</code> are senses and classes implementing <code>IAction</code> are actions. The plan is using fully qualified names (FQN) of the classes as reference to the primitives, e.g. "cz.cuni.Turn" is a reference in the plan to an action node of the plan.</p>
+    
+    <p>FQN names of classes are rather unpleasant for normal work with primitives, the primitive classes can have human readable name annotated using <code>@PrimitiveInfo</code>. The data from the annotation are used in the editor of plans Shed and the debugger Dash, so user won't see FQN, but the name specified in the annotation.</p>
+
+    <p>User can implement the primitive simply by implementing interface IAction, but it is better to use one of provided abstract classes:</p>
+    <ul>
+        <li>StateAction - basic abstract action with context. Not suitable for parametrized actions, because user has to get passed variables by himself from<code>VariableContext</code> </li>
+        <li>ParamsAction - basic abstract action with context. Good for parametrized actions, desired parameters are specified as parameters of methods (e.g. <code>@Param("$color") String color</code>.</li>
+        <li>StateSense - basic abstract sense with context. Not suitable for parametrized sense, because user has to retrieve passed variables by himself from<code>VariableContext</code> </li>
+        <li>ParamsAction - basic abstract sense with context. Good for parametrized sense, parameters desired by the sense are specified as parameters of query method (e.g. <code>@Param("$limit") Integer limit</code>.</li>
+    </ul>
+    
+    <pre>
+    &#64;PrimitiveInfo(name = "See player", description = "Does agent see any player?")
+    public class SeePlayer extends StateSense&lt;FollowContext, Boolean&gt; {
+
+        public SeePlayer(FollowContext ctx) {
+            super(ctx);
+        }
+
+        &#64;Override
+        public Boolean query(VariableContext params) {
+            return ctx.getPlayers().canSeePlayers();
+        } 
+    }
+    </pre>
+    
+    <p>Example sense SeePlayer, it will have name "See player" in Shed editor.</p>
+</body>
+</html>

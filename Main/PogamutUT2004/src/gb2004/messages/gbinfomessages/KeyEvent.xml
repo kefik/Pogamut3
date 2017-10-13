@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="KEYEVENT" name="KeyEvent" type="Event">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Response to key event (key press, key release...) when previous SETSENDKEYS command turned this sending on. 
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Player" type="String" category="local">
+      <documentation>
+			Name of player who has triggered the key event.
+		</documentation>
+   </property>
+   <property name="PlayerId" type="UnrealId" category="local">
+      <documentation>
+			Id of player who has triggered the key event.
+	    </documentation>
+   </property>
+   <property name="PlayerName" type="String" category="local">
+      <documentation>
+			Name of player who has triggered the key event.
+		</documentation>
+   </property>
+    <property name="ViewTarget" type="UnrealId" category="local">
+      <documentation>
+			If the player that triggered the key event is observing another player in the game, then the id of that observed player will be exported here.
+	</documentation>
+   </property>
+
+   <property name="Action" type="String" category="local">
+      <documentation>
+			Action that happened with the key. Possible are: PRESS, HOLD, RELEASE.
+		</documentation>
+   </property>
+   <property name="Key" type="String" category="local">
+      <documentation>
+			Key that has been pressed, released or held. See Interactions.EInputKey for choices - these are without the "IK_" prefix with original case.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

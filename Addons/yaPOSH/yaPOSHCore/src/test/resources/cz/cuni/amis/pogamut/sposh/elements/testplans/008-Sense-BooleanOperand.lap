@@ -1,0 +1,13 @@
+(
+    (RDC life (goal ((fail)))
+        (drives
+            (  (true-smallcaps  (trigger ((succeed true))) dummy))
+            (  (true-capital    (trigger ((succeed True))) dummy))
+            (  (true-ignorecaps     (trigger ((succeed tRuE))) dummy))
+
+            (  (false-smallcaps (trigger ((succeed false))) dummy))
+            (  (false-capital   (trigger ((succeed False))) dummy))
+            (  (false-ignorecaps    (trigger ((succeed fAlSe))) dummy))
+        )
+     )
+)

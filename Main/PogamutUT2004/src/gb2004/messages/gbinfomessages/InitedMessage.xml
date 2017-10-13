@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="INITED" name="InitedMessage" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Sent after succesfull init command (so usually just once). 
+		Holds many attributes of the bots like speed, id starting and max health, etc.
+		Some attributes are not used due to GameBots mechanics.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="BotId" type="UnrealId" category="local">
+      <documentation>
+			A unique unreal Id of the new bot.
+		</documentation>
+   </property>
+   <property name="HealthStart" type="int" category="local">
+      <documentation>
+			Bot will always start with this health amount (usually 100). 
+		</documentation>
+   </property>
+   <property name="HealthFull" type="int" category="local">
+      <documentation>
+			Full health of the bot (usually 100).
+		</documentation>
+   </property>
+   <property name="HealthMax" type="int" category="local">
+      <documentation>
+			Maximum health of the bot (default 199).
+		</documentation>
+   </property>
+   <property name="AdrenalineStart" type="double" category="local">
+      <documentation>
+			Amount of adrenaline at the start. Usually 0.
+		</documentation>
+   </property>
+   <property name="AdrenalineMax" type="double" category="local">
+      <documentation>
+			Maxium amount of the adrenaline. Usually 100 (this can trigger the combos).
+		</documentation>
+   </property>
+   <property name="ShieldStrengthStart" type="int" category="local">
+      <documentation>
+			Starting strength of the bot armor (usually 0).
+		</documentation>
+   </property>
+   <property name="ShieldStrengthMax" type="int" category="local">
+      <documentation>
+			Maximum strength of the bot armor (usually 150).
+		</documentation>
+   </property>
+   <property name="MaxMultiJump" type="int" category="local">
+      <documentation>
+			Maximum amount of succesing jumps. Currently limited to double jump in GB.
+		</documentation>
+   </property>
+   <property name="DamageScaling" type="double" category="local">
+      <documentation>
+			Damage scaling for this bot. (he will deal reduced damage depending on the setting).
+		</documentation>
+   </property>
+   <property name="GroundSpeed" type="double" category="local">
+      <documentation>
+			Groundspeed of the bot (on the ground). Default 440.
+		</documentation>
+   </property>
+   <property name="WaterSpeed" type="double" category="local">
+      <documentation>
+			Waterspeed of the bot (in the water).
+		</documentation>
+   </property>
+   <property name="AirSpeed" type="double" category="local">
+      <documentation>
+			AirSpeed of the bot (in the air).
+		</documentation>
+   </property>
+   <property name="LadderSpeed" type="double" category="local">
+      <documentation>
+			Ladderspeed of the bot (on the ladder).
+		</documentation>
+   </property>
+   <property name="AccelRate" type="double" category="local">
+      <documentation>
+			Accelartion rate of this bot. How fast he accelerates.
+		</documentation>
+   </property>
+   <property name="JumpZ" type="double" category="local">
+      <documentation>
+			 Bot Jump's Z boost.
+		</documentation>
+   </property>
+   <property name="MultiJumpBoost" type="double" category="local">
+      <documentation>
+			Not used in GB.
+		</documentation>
+   </property>
+   <property name="MaxFallSpeed" type="double" category="local">
+      <documentation>
+			 Max fall speed of the bot.
+		</documentation>
+   </property>
+   <property name="DodgeSpeedFactor" type="double" category="local">
+      <documentation>
+			Dodge speed factor.
+		</documentation>
+   </property>
+   <property name="DodgeSpeedZ" type="double" category="local">
+      <documentation>
+			Dodge jump Z boost of the bot. 
+		</documentation>
+   </property>
+   <property name="AirControl" type="double" category="local">
+      <documentation>
+			How well can be the bot controlled in the air (ranges from 0 to 1).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

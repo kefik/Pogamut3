@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ITC" name="ItemCategory" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous/asynchronous message. Holds all attributes of item category.
+		There are many item categories in UT2004. This class holds attributes for all of them.
+		When some item category is exported just appropriate attributes are exported with it.
+	</documentation>
+   <interface name="ItemTyped">
+   		<classcategory name="all"/>
+   </interface>
+   <!-- List of all properties of this message. !--><property name="InventoryType" type="String" category="local">
+      <documentation>
+			By this class the item is represented in inventory. This is inventory type class.
+		</documentation>
+   </property>
+   <property name="PickupType" type="ItemType" category="local">
+      <documentation>
+			By this class the item is represented in the map. This is pickup type class.
+		</documentation>
+   </property>
+   <property name="ItemCategory" type="Category" category="local">
+      <documentation>
+			Category of the item. Can be "Weapon", "Adrenaline", "Ammo", "Armor", "Shield", "Health" or "Other".
+		</documentation>
+   </property>
+   <property name="Melee" type="boolean" category="local">
+      <documentation>
+		For Weapon. True if the weapon is melee weapon (close range).
+		</documentation>
+   </property>
+   <property name="Sniping" type="boolean" category="local">
+      <documentation>
+		For Weapon. True if the weapon is sniping weapon (long range).
+		</documentation>
+   </property>
+   <property name="UsesAltAmmo" type="boolean" category="local">
+      <documentation>
+		For Weapon. True if the weapon uses two separate ammos for primary and secondary firing mode.
+		</documentation>
+   </property>
+   <property name="PriFireModeType" type="String" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Type of the firing mode. If none, the weapon does not have this fireing mode.
+		</documentation>
+   </property>
+   <property name="PriSplashDamage" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If this mode does splash damage.
+		</documentation>
+   </property>
+   <property name="PriSplashJump" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If the splash damage of this firing mode can be used for increasing jump height.
+		</documentation>
+   </property>
+   <property name="PriRecomSplashDamage" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If the engine recommends to use this splash damage. TODO
+		</documentation>
+   </property>
+   <property name="PriTossed" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If the this mode is tossing something (projectile) out.
+		</documentation>
+   </property>
+   <property name="PriLeadTarget" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If this mode can lead the target. TODO
+		</documentation>
+   </property>
+   <property name="PriInstantHit" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If this mode does instant hits - weapon hits instantly - no flying time for bullets.
+		</documentation>
+   </property>
+   <property name="PriFireOnRelease" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If to fire this mode you need to press shooting button (start shooting) and then release it (stop shooting). Usually for charging weapons.
+		</documentation>
+   </property>
+   <property name="PriWaitForRelease" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If to fire this mode you need to stop pressing shooting button between two shots to shoot. You will fire once when pressing the button, then you need to press it again to fire again.
+		</documentation>
+   </property>
+   <property name="PriModeExclusive" type="boolean" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If this firing mode cannot be used at the same time with other firing mode of the weapon.
+		</documentation>
+   </property>
+   <property name="PriFireRate" type="double" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Fire rate in seconds. How fast the weapon fires if we are firing continuosly.
+		</documentation>
+   </property>
+   <property name="PriBotRefireRate" type="double" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Refire rate for bots in seconds. When we stop firing how long does it take to resume firing again.
+		</documentation>
+   </property>
+   <property name="PriAmmoPerFire" type="int" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Needed amount of ammo to fire this weapon mode once.
+		</documentation>
+   </property>
+   <property name="PriAmmoClipSize" type="int" category="local">
+      <documentation>
+			For Weapon, primary firing mode. If the weapon mode has clips, their size. TODO
+		</documentation>
+   </property>
+   <property name="PriAimError" type="double" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Aiming error of the weapon. 0 none, 1000 quite a bit.
+		</documentation>
+   </property>
+   <property name="PriSpread" type="double" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Double, rotator units. No relation to aim error.
+		</documentation>
+   </property>
+   <property name="PriSpreadStyle" type="int" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Type of spreading. TODO
+		</documentation>
+   </property>
+   <property name="PriFireCount" type="int" category="local">
+      <documentation>
+			For Weapon, primary firing mode. TODO
+		</documentation>
+   </property>
+   <property name="PriDamageAtten" type="double" category="local">
+      <documentation>
+			For Weapon, primary firing mode. Attenuate instant-hit/projectile damage by this multiplier.
+		</documentation>
+   </property>
+   <property name="PriAmmoType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Class of the ammo.
+		</documentation>
+   </property>
+   <property name="PriInitialAmount" type="int" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Amount of ammo we get if we pick up the item (weapon or ammo) for the first time.
+		</documentation>
+   </property>
+   <property name="PriMaxAmount" type="int" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Max amount of ammo of this type we can have in our inventory.
+		</documentation>
+   </property>
+   <property name="PriMaxRange" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. TODO
+		</documentation>
+   </property>
+   <property name="PriDamageType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Type of the damage. Maybe the same string for all damage.
+		</documentation>
+   </property>
+   <property name="PriArmorStops" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If the armor is effective against this damage type.
+		</documentation>
+   </property>
+   <property name="PriAlwaysGibs" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If this damage kills instantly.
+		</documentation>
+   </property>
+   <property name="PriSpecial" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If this damage is special. TODO
+		</documentation>
+   </property>
+   <property name="PriDetonatesGoop" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If this damage detonates goops. TODO
+		</documentation>
+   </property>
+   <property name="PriSuperWeapon" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If this damage is super weapon damage. Kills everyone even teammates.
+		</documentation>
+   </property>
+   <property name="PriExtraMomZ" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If this damage adds something to Panws momentum. TODO
+		</documentation>
+   </property>
+   <property name="PriProjType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Class of the projectile this ammo, weapon spawns. 
+		</documentation>
+   </property>
+   <property name="PriDamage" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. How much damage this projectile does.
+		</documentation>
+   </property>
+   <property name="PriDamageMax" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. How much maximum damage this projectile does.
+		</documentation>
+   </property>
+   <property name="PriDamageMin" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. How much minimum damage this projectile does.
+		</documentation>
+   </property>
+   <property name="PriSpeed" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Default projectile speed.
+		</documentation>
+   </property>
+   <property name="PriMaxSpeed" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Maximum projectile speed.
+		</documentation>
+   </property>
+   <property name="PriLifeSpan" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Maximum amount of time in seconds this projectile can survive in the environment.
+		</documentation>
+   </property>
+   <property name="PriDamageRadius" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If the projectile does splash damage, here is radius in ut units of the splash.
+		</documentation>
+   </property>
+   <property name="PriTossZ" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. If the projectile is tossed, here is velocity in Z direction of the toss. TODO
+		</documentation>
+   </property>
+   <property name="PriMaxEffectDistance" type="double" category="local"> 
+      <documentation>
+			For Ammo or for Weapon, primary firing mode. Maximum effective distance. TODO
+		</documentation>
+   </property>
+   <property name="SecFireModeType" type="String" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Type of the firing mode. If none, the weapon does not have this fireing mode.
+		</documentation>
+   </property>
+   <property name="SecSplashDamage" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If this mode does splash damage.
+		</documentation>
+   </property>
+   <property name="SecSplashJump" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If the splash damage of this firing mode can be used for increasing jump height.
+		</documentation>
+   </property>
+   <property name="SecRecomSplashDamage" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If the engine recommends to use this splash damage. TODO
+		</documentation>
+   </property>
+   <property name="SecTossed" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If the this mode is tossing something (projectile) out.
+		</documentation>
+   </property>
+   <property name="SecLeadTarget" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If this mode can lead the target. TODO
+		</documentation>
+   </property>
+   <property name="SecInstantHit" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If this mode does instant hits - weapon hits instantly - no flying time for bullets.
+		</documentation>
+   </property>
+   <property name="SecFireOnRelease" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If to fire this mode you need to press shooting button (start shooting) and then release it (stop shooting). Usually for charging weapons.
+		</documentation>
+   </property>
+   <property name="SecWaitForRelease" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If to fire this mode you need to stop pressing shooting button between two shots to shoot. You will fire once when pressing the button, then you need to press it again to fire again.
+		</documentation>
+   </property>
+   <property name="SecModeExclusive" type="boolean" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If this firing mode cannot be used at the same time with other firing mode of the weapon.
+		</documentation>
+   </property>
+   <property name="SecFireRate" type="double" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Fire rate in seconds.
+		</documentation>
+   </property>
+   <property name="SecBotRefireRate" type="double" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Refire rate for bots in seconds. TODO
+		</documentation>
+   </property>
+   <property name="SecAmmoPerFire" type="int" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Needed amount of ammo to fire this weapon mode once.
+		</documentation>
+   </property>
+   <property name="SecAmmoClipSize" type="int" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. If the weapon mode has clips, their size. TODO
+		</documentation>
+   </property>
+   <property name="SecAimError" type="double" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Aiming error of the weapon. 0 none, 1000 quite a bit.
+		</documentation>
+   </property>
+   <property name="SecSpread" type="double" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Double, rotator units. No relation to aim error.
+		</documentation>
+   </property>
+   <property name="SecSpreadStyle" type="int" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Type of spreading. TODO
+		</documentation>
+   </property>
+   <property name="SecFireCount" type="int" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. TODO
+		</documentation>
+   </property>
+   <property name="SecDamageAtten" type="double" category="local">
+      <documentation>
+			For Weapon, secondary firing mode. Attenuate instant-hit/projectile damage by this multiplier.
+		</documentation>
+   </property>
+   <property name="SecAmmoType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Class of the ammo.
+		</documentation>
+   </property>
+   <property name="SecInitialAmount" type="int" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Amount of ammo we get if we pick up the item (weapon or ammo) for the first time.
+		</documentation>
+   </property>
+   <property name="SecMaxAmount" type="int" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Max amount of ammo of this type we can have in our inventory.
+		</documentation>
+   </property>
+   <property name="SecMaxRange" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. TODO
+		</documentation>
+   </property>
+   <property name="SecDamageType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Type of the damage. Maybe the same string for all damage.
+		</documentation>
+   </property>
+   <property name="SecArmorStops" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If the armor is effective against this damage type.
+		</documentation>
+   </property>
+   <property name="SecAlwaysGibs" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If this damage kills instantly.
+		</documentation>
+   </property>
+   <property name="SecSpecial" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If this damage is special. TODO
+		</documentation>
+   </property>
+   <property name="SecDetonatesGoop" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If this damage detonates goops. TODO
+		</documentation>
+   </property>
+   <property name="SecSuperWeapon" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If this damage is super weapon damage. Kills everyone even teammates.
+		</documentation>
+   </property>
+   <property name="SecExtraMomZ" type="boolean" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If this damage adds something to Pawns momentum. TODO
+		</documentation>
+   </property>
+   <property name="SecProjType" type="String" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Class of the projectile this ammo, weapon spawns. 
+		</documentation>
+   </property>
+   <property name="SecDamage" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. How much damage this projectile does.
+		</documentation>
+   </property>
+   <property name="SecDamageMax" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. How much maximum damage this projectile does.
+		</documentation>
+   </property>
+   <property name="SecDamageMin" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. How much minimum damage this projectile does.
+		</documentation>
+   </property>
+   <property name="SecSpeed" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Default projectile speed.
+		</documentation>
+   </property>
+   <property name="SecMaxSpeed" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Maximum projectile speed.
+		</documentation>
+   </property>
+   <property name="SecLifeSpan" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Maximum amount of time in seconds this projectile can survive in the environment.
+		</documentation>
+   </property>
+   <property name="SecDamageRadius" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If the projectile does splash damage, here is radius in ut units of the splash.
+		</documentation>
+   </property>
+   <property name="SecTossZ" type="double" category="local">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. If the projectile is tossed, here is velocity in Z direction of the toss. TODO
+		</documentation>
+   </property>
+   <property name="SecMaxEffectDistance" type="double">
+      <documentation>
+			For Ammo or for Weapon, secondary firing mode. Maximum effective distance. TODO
+		</documentation>
+   </property>
+   <property name="Amount" type="int" category="local">
+      <documentation>
+			If this item is some ammo or health pack, here we can find
+			out how much of the attribute this item will add.
+		</documentation>
+   </property>
+   <property name="SuperHeal" type="boolean" category="local">
+      <documentation>
+			If this item is health. True if super health.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   <extra>
+      <code>
+         <java>
+         	<javapart>
+         		<classcategory name="all"/>
+         	</javapart>
+        	@Override
+			public ItemType getType() {
+				return getPickupType();
+			}
+		</java>
+      </code>
+   </extra>
+</messageobject>

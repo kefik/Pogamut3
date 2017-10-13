@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PASSWDOK" name="PasswdOk" type="Batch">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <documentation>
+        Tells you that the passed password is OK.
+    </documentation>
+   <extra>
+      <code/>
+   </extra>
+</messageobject>

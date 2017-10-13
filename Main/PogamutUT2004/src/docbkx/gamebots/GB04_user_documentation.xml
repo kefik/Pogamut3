@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="docbook2wiki_gb.xsl"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>GameBots2004 user documentation and network protocol</title>
+
+    <author>
+      <personname><firstname>Michal</firstname>
+      <surname>Bída</surname></personname>
+
+      <affiliation>
+        <orgname>Charles University in Prague, Faculty of Mathematics and
+        Physics</orgname>
+      </affiliation>
+
+      <contrib>Author of the text</contrib>
+
+      <email>michal.bida@seznam.cz</email>
+    </author>
+
+    <pubdate></pubdate>
+
+    <org>
+      <orgname>AMIS group</orgname>
+    </org>
+  </info>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <para>GameBots are a modification (mod) for the game Unreal Tournament 2004 (UT04). Their main purpose is to make rich environment of UT04 available for virtual agents development. GameBots provide network TCP/IP text protocol for getting information about environment and controlling in-game avatars. GameBots are programmed in UnrealScript scripting language – programming language that was created and used to program UT04 game mechanics (almost everything except the graphical engine). UnrealScipt resembles Java or C programming language.</para>
+  </chapter>
+  
+  <chapter>
+    <title>GameBots history and branches</title>
+
+    <para>GameBots project was started by Andrew N. Marshal and Gal Kaminka at the University of Southern California's Information Sciences Institute. Their GameBots used older version of the game – Unreal Tournament (2000). The goal was to enable the use of the environment of the game Unreal Tournament for research in artificial intelligence. </para>
+   <para>GameBots project was continued by Joe Manojlovich, Tim Garwood and Jessica Bayliss from RIT university. They ported GameBots project to newer version of the game Unreal Tournament – Unreal Tournament 2004.</para>
+   <para>In the meantime, Pogamut GameBots branch firstly emerged debugging the old Marshal, Kaminka GameBots version. Later, Pogamut GameBots were ported to Unreal Tournament 2004 as well. Pogamut GameBots went through major code refactorization and debugging, adding new features, correcting bugs and extending the text protocol. As far as we know Pogamut GameBots branch is the only one still developed at the time of writing.</para>
+  </chapter>  
+
+  <chapter>
+    <title>GameBots text protocol</title>
+<para>GameBots text protocol features commands and messages. All commands and messages share common text format. Example of one GameBots messages is:</para>
+    <para><code>PLAYER {Name GoodBot} {Location 1400,500,0} {Rotation 32000,0,0} {Health 100} {Height 170.59} {IsHuman False}</code> </para>
+<para>The first characters up to first space (excluding it) are the message type. Then enclosed by a pair of vinculums ( characters “{“ and “}” ) come attribute pairs. Attribute pair consist of attribute name and attribute value. Attribute name is all characters after the left vinculum (character “{“) up to the first space (excluding the space). Attribute value is all characters after the first space up to the right vinculum (character “}”). This means attribute values may contain spaces. Attribute pairs should be always divided by a space. </para>
+<para>So the correct parsing of our example above would be:</para>
+    <itemizedlist>
+      <listitem>
+        <para>Message type – PLAYER </para>
+      </listitem>
+
+      <listitem>
+        <para>Attribute 1 – Name of the attribute is “Name”. Value of the attribute is “GoodBot”.</para>
+      </listitem>
+
+      <listitem>
+        <para>Attribute 2 – Name of the attribute is “Location”. Value of the attribute is “1400,500,0”.</para>
+      </listitem>
+      <listitem>
+        <para>Attribute 3 – Name of the attribute is “Rotation”. Value of the attribute is “32000,0,0”.</para>
+      </listitem>
+      <listitem>
+        <para>Attribute 4 – Name of the attribute is “Health”. Value of the attribute is “100”.</para>
+      </listitem>
+      <listitem>
+        <para>Attribute 5 – Name of the attribute is “Height”. Value of the attribute is “170.69”. </para>
+      </listitem>
+      <listitem>
+        <para>Attribute 6 – Name of the attribute is “IsHuman”. Value of the attribute is “False”. </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Number of attributes is not limited for messages. For commands the limit exists – for Pogamut GameBots it is 32.</para>
+    
+    
+      <section>
+    <title>Data types</title>
+
+    <para>Data types used by GameBots are UnrealScript common data structures. The most used types in GameBots are intergers or real numbers (attributes Health and Height), strings (attribute GoodBot), booleans (attribute IsHuman) and vector and angle structures (attributes Location and Rotation). </para>
+
+    <para>For measuring position and angles in UT04 so called unreal units were defined. One unreal unit corresponds roughly to 1 cm. For angles full rotation (by 360 degrees) corresponds to 65535 rotation unreal units. To convert to radians simply divide the number by 65535 and multiply by 2 * pi. </para>
+
+    <para>Vector structures are usually used to define positions (attribute Location in our example). Vector is a triple defining x,y and z coordinate in UT04 environment. Rotation structures are used to measure rotation of the objects (attribute Rotation in our example). Rotation structure is also a triple consisting of pitch, yaw and roll. Pitch is up and down, yaw is side to side and roll is the equivalent of doing a cartwheel.  </para>
+  </section>
+  </chapter>
+
+
+
+  <chapter>
+    <title>GameBots connections</title>
+
+    <para>There are three types of connections in GameBots. </para>
+     <itemizedlist>   
+      <listitem>
+        <para>Bot connection - is used for creating and controlling a bot in the environment and at the same time for receiving information about bot surroundings (things or players he sees and his inner state – health, armor, team and etc.).</para>
+      </listitem>
+
+      <listitem>
+        <para>Control connection - is used to control the game mechanics. It may pause the game, change the map, kick the players and more. </para>
+      </listitem>
+      <listitem>
+        <para>Observer connection - is used to observe bots or players in the game. Information about what player or bot does will be exported through standard GameBots messages.</para>
+      </listitem>
+    </itemizedlist>
+    
+
+<para>To initiate the communication with GameBots three steps needs to be done. They are as follows.</para>
+    
+    <itemizedlist>   
+      <listitem>
+        <para>Start the UT04 server with GameBots on. </para>
+      </listitem>
+
+      <listitem>
+        <para>Connect to UT04 through TCP/IP to port 3000 (default port for bot connection), 3001 (default port for control connection) or 3002 (default port for observer connection).</para>
+      </listitem>
+      <listitem>
+        <para>Initiate the communication with GameBots by the handshake (differs a little for bot, control and observer connection). </para>
+      </listitem>
+    </itemizedlist>
+    
+    <para>First we will describe a bit more three GameBots connection types and then we will go through the three steps needed to set up and connect to a GameBots server.</para>
+    
+  <section>
+    <title>GameBots connection types</title>
+
+    <para><guimenuitem>Bot connection.</guimenuitem> Bot connection is used for creating and controlling a bot in the environment and at the same time for receiving information about bot surroundings (things or players he sees and his inner state – health, armor, team and etc.).
+    </para>
+    <para> After the handshake server starts to send synchronous batch messages (standard synchronous batch enveloped by BEG and END messages) with information about what the bot can see in the environement (players - PLR, items - INV, navigation points - NAV, movers - MOV, etc.)
+    </para>
+    <para>Default port is 3000.</para>
+    
+    <para><guimenuitem>Control connection.</guimenuitem> Control connection (or control server connection) is used to control the game mechanics. It may pause the game, change the map, kick the players and more. 
+    </para>
+    <para> After the handshake server will send ALIVE message every second. If STARTPLRS message is received, the server starts to send a synchronous batch containing information about all players on the server (standard synchronous batch enveloped by BEG and END messages).</para>
+    <para> Note that for control server to work a variable bAllowControlServer=true needs to be set in GameBots2004.ini file (by default control server is on). Default port is 3001.
+    </para>
+    
+    <para><guimenuitem>Observer connection.</guimenuitem> Observer connection (or observing connection) is used to observe bots or players in the game. Information about what player or bot does will be exported through standard GameBots messages.
+    </para>
+    <para> To start observing a player command INIT {Name PlayerName} or INIT {Id PlayerUnrealId} needs to be sent. After that the server starts to send synchronous batch messages (enveloped by BEG and END messages) with information about what observed player or bot can see in the environement (messages PLR, INV, NAV...).</para>
+    <para> To stop observing a player command DISC needs to be sent. Or another INIT command to observe a different player will cease to observe current player and start to observe a different one. Message QUIT quits the connection. </para>
+    <para> Note that for observer server to work a variable bAllowObservingServer=true needs to be set in GameBots2004.ini file (by default observer server is on). Default port is 3002.
+    </para>
+  </section>
+    
+  <section>
+    <title>Starting the GameBots server</title>
+
+    <para>There are two ways how to start the GameBots server. We can start a dedicated server through a command line or to start GameBots server through UT04 GUI. The UT04 dedicated server may be downloaded and used for free. Also it is a part of the UT04 game.</para>
+
+    <para>To start GameBots dedicated server through command line:</para>
+    
+    <itemizedlist>   
+      <listitem>
+        <para>Access the command line. </para>
+      </listitem>
+
+      <listitem>
+        <para>Type <code>..\UT2004\System\ucc server DM-TrainingDay?game=GameBots2004.BotDeathMatch</code> </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>This will start dedicated server with GameBots DeathMatch game type on. The map used will be DM-TrainingDay.</para>
+
+<para>To start GameBots server through UT04 GUI:</para>
+    <itemizedlist>   
+      <listitem>
+        <para>Run the game UT04 by icon or by UT2004/System/ut2004.exe </para>
+      </listitem>
+      <listitem>
+        <para>Click “Host Game” </para>
+      </listitem>
+      <listitem>
+        <para>Select “GameBots BotDeathMatch” game type in the GameType tab.  </para>
+      </listitem>
+      <listitem>
+        <para>Select the map you wish to use in the Map tab.  </para>
+      </listitem>
+      <listitem>
+        <para>Click “Listen” button located in lower left part of the screen.</para>
+      </listitem>      
+    </itemizedlist>
+
+    <para><emphasis role="bold">Optional.</emphasis> When running the server through command line you may add GameBots mutators by adding parameters to command line command:</para>
+    <para><code>..\UT2004\System\ucc server DM-TrainingDay? game=GameBots2004.BotDeathMatch?mutator=GameBots2004.PathMarkerMutator,GameBots2004.GBHudMutator</code></para>
+    <para>When running the server through UT04 GUI you can add GameBots mutator in the mutator tab before you click the listen button.</para>
+    <para>More about mutators in GameBots debug features chapter.</para>
+    </section>
+    
+   <section>
+    <title>Connecting to the GameBots server</title>
+
+    <para>Any program that can use telnet through TCP/IP may connect to GameBots (even Putty). To connect to GameBots just fill in correct IP address and port (3000 for bot connection, 3001 for control connection, 3002 for observer connection).</para>   
+    </section>
+    
+    <section>
+    <title>Initiate the communication with GameBots (GameBots handshake)</title>
+
+    <para>After successful connection to GameBots server to start the communication with GameBots the client needs to pass the handshake phase. Handshake differs for connections and also if the server is password protected. 
+Below the handshake for bot, control and observer connection will be shown also with optional password protection (Figures 1,2,3). After that order of info messages exported after ready command will be outlined. </para>  
+
+        <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/bot_handshake.jpg"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>Fig. 1. Bot connection handshake.</para>
+          </caption>
+        </mediaobject></para>
+        
+        <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/control_handshake.jpg"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>Fig. 2. Control connection handshake.</para>
+          </caption>
+        </mediaobject></para>
+        
+        <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/password_protection.jpg"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>Fig. 3. Password protection.</para>
+          </caption>
+        </mediaobject></para>
+          <para> For Observer connection the init phase works as follows:
+          </para>
+     <itemizedlist>   
+      <listitem>
+        <para>---------&gt; HELLO_OBSERVER </para>
+      </listitem>
+      <listitem>
+        <para>&lt;--------- READY </para>
+      </listitem>
+      <listitem>
+        <para>&lt;---------&gt; (*) PASSWORD PROTECTION   </para>
+      </listitem>
+      <listitem>
+        <para>---------&gt; NFO (observing server is sending only NFO message as a response to READY)</para>
+      </listitem>             
+      <listitem>
+        <para>&lt;--------- INIT {Name PlayerName} (or "INIT {Id UnrealId}" ) </para>
+      </listitem>      
+
+    </itemizedlist>
+    
+    <para> The info batch messages will be exported in this order after READY command was received (however, only thosed allowed in GameBots2004.ini file will be exported): </para>
+     <itemizedlist>   
+      <listitem>
+        <para>Game info message. (NFO message)</para>
+      </listitem>
+      <listitem>
+        <para>Mutators batch info messages. (SMUT, MUT, EMUT messages) </para>
+      </listitem>
+      <listitem>
+        <para>Item categories messages. (SITC, ITC, EITC messages)</para>
+      </listitem>
+      <listitem>
+        <para>NavPoints batch info messages. (SNAV, NAV, ENAV messages) </para>
+      </listitem>
+      <listitem>
+        <para>Item batch info messages. (SINV, IINV, EINV messages)</para>
+      </listitem>             
+      <listitem>
+        <para>Player batch info messages. (SPLR, PLR, EPLR messages) </para>
+      </listitem>      
+
+    </itemizedlist>
+    
+    </section>
+  </chapter>
+
+
+  <chapter>
+    <title>Types of messages and commands</title>
+
+    <para>GameBots features commands and messages. Messages are divided into three categories – synchronous messages, asynchronous messages and batch messages. </para>
+
+    <section>
+      <title>Synchronous messages</title>
+
+      <para>Synchronous messages come in a batch enclosed by messages BEG and END. The interval of the batch may be configured in the GameBots. This synchronous batch contains information about the bot surroundings and about bot inner state (health, armor, current weapon, etc.) at the time given by time stamp of BEG and END messages.</para>
+    </section>
+
+    <section>
+      <title>Asynchronous messages</title>
+
+      <para>These messages can come at any time (although they can never appear inside synchronous batch). They usually refer to some special event that happened in the environment such as running to the wall or hearing some noise. Also they can be a response to some request command. For example GETPATH command requests message containing information about path from bot current location to desired location.</para>
+    </section>
+
+    <section>
+      <title>Batch info messages</title>
+
+      <para>Usually these are asynchronous messages. These messages comes in a batch enclosed by SMSG and EMSG messages (where MSG identifier changes according to the message). Batch messages are usually large – they contain information about navigation grid, all items on the map and other things. Batch messages are usually used for exporting information where we are not sure how big the information will be (hence the use of start and end message). Example of inventory batch message:</para>
+      
+         <simplelist>
+      <member>SINV</member>
+
+      <member>INV {…} </member>
+
+      <member>INV {…}</member>
+
+      <member>INV {…}</member>
+
+      <member>EINV</member>
+    </simplelist>
+    </section>
+
+    <section>
+      <title>Commands</title>
+
+      <para>There are two types of commands - the Control server commands and the Bot commands. Control server commands are used to control the game mechanics, getting additional info about current game and setting bots and players in the game (kicking them, etc.). Bot commands are used to control  and configure the bot. Both of these types of commands are formated like the server messages – a command name, followed by zero or more arguments with values, each surrounded by a pair of vinculums ("{}") and separated by spaces. Example: <code> MOVE {Location 2040,1230,0} </code>.</para>
+
+      <para>This command causes the bot to run to supported location. Note that GB commands may interrupt themselves. Another MOVE command sent after our example command would cease moving to location 2040, 1230, 0 and caused the bot to move to the location supported in it. Some commands can be executed in parallel – e.g. MOVE and JUMP commands. </para>
+
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>List of all GameBots messages and commands</title>
+
+    <para>In this chapter all available GB messages and commands will be
+    listed. Currently there are more than one GameBots packages. Some of the commands and messages are not implemented in all packages. The list of packages that support message or command is after message name. Default package for UnrealTournament 2004 is GameBots2004 and default package for UnrealEngine2 Runtime is GameBotsUE2.</para>
+    <para>Also note the "Connections" - "Bot" means the command or message is supported for bot connections, "Observer" for observer connections and "Server" for control server connection (or shortly control connection). "Observer" connection is not supported in GameBotsUE2 yet.</para>
+    <para>Message, commands and attribute names are case insensitive. However message and command names are written with upper case letters and attribute names should start with upper case letter.</para>
+
+    <xi:include href="../../../target/gbdocbook/GBDocumentation.xml">
+      <xi:fallback>
+        <para>
+          <emphasis>FIXME: Unable to find the file with descrition of
+          messages. Make sure that you have checkedout the whole project.
+          don't forget to execute ant task "build-gb-docbook" in the build
+          script of PogamutCore.</emphasis>
+        </para>
+      </xi:fallback>
+    </xi:include>
+  </chapter>
+
+  <chapter>
+    <title>GameBots debug features</title>
+
+    <para>GameBots feature several debug tools accessible directly in the environment of UT04. These debug features (Fig. 4) are:</para>
+    
+        <simplelist>
+      <member>Visualization of navigation points on the map together with the visualisation of the reachability grid on the map – gives a quick overview of a bot’s navigation capabilities; places without navigation points are usually unreachable (see coloured oriented arrows (Point 1))</member>
+
+      <member>A list of all avatars in the world – serves as a quick overview of avatars, both computer driven as well as human driven, present in the world (Point 4).</member>
+
+      <member>Visualization of individual avatars on the map – allows a user to see avatars even through walls, assists in finding a desired bot in the environment quickly (Point 2)</member>
+
+      <member>Visualization of a bot’s trace lines – assists in development of steering algorithms and algorithms of low-level sensation1; green colour indicates the ray does not collide with anything, red indicates a collision (Point 4)</member>
+
+      <member>Visualization of the bot field of the view – helps to identify objects the bot can see; the yellow lines enclose the field of view, the white line indicates the bot’s heading (Point 5) </member>
+
+      <member>Visualization of a bot’s intended path – helps with debugging of the bot’s navigation (Point 6, blue lines)</member>
+
+      <member>Visualization of a bot’s health – helps with debugging bots for the death-match game mode (Point 7, the health bar)</member>
+    </simplelist>
+    
+       <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/bot_debug.jpg"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>Fig. 4. GameBots debug features.</para>
+          </caption>
+        </mediaobject></para>
+    
+<para>For these features to be active, user has to run the GameBots server with certain mutators on. The first feature requires GBPathMarkerMutator to be on. The rest of the features requires GBHudMutator to be on (this mutator should be on by default). To run the game with mutators on, user needs to supply correct arguments to command line e.g.:</para>
+    <para><code>..\UT2004\System\ucc server DM-TrainingDay?game=GameBots2004.BotDeathMatch?mutator=GameBots2004.PathMarkerMutator,GameBots2004.GBHudMutator</code></para>
+
+    <para>This will run GameBots deathmatch game type on the map DM-TrainingDay with both mutators on. The help containing key shortcuts that enables and disables debug features is accessible by pressing CTRL + H key. </para>
+    <para>Alternatively you can select these mutators in the mutators page when running the GameBots server through UT04 GUI. </para>
+  </chapter>
+    
+  <chapter>
+    <title>GameBots configuration</title>
+    <para>There are three ways how to configure GameBots server. First is to support additional arguments
+when running the server through command line. Second is to change the information in GameBots
+ini file and third way is to configure GameBots server online through control connection. This chapter will cover first two ways as the third way is covered by a list of all available commands in previous sections. </para>
+    <section>
+    <title>Command line parameters</title>
+    <para>The syntax of command line parameters is as follows:</para>
+    <para><code>..\UT2004\System\ucc server Name_of_desired_map?game=GameBots_gametype?mutator=mutator1,mutator2,mutator3?variable1=value1?variable2=value2?variable3=value3</code></para>
+    <para>Some usefull variables that we can substitute for variable1, variable2, etc. Are below:</para>
+    
+        <itemizedlist>
+      <listitem>
+        <para>Mutator variable - we select here which mutators we want to run
+        in our game. If we want to use multiple mutators at once, we will use
+        "," as delimiter (eg. mutator=GameBots2004.GBHudMutator,GameBots2004.PathMarkerMutator).</para>
+      </listitem>
+
+      <listitem>
+        <para>TimeLimit – Here we set how long will the game last until the map will change in minutes. Map change cause the GameBots to be temporary disconnected. After the map change user can connect to GameBots again on a new map (the sequence of the maps may be specified by the server map list).</para>
+      </listitem>
+
+      <listitem>
+        <para>GoalScore – Sets the score threshold. When this threshold is reached, the map change will be triggered and the bot or player who reached this threshold will win the game. Usually you can increase your score by destroying other players (getting „frags“) or by fulfilling the game objectives that may differ for the various game types.</para>
+      </listitem>
+
+      <listitem>
+        <para>BotServerPort – The bot server will listen on the selected port for connections. Be carefull, if the port is taken by another process or another dedicated server instance, you will not be able to connect to your server instance. The port range allowed in GameBots is 2000 - 32000. </para>
+      </listitem>
+
+      <listitem>
+        <para>ControlServerPort – The same as above, except the port is used for control server connections. Always set the bot, the control and the observer server port to a different variable. </para>
+      </listitem>
+      
+      <listitem>
+        <para>ObservingServerPort – The same as above, except the port is used for observer server connections. Always set the bot, the control and the observer server port to a different variable. </para>
+      </listitem>
+
+      <listitem>
+        <para>bRandomPorts variable - can be set to True or False (eg.
+        bRandomPorts=True). If set to true random free ports for bot
+        connection, control connection and observer connection will be picked up (nevertheless the
+        other settings). These ports will be displayed in the server console
+        window after the beginning of the game.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>So, the command that would run GameBots deathmatch game type on the map DM-Flux2 with both GameBots mutators on looks as follows. It will also set time limit to 20 minutes and goal score to 20 frags. The server will listen on the port 3024 for bot connections and on the port 3025 for control connections. Result:</para>
+
+    <para><code>..\UT2004\System\ucc server DM-Flux2?game=GameBots2004.BotDeathMatch?mutator=GameBots2004.PathMarkerMutator,GameBots2004.GBHudMutator?TimeLimit=20?GoalScore=20?BotServerPort=3024?ControlServerPort=3025</code></para>
+
+    <para>Other command that would pick random ports looks like this:</para>
+
+    <para><code>..\UT2004\System\ucc server DM-Flux2?game=GameBots2004.BotDeathMatch?mutator=GameBots2004.PathMarkerMutator,GameBots2004.GBHudMutator?TimeLimit=20?GoalScore=20?bRandomPorts=True</code></para>
+    </section>
+
+
+  <section>
+    <title>GameBots INI file</title>
+
+    <para>There is an ini file for GameBots that is in UT2004\System\ directory (GameBots2004.ini). In the ini file various parameters affecting the bot, the server and the game mechanics may be added. The ini file is separated by tags („[ExampleTag]“) to the parts that always configure the class specified in the tag. We will go through the most important ones below. </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>[GameBots2004.RemoteBot]
+Here we configure the variables affecting the bot (agent) itself (speed, respawning, debuging features, etc.). Some usefull variables are below:</para>
+
+        <para>bPerfectLocationAim=false – If the bot should have perfect aim also for location targets and stationary targets. If set to true bot accuracy setting will be used just when aiming to another bot or player (specified in the SHOOT command by „Target“ variable).</para>
+
+        <para>bAutoSpawn=true – If the bot will be automatically respawned after death.</para>
+
+        <para>bDrawTraceLines=False – Wheter the rays visualizing automatic ray tracing should be spawned.</para>
+      </listitem>
+
+      <listitem>
+        <para>[GameBots2004.BotConnection]
+Here we set if the game will be pausable for bots, if they will be allowed to cheat and also delay between two synchronous message batches. Usefull parameters:</para>
+
+        <para>bSynchronousMessagesOff=false - boolean. Enables disables
+        synchronous messages for the bots.</para>
+
+        <para>visionTime=0.250 - float. Delay between two synchronous batches
+        in seconds.</para>
+
+        <para>bAllowCheats=True - boolean. If the bots are allowed to cheat -
+        that means if they can spawn items for themselves by ADDINV command
+        and if they can be set to be invulnerable.</para>
+
+        <para>bAllowPause=true - boolean. If the bots are allowed to pause the
+        game. </para>
+        
+        <para>bExport...=true - boolean. Sets which batch messages will be exported as a response to the READY command (Mutators, NavPoints, Inventory, GameInfo, Movers, etc.). </para>
+      </listitem>
+
+      <listitem>
+        <para>[GameBots2004.ControlConnection]
+This configures features of control connection – connection that controls the game mechanics – changing the map, kicking the players, etc. </para>
+        <para>bExport...=true - boolean. Sets which batch messages will be exported as a response to the READY command (Mutators, NavPoints, Inventory, GameInfo, Movers, etc.). </para>
+
+      </listitem>
+
+      <listitem>
+        <para>[GameBots2004.BotDeathMatch]
+Generally GameBots2004.DesiredGameTypeToConfigure. Here we configure desired game type. We can set time limit here, maximum number of players, goal score, etc. bAllowControlServer enables or disables possibility of control connections. Here we also set the ports on which will run bot server and control server. Usefull parameter:</para>
+        <para>bAllowControlServer=True - boolean. If the control server will
+        be allowed or not .</para>
+        
+        <para>BotServerPort=3000 – sets the port for bot connections. </para>
+        <para>ControlServerPort=3001 – sets the port for control server connections.</para>
+        <para>ObservingServerPort=3002 – sets the port for observer connections</para>        
+
+        <para>bRandomPorts=false - boolean. If we want to use random ports
+        (used ports will be displayed in the server console window screen).
+        This will override set ports. </para>
+
+        <para>TimeLimit=120 - integer. Time limit how long before the game
+        ends in minutes. </para>
+
+        <para>GoalScore=25 - integer. How many points player needs to score to
+        win (game will end).</para>
+        
+        <para>MaxSkill=7 – Sets the max available skill level for GameBots and epic bots on the server. Setting here holds for all derived game classes. Ranges from 0 (excluded) to 7.</para>
+        
+      </listitem>
+      
+      <listitem>
+        <para>[GameBots2004.GBHUD]
+Configures which features of GBHUD should be on and off by default and some default settings.</para>
+
+        <para>NavPointBeaconDrawDistance=500 – Maximum distance of navigation point from the player for which we will be drawing its name.</para>
+
+        <para>DisplayPlayerPositions=1 – Display additional debug information for the bots. Set to 0, 1 or 2. 0 means no additional information, 1 means player location, 2 means player location, focus and field of view.</para>
+
+        <para>b...=true/false – various booleans setting GBHUD features.</para>
+      </listitem>
+      
+      <listitem>
+        <para>[GameBots2004.BotServer and GameBots2004.ControlServer]
+Here we set maximum number of connections that we will accept for control connections and for remote bots. Usefull parameter:</para>
+
+        <para>MaxConnections=10 - integer. Maximum connections to the
+        server.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>In GameBots ini file you find much more parameters affecting the game. They are usually commented. </para>
+  </section>
+  </chapter>
+</book>

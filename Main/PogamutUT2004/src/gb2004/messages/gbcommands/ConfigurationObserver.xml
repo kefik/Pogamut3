@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CONF" extends="CommandMessage" name="ConfigurationObserver"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Configures various attributes of the observer. You can include several of the parameters.
+		The state of options you don't specify will remain unchanged.
+    </documentation>
+   <property name="UpdateTime" type="double">
+      <documentation>
+			The frequency (in seconds) you will receive updates from the observer.
+		</documentation>
+   </property>
+   <property name="Update" type="double">
+      <documentation>
+			The frequency (in seconds) you will receive updates from the observer. Same as UpdateTime.
+		</documentation>
+   </property>
+   <property name="Game" type="boolean">
+      <documentation>
+			Whether to send game-related messages with every update.
+			Affects the following messages: NFO, PLR.
+		</documentation>
+   </property>
+   <property name="Self" type="boolean">
+      <documentation>
+			Whether to send messages about the observed player with every update.
+			Affects the following messages: SLF, MYINV.
+		</documentation>
+   </property>
+   <property name="See" type="boolean">
+      <documentation>
+			Whether to send messages about what the observed player sees with every update.
+			Affects the following messages: PLR, INV, NAV, MOV, PRJ, VEH.
+		</documentation>
+   </property>
+   <property name="Special" type="boolean">
+      <documentation>
+			Whether to send messages about special objects on the map with every update.
+			Affects the following messages: FLG, BOM, DOM.
+		</documentation>
+   </property>
+   <property name="All" type="boolean">
+      <documentation>
+			Toggles sending all messages with every update.
+            You can still receive the messages by asking for them using the commands GAME, SELF, SEE, SPECIAL and ALL.
+		</documentation>
+   </property>
+   <property name="Async" type="boolean">
+      <documentation>
+			Whether to send asynchronous messages, such as HIT or AIN.
+            Note that if you turn this off you will not be able to receive these messages at all.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

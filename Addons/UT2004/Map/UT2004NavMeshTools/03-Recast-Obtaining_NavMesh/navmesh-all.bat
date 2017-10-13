@@ -1,0 +1,1 @@
+FOR /f %%f in ('dir /b "Meshes\*.obj"') DO call navmesh-one.bat "%%f"  

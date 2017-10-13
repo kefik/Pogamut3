@@ -1,0 +1,9 @@
+(
+    (AP testAP vars($who="everyone", $why="who_cares", $when="anytime", $method="brutal")
+        (murder death kill)
+    )
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testCompetence)))
+    )
+)
+

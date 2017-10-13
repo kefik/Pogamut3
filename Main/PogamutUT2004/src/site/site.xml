@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="PogamutUT2004">
+    <bannerLeft>
+        <name>Maven</name>
+        <src>http://maven.apache.org/images/apache-maven-project.png</src>
+        <href>http://maven.apache.org/</href>
+    </bannerLeft>
+    <bannerRight>
+        <src>http://maven.apache.org/images/maven-small.gif</src>
+    </bannerRight>
+    <body>
+        <links>
+            <item name="Pogamut homepage" href="http://pogamut.cuni.cz/" />
+        </links>
+        <menu name="Documentation">
+            <item name="Javadoc" href="apidocs/index.html"/>
+            <item name="Tutorials" href="tutorials/TutorialsBook.html"/>
+            <item name="GameBots" href="gamebots/GB04_user_documentation.html"/>
+        </menu>
+   
+        <menu ref="reports"/>
+    </body>
+</project>

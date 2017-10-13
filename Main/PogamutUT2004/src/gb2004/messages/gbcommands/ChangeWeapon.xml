@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CHANGEWEAPON" extends="CommandMessage" name="ChangeWeapon"
+               type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>Switch the bots weapon to another.</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			Unique Id of weapon to switch to. If you just send "Best" as
+			Id, the server will pick your best weapon that still has
+			ammo for you. Obtain Unique Id's from AIN messages. Be
+			carefull, the weapon Id in bots inventory is different from
+			the Ids of weapons that are lying in the map!
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

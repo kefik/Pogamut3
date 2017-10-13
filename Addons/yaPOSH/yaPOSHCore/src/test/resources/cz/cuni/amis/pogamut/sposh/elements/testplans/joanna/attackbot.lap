@@ -1,0 +1,93 @@
+; Name: defendbot.lap
+; Derived from: bodbotattack.lap by Sam Partington (see plan archive directory)
+; Created: 20/08/2005 by Stephen Couzens
+
+
+(
+  (C wander-around ;goal was see_player
+    (elements
+      ((stuck (trigger ((is_stuck))) avoid))
+      ((walk-around (trigger ((is_rotating 0))) walk))
+    )
+  )
+
+  (AP avoid (stop_bot rotate then-walk))
+
+  (C then-walk
+    (elements
+      ((try-walk (trigger ((is_rotating 0))) walk))
+    )
+  )
+
+  (C get-to-enemy-base 
+    (elements
+      (
+        (check-immediate-vicinity (trigger((too_close_for_path))) big_rotate 2)
+        (run-to-base (trigger((know_enemy_base_pos))) to_enemy_base)
+        (find-base (trigger((reachable_nav_point))) walk_to_nav_point)
+        (find-nav-point (trigger((succeed))) rotate 10)
+        (wander-base (trigger((reachable_nav_point False))) wander-around)
+      )
+    )
+  )
+
+  (C go-to-own-base
+    (elements
+      (
+        (check-immediate-vicinity (trigger((too_close_for_path))) big_rotate 2)
+        (run-to-own-flag (trigger((our_flag_reachable))) to_own_flag)
+        (run-to-own-base (trigger((know_own_base_pos))) to_own_base)
+        (find-base (trigger((reachable_nav_point))) walk_to_nav_point)
+        (find-nav-point (trigger((succeed))) rotate 10)
+        (wander-base (trigger((reachable_nav_point False))) wander-around)
+      )
+    )
+  )
+
+
+  (AP go-to-own-flag (to_own_flag))
+  (AP go-to-enemy-flag (to_enemy_flag))
+
+  ; may need a better goal, but timeout should do it for now
+  (C respond-to-attack
+    (elements
+      (
+        (attack-visible-attacker (trigger ((taken_damage_from_specific_player))) respond-to-visible-attacker)
+        (find-attacker (trigger ((succeed))) try-to-find-attacker)
+      )
+    )
+  )
+
+  (AP respond-to-visible-attacker (set_attacker face_attacker shoot_attacker))
+
+  ; may need a better goal, but timeout should do it for now
+  (C try-to-find-attacker
+    (elements
+      (
+        (found-attacker (trigger ((see_enemy))) respond-to-visible-attacker)
+        (spin (trigger ((succeed))) big_rotate 1)
+      )
+    )
+  )
+
+  (AP attack-enemy-carrying-our-flag (shoot_enemy_carrying_our_flag run_to_enemy_carrying_our_flag)) ;not sure which ordering here is best
+  (AP get-medkit (runto_medical_kit))
+  (AP get-weapon (runto_weapon))
+
+  (RDC life (goal ((fail)))
+      (drives
+        ((pickup-our-flag-from-ground (trigger ((our_flag_on_ground))) go-to-own-flag)) ;(our_flag_reachable) was in the trigger but it never seemed to fire
+        ((pickup-enemy-flag-from-ground (trigger ((enemy_flag_on_ground)(have_enemy_flag 0))) go-to-enemy-flag)) ;need to do something with (enemy_flag_reachable)
+        ((pickup-medkit-as-health-low (trigger ((see_reachable_medical_kit) (own_health_level 30 <))) get-medkit))
+        ((pickup-weapon-as-unarmed (trigger  ((see_reachable_weapon) (are_armed 0))) get-weapon))
+
+        ((respond-to-attack-since-health-low (trigger ((taken_damage) (own_health_level 30 <) (armed_and_ammo))) respond-to-attack))
+        ((attack-enemy-with-our-flag (trigger ((see_enemy_with_our_flag))) attack-enemy-carrying-our-flag))
+        ((take-enemy-flag-from-base (trigger((enemy_flag_reachable)(have_enemy_flag 0))) go-to-enemy-flag))
+        ((respond-to-attack-health-not-low (trigger ((taken_damage) (armed_and_ammo) (is_responding_to_attack 0))) respond-to-attack))
+        ((hit (trigger((hit_object)(is_rotating 0))) avoid)) ; was in first place
+        ((go-home (trigger((have_enemy_flag) (at_own_base false) )) go-to-own-base))
+        ((get-yourself-to-enemy-base (trigger((at_enemy_base False))) get-to-enemy-base))
+      )
+  )
+)

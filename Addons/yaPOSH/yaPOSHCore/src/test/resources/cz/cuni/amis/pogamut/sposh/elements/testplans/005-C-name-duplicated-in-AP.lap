@@ -1,0 +1,5 @@
+(
+    (C duplicatedName (elements ((choice action3))))
+    (AP duplicatedName (action1 action2))
+    (DC testPlan (drives ((driveName dummy))))
+)

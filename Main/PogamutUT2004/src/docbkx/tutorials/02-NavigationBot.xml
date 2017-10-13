@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="02-NavigationBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Navigation bot - navigating through the level</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>How to get from one place to another</para>
+        </listitem>
+
+        <listitem>
+          <para>Navigation graph</para>
+        </listitem>
+
+        <listitem>
+          <para>Path planners</para>
+        </listitem>
+
+        <listitem>
+          <para>Path executors</para>
+        </listitem>
+
+        <listitem>
+          <para>Visualization features in UT and in the Netbeans plugin</para>
+        </listitem>
+      </itemizedlist> Estimated time for completing this tutorial is X
+    minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before taking this tutorial it is expected that you are familiar
+    with:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>basic bot methods</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+<section>
+    <title>Video</title>
+
+    <para>This tutorial also has its short
+    <link xlink:href="http://www.youtube.com/watch?v=2USUSlCjJls">video version</link>. Note that the video may show older version of the GUI and that the API could also have changed.</para>
+</section>
+
+  <section>
+    <title>Tutorial body</title>
+
+    <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to 
+    PogamutUT2004 and will mostly hold in PogamutUDK examples. </para>  
+	
+	<para><guimenuitem>The outline:</guimenuitem>
+       <itemizedlist>
+        <listitem><para><link linkend="navigationbot.settingup">Setting up the example</link></para></listitem>		
+		<listitem><para><link linkend="navigationbot.navgraph">Navigation Graph</link></para></listitem>				
+		<listitem><para><link linkend="navigationbot.navbot">Navigating the bot</link></para></listitem>				
+		<listitem><para><link linkend="navigationbot.pogamutnavigation">Pogamut Navigation Basics</link></para></listitem>			
+		<listitem><para><link linkend="navigationbot.pathplanner">Path Planner</link></para></listitem>			
+		<listitem><para><link linkend="navigationbot.navigationdetailed">Path executor, path navigator and navigation detailed</link></para></listitem>			
+		<listitem><para><link linkend="navigationbot.visfeatures">Visualization Features</link></para></listitem>							
+        </itemizedlist>
+	</para>		
+
+    <para>So far the examples were very basic, now we are getting to the first
+    real topic - the movement. This example bot shows how to deal with goal of
+    getting from place A to place B. First we will describe space
+    representation used by Unreal Tournament and Pogamut, then we will show Pogamut
+    objects facilitating the path planning and execution of precomputed
+    path.</para>
+
+    <section>
+	<anchor xml:id="navigationbot.settingup" ></anchor>
+      <title>Setting up the example</title>
+
+      <para>This example is installed by Pogamut UT2004 installer. In NetBeans click New Project -&gt; Maven -&gt; Project From Archetype -&gt; Local Archetypes Catalog and select 02-navigation-bot-archetype project.
+	  Moreover, as Pogamut 3 has been fully mavenized, you can try and run this example even without installing the Pogamut NetBeans plugin. However in that case you won't be able to
+      use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link>. This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 02-navigation-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	For UDK example only change <guimenuitem>Group Id:</guimenuitem> to cz.cuni.amis.pogamut.udk.examples and <guimenuitem>Version:</guimenuitem> 3.2.5-SNAPSHOT . The rest remains the same.	
+	</para>
+      
+     <para><guimenuitem>Note:</guimenuitem> You will find up-to-date list of available archetypes in 
+     <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link> </para>               
+    </section>    
+    
+    <section>
+	<anchor xml:id="navigationbot.navgraph" ></anchor>
+      <title>Navigation graph</title>
+
+      <para>Navigation graph is basic space representation used for
+      navigation. The map is covered by nodes called <literal>navigation
+      points</literal> , in short <emphasis>navpoints</emphasis> . Each
+      navpoint is located in some safe location that can be reached by the
+      bot. When there exists direct path from one navpoint to another then
+      they are connected with an edge. With this representation finding a path
+      from navpoint A to navpoint B can be easily solved with any graph search
+      algorithm, particularly popular is heuristic A* algorithm (pronounced "A
+      star"). Output of the path planning algorithm is sequence of nodes that
+      should be followed in order to get to the target location.</para>
+	  
+	  <para> To make it all more complicated, sometimes it is not enough to only travel along 
+	  the edge between navpoint A and navpoint B to reach the target location. Sometimes the bot
+	  needs to perform something extra to reach the target, e.g. using a lift or jumping over
+	  some hole in the ground. For these reasons UT2004 introduces several types of navpoints 
+	  and edges that hold information about what is needed to be done in order to travel along
+	  the edges and navpoints. Most common navpoints:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>PathNode.</guimenuitem> Most common navpoint. Used to mark some safe area where the bot can move. Usually, there is nothing special.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>PlayerStart.</guimenuitem> Same as above, except the players and bots can be respawned here by the game.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>InventorySpot.</guimenuitem> Here an item will be respawned regulary.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>LiftCenter.</guimenuitem> This point is attached to a moving lift. It will move with the lift (so the location of this navpoint IS NOT static)!</para>
+        </listitem>       
+        <listitem>
+          <para><guimenuitem>LiftExit.</guimenuitem> Marks the navpoint connected to LiftCenter with an edge.</para>
+        </listitem>       		
+        <listitem>
+          <para><guimenuitem>JumpSpot.</guimenuitem>This point means that the bot will need to jump to or from this point. Also can mark Jump Pads - special points that makes the bot to jump high.</para>
+        </listitem>       	
+		<listitem>
+          <para><guimenuitem>Teleporter.</guimenuitem>There is a teleporter on this point that will teleport the bot to another place in the map.</para>
+        </listitem>       		
+		</itemizedlist>    
+		Most common edges:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Walk.</guimenuitem> Basic type of node. If no further information is given (by associated navpoints) it means that simple walking will get the bot through this edge.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Jump.</guimenuitem> To traverse this edge the bot will need to make a simple jump along the way. Double Jumps or more complex jumping behavior is usually handled by other attributes. </para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Door.</guimenuitem> This edge leads to a door. There are not many doors in UT2004.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Ladder.</guimenuitem>This ledge marks a ladder. </para>
+        </listitem>       
+        <listitem>
+          <para><guimenuitem>Special.</guimenuitem>This is a special type of edge - you should check other attributes of the edge and navpoints.</para>
+        </listitem>       			
+	</itemizedlist>  	  
+	  </para>
+	  
+	  <para> The navpoints and edges can be visualized in the game by pressing <accel>CTRL + G</accel>. Below you see part of the navigation graph with edges on the map DM-1on1-Albatross.
+	   <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/02-NavigationBot/navGraph_Albatross.jpg"></imagedata>
+        </imageobject>
+      </mediaobject>
+	  </para>
+    </section>	
+
+    <section>
+	<anchor xml:id="navigationbot.navbot" ></anchor>
+      <title>Navigating the bot</title>
+
+      <para>In First Person Shooter games most (or all) of the time is spent by moving - getting from point A to point B to pick up better weapon, running to medkit to heal or
+	  dodging incoming rockets or projectiles. This means that if your bot won't be able to move very well, it won't be perceived as very good or human-like. So how easy is to make
+	  the bot to move across the map flawlessly? The answer is not very easy... Navigation in the environment is a complex task
+	  that can be divided into two major parts with none of them particularly simple:
+      <orderedlist>
+        <listitem>
+          <para>Plan path between start location and the destination</para>
+        </listitem>
+
+        <listitem>
+          <para>Follow this path planned path</para>
+        </listitem>
+      </orderedlist>	  
+	  </para>
+	  <para>
+	  Why isn't the path planning simple? We have this navigation graph available with edges, so finding a path from point A to point B is a simple A*! Well, yes. But consider for example
+	  you want to plan a path that will AVOID enemy player or certain areas in the map or won't be the shortest but the safests. Everything gets immediately more complex and standard algorithms may
+	  not be enough to solve the tasks.
+	</para>
+	  <para>
+	  Why isn't the path following simple? We already know that there are special types of edges and navpoints present in the environment. In order to traverse some of these edges we need
+	  to implement a certain type of logic to make it work. For example to go up with the lift, we need to check if the lift is actually at our floor, that it is not moving and we can board it,
+	  then when we are on the lift, we need to check when it is the right time to exit the lift, etc. The things get even more complicated when the frequency of updates from the environment is
+	  scarce. You may miss the ideal point to perform a jump to get over the hole or to get on the lift. To implement robust path following mechanism you need to take care of all of these things,
+	  which means a lot of parametrization and a lot of testing.
+	</para>	
+	<para>Next we will speak about the navigation implemented in Pogamut. We will start from simple examples and slowly move deeper into Pogamut navigation modules.</para>
+	</section>	  
+	
+    <section>
+	<anchor xml:id="navigationbot.pogamutnavigation" ></anchor>
+      <title>Pogamut Navigation Basics</title>
+	  <para>Pogamut navigation consists of several modules each handling one type of navigation problem (e.g. path planning, path following, etc.). The main wrapper of everything is 
+	  <classname>UT2004Navigation</classname> accessible from the bot code by typing <methodname>navigation.</methodname> and its use is very simple. In order to move the bot to desired place
+	  utilizing all the information from navigation graph, only thing you need to do is to call once (or even regularly) <methodname>navigation.navigate(ILocated location)</methodname>, e.g.
+	  
+	  <programlisting language="java">
+    public void logic() {
+        if (players.canSeePlayers()) {
+            if (!navigation.isNavigating())
+                navigation.navigate(players.getNearestVisiblePlayer());
+        }
+    }
+	  </programlisting>
+	  The navigation module will take care about everything. It will find the path using the navigation graph to the destination and it will move the bot along the points in the path until
+	  it will reach target destination. There is even some anti-stuck behavior implemented and a listener that may be registered to listen to various events of <classname>UT2004Navigation</classname>  such as
+	  have we already reached the destination? Input to <methodname>navigation.navigate(ILocated location)</methodname> may be everything that implements interface <methodname>ILocated</methodname>.	  
+	  </para>
+	  <para>So we know how to make the bot to move to a place using the navigation graph, but what is the best way to find out we have reached the destination? We could always check this regularly in 
+	  the logic() method, but there is simpler way utilizing <classname>FlagListener&lt;NavigationState&gt;</classname> listener. By registering this listener, you will be notified about the
+	  current state of <classname>UT2004Navigation</classname> module and you will be able to react to its events, see below:
+	  
+	   <programlisting language="java">
+    public void botInitialized(GameInfo gameInfo, ConfigChange config, InitedMessage init) {	  
+        navigation.addStrongNavigationListener(new FlagListener&lt;NavigationState&gt;() {
+            @Override
+            public void flagChanged(NavigationState state) {                
+                switch (state) {
+                    case PATH_COMPUTATION_FAILED:
+                        //something went terribly wrong - there is no path to target destination
+                        //or another critical problem, we should replan to another destination
+                        tabooNavPoints.add(targetNavPoint, 180);
+                        break;
+                    case TARGET_REACHED:
+                        //we have successfuly reached target destination
+                        break;
+                    case STUCK:
+                        //the bot has stuck! ... seems that target nav point is unavailable currently
+                        //we have fallen down into some hole or got stuck at some ledge, we should 
+                        //replan or try to solve the situation manually
+                        break;
+                    case STOPPED:
+                        //path execution has stopped, was probably turned off by the user from the bot code
+                        break;
+                }                
+            }
+        });	  
+	} 
+	</programlisting>	
+	</para>
+	<para>This was the basic overview of Pogamut path finding and path following funcionality. In the next sections we will go through Pogamut navigation modules in a greater detail. 
+	</para>
+	</section>
+		
+    <section>
+	<anchor xml:id="navigationbot.pathplanner" ></anchor>
+      <title>Path planner</title>
+
+      <para>Pogamut navigation in the level is divided into two stages:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Plan path between the bot location and the destination</para>
+        </listitem>
+
+        <listitem>
+          <para>Follow this path</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Path planner is object responsible for the first stage of this
+      process. Pogamut comes with several implementations of
+      <classname>PathPlanner</classname> interface, the default is
+      <classname>FloydWarshallPathPlanner</classname>, this class precomputes
+      all paths between all navpoints at the startup which may take some time
+      (the algorithm runs in O(n^3)).	  
+	  Another planner implementation is
+      <classname>UT2004AStarPathPlanner</classname>. <classname>UT2004AStarPathPlanner</classname> is a
+      proxy object that provides functionality of Unreal Tournament internal
+      A*, this means that your bot can use exactly the same path planning
+      algorithm as native UT bots. 	  
+	   The planner is by default automatically instanciated in
+      <classname>UT2004BotModuleController</classname>. You can create your own
+      instance manually: </para>
+
+      <programlisting language="java">        
+        // create new UT path planner
+        UT2004AStarPathPlanner utPathPlanner  = new UT2004AStarPathPlanner(bot);
+        // create new FloyadWarshall path planner
+        FloydWarshallPathPlanner fwPathPlanner = new FloydWarshallPathPlanner(bot);
+	  </programlisting>
+
+      <para><classname>UT2004AStarPathPlanner</classname> or <classname>FloydWarshallPathPlanner</classname>
+      constructors require reference
+      to the <code>bot</code> because it sends some commands to the game
+      engine using the <classname>IAct</classname> and receives response
+      through <classname>IWorldView</classname> events. If you want your bot
+      to use different path planning strategy just code your own
+      <classname>PathPlanner</classname> implementation.</para>
+    </section>
+    <section>
+		<anchor xml:id="navigationbot.navigationdetailed" ></anchor>
+        <title>Path executor, path navigator and navigation detailed</title>
+
+        <para> Path executor handles navigating along the given path. It consists
+        of the path navigator (interface <classname>IUT2004PathNavigator</classname>) that handles the actual navigation along the path
+        and the code that handles for example waiting for the path be be complete
+        (sometimes it takes time before the whole path is computed). Default path
+        executor is <classname>UT2004PathExecutor</classname>. To implement your
+        own path executor you have to implement <classname>PathExecutor</classname>
+        class. However in most cases when you want to change the way how the bot navigates
+        through the environment it will be enough to write your own path navigator
+        (this is also recommended way). More about path navigator below. Path executor
+        is instanciated automatically in <classname>UT2004BotModuleController</classname>
+        class. </para>
+
+      <para>Path navigator is an interface responsible for moving the bot along precomputed
+      path, avoid obstacles, open doors, wait for lifts, jump over pits etc. The default
+      implementation of <classname>IUT2004PathNavigator</classname> interface is
+      <classname>LoqueNavigator</classname> . Again as in the case of
+      <classname>PathPlanner</classname> you can provide your own
+      implementation of this interface, for example you can implement new path
+      navigator that will enable the bot to avoid incoming rockets while moving
+      to the target.</para>
+	  
+      <para>Path executor and path navigator are strong tools, but for the starting user they may
+	  seem complicated at start. Moreover, those objects are not able to handle more complicated
+	  path finding fails such as wrong edge in navigation graph.
+	  To facilitate this, we have created a navigation facade called
+	  <classname>UT2004Navigation</classname>. This class wraps all access to bot navigation code. 
+	  When using this, the user may forget about path planning and path following if he wants to. 
+		<classname>UT2004Navigation</classname>	provides method <methodname>navigate(ILocated target)</methodname>
+		that can be called both synchronously or asynchronously. It may even be called repeatably from logic() method without
+	  fear of requesting the same path twice in a row as <classname>UT2004Navigation</classname> takes care of it.
+		<classname>UT2004Navigation</classname> provides the same set of events as path executor -
+		so the user is able to handle special cases as stucking etc.</para>
+	  
+      <para>Now how it works in our example bot. The API that is most important
+      for bot programmer are <methodname>navigation.navigate(...)</methodname> and
+      <methodname>navigation.addStrongNavigationListener(PathExecutorListener)</methodname> methods
+      of <classname>UT2004Navigation</classname> (listener is forwarded from <classname>PathExecutor</classname>). The
+      <methodname>navigation.navigate(...)</methodname> method makes the bot follow
+      path computed by some <classname>PathPlanner</classname>,
+      <methodname>handleNavPointNavigation()</methodname> shows example usage of
+      this method:</para>
+
+      <programlisting language="java">
+    private void handleNavPointNavigation() {
+        if (navigation.isNavigating()) {
+            // WE'RE NAVIGATING TO SOME NAVPOINT
+            logNavigation();
+            return;
+        }
+
+        config.setName("NavigationBot [NAVPOINT]");
+
+        // NAVIGATION HAS STOPPED ... 
+        // => we need to choose another navpoint to navigate to
+        // => possibly follow some players ...
+
+        targetNavPoint = getRandomNavPoint();
+        if (targetNavPoint == null) {
+            log.severe("COULD NOT CHOOSE ANY NAVIGATION POINT TO RUN TO!!!");
+            if (world.getAll(NavPoint.class).size() == 0) {
+                log.severe("world.getAll(NavPoint.class).size() == 0, there are no navigation ponits to choose from! Is exporting of nav points enabled in GameBots2004.ini inside UT2004?");
+            }
+            config.setName("NavigationBot [CRASHED]");
+            return;
+        }
+
+        talking = 0;
+
+        navigation.navigate(targetNavPoint);
+        logNavigation();
+    }</programlisting>
+
+      <para>Method <methodname>handleNavPointNavigation()</methodname> is called every logic iteration. When the navigation is running
+	  (determined by <methodname>navigation.isNavigating()</methodname>) we simply escape the method, since the bot is currently moving somewhere.
+	  Otherwise we randomly pick new navigation point with <methodname>getRandomNavPoint()</methodname> and call <methodname> navigation.navigate(targetNavPoint)</methodname>.
+	  Once the <methodname>navigation.navigate(...)</methodname> method is called
+      the bot starts moving towards desired navpoint. To get notified about
+      path execution status we have to register listener on path
+      executor:</para>
+
+      <programlisting language="java">        // IMPORTANT
+        // adds a listener to the path executor for its state changes, it will allow you to
+        // react on stuff like "PATH TARGET REACHED" or "BOT STUCK"
+        pathExecutor.getState().addStrongListener(new FlagListener&lt;IPathExecutorState&gt;() {
+
+            @Override
+            public void flagChanged(IPathExecutorState changedValue) {
+                pathExecutorStateChange(changedValue.getState());
+            }			
+        });
+    /**
+     * Path executor has changed its state (note that {@link UT2004BotModuleController#getPathExecutor()}
+     * is internally used by
+     * {@link UT2004BotModuleController#getNavigation()} as well!).
+     *
+     * @param state
+     */
+    protected void pathExecutorStateChange(PathExecutorState state) {
+        switch (state) {
+            case PATH_COMPUTATION_FAILED:
+                // if path computation fails to whatever reason, just try another navpoint
+                // taboo bad navpoint for 3 minutes
+                tabooNavPoints.add(targetNavPoint, 180);
+                break;
+
+            case TARGET_REACHED:
+                // taboo reached navpoint for 3 minutes
+                tabooNavPoints.add(targetNavPoint, 180);
+                break;
+
+            case STUCK:
+                // the bot has stuck! ... target nav point is unavailable currently
+                tabooNavPoints.add(targetNavPoint, 60);
+                break;
+
+            case STOPPED:
+                // path execution has stopped
+                targetNavPoint = null;
+                break;
+        }
+    }		
+		
+		</programlisting>
+        <para>Also note stuck detectors - simple modules that can be registred in
+        path executor or navigation. These modules are automatically initialized for you in <classname>UT2004BotModuleController</classname>.
+		These modules signalize when the bot gets stuck. STUCK event will
+        be generated that can be reacted to in <classname>FlagListener</classname>. Default modules are: </para>
+        <programlisting language="java">
+            pathExecutor.addStuckDetector(new UT2004TimeStuckDetector(bot, 3.0));       // if the bot does not move for 3 seconds, considered that it is stuck
+        pathExecutor.addStuckDetector(new UT2004PositionHistoryStuckDetector(bot)); // watch over the position history of the bot, if the bot does not move sufficiently enough, consider that it is stuck
+        </programlisting>
+      <para>Each time target location is reached this
+      <classname> FlagListener&lt;IPathExecutorState&gt;</classname> implementation will make the
+      bot to add current targeted navigation point to bot taboo list (tabooNavPoints) - a list of navigation points he will not consider for some time.
+	  As the navigation will stop when the bot is stucked, next time the bot chooses navigation point he will not consider this 
+	  newly tabooized point.</para>
+    </section>
+
+    <section>
+	<anchor xml:id="navigationbot.visfeatures" ></anchor>
+      <title>Visualization features</title>
+
+      <para>For debugging it is often useful to see the navigation graph the
+      bot is following. You can visualize the graph in Unreal Tournament
+      itself or in the Netbeans plugin. We will describe both
+      possibilities.</para>
+
+      <para>If you are in UT you can easily show the graph by pressing
+      <accel>CTRL + G</accel> . This will add the navigation graph to the
+      rendered image. After pressing this combination you will see graph with
+      set of edges also rendered in the image. Notice that the edges have
+      arrows indicating their orientation. Some edges are only one way, e.g.
+      you can jump down through the window but you cannot get to the second
+      floor by jumping from ground to the window. Another handy shortcut is
+      <accel>CTRL + R</accel>, this will draw a red line showing bots planned
+      path. However, <accel>CTRL + R</accel> will only work if you set the nodes for visualization
+	  manually from the bot code by the SetRoute command.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/02-NavigationBot/Navigation_altG.jpg"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Second option how to visualize the navigation graph is to show the
+      whole level in map viewer build in the Netbeans plugin. To show this map
+      double click UT server node.<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/02-NavigationBot/map.png"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+
+      <para>As you can see the view shows only navigation graph and your
+      connected bot.<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/02-NavigationBot/oznacenynavigationbot.jpg"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+      
+      <para>Controlling the map:</para>
+
+      <para>
+       <itemizedlist>    
+        <listitem>
+          <para>Hold LEFT MOUSE button and move the MOUSE to rotate the map.</para>
+        </listitem>
+        <listitem>
+          <para>Scroll the MOUSE WHEEL OR hold ALT button and move the MOUSE up and down to zoom in and out.</para>
+        </listitem>
+        <listitem>
+          <para>Hold LEFT and RIGHT MOUSE button and move the MOUSE up and down to shift the view on the map up and down.</para>
+        </listitem>
+        <listitem>
+          <para>Hold RIGHT MOUSE button and move the MOUSE to shift the view on the map to sides.</para>
+        </listitem>        
+		</itemizedlist>
+		</para>                 
+       
+      <para>The geometry of the level itself is not shown. The map is most
+      useful when debugging team strategy.</para>      
+
+      <para>To add a new bot: right-click on NavigationBot
+      ("Projects" tab) and press "Run" (or "Debug").<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/02-NavigationBot/pridaninavigationbota.jpg"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+
+      <para>Added bot will appear on your map as another dot. You can add as
+      many bots as you want.<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/02-NavigationBot/4bots.png"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+
+      <para>And to remove bot go to Local UT (server node), Pogamut bots and
+      here right-click on some of those and press "Kill".<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/02-NavigationBot/killbot.png"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Advanced Topics</title>
+
+    <para>In this section we will discuss advanced topics of
+    navigation.</para>
+
+    <section>
+      <title>Path planning</title>
+
+      <para>This section describes using navigation with <emphasis
+      role="bold">jungigation</emphasis> library. Library is using internally
+      <link xlink:href="http://jung.sourceforge.net/">JUNG</link> library for
+      representing navigation graphs. Main target of library is making
+      navigation as simple as possible and powerfull. Note that this library may
+	  not compile with the latest Pogamut version and may need some refactoring. Here are
+      advantages:<itemizedlist>
+          <listitem>
+            <para>prohibited edges exclusion,</para>
+          </listitem>
+
+          <listitem>
+            <para>advanced planning with items,</para>
+          </listitem>
+
+          <listitem>
+            <para>knowing exact time of path in second.</para>
+          </listitem>
+        </itemizedlist>Main advantage of using jungigation for path planning
+      is that this path planning uses only paths which has been tryied that
+      bot can run along them. This "can run" property is tested by BotTester
+      utility with <classname>iexplorer6</classname> bot. It will use some
+      path executor with some config of steering executors so this navigation
+      graph generated from map testing will be valid only for this
+      configuration. Also have on mind that not all vertices of navigation
+      graph could be reachable by this path planning. For understanding what
+      it means have a look at next part. If you plan using
+      <classname>AdvancedPathPlanner</classname> seriously, you can consider
+      using <classname>AbstractBotWithJungigation</classname> class as
+      superclass for your bot.</para>
+
+      <section>
+        <title>Basic idea</title>
+
+        <para>Basic idea is to "convert" UT navigation graph to jungigation
+        navigation graph (graphML file). In <classname>jungigation</classname>
+        graphs are saved informations like traveling time between vertices and
+        items in path. These informations are obtained by running special bot
+        named <emphasis role="bold">iexplorer6</emphasis> in map. He is
+        responsible for measuring travel times between vertices. This data
+        than can be used for path planning. Bot
+        <classname>iexplorer6</classname> uses current set of path executors
+        so once generated navigation data can became old due to changes in
+        steering executors. On other side, you can easily generate new one.
+        Generating navigation graphs for any map can be done by utility called
+        <emphasis role="bold">BotTester</emphasis>. Once you have relevant
+        navigation file for map, you can use advanced path planning verry
+        easily.</para>
+      </section>
+
+      <section>
+        <title>Simple example of advanced navigation</title>
+
+        <para>Here we start with sample navigation bot from <link
+        linkend="02-NavigationBot">NavigationBot</link> tutorial. We will do
+        these steps:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>include<classname>Jungigation</classname> and other
+            necessarily libraries to project</para>
+          </listitem>
+
+          <listitem>
+            <para>change <classname>UT2004AStarPathPlanner</classname> path planner to
+            <classname>AdvancedPathPlanner</classname></para>
+          </listitem>
+
+          <listitem>
+            <para>Use advantages of AdvancedPathPlanner</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Including Jungigation library is simple. Just right click on
+        project, secelct properties, than choose libraries. There click on add
+        Jar/Folder button and navigate to downloaded Jungigation library file.
+        Than click ok. It's done. Library file could be downloaded from <link
+        xlink:href="https://dawn.ynet.sk/trac/jungigation/wiki/download">jungigation
+        download page</link>. Other needed libraries are avaible on <link
+        xlink:href="http://jung.sourceforge.net/">JUNG</link> homepage.</para>
+
+        <para>To change UT2004AStarPathPlanner planner, you need to change type of
+        pathPlanner attribute. You should change it from
+        PathPlanner&lt;;ILocated, ILocated&gt;; to AdvancedPathPlanner. This
+        change is around line 50. This will cause problem on line 77, where
+        you should write consecutive code instead of <code>pathPlanner = new
+        UT2004AStarPathPlanner(bot);</code>.<programlisting language="java">Collection&lt;;NavPoint&gt;; navpoints;
+String mapName = this.gameInfo.getLevel();
+navpoints = this.bot.getWorldView().getAll(NavPoint.class).values();
+Graph&lt;;MyVertice, MyEdge&gt;; navigationGraph;
+navigationGraph = NavigationGraphProviderForMap.getInstance().getNavigationDataForMapWithChceckAndInitialization(mapName, navpoints);
+pathPlanner = new AdvancedPathPlanner(navigationGraph, bot, navpoints);
+pathPlanner.setActiveProfile(AdvancedPathPlanner.ARMORINTEREST);</programlisting></para>
+
+        <para>NavigationGraphProviderForMap is responsible for managing
+        graphML navigation graphs for user. It assumes that all graphML files
+        for maps are in root directory of project. It will try to acces them
+        in "./" path. To change this assumption, use
+        NavigationGraphProviderForMap constructor for creating navigation
+        graph provider which is reading data from other source and than
+        request navigation graphs from this instance. Some precomputed graphML
+        files (navigation graphs) are avaible on <link
+        xlink:href="https://dawn.ynet.sk/trac/jungigation/wiki/download">Jungigation
+        download page</link>.</para>
+
+        <para>To use advanced path planning just plan path normally.
+        <classname>AdvancedPathPlanner</classname> has set its planning
+        alghoritm to some value and it is used. To use different planning
+        profile (policy) just call <code>pathPlanner.setActiveProfile("new
+        profile");</code>. From that point the bot will use new path planning
+        alghoritm constants to plan path. There are also simple version of
+        jungigation path planning classes like
+        <classname>PathPlannerTimeOptimized</classname> or
+        <classname>PathPlannerForDataAcquisition</classname>. See javadoc for
+        particular class for more info.</para>
+      </section>
+
+      <section>
+        <title>Visualizing navigation graph</title>
+
+        <para>Simple but sometimes usefull visualization can be done through
+        simple jung visualization program. For generic visualization you can
+        use any program capable of reading <link
+        xlink:href="http://graphml.graphdrawing.org/">graphML</link> graph.
+        For example you can try <link
+        xlink:href="http://www.yworks.com/products/yed/">yEd</link>. In this
+        section will be described simple utility for visualizating jung
+        navigation graphs. Described utility is prototype version of
+        visualizing utility.</para>
+
+        <para>First start Jungigation library as java application. It will
+        open simple window. Choose File-&gt;;Open, or use shortcut ctrl+o.
+        Select desired graphML file and it will open new window in which will
+        be loaded navigation graph. Graph is rendered in 2D, so multifloor
+        levels will look strange. For example map CTF-LostFaith will look
+        something like on next picture.<mediaobject>
+            <imageobject>
+              <imagedata fileref="media/02-NavigationBot/navigationGraph_full.png"></imagedata>
+            </imageobject>
+          </mediaobject></para>
+
+        <para>You can navigate in graph by mouse. Zooming is done by mouse
+        wheel and panning is done by leftclick. You can also try to compute
+        path between two vertices. Just select "from" vertice and than select
+        "to" vertice while holding down shift key. It will highlight shortest
+        path based on travel time. To look closer on sensus of visualized
+        graph, have a look on next screenshoot.<mediaobject>
+            <imageobject>
+              <imagedata fileref="media/02-NavigationBot/navigationGraph_zoom.png"></imagedata>
+            </imageobject>
+          </mediaobject></para>
+
+        <para>On zoomed graph you can see that edges are colored in some
+        pattern. Red edge is "prohibited" edge. That is edge with travel time
+        grater than 100. All tryies to travel some edge that finished in
+        stucked state are given travel time 1000 seconds. Final travel time is
+        always counted as median of all travel times. Green edges are edges
+        with normal (lees than 100) median travel time. Purple edges are also
+        edges with normal travel time, but number of traveling thru that edge
+        is lees than 15 times. On next screenshoot we will discuss meaning of
+        edge labels.<mediaobject>
+            <imageobject>
+              <imagedata fileref="media/02-NavigationBot/navigationGraph_zoom_detail.png"></imagedata>
+            </imageobject>
+          </mediaobject></para>
+
+        <para>Here is some detail of navigation map. Look at rounded edge
+        label. It is "E:0.95#5". This means that median travel time is 0.95
+        seconds and this is computed from five observations. That means that
+        Iexplorer6 bot travelled through that edge five times. To view
+        particular travel times you need to have a look at original file, or
+        to use some other visualization method.</para>
+
+        <para>To show sample path planning with time based planer, just select
+        two vertices. First is start vertice and second will be goal vertice.
+        Path will be highlighted as on next screenshoot.<mediaobject>
+            <imageobject>
+              <imagedata fileref="media/02-NavigationBot/navigationGraph_pathPlanning.png"></imagedata>
+            </imageobject>
+          </mediaobject></para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+    <para>
+    <link linkend="03-RaycastingBot">03-RaycastingBot</link> - how to use simple ray tracing 
+    </para>
+  </section>
+</chapter>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ALL" extends="CommandMessage" name="GetAllStatus" type="Info">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Request all the possible status messages from the observer.
+        The observer will send the following messages:
+        Game info: NFO, PLR.
+        The observed player: SLF, MYINV.
+        Objects the player sees: PLR, INV, NAV, MOV, PRJ, VEH.
+        Special objects on the map: FLG, BOM, DOM.
+	</documentation>
+   <!-- List of all properties of this command. !--><!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

@@ -1,0 +1,12 @@
+(
+    (AD adoptCompetence1 ( (goal(fail)) (competenceName1) ) )
+    (C competenceName1 (elements ((choice action5))))
+    (AD adoptCompetence2 ( (goal(fail)) (competenceName2) ) )
+    (C competenceName2 (elements ((choice action6))))
+    (AD adoptAP1 ( (goal(fail)) (apName1) ) )
+    (AP apName1 (action1 action2))
+    (AD adoptAP2 ( (goal(fail)) (apName2) ) )
+    (AP apName2 (action3 action4))
+    (AD adoptAction1 ( (goal(fail)) (action1) ) )
+    (DC testPlan (drives ((driveName adoptCompetence1))))
+)

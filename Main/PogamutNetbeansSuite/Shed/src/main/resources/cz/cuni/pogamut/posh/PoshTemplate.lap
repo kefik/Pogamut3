@@ -1,0 +1,10 @@
+; Posh template
+; -------------------------------------------------------------------
+(
+    (documentation "title" "name" "file comment")
+ 	(DC life
+		(drives 
+			  ((nothing (trigger ((cz.cuni.amis.pogamut.sposh.executor.Succeed))) cz.cuni.amis.pogamut.sposh.executor.DoNothing))
+		)
+	)
+)

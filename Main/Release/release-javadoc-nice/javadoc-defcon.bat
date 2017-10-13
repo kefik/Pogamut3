@@ -1,0 +1,4 @@
+cd ..\..\..
+rmdir /S /Q Main\PogamutRelease\target\javadoc-defcon
+mkdir Main\PogamutRelease\target\javadoc-defcon
+javadoc.exe -doclet org.umlgraph.doclet.UmlGraphDoc -docletpath Main/PogamutRelease/release-javadoc-nice/UmlGraph-5.6.jar -classpath "Main/PogamutRelease/utils/junit-4.8.2.jar;Main/PogamutRelease/utils/xstream-1.3.1.jar;%JAVA_HOME%/jre/lib/rt.jar;Main/PogamutRelease/utils/guice-2.0.jar;Utils/AmisUtils/target/classes;Utils/AFSM/target/classes;Utils/JavaGeom/target/classes;Main/PogamutBase/target/classes;Main/PogamutDefcon/target/classes" -d Main/PogamutRelease/target/javadoc -subpackages cz -sourcepath Utils/AmisUtils/src/main/java;Utils/AFSM/src/main/java;Utils/JavaGeom/src/main/java;Main/PogamutBase/src/main/java;Main/PogamutDefcon/src/main/java -d d:\temp\JAVADOC

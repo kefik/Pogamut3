@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+	  <artifactId>pogamut-ut2004-tournament-pom</artifactId>
+	  <version>3.7.1-SNAPSHOT</version>
+
+		<relativePath>../../Poms/PogamutUT2004TournamentPom/pom.xml</relativePath>
+	</parent>
+
+	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+	<artifactId>ut2004-tag</artifactId>
+	<version>3.7.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ut2004-tag</name>
+	<url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.artifactId}/</url>
+	
+	<properties>
+        <main.console1v1.class>cz.cuni.amis.pogamut.ut2004.tag.tournament.UT2004TagConsole</main.console1v1.class>
+	</properties>
+
+	<dependencies>
+	    <dependency>
+	        <groupId>cz.cuni.amis.pogamut.ut2004</groupId>
+          <artifactId>ut2004-tournament</artifactId>
+          <version>3.7.1-SNAPSHOT</version>
+	    </dependency>		
+	</dependencies>
+	
+	<repositories>
+        <repository>
+            <id>amis-artifactory</id>
+            <name>AMIS Artifactory</name>
+            <url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+        </repository>
+    </repositories>
+    
+    <profiles>
+		<profile>
+			<id>one-jar-package</id>
+			<activation>
+				<file>
+					<missing>skip.one-jar.package</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>buildnumber-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<id>execute-buildnumber-maven-plugin</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.dstovall</groupId>
+						<artifactId>onejar-maven-plugin</artifactId>
+						<version>1.4.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>1v1-onejar</classifier>
+									<mainClass>${main.console1v1.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+    
+</project>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="KILL" extends="CommandMessage" name="KillBot" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <group name="Server"/>
+   <documentation>
+		Use this to kill the bot. The bot may respawn immediately - this depends on current server and
+		bot	settings (manual or auto spawning. Works also for native bots and human 
+		players. Can be issued only by control server.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the bot to be killed.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

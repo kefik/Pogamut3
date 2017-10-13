@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<installation version="1.0">
+    <packs>
+    
+        <pack name="DefCon Demo" required="no">
+            <description>Downloads the demo of Defcon game (~80MB) from Introversion's web.</description>
+            <file src="DefCon/Install/install-defcon.bat" targetdir="$INSTALL_PATH/tmp/" os="windows"/>
+            <file src="DefCon/Install/wget.exe" targetdir="$INSTALL_PATH/tmp/" os="windows"/>
+            <parsable targetfile="$INSTALL_PATH/tmp/install-defcon.bat" type="plain" os="win"/>
+        </pack>
+        
+        <pack name="DefCon Shortcuts" required="no">
+            <description>Useful shortcuts for Pogamut DefCon.</description>
+            <fileset dir="shortcuts/DEFCON" targetdir="$INSTALL_PATH">
+                <include name="*.*" />
+            </fileset>
+        </pack>
+        
+        <pack id="defconarchetypespack" name="Defcon Example Project Archetypes" required="no">
+            <description>Installs Maven archetypes for projects using Defcon. This makes it easy to start creating your own Maven based projects.</description>
+            <fileset dir="archetypes/defcon/" targetdir="$INSTALL_PATH/archetypes/defcon"/>
+            <parsable targetfile="$INSTALL_PATH/archetypes/defcon/install-all.bat" type="plain" os="win"/>
+        </pack>
+
+    </packs>
+</installation>

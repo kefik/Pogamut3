@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="CTRLMSG" name="ControlMessage" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message passing some control message.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Type" type="String">
+      <documentation>Custom type of the message.</documentation>
+   </property>
+   <property name="PS1" type="String">
+      <documentation>Param String 1</documentation>
+   </property>
+   <property name="PS2" type="String">
+      <documentation>Param String 2</documentation>
+   </property>
+   <property name="PS3" type="String">
+      <documentation>Param String 3</documentation>
+   </property>
+   <property name="PI1" type="Integer">
+      <documentation>Param Integer 1</documentation>
+   </property>
+   <property name="PI2" type="Integer">
+      <documentation>Param Integer 2</documentation>
+   </property>
+   <property name="PI3" type="Integer">
+      <documentation>Param Integer 3</documentation>
+   </property>
+   <property name="PF1" type="Double">
+      <documentation>Param Double 1</documentation>
+   </property>
+   <property name="PF2" type="Double">
+      <documentation>Param Double 2</documentation>
+   </property>
+   <property name="PF3" type="Double">
+      <documentation>Param Double 3</documentation>
+   </property>
+    <property name="PB1" type="Boolean">
+      <documentation>Param Boolean 1</documentation>
+   </property>
+   <property name="PB2" type="Boolean">
+      <documentation>Param Boolean 2</documentation>
+   </property>
+   <property name="PB3" type="Boolean">
+      <documentation>Param Boolean 3</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   <extra>
+   </extra>
+</messageobject>

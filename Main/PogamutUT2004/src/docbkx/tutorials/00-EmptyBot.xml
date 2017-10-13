@@ -1,0 +1,714 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="00-EmptyBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Empty bot - basics of Pogamut</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>bot methods and the startup sequence</para>
+        </listitem>
+
+        <listitem>
+          <para>sending commands to the environment</para>
+        </listitem>
+
+        <listitem>
+          <para>logging</para>
+        </listitem>
+
+        <listitem>
+          <para>introspection features</para>
+        </listitem>
+
+        <listitem>
+          <para>basics of Pogamut Netbeans Plugin</para>
+        </listitem>
+      </itemizedlist>Estimated time for completing this tutorial is TODO
+    minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004 / UDK with GameBotsUDK</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004 / UDK with GameBotsUDK</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>It is anticipated that you are familiar with the Java programming
+    language or at least with Object-oriented programming (OOP).</para>
+  </section>
+
+<section>
+    <title>Video</title>
+
+    <para>This tutorial also has its short 
+    <link xlink:href="http://www.youtube.com/watch?v=coRafaEX680">video version</link>. Note that the video may show older version of the GUI and that the API could also have changed.</para>
+</section>
+
+  <section>
+    <title>Tutorial body</title>
+    
+    <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to 
+    PogamutUT2004 and will mostly hold for PogamutUDK examples. </para>
+
+	<para><guimenuitem>The outline:</guimenuitem>
+       <itemizedlist>
+        <listitem><para><link linkend="emptybot.settingup">Setting up the example</link></para></listitem>		
+		<listitem><para><link linkend="emptybot.opening">Opening the example, configuring server, executing the bot and
+      getting around the IDE</link></para></listitem>				
+		<listitem><para><link linkend="emptybot.inspectingut">Inspecting the bot in Unreal Tournament</link></para></listitem>		
+		<listitem><para><link linkend="emptybot.botsource">Bot's source code, startup sequence</link></para></listitem>		
+		<listitem><para><link linkend="emptybot.logging">Logging and introspection</link></para></listitem>			
+        </itemizedlist>
+	</para>
+		
+    <para>Purpose of this first tutorial is to get you familiar with basic
+    concepts which will be needed in further tutorials. We will show how to
+    create a simple bot that will just stand in the environment, talk and do nothing. It is a Pogamut's analogy of the "Hello world !" program
+    - a simple program used to demonstrate basics of given technology.</para>
+    
+    <section>
+		<anchor xml:id="emptybot.settingup" ></anchor>
+      <title>Setting up the example</title>
+
+      <para> This example is installed by Pogamut UT2004 installer. In NetBeans click New Project -&gt; Maven -&gt; Project From Archetype -&gt; Local Archetypes Catalog and select 00-empty-bot-archetype project.
+	  Moreover, as Pogamut 3 has been fully mavenized, you can try and run this example even without installing the Pogamut NetBeans plugin. However in this case you won't be able to use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link> (if the archetype is not present, follow "adding new Pogamut example project" section in the same chapter). This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 00-empty-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	For UDK example only change <guimenuitem>Group Id:</guimenuitem> to cz.cuni.amis.pogamut.udk.examples and <guimenuitem>Version:</guimenuitem> 3.2.5-SNAPSHOT . The rest remains the same. Note that there is also a somehow outdated version of tutorial how to install Pogamut manually. Use it only if regular installation fails. Link: 
+      <link xlink:href="http://pogamut.cuni.cz/pogamut_files/doc/Setup-Pogamut3-with-Maven.pdf">Pogamut 3 with Maven Quickstart Tutorial</link>.	
+	</para>
+      
+     <para><guimenuitem>Note:</guimenuitem> You will find up-to-date list of available archetypes in 
+     <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link> </para>               
+    </section>  
+  <!--  
+    <section role="gui">
+      <title>Opening the example, configuring server, executing the bot and
+      getting around the IDE</title>
+
+      <para>Let's start by opening the 00-EmptyBot example project bundled in
+      the Pogamut plugin for Netbeans.</para>
+
+      <para>Follow these steps:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Open Netbeans (<guimenu>Start</guimenu> →
+          <guimenuitem>Programs</guimenuitem> →
+          <guimenuitem>Netbeans</guimenuitem> → <guimenuitem>Netbeans
+          6.8</guimenuitem>)</para>
+        </listitem>
+
+        <listitem>
+          <para>Once Netbeans are loaded, open an example project:
+          <guimenu>File</guimenu> → <guimenuitem>New Project ...</guimenuitem>
+          → <guimenuitem>Samples</guimenuitem> →
+          <guimenuitem>Pogamut</guimenuitem> →
+          <guimenuitem>00-EmptyBot</guimenuitem> then click <guibutton>Next
+          &gt; </guibutton><mediaobject>
+              <imageobject>
+                <imagedata fileref="media/00-EmptyBot/3.1-2.jpg"></imagedata>
+              </imageobject>
+            </mediaobject></para>
+        </listitem>
+
+        <listitem>
+          <para>In the <guilabel>New Project</guilabel> dialog enter name of
+          the folder where the example will unpacked, for example
+          <userinput>00-EmptyBot</userinput>, after you are finished click the
+          <guibutton>Finish</guibutton> button.</para>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/00-EmptyBot/3.1-3.jpg"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </listitem> -->
+	
+    <section role="gui">
+	<anchor xml:id="emptybot.opening" ></anchor>
+      <title>Opening the example, configuring server, executing the bot and
+      getting around the IDE</title>
+       <orderedlist>
+        <listitem>
+          <para>After setting up the example according to the section above,
+	  a new project named "00-empty-bot" will be opened in the
+          <guilabel>Projects</guilabel> tab, open project's <guilabel>Source
+          Packages </guilabel> sub folder and then the package
+          present in this folder</para>
+		  <para>Note that sometimes instead of "00-empty-bot" you get a project with the name "badly formed maven project".
+		  In this case simply right click the project and select <guimenuitem>Clean and Build</guimenuitem> option. The project should reappear normally.
+		  If the project is reporting some bugs right click it and select the <guimenuitem> Clean and Build</guimenuitem>  option again. The bugs are reported
+		  probably because Maven has not yet downloaded all dependencies (Clean and Build option assures that). If the Javadoc of 
+		  the project is missing (help does not show up), right click the <guimenuitem> Dependencies</guimenuitem> folder and select <guimenuitem> Download Javadoc</guimenuitem> option.
+		  </para>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/00-EmptyBot/3.1-4.jpg"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </listitem>
+
+        <listitem>
+          <para>Finally double click <filename>EmptyBot.java</filename> file
+          containing the source code of your first bot</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Notice that the project's node in <guilabel>Projects</guilabel>
+      tab is in bold, this means that the <guibutton>Run Main
+      Project</guibutton> (<accel>F6</accel>) and <guibutton>Debug Main
+      Project</guibutton> (<accel>Ctrl + F5</accel>) buttons are linked to
+      this project. Before we start your first bot, we have to launch the
+      Unreal Tournament dedicated server - an environment simulator that
+      Pogamut and the bot will connect to. You have two options how to start
+      the server:<itemizedlist>
+          <listitem>
+            <para>First way - start standalone server</para>
+
+            <para><orderedlist>
+                <listitem>
+                  <para>execute the server by running
+                  <filename>startGamebotsDMServer.bat</filename>, wait until
+                  <computeroutput>START MATCH</computeroutput> string appears
+                  in the console, now the server is ready to receive bot
+                  connections. Shortcut to bat file <filename>startGamebotsDMServer.bat</filename> can be found
+                  in the start menu under Pogamut folder. File <filename>startGamebotsDMServer.bat</filename> can
+                  be found in /UT2004/System/ directory. </para> 
+                </listitem>
+
+                <listitem>
+                  <para>let the server console window opened and return back
+                  to Netbeans, switch to <guilabel>Services</guilabel> tab
+                  (<accel>Ctrl + 5</accel> or <guimenu>Window</guimenu> →
+                  <guimenuitem>Services</guimenuitem>), right click
+                  <guilabel>UT2004 Servers</guilabel> node and select
+                  <guimenuitem>Add server</guimenuitem> action</para>
+
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="media/00-EmptyBot/3.1startstandaloneserver2.jpg"></imagedata>
+                    </imageobject>
+                  </mediaobject>
+                </listitem>
+
+                <listitem>
+                  <para>in the dialog that will appear you can optionally
+                  assign <guilabel>Server name</guilabel>, e.g..
+                  <userinput>Local UT </userinput>and you have to specify
+                  server's complete <guilabel>URI</guilabel> (first delete the
+                  <computeroutput>[not set]</computeroutput> string and then
+                  type the URI), in this case
+                  <userinput>localhost:3001</userinput> then press
+                  <guibutton>Close</guibutton> button (if localhost does not work, try 127.0.0.1:3001 instead).</para>
+
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="media/00-EmptyBot/3.1startstandaloneserver3.jpg"></imagedata>
+                    </imageobject>
+                  </mediaobject>
+                </listitem>
+
+                <listitem>
+                  <para>just created <guilabel>Local UT</guilabel> server will
+                  appear under the <guilabel>UT2004 Servers</guilabel> node,
+                  you will have to create this server only once, it will
+                  remain registered in the IDE</para>
+                </listitem>
+              </orderedlist></para>
+          </listitem>
+
+          <listitem>
+            <para>Second way - start server through UT2004 GUI. </para>
+            
+            <para><orderedlist>
+                <listitem>
+                  <para>Start UT2004 game through shortcut in the start menu or by running UT2004.exe in
+                  UT2004/System/ directory.</para> 
+                </listitem>
+                <listitem>
+                  <para>In the UT2004 game menu click <guimenuitem>Host Game.</guimenuitem></para> 
+                </listitem>                
+                <listitem>
+                  <para>In the next menu select <guimenuitem>GameType</guimenuitem> tab and select some of the GameBots2004 game types.</para> 
+                </listitem>                                
+                <listitem>
+                  <para>After you finished setting up the server, click listen button located in lower right. The server will be started and you will be connected to it as a player.</para> 
+                </listitem>
+                <listitem>
+                  <para>Connect to server from NetBeans the same way as shown above.</para> 
+                </listitem>
+           </orderedlist></para>
+
+          </listitem>
+        </itemizedlist></para>
+
+      <para>Now the server is running and the IDE knows how to connect to it.
+      You can start the bot by pressing <accel>F6</accel> ( <guibutton>Run
+      Main Project </guibutton>). Alternatively, you can simply right click the
+	  main bot class and select <guimenuitem> Run File</guimenuitem> or select the project
+	  and click <guimenuitem> Run</guimenuitem>.
+	  If everything works fine, the bot will
+      connect to the server and begin execution. After starting, the bot will
+      appear under the <guilabel>Local UT</guilabel> node in <guilabel>Pogamut
+      bots</guilabel> folder. It will be represented by a node named
+      <guilabel>EmptyBot</guilabel>. If you select the bot's node, you will
+      see some additional information about the bot in
+      <guilabel>Properties</guilabel> window (<guimenu>Window</guimenu> →
+      <guimenuitem>Properties</guimenuitem>). <guilabel>Agent3D</guilabel>
+      section shows properties defining bot's position in the space,
+      <guilabel>Agent configuration</guilabel> section enables you to change
+      bot's behavior/abilities (e.g. if the bot will be able to use
+      raycasting, if it will automatically pick up items etc.). You will see
+      that the bot is standing still, no movement, no rotation, after all,
+      that's what it was designed for.</para>
+    </section>
+
+    <section role="gui">
+	<anchor xml:id="emptybot.inspectingut" ></anchor>
+      <title>Inspecting the bot in Unreal Tournament</title>
+
+      <para>To see how the bot is doing in the game you will have to start the
+      Unreal Tournament (UT) client, you can:</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para>Start the UT directly from Netbeans</para>
+
+            <para>Right click <guilabel>Local UT</guilabel> server node and
+            select <guimenuitem>Spectate</guimenuitem> action, the UT2004 will
+            start in the spectate mode and it will be automatically connected
+            to the selected server.</para>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="media/00-EmptyBot/3.2inspecting.jpg"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </listitem>
+
+          <listitem>
+            <para>Start UT in a standard way</para>
+
+            <para>You can either use</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>When starting the UT for the first time it will open in a full
+      screen mode, when developing bots you will often want to see both the
+      Netbeans window and the UT. You have two options - use two monitors or
+      configure UT to start in windowed mode, you can do this from main menu
+      of UT <guimenuitem>Settings</guimenuitem> →
+      <guibutton>Display</guibutton> tab → <guilabel>Resolution</guilabel>
+      panel → uncheck the <guibutton>Full Screen</guibutton> checkbox.</para>
+
+      <para>Inspecting the bot directly in UT is a very handy debugging tool.
+      You can see, where the bot exactly is, whether it has stuck etc.
+      Gamebots, Pogamut's extension of the Unreal Tournament, also adds some
+      in game visualization features that can be useful when observing the
+      bot. </para>
+
+      <para>Once the UT has connected to the game, press the left mouse button
+      to view the bot. Also notice the green text in the upper half of the
+      screen labeled <guilabel>GAMEBOTS 2004 HUD HELP</guilabel> (press CTRL + H to trigger HUD help on and off). You can try
+      some of the listed functions, but we will address them later on.</para>
+	  <para><guimenuitem>Note:</guimenuitem>In pre-3.3.1 Pogamut version the HUD control key used to be ALT. However ALT button had issue with UT2004 not reacting to keys when ALT + TABing in and out - sometimes the ALT button was "left hanging" in UT2004 when ALT + TABing from the UT window. The solution was to press ALT button again when back in UT2004.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/00-EmptyBot/3.2bot.jpg"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section role="prog">
+	<anchor xml:id="emptybot.botsource" ></anchor>
+      <title>Bot's source code, startup sequence</title>
+
+      <para>Now return back to the Netbeans (if UT was in full screen mode use
+      <accel>ALT + TAB</accel>). We will go through bot's source code in order
+      to describe its basics.</para>
+
+      <para>The EmptyBot extends <classname>UT2004BotModuleController</classname> class,
+      this is declared by line: <programlisting language="java">public class EmptyBot extends UT2004BotModuleController
+</programlisting></para>
+
+      <para><classname>UT2004BotModuleController</classname> is a base bot class that will
+      suit most situations. <classname>UT2004BotModuleController</classname> class has
+      several methods that have to be overridden by the EmptyBot and
+      by any other bot extending this class.</para>
+
+      <para>These methods are:</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para><methodname>logic()</methodname> - method called
+            periodically by an internal thread associated with the bot. It
+            enables the bot to be proactive, that is to act "on his own"
+            without any external stimuli.</para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>botKilled(BotKilled event)</methodname> - called
+            each time the bot has died</para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>botInitialized(GameInfo info, ConfigChange config,
+            InitedMessage init)</methodname> - called when the bot received INITED message from the server. This
+            means that the INIT command succeeded, the handshake between bot and server is over and the bot is ready to receive other commands. Note that this does not mean the bot is already spawned in the environment! If it is set bAutoSpawn=False in GameBots ini file, the bot won't be spawned automatically and user needs to issue command <classname> Respawn</classname> to spawn the bot. Then <methodname>botInitialized()</methodname> method would be the right place to send first <classname> Respawn</classname> command. Now briefly about method parameters. <varname>info</varname> object holds information about the game
+            type, map etc. <varname>config</varname> object holding information about bot current configuration - his vision time delay, autotracing setting, spawn setting etc. <varname>init</varname> object holds information about bot variables such as his speed in the environment, maximum possible health etc.</para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) </methodname> - called when the bot is spawned in the game for the first time. This means that the bot graphical represantation is visible in the game and <classname>Self</classname>object was received from the environment holding information about bot location and current state. This is the last place to do some preparations before <methodname>logic() </methodname> method will be called periodically.</para>
+          </listitem>
+		  
+          <listitem>
+            <para><methodname>beforeFirstLogic() </methodname> - called after botFirstSpawn method, right before the first call of <methodname>logic() </methodname> method. This method is an ideal place to make last preparations of your custom modules before the <methodname>logic() </methodname> method gets executed. The advantage here is that when this method gets called your bot is fully initialized and present in the environment. </para>
+          </listitem>
+    
+          <listitem>
+            <para><methodname>getInitializeCommand()</methodname> - used
+            for setting initial properties of the agent such as it's
+            name, starting location etc. This method is used by Pogamut to get the initialize command for the bot.</para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>prepareBot(UT2004Bot bot)</methodname> - called before the
+            bot connects to the environment, but after UT2004Bot is constructed. This is the right place to initialize Pogamut bot modules (but about them later)!</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>Sequence of calling these methods is:<orderedlist>
+          <listitem>
+            <para><methodname>prepareBot(UT2004Bot bot)</methodname></para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>getInitializeCommand()</methodname></para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>botInitialized(GameInfo info, ConfigChange config,
+            InitedMessage init)</methodname></para>
+          </listitem>
+          
+          <listitem>
+            <para><methodname>botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self)</methodname></para>
+          </listitem>
+          <listitem>
+            <para><methodname>beforeFirstLogic()</methodname></para>
+          </listitem>
+
+          <listitem>
+            <para><methodname>logic()</methodname> - called N times. Note that between
+            two logic iterations, <methodname>botKilled(BotKilled event)</methodname> method
+            may be called notifying about bot death.</para>
+          </listitem>
+        </orderedlist>Let's explore methods implemented in this example. First
+      is <methodname>getInitializeCommand()</methodname>:</para>
+
+      <para><programlisting language="java">    public Initialize getInitializeCommand() {
+        return new Initialize().setName("EmptyBot");
+    }</programlisting></para>
+
+      <para>In this method an <classname>Initialize</classname> object is
+      created, a bot's name is set and the initialized object is
+      returned to the rest of Pogamut platform. Note that all setters in all Pogamut commands
+      always return the same object, so you may chain the setters calls.
+      <programlisting language="java">
+        new Initialize().setName("EmptyBot").setTeam(0);
+    </programlisting> </para>
+
+      <para>Second method is <methodname>botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self)</methodname>:</para>
+
+      <para><programlisting language="java">    public void botFirstSpawn(GameInfo gameInfo, ConfigChange config, InitedMessage init, Self self) {
+        // Display a welcome message in the game engine
+    	// right in the time when the bot appears in the environment, i.e., his body has been just spawned
+    	// into the UT2004 for the first time.
+        body.getCommunication().sendGlobalTextMessage("Hello world! I am alive!");
+
+        // alternatively, you may use getAct() method for issuing arbitrary {@link CommandMessage} for the bot
+        getAct().act(new SendMessage().setGlobal(true).setText("And I can speak! Hurray!"));
+    }
+</programlisting></para>
+
+      <para>The "Hello world!" message is printed there. Note that the <methodname>body</methodname> is the
+      gateway for the most commands you may issue to the bot to Unreal Tournament. 
+      These commands are grouped together in several categories, like <methodname>body.getCommunication()</methodname>.
+      All commands are well documented, so you can receive contextual help in NetBeans while
+      coding.</para>
+      <para> Alternatively you can use the basic command interface accessed through
+        <methodname>getAct()</methodname> method to issue commands. The <methodname>getAct()</methodname> method returns object
+      implementing <classname>IAct</classname> interface that defines
+      <methodname>act(CommandMessage command)</methodname> method. The
+      <methodname>act()</methodname> method is the gateway for issuing actions
+      represented by <classname>CommandMessage</classname> objects.
+      <classname>SendMessage</classname> is a command sending message to a
+      global chat channel - the constructor. Notice that the object is created
+      and it's name property is set in only one line. The
+      <methodname>setText()</methodname> method returns the instance on which
+      it has been called, so more properties can be set in a chain e.g.
+      <code>new SendMessage().setGlobal(true).setText("And I can speak! Hurray!")</code>.</para>
+
+      <para><note>
+          <para>To see all command objects you can use in your bot, open
+          <classname>CommandMessage</classname> class definition. To do it as
+          quickly as possible press <accel>Ctrl + O</accel> and type name of
+          the class for search. In this case, type
+          <userinput>CommandMessage</userinput>. Once the source opens in the
+          central window press <accel>Alt + F12</accel> to open
+          <guilabel>Hierarchy</guilabel> browser. Now you can see list of all
+          classes extending the <classname>CommandMessage</classname> which
+          are commands provided by the PogamutUT2004.</para>
+        </note>Last method we will describe in this section is
+      <methodname>main()</methodname>. This is the first method called when
+      you execute the bot program (like in any other Java program). This
+      method is responsible for instantiating the bot and connecting it to the
+      environment. Bot runner class facilitates bot execution: </para>
+
+      <para><programlisting language="java">
+    public static void main(String args[]) throws PogamutException {
+    	// wrapped logic for bots executions, suitable to run single bot in single JVM
+    	new UT2004BotRunner(EmptyBot.class, "EmptyBot").setMain(true).startAgent();
+    }
+     </programlisting>     
+     </para>
+     <para>Note that <methodname>setMain(true)</methodname> is setter that should be used
+     only in global main methods (i.e., <methodname>public static void main(String args[])</methodname>)
+     so the Pogamut platform correctly terminates itself after the end of the bot run. Otherwise
+     the JVM should not exit itself ... blame the JMX guys! Not us :-) So the rule of thumb,
+     you're in main method, use <methodname>setMain(true)</methodname>, you're starting the agent from different method,
+     do not use it.</para>
+
+      <para>The <methodname>logic()</methodname> method will be described in
+      the next section.</para>
+    </section>
+
+    <section role="prog">
+		<anchor xml:id="emptybot.logging" ></anchor>
+      <title>Logging and introspection</title>
+
+      <para>Two features that you will find handy during parameterization and
+      evaluation of the bot are logging and introspection.</para>
+
+      <para>Logging is a mechanism for tracing program's execution by printing
+      messages - it can be used both for debugging (multi threaded
+      applications are often hard or impossible to debug using breakpoints)
+      and evaluation (you can process logs of bot's activity and utilize some
+      statistical software).</para>
+
+      <para>Introspection is designed to ease the bot's parameterization. It
+      is often needed to adjust multiple behavior parameters at runtime and
+      you will probably end up creating your own GUI (graphical user
+      interface) for this purpose. In introspection, you just annotate desired
+      variables with @JProp annotation and they will be accessible via the
+      Netbeans GUI.</para>
+
+      <para>Let's look how logging and introspection works in EmptyBot
+      example. First start the bot (<accel>F6</accel>), then have a look on
+      it's source code. In the initial section several variables annotated
+      with the <code language="java">@JProp</code> are defined.</para>
+
+      <para><programlisting language="java">
+    @JProp
+    public String stringProp = "Hello bot example";
+    @JProp
+    public boolean boolProp = true;
+    @JProp
+    public int intProp = 2;
+    @JProp
+    public double doubleProp = 1.0;</programlisting>Now expand bot's node
+      under the UT server node (in <guilabel>Services</guilabel> tab), you
+      will see two new nodes - <guilabel>Logs</guilabel> and
+      <guilabel>Introspection</guilabel>. After selecting the
+      <guilabel>Introspection</guilabel> node the annotated variables will be
+      shown in the <guilabel>Properties</guilabel> (<accel>Ctrl + Shift +
+      7</accel>) window. Note that the <varname>intProp</varname> variable is
+      being continuously updated. New values of variables can be also set in
+      this window.</para>
+	  
+	  <para><guilabel>Controlling the Logs.</guilabel> In Pogamut each major module usually has his own log category. When you set your log level to be high for Pogamut and Pogamut modules (to log even less important things) your console will be flooded with thousands of messages and this can cause performance problems in NetBeans (in Eclipse it is ok) - your bot will lag etc. To turn off logging in Pogamut add <methodname>.setLogLevel(Level.OFF) </methodname> to UT2004Runner: 
+	  <programlisting language="java">
+
+    public static void main(String args[]) throws PogamutException {
+        // wrapped logic for bots executions, suitable to run single bot in single JVM
+
+        // you can forcingly set logging to aggressive level FINER so you would see (almost) all logs 
+        // that describes decision making behind movement of the bot as well as incoming environment events
+        new UT2004BotRunner(EmptyBot.class, "EmptyBot").setMain(true).setLogLevel(Level.OFF).startAgent();
+    }	  
+	  </programlisting>
+	  This will turn off logging for Pogamut modules, however your user log should not be affected. In NetBeans we do not recommend to set log level higher then INFO. Alternatively, you can also turn off logging for Pogamut modules one by one. E.g.
+	  <programlisting language="java">
+
+    /**
+     * This method is called only once right before actual logic() method is
+     * called for the first time.
+     */
+    @Override
+    public void beforeFirstLogic() {        
+        //Turns off logging for path executor - logs hundreds of messages, useful when debugging path finding.
+        pathExecutor.getLog().setLevel(Level.OFF);
+        //Turns off logging for navigation module wrapping pathExecutor module.
+        navigation.getLog().setLevel(Level.OFF);
+        //Turns off your user specified logs you use in e.g. the logic() method - ( log.info("I'm logging."); )
+        log.setLevel(Level.OFF);                       
+    } 
+	  </programlisting>	  
+	  </para>
+
+      <para>Last non-empty method is <methodname>logic()</methodname>. There is a commented code implementing a simple
+	  follow player behavior. Try to uncomment the code blocks and observe the bot following the first player he sees in
+the environment. More information about modules used here is in following tutorials. </para>
+
+      <para><programlisting language="java">
+    public void logic() throws PogamutException {
+/*        
+        // Mark that new logic iteration has begun        
+        log.info("---LOGIC: " + (++logicIterationNumber) + "---");  
+       
+        // Log logic periods
+        long currTime = System.currentTimeMillis();
+        if (lastLogicTime &gt; 0) log.info("Logic invoked after: " + (currTime - lastLogicTime) + " ms");
+        lastLogicTime = currTime;
+        
+        // Can my but see any player?
+        if (players.canSeePlayers()) {
+            // YES!
+            log.info("Can see any player/s?: YES");
+            // Set my target to nearest visible player ...
+            lastPlayer = players.getNearestVisiblePlayer();
+            // ... and try to move with straight movement (without any navigation)
+            log.info("Running directly to: " + lastPlayer.getId());
+            move.moveTo(players.getNearestVisiblePlayer());            
+            // We've just switched to manual movement ... stop path navigation if running
+            if (navigation.isNavigating()) {
+                navigation.stopNavigation();
+            }
+        } else {
+            // NO, I cannot see any player
+            log.info("Can see any player/s?: NO");
+            
+            if (lastPlayer == null) {
+                log.info("lastPlayer == null ... no target to pursue, turning around");
+                move.turnHorizontal(30);
+            } else {
+                log.info("lastPlayer == " + lastPlayer.getId() + " ... going to pursue him/her/it");
+                // Yes, I should try to get to its last location
+                if (info.getDistance(lastPlayer) &lt; 200) { // are we at the last
+                    log.info("Arrived to lastPlayer's last known location.");
+                    move.turnTo(lastPlayer.getLocation());
+                    if (info.isFacing(lastPlayer.getLocation())) {
+                        lastPlayer = null;
+                    }
+                } else {
+                    // We are still far from the last known player position
+                    // =&gt; just tell the navigation to guide us there
+                    log.info("Navigating to lastPlayer's last known location.");
+                    navigation.navigate(lastPlayer);                    
+                }
+            }
+        }
+*/
+    }	  
+	  </programlisting> </para>
+
+      <para>Note that you can observer Pogamut logs accesible by <methodname>getLog()</methodname> method or directly by <methodname>log.</methodname> under bot's
+      <guilabel>Logs</guilabel> node. </para>
+	  	  	  
+    </section>
+  </section>
+
+  <section>
+    <title>Advanced topics</title>
+
+    <para>Links to further reading, papers, web pages.</para>
+
+    <section>
+      <title>Pogamut architecture</title>
+              <imageobject>
+                <imagedata fileref="media/00-EmptyBot/pogamut_architecture.jpg"></imagedata>
+              </imageobject>      
+              
+<para>Pogamut architecture. The information from the environment UT2004 are exported through TCP/IP by GameBots2004 text protocol. These text messages are processed by Java library - Gavialib, so the Pogamut agent can work with Java objects. Pogamut agent can be debugged remotely through JMX protocol through Pogamut NetBeans plugin.</para>
+    </section>
+
+    <section>
+      <title>Remote JMX control</title>
+
+      <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Agent instantiation - Guice</title>
+
+      <para>TODO</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+    <para>
+    <link linkend="01-ResponsiveBot">01-ResponsiveBot</link> - simple responsive bot - peek into secrets of Pogamut listeners
+    </para>
+    <para>
+    <link linkend="02-NavigationBot">02-NavigationBot</link> - basic navigation bot - a bot that runs around in the environment
+    </para>
+    <para>
+    <link linkend="03-RaycastingBot">03-RaycastingBot</link> - how to use simple ray tracing 
+    </para>	
+	
+   
+    <para>For creating links between documents read
+    http://www.sagehill.net/docbookxsl/Olinking.html#LinkBetweenDocs</para>
+  </section>
+</chapter>

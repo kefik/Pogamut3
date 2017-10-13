@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="IPTH" name="PathList" type="Batch">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Info batch message. A series of pathnodes in response to a
+		GETPATH command from the client. Starts with SPTH, ends with
+		EPTH. Represents some path in the map (sequence of traversable
+		navigation points).
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="RouteId" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of one navigation point in the path (well it
+			should be navigation point - safer is to use location).
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>
+			Location of one navigation point in the path.
+		</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

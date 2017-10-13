@@ -1,0 +1,8 @@
+(
+    (AP testAP (action0 action1 action2))
+
+    (RDC testPlan
+	(drives ((test testAP)))
+    )
+)
+

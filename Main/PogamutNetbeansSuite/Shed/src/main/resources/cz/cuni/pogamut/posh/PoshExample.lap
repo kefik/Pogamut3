@@ -1,0 +1,25 @@
+;
+; Sample posh plan used in Options dialog for Fonts&Colors
+;
+(
+  (C kill-enemy vars($target="nearest")
+    (elements
+      ((SelectWepon (trigger ((cz.cuni.amis.yaposh.BestWeponSelected false ==))) cz.cuni.amis.yaposh.SwitchToBestWeapon))
+      ((Shoot cz.cuni.amis.yaposh.ShootOnce))
+    )
+  )
+
+  (AP pick-items 
+    (
+      cz.cuni.amis.yaposh.PickItems($type="health") 
+      cz.cuni.amis.yaposh.PickItems($type="armor")
+    )
+  )
+
+  (DC life (goal ((cz.cuni.amis.pogamut.sposh.executor.Fail)))
+    (drives 
+      ((hit (trigger ((cz.cuni.amis.SeeEnemy) (cz.cuni.amis.yaposh.Ammo 0 >))) kill-enemy))
+      ((get-boosts pick-items))
+    )
+  )
+)

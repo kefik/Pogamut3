@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<installation version="1.0">
+    <packs>
+        <pack id="ue2pack" name="UE2Runtime, GameBotsUE2, Emohawk Emoticons, Animations and Map" required="no">
+            <description>Installs Unreal Engine 2 Runtime with GameBots and EmohawkVille map. UE2 is free for noncommercial or educational purposes.</description>
+            <fileset dir="UE2Runtime/UnrealEngine2RuntimeDemo/" targetdir="$UE2_HOME"/>
+			<fileset dir="UE2Runtime/EmohawkGamePACK/" targetdir="$UE2_HOME"/>						
+            
+            <parsable targetfile="$UE2_HOME/System/_compileUE2.bat" os="windows"/>
+            <executable targetfile="$UE2_HOME/System/_compileUE2.bat" stage="postinstall" failure="ask" keep="true">
+                <os family="windows"/>
+            </executable>
+            
+        </pack>
+		
+		<!--
+        <pack id="ue2goal" name="UE2 Emohawk GOAL (v4873) Environment" required="no">
+            <description>Environment JAR file for GOAL. GOAL is an agent programming language for programming rational agents. GOAL agents derive their choice of action from their beliefs and goals. The language provides the basic building blocks to design and implement rational agents.</description>
+						
+            <fileset dir="UE2Runtime/GOAL/" targetdir="$GOAL_HOME/environments/"/>
+        </pack>        
+        -->
+		
+        <pack name="UE2 Shortcuts" required="no">
+            <description>Useful shortcuts for Pogamut UE2/Emohawk.</description>
+            
+            <file src="shortcuts/UE2-Emohawk/startUE2RuntimeLow.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startUE2RuntimeLow.bat" type="plain" os="win"/>
+
+            <file src="shortcuts/UE2-Emohawk/startUE2GamebotsServer.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startUE2GamebotsServer.bat" type="plain" os="win"/>
+        </pack>
+        
+        <pack id="ue2archetypespack" name="UE2 Example Projects Archetypes" required="no">
+            <description>Installs Maven archetypes for projects using UE2. This makes it easy to start creating your own Maven based projects.</description>
+            
+            <fileset dir="archetypes/ue2/" targetdir="$INSTALL_PATH/archetypes/ue2"/>
+            <parsable targetfile="$INSTALL_PATH/archetypes/ue2/install-all.bat" type="plain" os="win"/>
+            
+        </pack>
+    </packs>
+</installation>

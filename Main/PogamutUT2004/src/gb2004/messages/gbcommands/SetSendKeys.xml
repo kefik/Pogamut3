@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETSENDKEYS" extends="CommandMessage" name="SetSendKeys"
+               type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <group name="Server"/>
+   <documentation>
+		Sets whether all key (not mouse) events should be sent through the KEYEVENT message.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="PlayerId" type="UnrealId">
+      <documentation>Id of the affected player. Used in GBUE2.</documentation>
+   </property>
+
+   <property name="Player" type="String">
+      <documentation>Name of the affected player. Used in GBScenario.</documentation>
+   </property>
+   <property name="Send" type="boolean">
+      <documentation>If true, the player can behave normally. If false, the player cannot perform any action.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

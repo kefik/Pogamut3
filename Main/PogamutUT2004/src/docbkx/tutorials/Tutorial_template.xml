@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Empty bot - basics of Pogamut </title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>A</para>
+        </listitem>
+
+        <listitem>
+          <para>B</para>
+        </listitem>
+
+        <listitem>
+          <para>C</para>
+        </listitem>
+      </itemizedlist>Estimated time for completing this tutorial is X
+    minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisities</title>
+
+    <para>Links to other tutorials, software that must be installed.</para>
+  </section>
+
+  <section>
+    <title>Tutorial body</title>
+
+    <para>Examples of source code, screenshots, video.</para>
+  </section>
+
+  <section>
+    <title>Advanced topics</title>
+
+    <para>Links to futher reading, papers, web pages.</para>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+
+    <para>Links to other tutorials. </para>
+
+    <para>For creating links between documents read
+    http://www.sagehill.net/docbookxsl/Olinking.html#LinkBetweenDocs</para>
+  </section>
+</chapter>

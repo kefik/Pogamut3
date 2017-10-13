@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SHTXT" extends="CommandMessage" name="ShowText" type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Shows for specified amount of time or removes a text from players HUD.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the player on who's HUD should be the text shown.</documentation>
+   </property>
+   <property name="Text" type="String">
+      <documentation>The text that should be shown.</documentation>
+   </property>
+   <property name="TextColor" type="Color" optional="true">
+      <documentation>The color of text.</documentation>
+   </property>
+   <property name="Time" type="double" optional="true">
+      <documentation>Number of seconds for which should be the text shown. The default is until manual removal.</documentation>
+   </property>
+   <property name="Show" type="boolean" optional="true">
+      <documentation>False if the message should be removed, true if it should be shown.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code>
+         <java>
+				        <javaimport import="java.awt.Color"/>
+			      </java>
+      </code>
+   </extra>
+</commandobject>

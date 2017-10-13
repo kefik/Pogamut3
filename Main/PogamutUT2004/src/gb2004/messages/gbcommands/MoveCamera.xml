@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="FORCECAMMOVE" extends="CommandMessage" name="MoveCamera" type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Moves with the player that was previously set as a camera.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Id" type="UnrealId">
+      <documentation>UnrealId of the player that is a camera and that we want to move. </documentation>
+   </property>
+   <property name="Destination" type="Location">
+      <documentation>Final destination where the camera should move. </documentation>
+   </property>
+   <property name="Direction" type="Vector3d">
+      <documentation>Vector that sets direction of the move of this camera. </documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>Desired rotation. </documentation>
+   </property>
+   <property name="RotationSpeed" type="Rotation">
+      <documentation>Desired rotation speed. </documentation>
+   </property>
+   <property name="Speed" type="double">
+      <documentation>Set the speed of the move of this camera. </documentation>
+   </property>
+   <property name="Time" type="double">
+      <documentation>How long this move of this camera will last (in seconds). </documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

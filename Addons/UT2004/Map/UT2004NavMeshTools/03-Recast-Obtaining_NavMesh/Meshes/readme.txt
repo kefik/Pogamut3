@@ -1,0 +1,1 @@
+Meshes for UT2004 maps avialable at: svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project/Addons/UT2004NavMeshTools/03-Recast-Obtaining_NavMesh/Meshes

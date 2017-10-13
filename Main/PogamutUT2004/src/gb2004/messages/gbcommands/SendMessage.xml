@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="MESSAGE" extends="CommandMessage" name="SendMessage" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Send a message to the world or just your team.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>Here we can specify Id of the bot, that will receive this message privately (with "Private:" string at the beginning of the message). Doesn't work for players (but if text bubble enabled, players will see this message above the bot head).</documentation>
+   </property>
+   <property name="Text" type="String">
+      <documentation>Text to send.</documentation>
+   </property>
+   <property name="TeamIndex" type="Integer">
+      <documentation>
+			Specifying target team - can be 0 or 1. Works only in team games. If global is set to true then the message will be sent to all nevertheless.
+		</documentation>
+   </property>   
+   <property name="Global" type="boolean">
+      <documentation>
+			If True it is sent to everyone. Otherwise (or if not
+			specified), just your team.
+		</documentation>
+   </property>
+   <property name="FadeOut" type="double">
+      <documentation>Enables text bubble. Sets how long the bubble should stay (in seconds, counted ~ 12 + FadeOut seconds - dunno why, some UT mechanics?). If -1 the bubble won't be shown.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

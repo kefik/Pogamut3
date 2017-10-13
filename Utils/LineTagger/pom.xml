@@ -1,0 +1,132 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cz.cuni.amis</groupId>
+		<artifactId>amis-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../Poms/AmisPom/pom.xml</relativePath>
+	</parent>
+
+	<groupId>cz.cuni.amis.pogamut.lectures.linetagger</groupId>
+	<artifactId>line-tagger</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+
+	<name>line-tagger</name>
+	<url>http://maven.apache.org</url>
+
+
+	<properties>
+		<main.class>cz.cuni.amis.pogamut.lectures.linetagger.LineTagger</main.class>
+	</properties>
+
+	<dependencies>
+		<!-- 
+			
+			RUNTIME DEPENDENCIES
+		
+		 -->
+        
+        <!--
+        	AMIS DEPENDENCIES 
+         -->
+         
+        <dependency>
+            <groupId>cz.cuni.amis.utils</groupId>
+            <artifactId>rewrite-files</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>cz.cuni.amis.utils</groupId>
+            <artifactId>process-execution</artifactId>
+            <version>3.6.2-SNAPSHOT</version>
+        </dependency>
+        
+        <!-- 
+			
+			TEST DEPENDENCIES
+		
+		 -->
+        
+        <!--
+        	AMIS DEPENDENCIES 
+         -->
+        
+    	<dependency>    
+        	<groupId>cz.cuni.amis</groupId>
+			<artifactId>amis-tests</artifactId>
+			<version>3.6.2-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>one-jar-package</id>
+			<activation>
+				<file>
+					<missing>skip.one-jar.package</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>buildnumber-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<id>execute-buildnumber-maven-plugin</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.dstovall</groupId>
+						<artifactId>onejar-maven-plugin</artifactId>
+						<version>1.4.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<!-- Optional -->
+									<onejarVersion>0.97</onejarVersion>
+									<!--
+										Optional, use only if you need to include native libraries
+										(dll's) <binlibs> <fileSet>
+										<directory>${project.build.directory}/dllextract</directory>
+										<includes> <include>test.dll</include> </includes> </fileSet>
+										</binlibs>
+									-->
+									<!-- Optional, default is false -->
+									<attachToBuild>true</attachToBuild>
+									<!-- Optional, default is "onejar" -->
+									<classifier>onejar</classifier>
+									<mainClass>${main.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
+
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>amis-artifactory</id>
+			<name>AMIS Artifactory</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+</project>

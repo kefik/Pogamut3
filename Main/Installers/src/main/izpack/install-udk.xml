@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- 
+   Pogamut UT2004 platform Izpack installation script.
+
+   Ant targets
+   http://jira.codehaus.org/browse/IZPACK-158
+-->
+
+<installation version="1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+ <!--
+    <variables>
+        <variable name="app.name" value="@{app.name}"/>
+    </variables>
+    !-->
+    <!--
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>Pogamut - UDK Edition</appname>
+        <appversion>@{version}</appversion>
+        <authors>
+            <author name="AMIS Group, Charles University in Prague" email="amis-info@ksvi.mff.cuni.cz"/>
+        </authors>
+        <url>http://pogamut.cuni.cz/</url>
+        <javaversion>1.6</javaversion>
+        <run-privileged/>
+        <webdir>@{web.installer.http}/@{version}/</webdir>
+        <summarylogfilepath>$INSTALL_PATH/installsummary.htm</summarylogfilepath>
+    </info>
+    
+    <conditions>
+        <condition type="packselection" id="nbcnd">
+            <packid>nbpack</packid>
+        </condition>
+        <condition type="packselection" id="mavencnd">
+            <packid>maven</packid>
+        </condition>
+        <condition type="packselection" id="archetypecnd">
+            <packid>udkarchetypespack</packid>
+        </condition>
+    </conditions>
+
+
+    <!-- 
+        The gui preferences indication.
+        Sets the installer window to 640x480. It will not be able to change the size.
+    -->
+    <guiprefs width="640" height="480" resizable="yes"/>
+
+    <!-- 
+        The locale section.
+        Asks here to include the English and French langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+        <!--<langpack iso3="cze"/>!-->
+    </locale>
+
+    <native type="izpack" name="ShellLink.dll">
+        <os family="windows" />
+    </native>
+    <native type="izpack" name="ShellLink_x64.dll">
+        <os family="windows" />
+    </native>    
+
+    <!-- 
+        The resources section.
+        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+    -->
+    <resources>
+        <res id="HTMLInfoPanel.prereqs" src="InstallerPrereqs-NB.html"/>
+        <res id="HTMLLicencePanel.licence" src="PogamutInstallerLicense.html"/>        
+        <res id="HTMLInfoPanel.citeus" src="CiteUs.html"/>
+        <res id="HTMLInfoPanel.acknowledgement" src="Acknowledgement.html"/>
+        
+        <res id="userInputSpec.xml" src="userInputSpec-udk.xml" />
+
+        <res id="HTMLInfoPanel.vistaUACwarning" src="VistaUACWarning.html"/>
+
+        <res src="shortcutSpec.xml" id="shortcutSpec-udk.xml" />
+        <res id="RegistrySpec.xml" src="registrySpec.xml" />
+                
+        <res id="ProcessPanel.Spec.xml" src="processPanelSpec-udk.xml" />
+    <!--
+   TODO make shortcuts
+        <res src="unix_shortcut_specification.xml" id="unix_shortcutSpec.xml"/>
+
+        <res id="AntActionsSpec.xml" src="installer/ant-actions-spec.xml" />
+        <res id="antBuild.xml" src="installer/antBuild.xml" type="ant"/>
+        -->
+    </resources>
+    
+    <variables>
+        <variable name="JDKPathPanel.minVersion" value="1.6" />
+        <!--<variable name="JDKPathPanel.skipIfValid" value="yes" />!-->
+    </variables>
+
+  <!--
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="HTMLInfoPanel" id="prereqs"/>
+        <panel classname="HTMLLicencePanel"/>
+        <panel classname="HTMLInfoPanel" id="citeus"/>
+        <panel classname="HTMLInfoPanel" id="acknowledgement"/>
+        
+        <panel classname="TreePacksPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="JDKPathPanel"/>
+        <!--
+        <panel classname="HTMLInfoPanel" id="vistaUACwarning" condition="izpack.windowsinstall.vista+nbcnd"/>
+        -->
+        <panel classname="UserInputPanel" condition="nbcnd" />
+        <panel classname="UserInputPanel" condition="mavencnd" />
+        
+        <panel classname="InstallPanel"/>
+        <panel classname="ProcessPanel" condition="archetypecnd"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+
+    <listeners>
+        <listener installer="RegistryInstallerListener"
+                  uninstaller="RegistryUninstallerListener" >
+            <os family="windows"/>
+        </listener>
+        <listener installer="AntActionInstallerListener"
+                  uninstaller="AntActionUninstallerListener" />
+    </listeners>
+
+
+    <!-- Used for registry access on Windows !-->
+    <native type="3rdparty" name="COIOSHelper.dll" stage="both">
+        <os family="windows"/>
+    </native>
+
+
+    <!-- 
+        The packs section.
+    -->
+    <packs>
+        <refpack file="packs/CommonPacks.xml"/>
+        <refpack file="packs/NetbeansPacks.xml"/>
+        <refpack file="packs/UDKPacks.xml"/>
+    </packs>
+
+</installation>

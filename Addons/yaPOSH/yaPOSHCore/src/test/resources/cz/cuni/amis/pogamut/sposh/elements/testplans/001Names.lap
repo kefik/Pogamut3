@@ -1,0 +1,9 @@
+(
+    (RDC PoshBot (goal ((cz.cuni.amis.sposh.Fail)))
+	(drives
+            ((de0 user.custom.actions.Run4ever))
+            ((de1 diee))
+        )
+    )
+)
+

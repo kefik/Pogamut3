@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="DIE" name="BotKilled" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. This bot has died.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Killer" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of player that killed our bot if any (may have
+			walked off a ledge).
+		</documentation>
+   </property>
+   <property name="DamageType" type="String" category="local">
+      <documentation>
+			A string describing what kind of damage killed the bot.
+		</documentation>
+   </property>
+   <property name="DeathString" type="String" category="local">
+      <documentation>
+			String describing this type of death.
+		</documentation>
+   </property>
+   <property name="WeaponName" type="String" category="local">
+      <documentation>
+			Name of the weapon that caused this damage.
+		</documentation>
+   </property>
+   <property name="Flaming" type="boolean" category="local">
+      <documentation>
+			If this damage is causing our bot to burn. TODO
+		</documentation>
+   </property>
+   <property name="CausedByWorld" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by world - falling into lava, or falling down.
+		</documentation>
+   </property>
+   <property name="DirectDamage" type="boolean" category="local">
+      <documentation>
+			If the damage is direct. TODO
+		</documentation>
+   </property>
+   <property name="BulletHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by bullet.
+		</documentation>
+   </property>
+   <property name="VehicleHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by vehicle running over us.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

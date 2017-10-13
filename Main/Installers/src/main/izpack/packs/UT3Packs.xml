@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<installation version="1.0">
+    <packs>
+        <pack id="ut3pack" name="Unreal Tournament 3 stuff" required="no" >
+            <description>Files specific to Unreal Tournament 3.</description>
+        </pack>
+	
+        <pack name="GameBotsUT3" id="gbut3pack" parent="ut3pack" required="no">
+            <description>GameBotsUT3 network interface for Unreal Tournament 3 used to control bots and export information about the game state. To install GameBotsUT3 you must have UT3 installed first!</description>
+            <fileset dir="GameBotsUT3/src/main/ut3/" targetdir="$UT3_HOME/"/>            
+        </pack>
+	
+	<!--
+        <pack id="ut2004patchpack" name="UT2004Patch" required="no" parent="ut2004pack">
+            <description>Unreal Tournament 2004 Patch 3369 required to run the GameBots2004 properly.
+Note that if you are uncertain, which patch do you have, INSTALL IT - otherwise GameBots2004 will not work!</description>
+
+            <file src="utpatch/ut2004-winpatch3369.exe" targetdir="$INSTALL_PATH/" os="windows"/>
+
+            <executable targetfile="$INSTALL_PATH/ut2004-winpatch3369.exe" stage="postinstall" failure="ask">
+                <os family="windows"/>
+            </executable>
+            <executable targetfile="$INSTALL_PATH/TODO"  stage="postinstall" failure="ask">
+                <os family="unix"/>
+            </executable>
+        </pack>
+	-->
+        
+        <pack name="UT3 Shortcuts" required="no">
+            <description>Useful shortcuts for Pogamut UT3.</description>
+            
+            <file src="shortcuts/UT3/startUT3low.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startUT3low.bat" type="plain" os="win"/>
+
+            <file src="shortcuts/UT3/startGamebots3DMServer.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startGamebots3DMServer.bat" type="plain" os="win"/>
+
+        </pack>
+		
+
+        <pack id="ut3archetypespack" name="UT3 Example Projects Archetypes" required="no">
+            <description>Installs Maven archetypes for projects using UT3. This makes it easy to start creating your own Maven based projects.</description>
+            
+            <fileset dir="archetypes/ut3/" targetdir="$INSTALL_PATH/archetypes/ut3"/>
+            <parsable targetfile="$INSTALL_PATH/archetypes/ut3/install-all.bat" type="plain" os="win"/>
+        </pack>
+
+
+<!--
+        <pack name="Maps and models for UT" required="no" parent="Unreal Tournament 2004 stuff">
+            <description>
+                Civil maps and models for UT2004.
+            </description>
+        </pack>
+!-->
+    </packs>
+</installation>

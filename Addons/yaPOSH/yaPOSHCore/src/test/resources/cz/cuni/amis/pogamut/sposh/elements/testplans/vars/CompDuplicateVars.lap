@@ -1,0 +1,9 @@
+(
+    (C testCompetence vars($duplicateVariable="defaultValue", $duplicateVariable=12.6)
+        (elements ((test runSomething)))
+    )
+    (RDC TestPlan
+        (drives ((testDrive testCompetence)))
+    )
+)
+

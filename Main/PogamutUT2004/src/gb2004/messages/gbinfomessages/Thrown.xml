@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="THROWN" name="Thrown" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Weapon has been thrown out (response to
+		THROW command).
+	</documentation>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Inventory Id of the weapon thrown out.
+		</documentation>
+   </property>
+   <extra>
+      <code/>
+   </extra>
+</messageobject>

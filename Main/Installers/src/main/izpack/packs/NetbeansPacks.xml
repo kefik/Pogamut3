@@ -1,0 +1,9 @@
+
+<installation version="1.0">
+    <packs>
+        <pack id="nbpack" name="Pogamut Netbeans plugin" required="no">
+            <description>Set of Netbeans IDE plugins providing support for development of Pogamut bots.</description>
+            <fileset dir="NB/netbeans_site" targetdir="$NB_HOME/update/download"/>
+        </pack>
+    </packs>
+</installation>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETCROUCH" extends="CommandMessage" name="SetCrouch" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Will crouch/uncrouch the bot. If crouched you cannot jump. If
+		killed, this will be reset.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Crouch" type="boolean">
+      <documentation>
+			True or false to crouch or unrouch.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

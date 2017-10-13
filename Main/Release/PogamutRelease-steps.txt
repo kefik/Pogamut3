@@ -1,0 +1,44 @@
+0) run package.bat (will build this project)
+
+0.1) alter const.bat to match current settings
+
+0.2) Checkout fresh svn://artemis.ms.mff.cuni.cz/pogamut into some DIFFERENT dir (one you specify in const.bat) 
+... MAKE SURE THAT NOONE WILL INTERFERE WITH YOUR OPERATION (i.e., inside SVN, NO COMMITS!)
+... ALWAYS PERFORM THE RELEASE ON DIFFERENT DIRECTORY THAN ONE, YOU HAVE Pogamut-Release checked out in
+
+1) Make sure that there are no new archetypes available, if so,
+   change step0 / step2 / step3 / step4 / step5 / step10 / step11 xmls to correctly refresh & deploy them
+   
+2) Make sure that there are no new projects to be included in the release, if so
+   change all stepX.xml accordingly
+   
+3) Make sure that all archetypes still have very simple layout ... i.e., single source file / single resource
+   THERE MUST BE NO NESTED DIRECTORIES IN (example):
+   Main\PogamutUT2004Examples\00-EmptyBot\target\generated-sources\archetype\src\main\resources\archetype-resources\src\main\java
+     
+4) If you are about to do FULL RELEASE goto (5),
+   if you are about to release LIBRARIES ONLY goto (6)
+
+================
+(5) FULL RELEASE
+================
+
+5.1) Perform all stepXX in directoy "release-all".
+
+5.2) Installers can be found in Main/Installer/target
+
+5.3) Update archetype-catalog.xml inside the artifactory manually:
+
+    Follow Archetypes\__HELP__\archetype-catalog-update\readme.txt and add archetypes for the release + new snapshots.
+    ... this means you have to update two catalogs (snapshot & release catalog separately)
+
+==========================
+(6) LIBRARIES ONLY RELEASE
+==========================
+
+6.1) Perform all stepXX in directoy "release-libs-only".
+
+6.2) Update archetype-catalog.xml inside the artifactory manually:
+
+    Follow Archetypes\__HELP__\archetype-catalog-update\readme.txt and add archetypes for the release + new snapshots.
+    ... this means you have to update two catalogs (snapshot & release catalog separately)

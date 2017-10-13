@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<processing>
+    <job name="Defcon archetypes installation">
+        <executeForPack name="Defcon Example Projects Archetypes"/>
+        <os family="windows" />
+   
+        <executefile name="$INSTALL_PATH/archetypes/defcon/install-all.bat"/>
+    </job>
+    
+    <job name="Defcon demo download">
+            <executeForPack name="DefCon Demo"/>
+        <executefile name="$INSTALL_PATH/tmp/install-defcon.bat"/>
+    </job>
+</processing>

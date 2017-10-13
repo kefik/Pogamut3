@@ -1,0 +1,572 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="00-POSH-PreyBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+    <title>Prey bot - basics of Sposh </title>
+
+    <section>
+        <title>What will you learn?</title>
+
+        <para>In this tutorial you will learn about:</para>
+
+        <para><itemizedlist>
+                <listitem>Posh itself, reactive planner that isolates from sphagetti code in the logic()</listitem>
+                <listitem>How posh plan looks</listitem>
+                <listitem>How the plans are evaluated</listitem>
+                <listitem>behavior, consisting from senses used to detect state of virtual
+                environment, and actions, which do something in the environment.</listitem>
+            </itemizedlist>
+        </para>
+    </section>
+
+    <section>
+        <title>Prerequisities</title>
+
+        <para>Before you start with this tutorial make sure that you have
+        installed:</para>
+
+        <para>
+            <itemizedlist>
+                <listitem>
+                    <para>Unreal Tournament 2004 / UDK with GameBotsUDK</para>
+                </listitem>
+
+                <listitem>
+                    <para>Gamebots2004 / UDK with GameBotsUDK</para>
+                </listitem>
+
+                <listitem>
+                    <para>Java 1.6</para>
+                </listitem>
+
+                <listitem>
+                    <para>Netbeans 7.1.1</para>
+                </listitem>
+                <listitem>
+                    <para>Pogamut 3 Netbeans plugin</para>
+                </listitem>
+            </itemizedlist>
+        </para>
+        
+        <para>While not required, it is a good idea to be familiar with Pogamut. If you aren't already, you should try following tutorials before reading this one: 
+        <itemizedlist>
+                <listitem>
+                    <para><link linkend="00-EmptyBot">Empty bot</link> - introduction to Pogamtu and and first, rather useless bot</para>
+                </listitem>
+            
+                <listitem>
+                    <para>
+                        <link linkend="02-NavigationBot">NavigationBot</link> - basic navigation bot - a bot that runs around in the environment
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>
+                        <link linkend="04-PogamutModules">Pogamut modules</link> - modules for convenient access to the virtual environment of UT2004
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </section>
+
+    <section>
+        <title>Tutorial</title>
+
+            <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to both
+    PogamutUT2004 and PogamutUDK examples. </para>
+
+        <para>In this particular tutorial we will create a demonstration bot in UT2004 using reactive planner called posh. The bot is quite simple, but should be sufficient to demonstrate basic concepts of posh, as well the posh plan editor integrated in the Pogamut netbeans plugin.</para>
+
+        <section>
+            <title>What is posh?</title>
+
+            <para>The basic problem of AI is to figure out what should agent do next (action selection). There are many approaches to this problem, such as neuron networks, finite state machines and many other, they all differ in complexity and versatility. One possible approach is called reactive planning, where hard-coded plans and information about environment are used to decide what next action should be.</para>
+
+            <para>Posh is a reactive planner engine that defines a hierarchical set of goals and ways to achieve these goals. Every time the plan is evaluated, it decides which drive (the need) should agent try to satisfy now, and based on the drive what action should be performed. It was developed by Joanna Bryson at the University of Bath.</para>
+        </section>
+
+        <section>
+            <title>Posh plan details and execution</title>
+
+            <para>In order to use the posh, it is necessary to define behavior (senses and action) and the posh plan. How exactly should the behavior implemented will be discussed later, for now, we will concentrate on the posh plans.</para>
+
+            <para>So how does the plan looks like?
+            <!-- TODO <programlisting language="lisp"> !-->
+                <programlisting>
+(
+    (AP turnAndJump (turn jump))
+    (C turnAround (goal ((fail)))
+        (elements
+            ((jump (trigger ((playerClose 200 &lt;))) turnAndJump))
+            ((turn (trigger ((succeed))) turn))
+        )
+    )
+    (SDC SposhBot (goal ((fail)))
+        (drives
+              ((bored (trigger ((health 90 &gt;))) turnAround ) )
+              ((hit-wall (trigger ((hitWall))) jump (seconds 1.0)) )
+              ((run-healths (trigger ((succeed))) runMedkits ) )
+        )
+    )
+)
+                </programlisting>
+            </para>
+
+            <para>The plan consists from following elements:
+                <itemizedlist>
+                    <listitem><para>drive collection - root element, contains list of elements, one of which is “fired” during every iteration of logic</para></listitem>
+
+                    <listitem><para>senses - checks some condition in virtual environment</para></listitem>
+
+                    <listitem><para>actions - does something in virtual environment</para></listitem>
+
+                    <listitem><para>action patterns - sequence of actions</para></listitem>
+
+                    <listitem><para>competences - list of elements</para></listitem>
+                </itemizedlist>
+            </para>
+             
+            <para>The description of elements is quite brief, and even the explanation given later here won’t go into too detail. The more detailed description of posh can be found in diseration of Joanna Bryson: {Intelligence by design}.</para>
+
+            <para>In order to do determine which action should the bot do, the plan has to be evaluated, so the Pogamut is evaluating the plan every time it receives new information from the environment. How exactly does evaluation works? In order to explain that, we have to describe the elements in little more detail.</para>
+
+            <section>
+                <title>Drive Collection (DC)</title>
+
+                <para>DC has a goal and list of drives. Goal is a condition (list of senses, all of them has to be true) that marks whether the agent has achieved its goal in the environment. Goals can be versatile, but in DC, the fail goal is used in most cases.</para>
+
+                <para>Drive is a action the bot wants to do (e.g. eat). It consists from a trigger (list of senses, all of them has to be true) and element that will be fired, if trigger is true (e.g. drive eat would have trigger “have_food“). Note, that it fires element, not necessary the action (although for many plans using the action is the simplest and easiest choice). The element can be action, action pattern or competence.</para>
+
+                <para>DC contains list of drives and they are sorted according to priority, with first drive having highest priority, and the last one having lowest priority(e.g. for bunny creature the “runFromPredator” drive would have higher priority than “eat“ drive).</para>
+
+                <para>Please note, that at least one drive should be fired during every evaluation (otherwise it is taken that bot doesn’t know what is is supposed to do), in most cases, just specify last drive doNothing with trigger succeed and action doNothing.</para>
+            </section>
+
+            <section>
+                <title>Action Pattern (AP)</title>
+
+                <para>AP is sequence of actions (not elements) that are supposed to execute in correct order(e.g. AP lookAround would have actions like turnLeft, lookRight, lookAbove, lookBelow). It can be used as fired element in DC or C.</para>
+            </section>
+             
+            <section>
+                <title>Competences (C)</title>
+
+                <para>C is quite similar to DC, it also has goal and list of priority ordered celements (equivalent of drives), where each celement has specified trigger and element (action, AP or another C) that is supposed to fire when trigger of celement is satisfied. The difference is in execution of posh plan, there is a reason why DC is at the root, while C are elements.</para>
+
+                <para>Please note, that we forbid the cycling = list of elements that could be executed in a cycle for eternity, e.g. C “eat” could specify that it is supposed to fire the element “eat“ (the trigger doesn’t matter) and therefore making cycle.</para>
+
+                    </section>
+        </section>
+
+        <section>
+            <title>How is posh plan evaluated?</title>
+
+            <para>Now we know from which parts does the plan consists, but we don’t know how the plan is evaluated. It is little complicated, but for the most part, you can look at the posh plan as the if-then tree, however, there are some differences.</para>
+
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="media/00-POSH-PreyBot/0-posh-traversing.png"></imagedata>
+                </imageobject>
+            </mediaobject>
+          
+            <para>During every evaluation of posh plan, engine first evaluates which drive is supposed to done now, this is done so plan can easily switch to drive with higher priority. After the drive is chosen, the engine goes through tree that is hanged under the selected drive in order to find out, which action should be done, if any (competence can finish, therefore not doing anything,  when its goal is fulfilled or no its celements had its trigger fulfilled). The inner tree elements can be only competences, AP and actions can be only leafs (at least for now).</para>
+
+                    <para>Now, the engine has selected action or AP that should be executed. If the selected leaf is action, just fire it and the next time, the drive is selected, just traverse the drive decision tree.</para>
+
+            <para>However, if selected leaf is AP, execute the said APs actions in sequence whenever the drive is selected, until some action fails or the AP is finished. Only after the AP has either finished or one of its actions has failed, the tree of the drive can be traversed again (note that this is valid only for the drive, other drives can be selected in the meantime and do whatever they are supposed to do).</para>
+
+        </section>
+         
+
+        <section>
+            <title>Abode</title>
+
+            <para>Although it is possible to create a posh plan using nothing but a text editor, it is not very user friendly, therefore Pogamut provides a special editor for posh. It consists from two possible views: visual and source view. Change in one mode immediately reflects in the other. Source view provides syntax highlighting and syntax error checking on the fly. Visual mode mode enables user friendly GUI creation of the plan.</para>
+
+            <para>Difference between them is clear. Graph view is intended for people unaccustomed to programming and who have minimal knowledge of posh, because it will not allow user to make syntax error. It also provides very clear picture how will plan be evaluated. Source view gives user complete control over source while providing him with immediate feedback on possible errors.</para>
+
+             
+
+            <para>You will learn how to use the visual mode in the next part of the tutorial.</para>
+
+            <para>Editor features:</para>
+
+            <para>
+                <itemizedlist>
+                    <listitem><para>Expanded graph view of posh plan, competences and action patterns are correctly expanded</para></listitem>
+                    <listitem><para>Palette with all competences, action patterns, actions, senses that exists in plan that can be dragged and dropped into the plan</para></listitem>
+                    <listitem><para>Properties window that can change various properties of each element</para></listitem>
+                    <listitem><para>Collapse of any node to prevent possible cluttering of plan</para></listitem>
+                    <listitem><para>Source view with on the fly syntax control</para></listitem>
+                    <listitem><para>Elements can be dragged and dropped in the plan to move them from one place to another</para></listitem>
+                </itemizedlist>
+            </para>
+
+            <para>Editor in visual mode:
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="media/00-POSH-PreyBot/1-abode-visual.png"></imagedata>
+                    </imageobject>
+                </mediaobject>
+            </para>
+            
+            <para>Editor in source mode:
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="media/00-POSH-PreyBot/2-abode-source.png"></imagedata>
+                    </imageobject>
+                </mediaobject>
+            </para>
+
+        </section>
+         
+        <section>
+            <title>Create Prey bot using sposh</title>
+
+            <para>By now, you should have basic understanding of posh, so let’s create a simple prey bot. We want the preybot:</para>
+
+            <para>
+                <itemizedlist>
+                    <listitem><para>If bot is injured, try to get more medkits</para></listitem>
+
+                    <listitem><para>If the bot hits the wall, it may be stuck, or it hit some obstruction on the ground, try to get unstuck by jumping</para></listitem>
+
+                    <listitem><para>Otherwise, with nothing to do, turn around and if some player is close, jump while turning around. </para></listitem>
+                </itemizedlist>
+            </para>
+
+            <para>The bot is quite simple, the reason is difficulty of implementation of behavior. As the actions get more diverse, the behavior gets more complicated to maintain.</para>
+
+        </section> 
+
+        <section>
+            <title>Creating the empty sposh bot</title>
+
+            <para>Pogamut provides the sposh template:</para>
+
+            <para>
+                <itemizedlist>
+                    <listitem><para>Start the NetBeans with installed lastest version of Pogamut plugin 3 beta(3.0.10 at time of writing)</para></listitem>
+
+                    <listitem><para>Open the new project wizzard by clicking on “New Project” in file menu.</para></listitem>
+
+                    <listitem><para>Choose category “Pogamut UT2004” (not the one in samples)</para></listitem>
+
+                    <listitem><para>Choose the "Sposh Bot Project"</para></listitem>
+
+                    <listitem><para>Click next</para></listitem>
+
+                    <listitem><para>Change name to “Prey“ and if necessary, select appropriate project location</para></listitem>
+
+                    <listitem><para>Click on finish to create the project.</para></listitem>
+                </itemizedlist>
+            </para>
+
+            <para>The Prey project has three files:</para>
+
+            <para>
+                <itemizedlist>
+                    <listitem><para>BotBehaviour.java - class to implement the senses and actions</para></listitem>
+
+                    <listitem><para>SposhLogic.java - class to specify the plan and the behavior</para></listitem>
+
+                    <listitem><para>sposhPlan.lap - the posh plan</para></listitem>
+                </itemizedlist>
+            </para>
+
+            <para>Open the sposhPlan.lap and you should see the default sposh plan that does nothing at all. It has goal that fails, so the bot doesn’t end and only one drive that does nothing at all. On the right is palette, that is showing the list of all actions, senses, C and AP.</para>
+
+             <mediaobject>
+                <imageobject>
+                    <imagedata fileref="media/00-POSH-PreyBot/3-defaultplan.png"></imagedata>
+                </imageobject>
+            </mediaobject>
+
+            <para>Try to change from visual mode to source mode by clicking on button "Text" and back by clicking on button "Simple".</para>
+
+                    <section>
+                <title>Creating the plan</title>
+
+                <para>We want our bot to look for medkits when it is injured, so lets add the drive for it:</para>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>Right click on the Drive Collection node (the orange one) and select “Add Drive“ from context menu</para></listitem>
+
+                        <listitem><para>As name of the drive choose "runHealths"</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>There, we have created a new drive, but it has only default values, we need to change that:</para>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>Change the fail sense of "runHealths" drive by doublecking on it and changing the text "fail" to "health &lt; 90" By doing this, the drive will be triggered when sense health will be less than 90. </para></listitem>
+
+                        <listitem><para>Change the "doNothing" action of "runHealths" drive to "runHealths" the same way the sense was changed. Name of the drives are not used by engine and can therefore be anything, as long as it conforms to syntax rules.</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>When the fail sense was changed to health sense, it appeared in the palette under "List of senses" category, and the "runHealths" action has appeared in the "List of actions“ category. The "do_nothing” action is shown as "!do_nothing!" because it is not used in the plan. We won’t use it in the plan anymore, so right-click on the "!do_nothing!" action and select "Delete action" from the context menu in order to remove action from the palette.</para>
+
+                <para>Now we have two drives, "nothing" and "runHealths", but priorities are wrong! Because "nothing" trigger will always be true, the "runHealths” will never fire. We need to switch them. In order to do that, drag the "runHealths" drive to the "nothing" drive. When you start dragging "runHealths", you will see the red "ghost" widget that will turn green when you reach the "nothing" element. The red means that you can’t drop the element here and the green one that you can drop the element.</para>
+
+                <para>You can try to drag "runHealths" to "nothing", but they won’t exchange, because when you drop the element A on another element B, A is removed from original position and placed above the element B. In this case, the "runHealths" is returned to its original position above "nothing." This placement mechanism may change in the future, but for now, this is default behavior for any drag and drop (DnD). If you want to place the element as the last, you can either move the last element to achieve the result or you can drop the element to the parent element (in case of drive, that would be drive collection element).</para>
+
+                <para>The DnD is not limited to drives, you can DnD many other elements, only DC, trigger and goal are for now unmoveable. There are some mechanisms to protect the syntax correctness of the plan, so you when you try move things like last sense from trigger to another trigger/goal, new default sense will be created in the place the sense was dragged from (you can’t have trigger without senses).</para>
+
+                <para>The drives are now in correct order as shown in following image.
+                     <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="media/00-POSH-PreyBot/4-runHealths.png"></imagedata>
+                        </imageobject>
+                    </mediaobject>
+                </para>
+                 
+                <para>But there is more we wanted from the bot. The bot may get struck and in that case, we wanted to jump. Drag the "Drive" from palette category "Add new" to the drive "runHealths” and drop it. That will trigger creation of  another drive, let’s call it "getUnstuck." Note that new drive has placed itself according to DnD placement policy. Change the trigger of "getUnstuck" to from "fail" to "hitWall" and change the action from "do_nothing” to "jump"</para>
+
+                <para>We want our bot to do something else than nothing when it doesn’t look for medkits or isn’t stuck. We want it to turn around itself. Delete the "nothing" drive by choosing the "Delete Drive" from its context menu. Careful, now we don’t have any ’default’ drive that fires if everything else fails that is BAD (tm). Add one by dragging the "Drive" from palette’s "Add new" category to the Drive Collection element (being parent of all drives, it add the dropped element as the last one). Name it "bored", set trigger to "succeed" and set its action to "turn"</para>
+
+                            <para>Plans can get pretty big and often larger that our screen space, in such cases, we will see the scroll bars on the bottom and on the right of the editor window. In such cases, you can zoom in or out of the plan using Ctrl+Wheel to change the scale (try it, zoom in and then restore original scale), but you can also reduce the screen space by collapsing some elements of the tree. Collapse the "getStuck" drive by clicking on its arrow (dark orange on right part of the element). The arrow will change its direction and the subtree will be hidden. You can uncollapse the element by clicking once again on the arrow. Collapse the "getStuck" and "runHealths" drives.</para>
+
+                 
+                <para>According to our specification, we want out bot to jump and turn, if player is close. We could create a new drive, place it above "bored" with proper trigger, but we could also use competences to do that and because this is a tutorial, we will do just that.</para>
+
+                <para>Drag new Competence from the palette (”Competence” in "Add new" category) to the "turn" action of "bored" drive. Set the name of competence to "turnAround", but it also asks for name of first celement (in the dialog, it is called atom). Name the celement "turnCE". In the palette, competence "turnAround" has appeared in "List of competences."</para>
+
+                            <para>Note: The competence doesn’t have explicitely shown the trigger element but that is only to save the screen space, you can add other sense by DnD or throught context menu of celement.</para>
+
+                <para>Change the "fail" trigger of "turnCE" to "succeed" and change the "do_nothing" action of "turnCE" to "turn". The plan itself would produce same results as the one without C, but we will add another celement.</para>
+
+                 
+                <para>
+                    <itemizedlist>
+                        <listitem><para>Click on "Add competence element" from "turnAround” context menu</para></listitem>
+
+                        <listitem><para>Name it "turnAndJump"</para></listitem>
+
+                        <listitem><para>Change the order of celements so "turnAndJump" is above the "tunrCE" (use DnD)</para></listitem>
+
+                        <listitem><para>set the trigger of "turnAndJump" to "playerDistance &lt; 200"</para></listitem>
+
+                        <listitem><para>set the action of "turnAndJump" to "turnJump”</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>So what will the competence do? When "bored" is fired (that is when other drives fails, because "bored" is last and has trigger "succeed"), it will look at the competence "turnAround", checks its goal (that will fail, meaning that competence is not yet finished) and engine will first check trigger of turnAndJump celement and if trigger is satisfied, it will execute method "turnJump". If the trigger of "turnAndJump" is not satisfied (player is farther than 200), it will check trigger of "turnCE" (that is "satisfied”, so always true) and if it is true, calls action "turn"</para>
+
+                            <para>That is great, but maybe we could divide the tunrJump into two actions, first "jump” and than "turn"(because we already use "jump” in "getUnstuck” and "turn” in "turnCE”), and we can. That is what AP are for:</para>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>Drag new "AP” from palette (category "Add new") to action "turnJump" and drop it there</para></listitem>
+
+                        <listitem><para>Set the name of new AP to "turnJumpAP"</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>This has created a new AP with action "do_nothing". Add the actions "turn” and "jump” to "turnJumpAP”, you can:</para>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>drag and drop "Jump" and "Turn" actions from palette (the "List of all actions")</para></listitem>
+
+                        <listitem><para>use "Add action" from APs context menu</para></listitem>
+
+                        <listitem><para>drag and drop new actions from palette (the "Action" in category "Add new")</para></listitem>
+
+                        <listitem><para>rename the "do_nothing" action to either "turn” or "jump" and add the rest</para></listitem>
+
+                        <listitem><para>delete the remaining "do_nothing" action from its context menu</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>Finished posh plan:
+                     <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="media/00-POSH-PreyBot/5-finishedplan.png"></imagedata>
+                        </imageobject>
+                    </mediaobject>
+                </para>
+
+                <para>There, you have brand new plan for our Prey bot. All that remains is to implement the senses and actions.</para>
+                
+            </section>
+
+            <section>
+                <title>Implementing the behavior</title>
+
+                <para>By now, you should have defined the plan for the Prey bot and have the understanding, how it works. The plan, however, requires sense and actions we have to implement. Both of them are declared as annotated methods in behaviour class. The action code itself can’t be blocking (i.e. it can’t return only after the action is finished), because situation can change and some other action should be done, while the former one should stop. For this reason, the action implementation has to be very careful, it is called many times over (e.g. runHealths will be called during every evaluation, until bot is healthy again), but it is expected to do its work as if it was blocking, while being prepared to be interrupted at any moment with no expliciti notification about interruption.</para>
+
+                            <para>As it turns out, the major task it not making posh plans, but the implementation of behavior, especially the actions. During creation of more complicated bots, you will notice that your behaviour class is starting to be quite difficult to manage. Why?</para>
+
+                <para>Imagine, that you are supposed to shoot the target, when it is in your field of view. The plan itself is simple (drive "shoot" with trigger "seeEnemy" and action "shoot"), but how to implement the shoot action? You can either shoot one round every time the plan is evaluated, but that is impractical (the frequency of evaluation is 5-10Hz for UT04). The other choice is to start shooting during "shoot" action and stop the shooting when another action is called. Unfortunately shoot is not the only action that has to be handled this way, moving, crouching, and others have to be taken care of too. Basically if your action is non-atomic, you will have to take care about possible side effects when another action is called during next evaluation, at least for now (we are working on a better way to implement behavior).</para>
+
+                <para>The behavior is defined in class BotBehaviour.java, if you open the class, you will see a lot of comments, few methods that can be overriden, and and dummy sense "emptySense” and dummy action "emptyAction".</para>
+
+                <para>In order for method be a posh action,</para>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>it has to be public</para></listitem>
+
+                        <listitem><para>it has to be without parameters</para></listitem>
+
+                        <listitem><para>it has to be annotated with @SPOSHAction </para></listitem>
+
+                        <listitem><para>it has to return a value (return type has to be anything but void)</para></listitem>
+                    </itemizedlist>
+                </para>
+
+                <para>The returned value marks whether action has succeeded or failed. If the returned value is false or 0 (empty string is mark of success), the engine will consider that action has failed.</para>
+
+                <para>The sense is public method with no parameters, annotated with @SPOSHSense, and has return value. If the sense is used in the trigger by itself(e.g. hitWall), with no comparator, the returned value is used to indicate whether sense is successfull or not the same way as action. If the comparator is used (e.g. health &lt; 90), the returned value is compared with value in the plan and result of comparison is used as sign of success or failure. The comparison is consistent with the comparisons used in <link xlink:href="http://docs.python.org/reference/expressions.html#grammar-token-comp_operator">python</link>.</para>
+
+                <para>The primitives (senses and actions) can be created by hand, or the editor can generate stubs and let you fill the rest. First, we will create an action "turn" by hand. Open the BotBehavior.java and add the following method:</para>
+
+                <para>
+                    <programlisting language="java">
+    @SPOSHAction
+    public boolean turn() {
+        move.turnHorizontal(30);
+        return true;
+    }
+                    </programlisting>
+                </para>
+
+                <para>As you can see, it is properly annotated, has public modifier, returns boolean ect. Because turn always succeeds, we return true by default. To actually turn 30 degrees, we use AdvancedLocomotion object "move" that is instantiated in superclass, as are many others (see the comments in generated behavior for list and other details).</para>
+
+                <para>Now, we will generate stubs for the rest of actions and senses. Open sposhPlan.lap and in context menu of palette choose "Add stubs to behavior." Go back to behavior file and you will see many new senses and actions that are just throwing an UnsupportedOperationException. Some of them (succeed, fail and doNothing) are annotated with red exclamation mark, the reason is that they are already defined in the superclass with different return type. Delete the succeed, fail and doNothing, keep the rest. The turn action we have added previously has not been added for the second time. All generated methods return int , but you are free to change it into anything you want.</para>
+                     <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="media/00-POSH-PreyBot/6-addstubs.png"></imagedata>
+                        </imageobject>
+                    </mediaobject>
+
+                <para>The senses health, playerDistance and hitWall and the jump action are easy to implement:</para>
+
+                <para>
+                    <programlisting language="java">
+    @cz.cuni.amis.pogamut.sposh.SPOSHSense
+    public int health() {
+        return info.getHealth();
+    }
+
+    @cz.cuni.amis.pogamut.sposh.SPOSHAction
+    public boolean jump() {
+        move.jump();
+        return true;
+    }
+
+    @cz.cuni.amis.pogamut.sposh.SPOSHSense
+    public double playerDistance() {
+        // we want nearest player, not nearest visible player
+        Player nearest = DistanceUtils.getNearest(players.getPlayers().values(), info.getLocation());
+        if (nearest == null) {
+            return Double.MAX_VALUE;
+        }
+        return Location.getDistance(nearest.getLocation(), info.getLocation());
+    }
+
+    @cz.cuni.amis.pogamut.sposh.SPOSHSense
+    public boolean hitWall() {
+        return senses.isCollidingOnce();
+    }
+
+                    </programlisting>
+                </para>
+
+                            <para>All that is left is runHealths action. Unlike others, this one is more complicated, the bot is expected to run around the level looking for the health packs and vials. We have to ensure, that even if the action is called multiple times, it continues to behave properly.</para>
+
+                <para>
+                    <programlisting language="java">
+
+    @cz.cuni.amis.pogamut.sposh.SPOSHAction
+    public boolean runHealths() {
+        // ensure that when called multiple times and bot is still going to next health,
+        // target won’t be changed
+        if (pathExecutor.isMoving()) {
+            return true;
+        }
+        // find the closest health pack
+        Item nearest = DistanceUtils.getNearest(
+                items.getSpawnedItems(Category.HEALTH).values(),
+                bot);
+
+        // We dont think there are spawned healths in the level, but the action
+        // itself hasnt failed
+        if (nearest == null) {
+            return true;
+        }
+
+        // go the the closest health
+        pathExecutor.followPath(pathPlanner.computePath(nearest));
+        return  true;
+    }
+                    </programlisting>
+                </para>
+                 
+            </section>
+
+            <section>
+                <title>Testing the bot</title>
+
+                <para>
+                    <itemizedlist>
+                        <listitem><para>Start up the server (UT2004/System/startGamebotsDMServer.bat)</para></listitem>
+
+                        <listitem><para>Run the Prey project</para></listitem>
+
+                        <listitem><para>Start the UT and connect to the running server, either by UT2004/System/startUT2004low.bat or through server management (action "Spectatate" in context menu of localhost server)</para></listitem>
+
+                        <listitem><para>Join the game so you are player</para></listitem>
+
+                        <listitem>
+                            <para>Check that</para>
+
+                            <para>
+                                <itemizedlist>
+                                    <listitem><para>if you are far from bot, the bot is turnng around</para></listitem>
+
+                                    <listitem><para>if you come close to the player, the bot starts jumping, while turning (although little jerky)</para></listitem>
+
+                                    <listitem><para>If you shoot the bot(see the red health bar), he starts running around collecting the health vials and packs. When all health is collected, it stops until some new health spawns</para></listitem>
+                                </itemizedlist>
+                            </para>
+                        </listitem>
+
+                    </itemizedlist>
+                </para>
+                <para>Congratulations, you have created your first posh bot. You can download finished Prey bot <link xlink:href="media/00-POSH-PreyBot/PreyBot.zip">here</link>.</para>
+            </section>
+        </section>
+    </section>
+    
+    <section>
+        <title>Advanced topics</title>
+
+        <para>If posh picked you interest, be sure to checkout some of the following sources:
+            <itemizedlist>
+                <listitem>
+                    <para><link xlink:href="http://www.cs.bath.ac.uk/~jjb/web/posh.html">Home page of POSH</link></para>
+                </listitem>
+                <listitem>
+                    <para><link xlink:href="http://www.cs.bath.ac.uk/~jjb/ftp/phd-tr.pdf">Joanna Bryson: Intelligence by Design</link> - phd thesis about behavior oriented design, posh was created as part of.</para>
+                </listitem>
+                <listitem>
+                    <para><link xlink:href="http://www.cs.bath.ac.uk/~jjb/web/publications.html">Other publications by Joanna Bryson</link></para>
+                </listitem>
+            </itemizedlist>
+        </para>
+    </section>
+
+    <section>
+        <title>Where to continue</title>
+        <para>Be sure to checkout some other tutorials if you haven't done so already</para>
+    </section>
+</chapter>

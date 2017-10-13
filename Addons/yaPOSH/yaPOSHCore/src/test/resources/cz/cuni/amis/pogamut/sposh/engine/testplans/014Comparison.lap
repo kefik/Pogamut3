@@ -1,0 +1,7 @@
+(
+    (RDC life (goal ((value 13 >)))
+        (drives
+            (  (nothing action))
+        )
+    )
+)

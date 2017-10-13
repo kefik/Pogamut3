@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Pogamut and Maven</title>
+
+  <section>
+    <title>Getting started</title>
+
+    <para>Maven is a build system for Java, besides compiling your code it
+    server the whole lifecycle of your project from the creation to the
+    deployement. This chapter will guide you through minimal setup that is
+    needed to use Maven with Pogamut projects.</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Install Maven 3.0.2 or newer - <link xlink:href="http://maven.apache.org/download.html">download Maven</link>
+         and carefully follow the
+        installation instructions.</para>
+      </listitem>
+
+      <listitem>
+        <para>Read Maven documentation to get familiar with the whole
+        system.</para>
+      </listitem>
+
+      <listitem>
+        <para>Now try to build your first Pogamut bot from a Maven archetype.
+        Issue this command in a shell (in Windows environment remove \ at the
+        end of each line)</para>
+
+        <para><command>mvn archetype:generate -DgroupId=your.proj.gid
+        -DartifactId=your-proj-aid
+        -DarchetypeGroupId=cz.cuni.amis.pogamut.ut2004.examples
+        -DarchetypeArtifactId=00-empty-bot-archetype
+        -DarchetypeVersion=3.2.0-SNAPSHOT
+        -DarchetypeRepository=http://diana.ms.mff.cuni.cz:8081/artifactory/repo
+        </command></para>
+
+        <para>You should get this output if everything worked fine.</para>
+
+        <para><screen>
+[INFO] Scanning for projects...
+[INFO] Searching repository for plugin with prefix: 'archetype'.
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Maven Default Project
+[INFO]    task-segment: [archetype:generate] (aggregator-style)
+[INFO] ------------------------------------------------------------------------
+[INFO] Preparing archetype:generate
+[INFO] No goals needed for project - skipping
+[INFO] [archetype:generate]
+[INFO] Generating project in Interactive mode
+[INFO] Archetype defined by properties
+[INFO] snapshot cz.cuni.amis.pogamut.ut2004.examples:00-empty-bot-archetype:3.2.0-SNAPSHOT: checking for updates from 00-empty-bot-archetype-repo
+[INFO] snapshot cz.cuni.amis.pogamut.ut2004.examples:00-empty-bot-archetype:3.2.0-SNAPSHOT: checking for updates from amis-repository
+[INFO] Using property: groupId = your.proj.gid
+[INFO] Using property: artifactId = your-proj-aid
+Define value for property 'version': 1.0-SNAPSHOT:
+[INFO] Using property: package = your.proj.gid
+Confirm properties configuration:
+groupId: your.proj.gid
+artifactId: your-proj-aid
+version: 1.0-SNAPSHOT
+package: your.proj.gid
+Y:
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 7 seconds
+[INFO] Finished at: Wed Feb 23 12:06:26 CET 2011
+[INFO] Final Memory: 20M/340M
+[INFO] ------------------------------------------------------------------------
+</screen></para>
+      </listitem>
+
+      <listitem>
+        <para>[OPTIONAL] Update
+        <filename>$USER_HOME/.m2/settings.xml</filename> so that it includes
+        reference to the Pogamut repository storing jar files of all necessary
+        libraries. In most cases you don't have to make this step. If you
+        create projects from archetypes the path to AMIS repository will be
+        already included in the created project template. Your settings.xml
+        should look like this:</para>
+
+        <para><programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+    &lt;profiles&gt;
+        &lt;profile&gt;
+            &lt;id&gt;defaultProfile&lt;/id&gt;
+            &lt;activation&gt;
+                &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+            &lt;/activation&gt;
+            &lt;repositories&gt;
+                &lt;repository&gt;
+                    &lt;id&gt;amis-repository&lt;/id&gt;
+                    &lt;url&gt;http://diana.ms.mff.cuni.cz:8081/artifactory/repo&lt;/url&gt;
+                    &lt;snapshots&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                        &lt;checksumPolicy&gt;fail&lt;/checksumPolicy&gt;
+                    &lt;/snapshots&gt;
+                    &lt;releases&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;checksumPolicy&gt;fail&lt;/checksumPolicy&gt;
+                    &lt;/releases&gt;
+                &lt;/repository&gt;
+                &lt;properties&gt;
+                    &lt;downloadSources&gt;true&lt;/downloadSources&gt;
+                    &lt;downloadJavadocs&gt;true&lt;/downloadJavadocs&gt;
+                &lt;/properties&gt;
+            &lt;/repositories&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+&lt;/settings&gt;
+        
+        </programlisting></para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>Pogamut without Maven</title>
+
+    <para>If you are starting a brand new project there is no reason why you
+    shouldn't use maven. But if you are working in an already existing project
+    environment you may want to just use Pogamut jars with all the Maven
+    machinery around.</para>
+
+    <para>In this case TODO how will we solve this?</para>
+
+    <para>First consider using Maven in your TODO jak bud</para>
+  </section>
+</chapter>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="JUMP" extends="CommandMessage" name="Jump" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>Causes bot to jump.</documentation>
+   <!-- List of all properties of this command. !--><property name="DoubleJump" type="boolean">
+      <documentation>
+			If set to True will cause the bot to perform double jump.
+		</documentation>
+   </property>
+  <property name="Delay" type="double">
+      <documentation>
+			After time specified here, the bot performs second jump of a double jump (if DoubleJump is true). Time is in seconds. If not specified and DoubleJump is true, 0.5 seconds will be used.
+		</documentation>
+   </property>   
+  <property name="Force" type="double">
+      <documentation>
+			Force vector specifying how big the jump should be. Can't be set more than bot JumpZ variable for single jump and 2 * JumpZ variable for doube jump. Default value of JumpZ is 340 ut units (for UT2004). If not specified, JumpZ value will be used. If not specified and DoubleJump is true, 2 * JumpZ value will be used. Maximum for JumpZ is 755, which is actually more than human player can do, but it needs to be that high in order to have safe
+			navigation through jumping links.
+		</documentation>
+   </property>      
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

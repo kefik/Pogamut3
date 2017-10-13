@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="INV" name="Item" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous/asynchronous message. An object on the ground that
+		can be picked up.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+   		<classcategory name="base"/>
+   		<classcategory name="shared"/>
+   		<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <interface name="ItemTyped">
+   		<classcategory name="base"/>
+   		<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the item. This Id represents just item on the
+			map, not in our inventory.
+		</documentation>
+   </property>
+   <property name="NavPointId" type="UnrealId" category="static">
+      <documentation>
+            Id of the navpoint where the item is laying. If null - the item was dropped by the bot or another player.
+        </documentation>
+   </property>
+   <property name="NavPoint" type="NavPoint" jflex="no" category="static">
+      <documentation>
+            If the Item is not dropped then it's item that is laying at some navpoint and
+            this is that NavPoint instance.
+        </documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>
+			If the item is in the field of view of the bot.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared" nullable="false">
+      <documentation>Location of the item.</documentation>
+   </property>
+   <property name="Amount" type="int" category="static">
+      <documentation>
+			If this item is some ammo or health pack, here we can find
+			out how much of the attribute this item will add.
+		</documentation>
+   </property>
+   <property name="Type" type="ItemType" category="static">
+      <documentation>
+			Class of the item (e.g. xWeapons.FlakCannonPickup).
+		</documentation>
+      <extra>
+         <code>
+            <yylex>
+					((ItemMessage)actObj).Descriptor = itemDescriptorValue(((ItemMessage)actObj).Type);
+				</yylex>
+         </code>
+      </extra>
+   </property>
+   <property name="Descriptor" type="ItemDescriptor" jflex="no" category="static">
+      <documentation>
+			Descriptor of the item - according the ItemType you may cast this to various XYZDescriptor. 
+		</documentation>
+   </property>
+   <property name="Dropped" type="boolean" default="false" category="shared">
+      <documentation>
+            Whether it is regular item or one dropped by some bot (usually during dying). Items that are not dropped
+            usually respawns itself (depends on the game settings) while those that are dropped may be taken only once.
+        </documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   <extra>
+      <code>
+         <java>
+         	<javapart>	
+         		<classcategory name="base"/>
+         		<classtype name="message"/>
+			</javapart>
+			<javapart>	
+         		<classcategory name="static"/>
+         		<classtype name="impl"/>
+         	</javapart>
+			/**
+			 * DO NOT USE THIS METHOD! Reserved for GaviaLib (Pogamut core)! It's used
+			 * to set correct navpoint instance into the item.
+			 */  	
+			public void setNavPoint(NavPoint navPoint) {
+			    NavPoint = navPoint;
+			} 		
+		</java>
+      </code>
+   </extra>
+</messageobject>

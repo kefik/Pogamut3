@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="10-HunterBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>HunterBot - combat in UT2004</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>UT2004 objects and weapons</para>
+        </listitem>		
+        <listitem>
+          <para>HunterBot Pogamut example</para>
+        </listitem>		
+        <listitem>
+          <para>Pogamut combat support modules</para>
+        </listitem>				
+      </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans Plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This tutorial assumes you have completed <link
+    linkend="00-EmptyBot">basic pogamut tutorial</link> and that you are
+    familiar basic Pogamut API.</para>
+  </section>
+              	
+	<section role="utintro">
+      <title>UT2004 - introduction</title>
+	  <para>The outline:
+	<itemizedlist>
+        <listitem>
+          <para><link linkend="hunterbot.ut.basics">UT2004 introduction</link>
+		  <itemizedlist>
+			<listitem><para><link linkend="hunterbot.ut.weapons">UT2004 Weapons</link></para></listitem>
+			<listitem><para><link linkend="hunterbot.ut.items">UT2004 Items</link></para></listitem>
+			<listitem><para><link linkend="hunterbot.ut.respawntimes">UT2004 Item Respawn Times</link></para></listitem>
+		  </itemizedlist>
+		  </para>
+        </listitem>
+	</itemizedlist>		
+	</para>
+	  
+	  <anchor xml:id="hunterbot.ut.basics" ></anchor>	
+	  <para>UT2004 is a first person shooter game (FPS). Typical scenario of FPS game is a DeathMatch. In DeathMatch, the goal of the player is to kill as many opponents as possible 
+	  while avoiding himself to be killed. In FPS games the kills are often reffered to as "frags". The player who has the most frags at the end of the game is declared the winner.</para>
+	  
+	  <para>Crucial skills for the FPS player are aiming and map movement. Aiming is the obvious one - in order to kill an enemy the player
+	  needs to hit him with the weapon. There are usually multiple weapon types in FPS game with different kinds of behavior and physics of projectiles. </para>
+	  
+	  <para>Map movement and knowledge about the map is very important as well. Not only the player needs to know, where are the best weapons located in the map,
+	  he also needs to know, where are good spots for hiding and sniping, where are dangerous areas, what are the optimal paths through the map to 
+	  minimize the time needed to properly gear up himself and more. Timing is the key to victory here - player who knows when the weapons and upgrades respawn and
+	  is able to exploit this when planning the movement across the map will often be the winner. </para>	  	 
+	  
+	  <para>Next we will list all of UT2004 weapons and items with their basic characteristics.</para>	 
+
+	<section role="weapons">
+      <title>UT2004 Weapons</title>	
+	  <anchor xml:id="hunterbot.ut.weapons" ></anchor>
+	  <para>In order to better understand the attributes of weapons and items of UT2004 note that each player starts the game with 100 health points and 0 armor points. The health of the player
+	  can range between 0 - 199 (where 0 means death) and the armor can range from 0 to 150. Each damage is first applied to the armor (if the player has any) lowering its value and then is
+	  applied to player health (the armor only reduces the damage). The ammount of reduction depends on the armor type.</para>
+	  
+<para> Unreal Tournament 2004 features 16 default weapons (description of weapons and items is taken from <link xlink:href=" http://wiki.beyondunreal.com"> UnrealWiki</link> ):
+
+<itemizedlist>
+  <listitem><para><guimenuitem>Shield Gun:</guimenuitem> Primary fire produces a shockwave that can repel projectiles and (at close range) shred opponents; secondary fire produces a shield that absorbs damage from weapons and falls, as well as reflecting some hitscan beams, such as the Shock Rifle's. Shield gun "ammo" regenerates quickly.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.ShieldGun </para></listitem>
+      <listitem><para>Pickup: XWeapons.ShieldGunPickup</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.ShieldAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> None</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 100 </para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 40</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 40 Damage, up to 150 if charged</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> Used to absorb damage from enemy fire or from falling impact </para></listitem>
+  </itemizedlist>
+  </para></listitem>  	
+  <listitem><para><guimenuitem>Assault Rifle:</guimenuitem> Primary fire is a weak and inaccurate hitscan bullet fire; secondary shoots time-detonation grenades with force proportionate to how long secondary fire was held. Grenades will detonate on contacting an enemy. The Assault Rifle may be dual-wielded if the player picks up a second rifle (this will increase the maximum primary fire ammunition limit from 200 to 400, as well as the maximum alternative fire grenade limit from eight to sixteen).  Dual Assault Rifles will increase the primary fire rate; the alternative fire grenade launch remains the same (the rifles alternate grenade fire).  It is one of two weapons automatically granted to a player when respawning; however it is the weakest weapon in the game.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.AssaultRifle </para></listitem>
+      <listitem><para>Pickup: XWeapons.AssaultRiflePickup  </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.AssaultAmmo, XWeapons.GrenadeAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.AssaultAmmoPickup (for bullets and grenades, 100 bullets 4 grenades per Pickup)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 200 bullets, 8 grenades(per weapon)</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 100 bullets, 4 grenades</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 7 per bullet</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 70 per grenade </para></listitem>
+  </itemizedlist>
+  </para></listitem>  	
+  <listitem><para><guimenuitem>Bio-Rifle:</guimenuitem> Primary fire quickly disperses small globs of sticky, poisonous goo; secondary fire can be held down to charge up a much larger, splattering glob. Any charge currently being held will be discharged when the player holding it dies. A single glob from a fully charged Bio-Rifle is enough to wipe out a fully-shielded opponent. Despite being labeled a gimmick gun, this weapon has survived being cut since its conception in the original Unreal.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.BioRifle </para></listitem>
+      <listitem><para>Pickup: XWeapons.BioRiflePickup   </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.BioAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.BioAmmoPickup (20 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 50</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 20</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 21 per (direct) hit</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 21 per second charged, up to 210 on max load (10 units of ammunition).</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+	
+  <listitem><para><guimenuitem>Mine Layer</guimenuitem><sup>†</sup>: Primary fire deploys up to eight simultaneous "spider mines" which will chase nearby opponents; secondary fire targets a spot for the mines to rush towards. Mines detonate if the player dies, or if they run into unsurmountable terrain (walls or steep slopes).
+    <itemizedlist>
+      <listitem><para>Inventory: Onslaught.ONSMineLayer </para></listitem>
+      <listitem><para>Pickup: Onslaught.ONSMineLayerPickup   </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> Onslaught.ONSMineAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> Onslaught.ONSMineAmmoPickup (8 mines)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 25</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 4</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+  <listitem><para><guimenuitem>Shock Rifle:</guimenuitem> Primary fire shoots a hitscan shock beam; secondary fire shoots a slow-moving shock core. Hitting a shock core with a primary beam produces a huge explosion, called a "shock combo", which uses up additional ammo.  This weapon can also cause players it hits to move, and therefore can cause kills just by knocking players into an abyss or causing them to die from fall damage. This is one of the oldest guns in the ''Unreal'' series, being in every game to date; in this version, it looks more like a carbine.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.ShockRifle </para></listitem>
+      <listitem><para>Pickup: XWeapons.ShockRiflePickup   </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.ShockAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.ShockAmmoPickup (10 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 50</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 20</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 45 per hit</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> Ranges from 5 to 45 damage, depending on proximity</para></listitem>
+    <listitem><para><guimenuitem>Shock Combo Damage:</guimenuitem> Up to a theoretical max of 200 damage, mostly beneath 150, depending on proximity</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+  <listitem><para><guimenuitem>Link Gun:</guimenuitem> Primary fire shoots plasma projectiles; secondary produces a short-range plasma beam. Secondary fire is also used in Onslaught and Assault modes for healing nodes, vehicles, and Sentinels. Players can also "link up" by using secondary fire with their link gun at a team member carrying the Link Gun as well, which will have their power for healing or damage multiplied by the number of linked teammates.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.LinkGun </para></listitem>
+      <listitem><para>Pickup: XWeapons.LinkGunPickup   </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.LinkAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.LinkAmmoPickup (50 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 220</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 70</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 30 per projectile</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 9 per ammo unit (9 damage per .12 seconds) can hamper an enemy player's movement </para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+  <listitem><para><guimenuitem>Minigun:</guimenuitem> Primary fire spits medium-damage hitscan bullets most effective against infantry; secondary shoots more accurate, but less rapid hitscan bullets that do more damage to vehicles, better used for farther away and less aware targets.  
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.Minigun</para></listitem>
+      <listitem><para>Pickup: XWeapons.MinigunPickup</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.MinigunAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.MinigunAmmoPickup (50 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 300</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 150</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 7-8 per bullet</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 14-16 per bullet</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+  <listitem><para><guimenuitem>Flak Cannon:</guimenuitem> Primary fire shoots a hail of glowing metal chunks; secondary launches a single shell which bursts into radiating flak chunks on contact. This is, in a way, Unreal's version of the shotgun featured in other games. Although damage has always been tweaked with this weapon, it has been in every Unreal game to date.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.FlakCannon</para></listitem>
+      <listitem><para>Pickup: XWeapons.FlakCannonPickup</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.FlakAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.FlakAmmoPickup (20 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 35</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 15</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 13 per projectile, total of 9 particles x 13 = 117 damage (full hit). Damage is attenuated for each projectile at a rate of 5 damage per second (minimum of 5).</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 76-164 (highly random), if the flakball explodes, its shrapnel does 13 damage, like the primary fire ricochet. It also inflicts splash_damage, like the rockets of the Rocket Launcher. Splash damage depends on proximity unless it is a direct hit.</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+   <listitem><para><guimenuitem>Grenade Launcher</guimenuitem><sup>†</sup>: Primary fire launches up to eight "sticky" grenades which attach themselves to vehicles, nodes and players; secondary fire detonates them, usually with devastating effect on vehicles and infantry. Grenades auto-detonate if the player dies.
+    <itemizedlist>
+      <listitem><para>Inventory: Onslaught.ONSGrenadeLauncher</para></listitem>
+      <listitem><para>Pickup: Onslaught.ONSGrenadeLauncherPickup</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> Onslaught.ONSGrenadeAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> Onslaught.ONSGrenadeAmmoPickup (5 grenades)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 50</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> ?</para></listitem>
+  </itemizedlist>
+  </para></listitem>  
+  
+  <listitem><para><guimenuitem>Rocket Launcher:</guimenuitem> Primary fire shoots single rockets; secondary, held down, loads two to three rockets (depending on how long the trigger is held) which are then launched simultaneously; using primary fire while loading launches the rockets in a tight spiral. If the crosshair is held over a target for a certain amount of time (about 1.4 seconds), the rocket launcher will beep and any rockets fired while the crosshair remains on the target will home in on it.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.RocketLauncher</para></listitem>
+      <listitem><para>Pickup: XWeapons.RocketLauncherPickup </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.RocketAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.RocketAmmoPickup (9 rockets)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 30</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 12</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 90 (direct hit) or splash_damage, depending on its proximity.</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> 90 multiplied by 2 or 3 direct hits (rockets) + additional splash damage from rockets, depending on its proximity.</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+ 
+ <listitem><para><guimenuitem>AVRiL</guimenuitem><sup>†</sup>: A weapon designed to take down enemy vehicles.  Primary fire shoots relatively slow but powerful anti-vehicle missiles; holding the crosshairs on a vehicular target causes the missiles to home in on it. Secondary fire zooms and locks on. AVRiL rockets can be shot down. AVRiL stands for Anti-Vehicle Rocket Launcher; the "i" in the name is to make it pronounceable.  Any players in a vehicle that is being targeted by an AVRiL will receive a message saying "Missile Lock Warning", as well as a beep that can be heard by anyone in the vicinity of the vehicle.  The weapon can damage players but is very inefficient.
+    <itemizedlist><listitem><para><guimenuitem>ClassName:</guimenuitem> ONSAVRiL</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> ONSAVRiLAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> ONSAVRiLAmmoPickup (5 rockets)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 25</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 5</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  
+  <listitem><para><guimenuitem>Lightning Gun:</guimenuitem> Primary fire shoots a hitscan bolt of lightning at the target. Secondary fire zooms. Although the shot is hitscan, there seems to be a slight delay between the trigger pull and the actual lightning projection.  Users are made vulnerable by  the patent trail of lightning originating from the gun. A shot to the head causes two times the regular damage.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.SniperRifle</para></listitem>
+      <listitem><para>Pickup: XWeapons.SniperRiflePickup  </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.SniperAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.SniperAmmoPickup (10 rounds)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 40</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 15</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 70 per hit / Headshot: 140 (double of its normal damage). And sometimes it does splash_damage of 35 (half of its normal damage).</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> N/A (zooms)</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  
+  
+  <listitem><para><guimenuitem>Sniper Rifle</guimenuitem><sup>†</sup>: Returns from Unreal Tournament. Primary fire shoots a hitscan bullet and momentarily obscures the view with a puff of smoke; secondary fire zooms.  Is only 6/7 as powerful as the Lightning Gun.
+    <itemizedlist>
+      <listitem><para>Inventory: UTClassic.ClassicSniperRifle</para></listitem>
+      <listitem><para>Pickup: UTClassic.ClassicSniperRiflePickup   </para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.SniperAmmo </para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> XWeapons.SniperAmmoPickup (10 bullets)</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 40</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 15</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> 60 per hit / Headshot: 120 (double of its normal damage)</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> N/A (zooms)</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  
+  <listitem><para><guimenuitem>Redeemer:</guimenuitem> Primary fire shoots a miniature nuclear missile in a straight path; secondary fire shoots the same missile but with full steering capability using the missile's eye-view camera.  Although the missile can only be accurately guided with secondary, doing so leaves the player completely vulnerable. The secondary fire also slows down the missile. It is perhaps the most powerful weapon in the game; just one blast from a Redeemer can knock out an entire power node in Onslaught, and can drain 30% of a power core's life.  The missile can however be shot down by enemy fire, with a "denied" message going to the player who fired the missile and the one who shot it down.  Only one missile per weapon.
+    <itemizedlist>
+      <listitem><para>Inventory: XWeapons.Redeemer</para></listitem>
+      <listitem><para>Pickup: XWeapons.RedeemerPickup</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> XWeapons.RedeemerAmmo</para></listitem>
+    <listitem><para><guimenuitem>AmmoPickup:</guimenuitem> None</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> 1</para></listitem>
+    <listitem><para><guimenuitem>InitialAmmo:</guimenuitem> 1</para></listitem>
+    <listitem><para><guimenuitem>Primary Damage:</guimenuitem> Infinity per hit, damage reduces as distance from ground zero increases</para></listitem>
+    <listitem><para><guimenuitem>Secondary Damage:</guimenuitem> Same as Primary, except now the player will control the missile flight directly.</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  
+  <listitem><para><guimenuitem>Ion Painter:</guimenuitem> Primary paints a target which after two seconds of stillness with the user is then fired on by an orbital ion cannon; damage style is similar to that of the Redeemer's missile, but is approximately half as powerful.  However, it is somewhat hard to position correctly.  Secondary fire provides zoom.
+    <itemizedlist><listitem><para><guimenuitem>ClassName:</guimenuitem> ONSPainter (but for pickup it has probably name: PainterPickup)</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> ? - for ammo here are different rules</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> ?</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  
+  <listitem><para><guimenuitem>Target Painter</guimenuitem><sup>†</sup>: Primary, like the Ion Painter's, paints a target; in this case, a bomber appears over the battlefield and drops a line of bombs towards it. Secondary fire zooms. The bomber can be shot down fairly easily using hitscan weapons such as the lightning gun or stationary turret beams, however, it is impossible to lock onto the bomber using either the AVRiL or Rocket Launcher. The Bomber, once shot down, will produce a Redeemer-sized explosion wherever it lands.	
+    <itemizedlist><listitem><para><guimenuitem>ClassName:</guimenuitem> Painter</para></listitem>
+    <listitem><para><guimenuitem>AmmoType:</guimenuitem> ? - for ammo here are different rules</para></listitem>
+    <listitem><para><guimenuitem>MaxAmmo:</guimenuitem> ?</para></listitem>
+	</itemizedlist>
+  </para></listitem>
+</itemizedlist>
+</para>
+
+<para>
+In addition, Unreal Tournament 2004 features the <guimenuitem>Translocator</guimenuitem> that allows the player to quickly teleport across the map by shooting a small disc where the player wants to go. Technically speaking, however, this can also be used as a 'weapon', by firing the beacon at another player's feet and then teleporting there, performing a so-called "telefrag". This action is usually quite difficult to perform, and has been made even more difficult than in the original Unreal Tournament.
+  <itemizedlist><listitem><para><guimenuitem>Translocator Disc Pickup Name:</guimenuitem> Transpickup (yes, here is pickup with lower case)</para></listitem></itemizedlist>  
+  </para>
+
+<para>All weapons (excluding Redeemer, Ion and Target Painters that respawn in 109.08 s) and ammo respawn in 27.27 s if the Weapon Stay is turned off. This period is often rounded to 27.5 s or even to 28 s — but rounding up is not good practice for timing of (more important) pick-ups. However, on the map DM-1on1-Serpentine, there is lightning gun ammo that spawns in an unusual 40.905 seconds.</para>
+</section>	  
+
+	<section role="items">
+      <title>UT2004 Items</title>	
+	  <anchor xml:id="hunterbot.ut.items" ></anchor>
+		<para>In UT2004 there are several items that players can pick up from the ground. These items will give the player an extra benefit, such as extra health. Unreal Tournament 2004 features 7 pickup items:</para>
+		<para><guimenuitem>Shields</guimenuitem>
+		
+		<itemizedlist>
+  <listitem><para><guimenuitem>Shield Pack:</guimenuitem> This shield pack gives the player an extra 50 shield points to protect the player. When picked up, it will respawn in 27.27 seconds, which is half of the Super Shield Pack's spawn time.
+    <guimenuitem>Note:</guimenuitem> A player can only gain a maximum of 50 shield points per shield pack, but this could be stacked with the Super Shield Pack or the Booster adrenaline combo for a maximum of 150 shield points.</para></listitem>
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.ShieldPack</para></listitem></itemizedlist>
+	 	
+  <listitem><para><guimenuitem>Super Shield Pack:</guimenuitem> This is the better version of the standard shield pack; it gives the player who picks it an extra 100 shield points. The Super Shield Pack respawns in 54.54 seconds. 
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.SuperShieldPack</para></listitem></itemizedlist>
+	</para></listitem>
+	</itemizedlist></para>
+		
+		<para>
+		<guimenuitem> Health Packs/Vials </guimenuitem>
+		
+		<itemizedlist>
+  <listitem><para><guimenuitem>Health Pack:</guimenuitem> Gives the player 25 health points up to a maximum of 100, and is sometimes located in pairs. The respawn time is 27.27 seconds.
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.HealthPack</para></listitem></itemizedlist></para></listitem>
+  <listitem><para><guimenuitem>Health Vial:</guimenuitem> Gives the player 5 extra [[hit_point]]s, and is often located near other health vials. It can raise the player's health higher than the 100 threshold, until 199 hit points. The respawn time is, just like the shield pack, 27.27 seconds.
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.MiniHealthPack</para></listitem></itemizedlist></para></listitem>
+  <listitem><para><guimenuitem>Keg-O'-Health:</guimenuitem> Functions like a health vial, but gives the player 100 hit points instead of 5, always located alone in official maps. Respawn time is in 54.54 seconds, like the Super Shield Pack.
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.SuperHealthPack (should be, didnt veryfied in a game)</para></listitem></itemizedlist></para></listitem>		
+		</itemizedlist></para>
+		
+		<para>
+		<guimenuitem> Miscellaneous </guimenuitem>
+		
+		<itemizedlist>
+  <listitem><para><guimenuitem>Double Damage</guimenuitem> a.k.a. <guimenuitem>Amp:</guimenuitem> Doubles the damage that the player would normally inflict. Double Damage lasts for 27.27 seconds (although the counter starts from 30, each tick is 0.909 seconds). It has the longest respawn time of all items in the game, at 81.81 seconds.
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.UDamagePack (should be, didnt veryfied in a game)</para></listitem></itemizedlist></para></listitem>
+  <listitem><para><guimenuitem>Adrenaline Capsule:</guimenuitem> Adrenaline capsules increase a player's adrenaline points by 2 up to a total of 100. Adrenaline capsules usually appears in groups of four in most maps. If the player manages to collect 100 adrenaline points, he or she can use an "Adrenaline Combo". The spawn time is, like the Shield Pack, 27.27 seconds. 
+    <itemizedlist><listitem><para><guimenuitem>PickupName:</guimenuitem> XPickups.AdrenalinePickup</para></listitem></itemizedlist></para></listitem>
+		</itemizedlist>
+		
+		</para>	
+	
+	</section>	  
+	
+	
+	
+	<section role="respawntimes">
+      <title>UT2004 Items Respawn Times</title>	
+	  <anchor xml:id="hunterbot.ut.respawntimes" ></anchor>
+	  
+<para>The items in UT2004 falls into three categories concerning their respawn times:
+
+<itemizedlist>
+  <listitem><para> <guimenuitem>82s (~3 x 27.5s)</guimenuitem> 
+    <itemizedlist><listitem><para> Damage Amplifier (UDamagePack class) - item that doubles your weapon damage</para></listitem></itemizedlist>    
+	</para></listitem>
+  <listitem><para> <guimenuitem>55s (2 x 27.5s)</guimenuitem>
+	<itemizedlist>    
+    <listitem><para> 100 Armor (SuperShieldPack class)</para></listitem>
+    <listitem><para> 100 health (SuperHealthPack class)</para></listitem>
+	</itemizedlist>    
+	</para></listitem>
+  <listitem><para> <guimenuitem>27.5s (1 x 27.5s)</guimenuitem>
+	<itemizedlist>    
+    <listitem><para> 50 Armor (ShieldPack class)</para></listitem>
+    <listitem><para> Adrenaline (AdrenalinePickup class)</para></listitem>
+    <listitem><para> Ammunition (AmmoPickup classes)</para></listitem>
+    <listitem><para> Health (HealthPack and MiniHealthPack classes)</para></listitem>
+    <listitem><para> Weapons (Weapon pickup classes)</para></listitem>
+	</itemizedlist>    
+	</para></listitem>
+</itemizedlist>
+</para>
+
+	</section>	  
+	
+	</section>	  				
+  
+  <section>
+    <title>Tutorial</title>
+
+    <para> <guimenuitem>The outline:</guimenuitem>
+        <itemizedlist>
+
+        <listitem>
+          <para><link linkend="hunterbot.bot.example">Pogamut HunterBot overview</link>
+		  <itemizedlist>
+			<listitem><para><link linkend="hunterbot.bot.multiplebots">Running Multiple Bots</link></para></listitem>
+			<listitem><para><link linkend="hunterbot.bot.aimlevel">Setting the bot aim level</link></para></listitem>
+			<listitem><para><link linkend="hunterbot.bot.weaponprefs">Weapon preferences module</link></para></listitem>
+		  </itemizedlist>		  
+		  </para>
+        </listitem>		
+        </itemizedlist>
+    </para>
+	<para>Before you continue it is a good idea to make yourself familiar with the <link linkend="hunterbot.ut.basics">basic mechanics of UT2004.</link> </para>
+	
+	<section role="settingup">
+      <title>HunterBot - setting up the example</title>
+	  
+		<anchor xml:id="hunterbot.bot.example" ></anchor>	
+		
+      <para>This example is installed by Pogamut UT2004 installer. In NetBeans click New Project -&gt; Maven -&gt; Project From Archetype -&gt; Local Archetypes Catalog and select 02-navigation-bot-archetype project.
+	  Moreover, as Pogamut 3 has been fully mavenized, you can try and run this example even without installing the Pogamut NetBeans plugin. However in that case you won't be able to
+      use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link>. This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 04-hunter-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	For UDK example only change <guimenuitem>Group Id:</guimenuitem> to cz.cuni.amis.pogamut.udk.examples and <guimenuitem>Version:</guimenuitem> 3.2.5-SNAPSHOT . The rest remains the same.	
+	</para>
+      
+     <para><guimenuitem>Note:</guimenuitem> You will find up-to-date list of available archetypes in 
+     <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link> </para>               
+    </section>    
+
+    <section role="overview">
+      <title>HunterBot - overview</title>
+
+      <para>Here we will review the code of HunterBot and the most notable combat module <classname>WeaponPrefs</classname>.</para>
+
+      <para><guimenu>HunterBot.</guimenu> Hunter bot is a simple reactive combat bot. He has six behaviors he can perform and he can switches between these
+	  behaviors according to the current state of the environment and his internal values. Moreover the behaviors have priority - some behaviors are more important then
+	  others. This means that if conditions for two behaviors holds and one has higher priority than the other, the behavior with higher priority will be
+	  triggered.</para>
+	  
+	  <para> From implementation point of view, each behavior is defined in separate method prefixed with "state" word. The switching and triggering of the behaviors
+	  is handled in the <methodname>logic()</methodname> method. Eventhough each behavior is defined in "state" something method the bot IS NOT a finite state machine
+	  in its pure sense. There are not any explicit transitions between bot behaviors and each behavior has a fixed priority. That's why it is better to see the bot not as
+	  a finite state machine, but as a set of behaviors with priorities.</para>
+	  
+	  <para>The six behaviors of the bot are ENGAGE, MEDKIT, HIT, PURSUE, SEE ITEM and RUN AROUND ITEMS. 
+	  </para>
+	  
+	  <para><guimenu>Behavior ENGAGE (method name: <methodname>stateEngage()</methodname>)</guimenu> Behavior ENGAGE is fired when the bot sees any enemy. If the enemy that was attacked last
+      time is not visible than the bot tries to choose a new enemy. For shooting weapon preferences module is used (about the module later). Bot also tries to run towards 
+	  the target if he is far. If he is not, he will just stand still and shoot.
+	  </para>
+	  
+	  <para><guimenu>Behavior MEDKIT (method name: <methodname>stateMedKit()</methodname>)</guimenu> Behavior Medkit is triggered when the bot is low on health and is not in combat. The
+	  bot tries to reach some health item, if it exists on the map. Otherwise he just runs around items randomly.
+	  </para>
+	  
+	  <para><guimenu>Behavior HIT (method name: <methodname>stateHit()</methodname>)</guimenu> Behavior Hit is triggered when the bot is hit by someone. It causes the bot to turn around.
+	  </para>
+	  
+	  <para><guimenu>Behavior PURSUE (method name: <methodname>statePursue()</methodname>)</guimenu> Behavior Pursue is triggered when the bot is in combat, but the enemy is not visible for
+	  some reason, e.g. enemy was lost around the corner. This state will trigger the bot to pursue the enemy to the last known location. If the enemy can't be seen from there, the bot 
+	  will stop pursuing. Bot will also not pursue if there are other enemies in sight.
+	  </para>	  
+
+	  <para><guimenu>Behavior SEE ITEM (method name: <methodname>stateSeeItem()</methodname>)</guimenu> Behavior is triggered when the bot sees an item and is not equipped enough. It will
+	  cause the bot to run toward visible item and pick it up.
+	  </para>	  	  	  
+	  
+	  <para><guimenu>Behavior RUN AROUND ITEMS (method name: <methodname>stateRunAroundItems()</methodname>)</guimenu> Behavior Run Around Items is the lowest priority behavior. It is triggered
+	  only when the bot is not in combat and not low on health. This behavior makes the bot to run around items - both weapons and general - in the map. Eventhough the bot does
+	  not prefer any concrete weapons or items, he will get geared up eventually. 
+	  </para>	  	  
+	 	 
+	  <para><guimenu>Switching of the behaviors</guimenu> happens in the <methodname>logic()</methodname> method. Below you see the code from hunter bot with comments. Note that the highest
+	  priority has anti-stuck behavior that is not a behavior in fact, but just a routine reseting the bot internal variables in case the bot gets stuck somewhere in the map.	  
+	  <programlisting language="java">
+    public void logic() {
+        // global anti-stuck?
+        if (!info.isMoving()) {
+            ++notMoving;
+            if (notMoving &gt; 4) {
+                // we're stuck - reset the bot's mind
+                reset();
+                return;
+            }
+        }
+
+        // 1) do you see enemy? 	-&gt; go to PURSUE (start shooting / hunt the enemy)
+        if (shouldEngage &amp;&amp; players.canSeeEnemies() &amp;&amp; weaponry.hasLoadedWeapon()) {
+            stateEngage();
+            return;
+        }
+
+        // 2) are you shooting? 	-&gt; stop shooting, you've lost your target
+        if (info.isShooting() || info.isSecondaryShooting()) {
+            getAct().act(new StopShooting());
+        }
+		
+        // 3) are you being shot? 	-&gt; go to HIT (turn around - try to find your enemy)
+        if (senses.isBeingDamaged()) {
+            this.stateHit();
+            return;
+        }
+		
+        // 4) have you got enemy to pursue? -&gt; go to the last position of enemy
+        if (enemy != null &amp;&amp; shouldPursue &amp;&amp; weaponry.hasLoadedWeapon()) {  // !enemy.isVisible() because of 2)
+            this.statePursue();
+            return;
+        }
+
+        // 5) are you hurt?			-&gt; get yourself some medKit
+        if (info.getHealth() &lt; healthLevel &amp;&amp; canRunAlongMedKit()) {
+            this.stateMedKit();
+            return;
+        }
+
+        // 6) do you see item? 		-&gt; go to GRAB_ITEM	  (pick the most suitable item and run for)        
+        if (shouldCollectItems &amp;&amp; !items.getVisibleItems().isEmpty()) {
+        	item = getNearestVisibleItem();
+        	if (item != null &amp;&amp; fwMap.getDistance(info.getNearestNavPoint(), item.getNavPoint()) &lt; 500) {
+            	stateSeeItem();
+        		previousState = State.GRAB;
+        		return;
+        	}
+        }
+
+        // 7) if nothing ... run around items
+        stateRunAroundItems();
+    }
+	</programlisting></para>
+
+	<anchor xml:id="hunterbot.bot.multiplebots" ></anchor>
+	<para><guimenu>Running multiple bots.</guimenu> When you run the bot you may notice strange thing - two bots will be spawned in the environment - not only one. This
+	is because one hunter bot would be quite boring - he wouldn't have anyone to hunt. That's why we set hunter bot to be launched twice in <classname>UT2004BotRunner</classname>. 
+	You may alter this by changing the parameter in <methodname>.startAgents(int botNumber)</methodname> to <methodname>.startAgents(1)</methodname> or by using 
+	method <methodname>.startAgent()</methodname> instead of <methodname>.startAgents(int botsNumber)</methodname>. <classname>UT2004BotRunner</classname> can be found 
+	in <methodname>main(String args[])</methodname> method:
+	<programlisting language="java">
+    public static void main(String args[]) throws PogamutException {
+        // starts 2 Hunters at once
+        // note that this is the most easy way to get a bunch of bots running at the same time        
+    	new UT2004BotRunner(HunterBot.class, "Hunter").setMain(true).setLogLevel(Level.INFO).startAgents(2);
+    }
+	</programlisting>	
+	</para>
+	
+	<anchor xml:id="hunterbot.bot.aimlevel" ></anchor>
+	<para><guimenu>Setting the bot aim level.</guimenu> When playing against HunterBot you may find it hard to defeat him at first - especially if you are an inexperienced FPS game
+	player. Eventhough his combat behavior is simple his aiming is quite good. This is because his skill level is set to relatively high number - to five. 
+	In UT2004 you can set seven difficulty levels for the bots with 1 being the lowest and 7 being the highest. In Pogamut these difficulty levels affect bot aiming errors
+	Setting the skill to 7 means the bot almost never misses. Setting skill to level 1 means he won't be 
+	able to hit you most of the time. To change the bot skill level, modify the <classname>Initialize</classname> command in <methodname>getInitializeCommand()</methodname> method 
+	by setting <methodname>.setDesiredSkill(int skill)</methodname> switch to desired number, e.g.:
+	<programlisting language="java">
+    /**
+     * Here we can modify initializing command for our bot.
+     *
+     * @return
+     */
+    @Override
+    public Initialize getInitializeCommand() {
+        // just set the name of the bot and his skill level, 1 is the lowest, 7 is the highest
+        return new Initialize().setName("Hunter").setDesiredSkill(5);
+    }	
+	</programlisting>
+	Again: in Pogamut the skill of the bot will determine how well will the bot aim.
+	</para>
+	
+	<para><guimenu>Summarizing.</guimenu> HunterBot is a simple example of a reactive combat bot in UT2004. He tries to solve all the important issues in FPS game - combat with
+	enemy players, running around the map collecting items and reacting to important events such as "I've been hit". However he solves these problems only on a basic level and
+	hence is not a very good player of UT2004. Some of the problems he has are:
+	<orderedlist>
+		<listitem><para> He runs around the map more or less randomly -	not prefering the best weapons or armor. </para></listitem>
+		<listitem><para> His combat behavior is low level - he only runs towards the enemy player and then stops and stands still - not a very good idea :-).</para></listitem>
+	</orderedlist>
+	</para>
+	<para> Next we will explain how to work with WeaponPrefs module - a module enabling to easilly define advanced combat behavior for the bot.
+	</para>
+	  <section>
+	  <title>WeaponPrefs module</title>
+	  <anchor xml:id="hunterbot.bot.weaponprefs" ></anchor>
+      <para><guimenu>WeaponPrefs</guimenu> or weapon preferences module is very useful module enabling the user to easilly define the priority of weapons.
+	  Not only it allows to define general priority, it can also be used to set priority according to current distance between the bot and his target. WeaponPrefs 
+	  can be accessed from the bot code by typing <methodname>weaponPrefs.</methodname> . In the first example we will show you, how to use
+	  weapon preferences to define general weapon preferences.</para>
+
+	  <para> Note that general weapon preferences are meant to be set up once, preferably before the bot running around in the map. You cannot
+	  change general weapon preferences, however you can clear them and set them up again. The example below shows a simple example of defining and using
+	  general weapon preferences in your bot.
+	  <programlisting language="java">	  
+    public void prepareBot(UT2004Bot bot) {	  
+        // DEFINE WEAPON PREFERENCES
+        // We will define only general preferences stating which weapon + firing mode should be preffered.
+        // The priority is from the top to the bottom.
+		
+        // Top priority weapon is MINIGUN with secondary firing mode - the boolean means whether we should use primary firing mode or not
+        weaponPrefs.addGeneralPref(ItemType.MINIGUN, false);
+        // Second priority is Link gun with secondary mode
+        weaponPrefs.addGeneralPref(ItemType.LINK_GUN, false);
+        // Third is LIGHTING_GUN but now we use primary firing mode (bUsePrimary is set to true)
+        weaponPrefs.addGeneralPref(ItemType.LIGHTNING_GUN, true);
+        weaponPrefs.addGeneralPref(ItemType.SHOCK_RIFLE, true);
+        weaponPrefs.addGeneralPref(ItemType.ROCKET_LAUNCHER, true);
+        weaponPrefs.addGeneralPref(ItemType.ASSAULT_RIFLE, true);        
+        weaponPrefs.addGeneralPref(ItemType.FLAK_CANNON, true);
+        weaponPrefs.addGeneralPref(ItemType.BIO_RIFLE, true);
+    }
+	
+    public void logic() {
+        // Here you can see, how you can use your predefined weapon preferences when shooting other player.
+        // Your bot will use the best weapon he has according the weapon preferences. 
+        if (players.canSeePlayers()) {
+            Player target = players.getNearestVisiblePlayer();
+            shoot.shoot(weaponPrefs, target);
+        } else if (info.isShooting())
+            shoot.stopShooting();		
+    }
+    </programlisting>
+    </para>
+	<para><guimenu>Defining weapon preferences for range.</guimenu> The general weapon preferences are useful, but if you want to code first class deathmatch bot
+	it probably won't be enough. Ideally you would like your bot to prefer different weapons according to the distance there is between him and his enemy. 
+	Some weapons are very strong at short distances, but are almost useless at longer ranges, e.g. Flak Cannon and vice versa. 
+	Next example shows how to use weapon preferences module to define weapon priorities according to the distance between the bot and the target.</para>
+
+	  <para> Defining weapon preferences with range works as follows: First you define new range class by setting the maximum distance the class will be considered at and
+	  then you add weapon types to this range class. The priority is again from top to the bottom (weapons you add first have higher priority). Lets explain this more thoroughly
+	  on the example below:
+	  <programlisting language="java">
+    public void prepareBot(UT2004Bot bot) {	  	  
+        // First range class is defined from 0 to 80 ut units (1 ut unit ~ 1 cm)
+        weaponPrefs.newPrefsRange(80)
+                .add(ItemType.SHIELD_GUN, true);
+        // Only one weapon is added to this close combat range and it is SHIELD GUN		
+			
+        // Second range class is from 80 to 1000 ut units (its always from the previous class to the maximum
+        // distance of actual class
+        weaponPrefs.newPrefsRange(1000)
+                .add(ItemType.FLAK_CANNON, true)
+                .add(ItemType.MINIGUN, true)
+                .add(ItemType.LINK_GUN, false)
+                .add(ItemType.ASSAULT_RIFLE, true);        
+        // More weapons are in this class with FLAK CANNON having the top priority		
+				
+        // Third range class is from 1000 to 4000 ut units - that's quite far actually
+        weaponPrefs.newPrefsRange(4000)
+                .add(ItemType.SHOCK_RIFLE, true)
+                .add(ItemType.MINIGUN, false);
+        // Two weapons here with SHOCK RIFLE being the top
+				
+        // The last range class is from 4000 to 100000 ut units. In practise 100000 is
+        // the same as infinity as there is no map in UT that big
+        weaponPrefs.newPrefsRange(100000)
+                .add(ItemType.LIGHTNING_GUN, true)
+                .add(ItemType.SHOCK_RIFLE, true);  	  
+        // Only two weapons here, both good at sniping
+    }	  
+    </programlisting></para>
+	<para>
+	If you are confused a little bit by the syntax then be aware that <methodname>.newPrefsRange(double maxRange)</methodname> returns
+	the weapon preferences range object as well as the <methodname>.add(ItemType weapon, boolean bool)</methodname> method. Line ends doesn't break this chain, so the code above could be
+	rewritten as below and it would be the same (but more confusing perhaps).
+	  <programlisting language="java">
+    public void prepareBot(UT2004Bot bot) {	  	  		
+        weaponPrefs.newPrefsRange(80).add(ItemType.SHIELD_GUN, true);
+		
+        weaponPrefs.newPrefsRange(1000).add(ItemType.FLAK_CANNON, true).add(ItemType.MINIGUN, true).add(ItemType.LINK_GUN, false).add(ItemType.ASSAULT_RIFLE, true);        
+		
+        weaponPrefs.newPrefsRange(4000).add(ItemType.SHOCK_RIFLE, true).add(ItemType.MINIGUN, false);
+
+        weaponPrefs.newPrefsRange(100000).add(ItemType.LIGHTNING_GUN, true).add(ItemType.SHOCK_RIFLE, true);  	  		
+    }	  
+    </programlisting></para>
+	<para>The range of ranged weapon preference is defined from the previous ranged weapon preference maximum to current weapon preference maximum. The maximum is defined in <methodname>newPrefsRange(double maxium)</methodname> method.
+    </para>	  
+	<para>How are these ranged weapon preferences used? The same way as the general weapon preferences (they are defined on the same object). WeaponPrefs object always prefers
+	more concrete before general. That means that if you define ranged weapon preferences and general weapon preferences and you have some weapon that is currently
+	in range, the weapon preferences will prefer this weapon before the general weapon preferences weapon. 
+	  <programlisting language="java">
+    public void logic() {
+        // Using ranged weapon preferences is the same as using general weapon preferences
+        if (players.canSeePlayers()) {
+            Player target = players.getNearestVisiblePlayer();
+            shoot.shoot(weaponPrefs, target);
+        } else if (info.isShooting())
+            shoot.stopShooting();		
+    }
+    </programlisting>		
+	</para>
+
+	<para>Now what happens if your bot has defined ranged weapon preferences but no general weapon preferences and none of his ranged weapon preferences weapons is in range? 
+	In this case nothing happens - weapon preferences won't force the bot to change the weapon and the bot will fire his current weapon. This example shows that it is rather a good
+	idea to define both weapon preferences - general and ranged. You can set the general weapon suitability in general weapon preferences and tweak only some weapons in ranged
+	weapon preferences. This way even if no weapon is in range, the bot will still have his general weapon preferences to tell him, which weapon is more suitable in general.
+	Putting all of this together you could end up with the following code:
+	  <programlisting language="java">
+    public void prepareBot(UT2004Bot bot) {	  
+        // FIRST we DEFINE GENERAL WEAPON PREFERENCES
+        weaponPrefs.addGeneralPref(ItemType.MINIGUN, false);
+        weaponPrefs.addGeneralPref(ItemType.LINK_GUN, false);
+        weaponPrefs.addGeneralPref(ItemType.LIGHTNING_GUN, true);
+        weaponPrefs.addGeneralPref(ItemType.SHOCK_RIFLE, true);
+        weaponPrefs.addGeneralPref(ItemType.ROCKET_LAUNCHER, true);
+        weaponPrefs.addGeneralPref(ItemType.ASSAULT_RIFLE, true);        
+        weaponPrefs.addGeneralPref(ItemType.FLAK_CANNON, true);
+        weaponPrefs.addGeneralPref(ItemType.BIO_RIFLE, true);
+		
+        // AND THEN RANGED
+        weaponPrefs.newPrefsRange(80)
+                .add(ItemType.SHIELD_GUN, true);
+
+        weaponPrefs.newPrefsRange(1000)
+                .add(ItemType.FLAK_CANNON, true)
+                .add(ItemType.MINIGUN, true)
+                .add(ItemType.LINK_GUN, false)
+                .add(ItemType.ASSAULT_RIFLE, true);        
+
+        weaponPrefs.newPrefsRange(4000)
+                .add(ItemType.SHOCK_RIFLE, true)
+                .add(ItemType.MINIGUN, false);
+
+        weaponPrefs.newPrefsRange(100000)
+                .add(ItemType.LIGHTNING_GUN, true)
+                .add(ItemType.SHOCK_RIFLE, true);  	  		
+    }
+	
+    public void logic() {
+        // Shooting with weapon preferences yet again
+        if (players.canSeePlayers()) {
+            Player target = players.getNearestVisiblePlayer();
+            shoot.shoot(weaponPrefs, target);
+        } else if (info.isShooting())
+            shoot.stopShooting();		
+    }
+    </programlisting>	
+	... definining both general and ranged weapon preferences. Note that the preferences above are certainly not the most optimal ones for UT2004.
+	</para>			
+	</section>
+
+    </section>
+    </section>
+
+
+  <section>
+    <title>Where to continue</title>
+    <para><link xlink:href="http://liandri.beyondunreal.com/Unreal_Tournament_2004">UT2004 general information and tips nad tricks</link>   
+    </para>
+    <para><link xlink:href="http://www.oocities.org/garvelous2004/">Garvelous UT2004 CTF guide</link>   
+    </para>    
+  </section>
+</chapter>

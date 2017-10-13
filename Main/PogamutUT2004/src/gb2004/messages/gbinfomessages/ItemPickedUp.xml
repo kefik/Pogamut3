@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="IPK" name="ItemPickedUp" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Comes when we have picked up an item. This does not mean the item will be added to 
+		our inventory (for example Adrenaline or Health pickup just raise our stats).
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+   		<classcategory name="all"/>
+   </interface>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the item. This Id represents just item on the
+			map, not in our inventory.
+		</documentation>
+   </property>
+   <property name="InventoryId" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of the item in our inventory - use this Id to do changeweapons etc.
+			Unreal has different Ids for items in map and actual item in bot's inventory.
+			If the item does not go into our inventory nothing will be here (null).
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared">
+      <documentation>Location of the item.</documentation>
+   </property>
+   <property name="Amount" type="int" category="local">
+      <documentation>
+			If this item is some ammo or health pack, here we can find
+			out how much of the attribute this item will add. Works also for weapons - will hold primary ammo amount.
+		</documentation>
+   </property>
+   <property name="AmountSec" type="int" category="local">
+      <documentation>
+			Only sent if this item is a weapon. Holds secondary ammo amount.
+		</documentation>
+   </property>   
+   <property name="Type" type="ItemType" category="shared">
+      <documentation>
+			Class of the item (e.g. xWeapons.FlakCannonPickup).
+		</documentation>
+      <extra>
+         <code>
+            <yylex>
+					((ItemPickedUp)actObj).Descriptor = itemDescriptorValue(((ItemPickedUp)actObj).Type);
+				</yylex>
+         </code>
+      </extra>
+   </property>
+   <property name="Descriptor" type="ItemDescriptor" jflex="no" category="shared">
+      <documentation>
+			Descriptor of the item - according the ItemType you may cast this to various XYZDescriptor. 
+		</documentation>
+   </property>
+   <property name="Dropped" type="Boolean" category="shared">
+      <documentation>
+			Whether it is a regular item or dropped by player or bot.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

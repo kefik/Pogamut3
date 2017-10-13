@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="USE" extends="CommandMessage" name="FactoryUse" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Works only in BotScenario GameType. Bot tries to use Factory - he needs to be at factory position + he needs to have enough adrenaline to trigger the factory. Game responds with USED (FactoryUsed) message. The item will be spawned at bot's location.
+	</documentation>
+   <!-- List of all properties of this command. !--><!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

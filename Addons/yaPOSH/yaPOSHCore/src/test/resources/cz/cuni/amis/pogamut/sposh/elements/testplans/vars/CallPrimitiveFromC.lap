@@ -1,0 +1,10 @@
+(
+    (C testC vars($var1=12.5, $var2="seznam", $var3=12)
+        (elements ((test runSomething($var1, "sometext"))))
+    )
+
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testC)))
+    )
+)
+

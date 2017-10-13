@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="GIVERES" name="GiveItemResult" type="Event">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>   
+   <group name="Bot"/>
+   <documentation>
+		Aynchronous message. Response to GIVE command. Here we get the information about the result of our GIVE command. 
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="TargetId" type="UnrealId" category="local">
+      <documentation>
+			An Id of the bot we tried to send item to.
+		</documentation>
+   </property>
+   <property name="ItemId" type="UnrealId" category="local">
+      <documentation>
+			If the command was a success then here we receive Id of the item that was given to bot.
+		</documentation>
+   </property>   
+   <property name="ItemType" type="String" category="local">
+      <documentation>
+			Class of the item we wanted to give to the bot.
+		</documentation>
+   </property>
+   <property name="Result" type="Boolean" category="local">
+      <documentation>
+		Boolean result containing whether the give command was successful.			
+		</documentation>
+   </property>
+   <property name="Reason" type="String" category="local">
+      <documentation>
+			String reason why the give command was or wasn't successful. Can be BOT_NOT_FOUND_OR_BOT_PAWN_NONE, MAX_DISTANCE_EXCEEDED, WRONG_ITEM_TYPE and SUCCESS.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CONF" extends="CommandMessage" name="Configuration" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Configures various attributes of the bot. This command can be
+		issued also by bot on the bot itself (in this case Id attribute
+		is not parsed).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the target bot. Not used if sent as a command for the
+			bot.
+		</documentation>
+   </property>
+   <property name="AutoTrace" type="boolean">
+      <documentation>
+			Enables/disables auto ray tracing feature.
+		</documentation>
+   </property>
+   <property name="ManualSpawn" type="boolean">
+      <documentation>
+			Sets if the bot wil have tol be respawned after death
+			manually by RESPAWN command. If false, the bot will respawn
+			automatically.
+		</documentation>
+   </property>
+   <property name="Name" type="String">
+      <documentation>
+			You can change the name of the bot in the game.
+		</documentation>
+   </property>
+   <property name="Action" type="String">
+      <documentation>
+			Sets atomic action for the bot (BDI).
+		</documentation>
+   </property>
+   <property name="SpeedMultiplier" type="double">
+      <documentation>
+			Bots default speed will be multiplied by this number. Ranges from 0.1 to 2 (default, can be set in ini in [GameBots2004.RemoteBot] MaxSpeed).
+		</documentation>
+   </property>
+   <property name="RotationRate" type="Rotation">
+      <documentation>
+			Sets the bot rotation rate. Default rotation rate is: (Pitch=3072,Yaw=60000,Roll=2048) and may be configured in ini file in [GameBots2004.RemoteBot] DefaultRotationRate. (pitch - up/down, yaw - left/right, roll - equivalent of doing a cartwheel)
+		</documentation>
+   </property>   
+   <property name="Invulnerable" type="boolean">
+      <documentation>
+			Will set godmode for bot on (bot can't be killed). This can
+			be changed just when cheating is enabled on the server.
+			(bAllowCheats = True)
+		</documentation>
+   </property>
+   <property name="SelfUpdateTime" type="double">
+      <documentation>
+			The delay between two self message synchronous batches 
+			(can range from 0.01 to 2 seconds). Will be used only if NewSelfBatchProtocol
+			attribute is set to true in INIT message. Setting this can change VisionTime value 
+			as well, as VisionTime needs to be set to multiple of this value.
+		</documentation>
+   </property>   
+   <property name="VisionTime" type="double">
+      <documentation>
+			The delay between two synchronous batches containing vision updates
+			(can range from 0.1 to 2 seconds). If NewSelfBatchProtocol
+			attribute is set to true in INIT message then this value can be set only to
+			multiples of SelfUpdateTime - the closest value will be found and VisionTime
+			will be set to this number.
+		</documentation>
+   </property>
+   <property name="ShowDebug" type="boolean">
+      <documentation>
+			If true some additional debug information will be logged to
+			UT2004 server console window.
+		</documentation>
+   </property>
+   <property name="ShowFocalPoint" type="boolean">
+      <documentation>
+			If set to true an actor will appear in the game on the
+			location the bot is actually looking at.
+		</documentation>
+   </property>
+   <property name="DrawTraceLines" type="boolean">
+      <documentation>
+			If set to true, the rays of automatic ray tracing (ATR
+			messages) will be drawn in the game.
+		</documentation>
+   </property>
+   <property name="SynchronousOff" type="boolean">
+      <documentation>
+			It enables/disables sending of all GB synchronous messages
+			for the bot.
+		</documentation>
+   </property>
+   <property name="SyncNavPointsOff" type="boolean">
+      <documentation>
+			It enables/disables sending of NavPoints in GB synchronous batch for the bot.
+		</documentation>
+   </property>   
+   <property name="AutoPickupOff" type="boolean">
+      <documentation>
+			It enables/disables automatic pickup of the bot. If true the items can be picked up through PICK command.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code>
+         <java>
+                        <javaimport import="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange"/>
+                        /**
+                        * Copy configuration from existing info message to this command.
+                        */
+                        public void copy(ConfigChange confCh) {
+            setAutoPickupOff(confCh.isAutoPickupOff());
+            setAutoTrace(confCh.isAutoTrace());
+            setDrawTraceLines(confCh.isDrawTraceLines());
+            setInvulnerable(confCh.isInvulnerable());
+            setManualSpawn(confCh.isManualSpawn());
+            setShowDebug(confCh.isShowDebug());
+            setShowFocalPoint(confCh.isShowFocalPoint());
+            setSynchronousOff(confCh.isSynchronousOff());
+            }
+                    </java>
+      </code>
+   </extra>
+</commandobject>

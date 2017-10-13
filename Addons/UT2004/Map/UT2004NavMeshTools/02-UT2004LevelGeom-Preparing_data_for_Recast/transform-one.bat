@@ -1,0 +1,1 @@
+java -jar ut2004-level-geom-3.6.2-SNAPSHOT.one-jar.jar --input-file "%1" --output-dir output/ --ut2004-dir "%2"

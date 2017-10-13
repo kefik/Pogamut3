@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="INIT" extends="CommandMessage" name="Initialize" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Message you'll send at the beginning of the communication to
+		create a bot in the game. You must send this message before you
+		can have a character to play in the game.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Name" type="String">
+      <documentation>Desired name.</documentation>
+   </property>
+   <property name="Team" type="int">
+      <documentation>
+			Preferred team. If illegal or no team provided, one will be
+			provided for you. Normally a team game has team 0 and team
+			1. In BotDeathMatch, team is meaningless.
+		</documentation>
+   </property>
+   <property name="ManualSpawn" type="boolean">
+      <documentation>
+			Sets if the bot wil have tol be respawned after death
+			manually by RESPAWN command. If false, the bot will respawn
+			automatically.
+		</documentation>
+   </property>
+   <property name="AutoTrace" type="boolean">
+      <documentation>
+			Enables/disables auto ray tracing feature.
+		</documentation>
+   </property>
+   <property name="Location" type="Location">
+      <documentation>
+			Specify start location, if unspecified, then random.
+		</documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>
+			Specify start rotation, if unspecified, then random.
+		</documentation>
+   </property>
+   <property name="Skin" type="String">
+      <documentation>
+			Sets the bot current skin (e.g. "HumanMaleA.MercMaleA").
+			Find all packages and skins through unrealEd (Actor browser,
+			search in UT2004/Animations folder). Supported bot skins are
+			Aliens (Aliens.), Bots (Bot.), human males (HumanMaleA.),
+			human females (HumanFemaleA. ), juggernauts (Jugg.). Skaarj
+			skins are not supported at the time being.
+		</documentation>
+   </property>
+   <property name="DesiredSkill" type="int">
+      <documentation>
+			Can range from 0 to 7. This sets the bot accuracy. 1 lowest,
+			7 highest. Shouldn't have any other effect.
+		</documentation>
+   </property>
+   <property name="ShouldLeadTarget" type="boolean">
+      <documentation>
+			When firing slow projectiles (missiles...), if the engine
+			will try to count the impact point for the bot or not (when
+			shooting at moving targets).
+		</documentation>
+   </property>
+   <property name="AutoPickupOff" type="boolean">
+      <documentation>
+			It enables/disables automatic pickup of the bot. If true the items can be picked up through PICK command.
+		</documentation>
+   </property>
+   <property name="NewSelfBatchProtocol" type="boolean">
+      <documentation>
+			If set to true new synchronous batch procotol will be used. Sync. batches will be sent
+			more regularly containing SELF message only (based on SelfUpdateTime value). Visibility
+			information will be still sent in synchronous batches, but not always, but each VisionTime.
+			VisionTime now needs to be multiple of SelfUpdateTime and will be set to nearest multiple if 
+			set improperly. BEG and END message will contain new attribute VisUpdate telling if visibility
+			update is sent in this batch or not.
+		</documentation>
+   </property>   
+   <property name="Jmx" type="String">
+      <documentation>
+			Sets the jmx adress we can use to debug the bot from Java (if we are using Pogamut).
+		</documentation>
+   </property>
+   <property name="ClassName" type="String">
+      <documentation>
+			Sets the Unreal Tournament class of the bot that should be used. By default leave it blank. In UnrealRuntime2 it may be used to spawn bots of different class,
+			see CharacterType class in project PogamutEmohawk project.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

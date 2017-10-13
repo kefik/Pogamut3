@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="HELLO_CONTROL_SERVER"
+               name="HelloControlServerHandshake"
+               type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Asynchronous message. A message sent at the beginning of
+		establishing the control connection.
+	</documentation>
+   <property name="Game" type="String" category="local">
+      <documentation>
+			Name of the Unreal Tournament version these GameBots are running on (UT2004, UE2, UDK, UT3...).
+		</documentation>
+   </property>   
+   <property name="Version" type="String" category="local">
+      <documentation>
+			Version number of GameBots.
+		</documentation>
+   </property>	
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

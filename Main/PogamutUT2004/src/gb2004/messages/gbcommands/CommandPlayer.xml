@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="COMPLR" extends="CommandMessage" name="CommandPlayer" type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Commands player's character to perform some action.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the affected player.</documentation>
+   </property>
+   <property name="Command" type="String">
+      <documentation>Available: MOVE, TURNTO.</documentation>
+   </property>
+   <!-- Following properties depend on the type of command --><property name="Location" type="Location">
+      <documentation>Applicable for: MOVE, TURNTO.</documentation>
+   </property>
+   <property name="FocusLocation" type="Location">
+      <documentation>Applicable for: MOVE.</documentation>
+   </property>
+   <property name="Walk" type="Boolean">
+      <documentation>Applicable for: MOVE. If the character should walk instead of run.</documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>Applicable for: TURNTO.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

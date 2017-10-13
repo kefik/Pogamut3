@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="INIT" extends="CommandMessage" name="InitializeObserver"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Message you'll send at the beginning of the communication to
+		start observing a player. You need to supply either name or ID
+        of the player to observe.
+        If you are already observing a player, you will stop observing that player
+        and start observing the player specified by this message.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Name" type="String">
+      <documentation>Name of the player you wannt to observe.</documentation>
+   </property>
+   <property name="Id" type="String">
+      <documentation>The ID of the player you want to observe.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

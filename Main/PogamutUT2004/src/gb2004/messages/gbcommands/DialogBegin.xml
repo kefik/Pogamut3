@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DLGBEGIN" extends="CommandMessage" name="DialogBegin" type="Info">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Begins a batch of DialogItem commands.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the player on who's HUD should be the dialog shown.</documentation>
+   </property>
+   <property name="Id" type="String">
+      <documentation>Id of this dialog. This should be an unique alphanumeric sequence without spaces.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

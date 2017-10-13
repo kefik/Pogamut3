@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DLGCANCEL" extends="CommandMessage" name="DialogCancel" type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Cancels some dialog, hiding him from screen. The dialog sends DLGCMD with Command CANCEL and latest available data as confirmation.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the player on who's HUD is the dialog.</documentation>
+   </property>
+   <property name="Id" type="String">
+      <documentation>Id of the cancelled dialog.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

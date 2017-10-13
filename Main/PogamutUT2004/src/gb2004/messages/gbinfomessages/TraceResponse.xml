@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="TRC" name="TraceResponse" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Aynchronous message. Response to TRACE command.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="String" category="all">
+      <documentation>
+			An Id matching the one sent by client. Allows bot to match
+			answer with right query.
+		</documentation>
+   </property>
+   <property name="From" type="Location" category="local">
+      <documentation>
+			Location from which the ray is emitted.
+		</documentation>
+   </property>
+   <property name="To" type="Location"  category="local">
+      <documentation>
+			Location to which the ray is sent.
+		</documentation>
+   </property>
+   <property name="Result" type="boolean" category="local">
+      <documentation>
+			True if it hit something, false if not.
+		</documentation>
+   </property>
+   <property name="HitNormal" type="Vector3d" category="local">
+      <documentation>
+			Normal vector to the trace ray in the point of hit.
+		</documentation>
+   </property>
+   <property name="HitLocation" type="Vector3d" category="local">
+      <documentation>Point of the hit.</documentation>
+   </property>
+   <property name="HitID" type="UnrealId" category="local">
+      <documentation>
+			Id of the thing we have hit. May be other player or some
+			item or level geometry.
+		</documentation>
+   </property>
+   <property name="TraceActors" type="boolean" category="local">
+      <documentation>
+			True if we are tracing also actors in the game (players,
+			items). False if we are tracing just level geometry.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

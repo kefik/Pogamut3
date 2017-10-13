@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="FORCECAM" extends="CommandMessage" name="SetCamera" type="Configure">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Sets input player to be a camera (he want be able to control himself). This player/camera can be controlled
+		by MoveCamera command. Also sets camera location and rotation.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Id" type="UnrealId">
+      <documentation>UnrealId of the player we want to set as a camera. </documentation>
+   </property>
+   <property name="Location" type="Location">
+      <documentation>Initial location of this camera. </documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>Initial rotation of this camera. </documentation>
+   </property>
+   <property name="Release" type="boolean">
+      <documentation>True to release this player from camera mode. </documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

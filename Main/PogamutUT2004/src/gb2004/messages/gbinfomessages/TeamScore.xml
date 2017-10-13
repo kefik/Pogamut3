@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="TES" name="TeamScore" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Synchronous message. Contains the info about team score.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Message identifier.</documentation>
+   </property>
+   <property name="Team" type="Integer" category="shared" default="255">
+      <documentation>Team identifier.</documentation>
+   </property>
+   <property name="Score" type="Integer" category="shared" default="0">
+      <documentation>
+			The score of the team (can be some special measurement that
+			differs from game type to game type - number of stolen flags
+			in CTF game, number of team frags in TeamGame, etc.)
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code>
+         <java>				
+			</java>
+      </code>
+   </extra>
+</messageobject>

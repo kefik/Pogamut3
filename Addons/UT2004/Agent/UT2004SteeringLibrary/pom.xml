@@ -1,0 +1,65 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cz.cuni.amis.pogamut</groupId>
+        <artifactId>pogamut-pom</artifactId>
+        <version>3.7.1-SNAPSHOT</version>
+    </parent>
+
+
+  <groupId>cz.cuni.amis.pogamut.ut2004.steerings</groupId>
+  <artifactId>ut2004-steering-library</artifactId>
+  <packaging>jar</packaging>
+  <version>3.7.1-SNAPSHOT</version>
+  <name>ut2004-steering-library</name>  
+  
+  <url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.artifactId}/</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+  
+  <dependencies>
+        <dependency>
+            <groupId>cz.cuni.amis.pogamut</groupId>
+            <artifactId>pogamut-ut2004</artifactId>
+            <version>3.7.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.lib.awtextra</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>AbsoluteLayout</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-visual</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>appframework</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>swing-worker</artifactId>
+            <version>1.1</version>
+        </dependency>
+    
+  </dependencies>
+   <repositories>
+        <repository>
+            <id>amis-artifactory</id>
+            <name>AMIS Artifactory</name>
+            <url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+        </repository>
+    </repositories>
+</project>

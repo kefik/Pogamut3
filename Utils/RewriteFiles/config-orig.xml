@@ -1,0 +1,23 @@
+<RewriteFilesConfig>
+			<globals>
+				<includeFile>*.as</includeFile>
+				<includeFile>*.mxml</includeFile>
+				<!--
+				<excludeDir>.svn</excludeDir>
+				-->
+				<substitutions>
+          <substitution>
+						<match>import cz.cuni.ff.naki.game.backend.codetable.GamePersistenceTypeEnum;</match>
+						<replace>import cz.cuni.ff.naki.editor.codetable.gen.CtPersistenceTypeEnum;</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+					<substitution>
+						<match>GamePersistenceTypeEnum</match>
+						<replace>CtPersistenceTypeEnum</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+				</substitutions>
+				<fixLineEndings windowsStyle="false" onlyIfRewritten="true" />
+			</globals>
+			<include dir="D:/Workspaces/NAKI/Game/" />			
+</RewriteFilesConfig>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Pogamut installation</title>
+
+  <section>
+    <title>Installation steps</title>
+
+    <para></para>
+
+    <section>
+      <title>JDK and Netbeans</title>
+
+      <para>Before you install Pogamut you have to have installed JDK 1.6+ and
+      Netbeans 7.1.1 if you want to use the Pogamut Netbeans plugin which
+      brings many handy features.</para>
+
+      <para>There are two possibilities:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>you have neither JDK nor Netbeans, then it is easiest to
+          download latest <link
+          xlink:href="http://java.sun.com/javase/downloads/widget/jdk_netbeans.jsp">Netbeans
+          and JDK cobundle</link>.</para>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/install/NbJavaBundleInstall.png"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </listitem>
+
+        <listitem>
+          <para>you already have JDK 1.6+ but you don't have Netbeans, then
+          follow this <link
+          xlink:href="http://netbeans.org/downloads/index.html">link for
+          download</link>. "Java SE" version will be sufficient.</para>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/install/NBDownload.png"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Unreal</title>
+
+      <para>Current Pogamut can communicate with both Unreal Tournament 2004
+      (UT2004), Unreal Engine 2 Runtime (UE2) and Unreal Development Kit (UDK).</para>
+
+      <para>UT2004 is a commercial game and you have to buy it if you want to
+      connect to this environment.</para>
+
+      <para>UE2 is free for noncommercial use, you can <link
+      xlink:href="http://apacudn.epicgames.com/Two/UnrealEngine2Runtime22262002.html">download
+      it here</link>. But preferably, install it with <link xlink:href="http://diana.ms.mff.cuni.cz/main/tiki-index.php?page=Download">Pogamut Emohawk Installer</link>.</para>
+      
+      <para>UDK is a free version of Unreal Engine 3. We distribute free UDK
+      version installer with built-in GameBots in Pogamut installer.
+      </para>
+
+    </section>
+	
+	<section>
+    <title>Pogamut installation</title>
+    
+    <para>To install Pogamut download Pogamut from the <link
+    xlink:href="http://diana.ms.mff.cuni.cz/main/tiki-index.php?page=Download">download
+    page</link>. Installer is Java .jar file, you will be probably able to
+    run it directly from your file manager, if not then type <command>java
+    -jar Pogamut-3-installer.jar</command> in your command line. </para>	
+    <para>Installer will guide you through the rest of installation
+    process. Note that we offer several installers depending on which environment you want to use for your bots. Currently you can decide between
+	UT2004 (thoroughly debugged, used for several years on our courses, provides first person shooter scenario), UnrealEngine2RuntimeDemo aka PogamutEmohawk (debugged, provides non-violent scenario),
+	DEFCON (working proof of concept, provides realtime strategy game environment) and UDK (working proof of concept, provides somehow limited first person shooter
+	scenario in good graphics and its free to use). Bots developed for different environments are usually not compatible!</para>	
+	
+    <para>Moreover, as Pogamut 3 has been fully mavenized (read more about Maven at <link
+      xlink:href="http://maven.apache.org/">Maven homepage</link>), you can now follow <link
+          xlink:href="http://pogamut.cuni.cz/pogamut_files/doc/Setup-Pogamut3-with-Maven.pdf">Pogamut 3 with Maven Quickstart Tutorial</link> with all necessary steps to setup latest Pogamut version
+          and start developing Pogamut bots (but WITHOUT Pogamut NetBeans plugin). However, we recommend to set up Pogamut with Pogamut installer as it is much easier. 
+		  To see a list of all Pogamut Maven archetypes you may use to start developing your bot visit our <link
+          xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link>. We recommend to use latest archetypes versions that are AT THE BOTTOM of the file!.</para>
+  </section>
+  </section>
+</chapter>

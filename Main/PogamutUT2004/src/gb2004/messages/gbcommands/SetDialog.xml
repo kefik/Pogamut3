@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DIALOG" extends="CommandMessage" name="SetDialog" type="Control">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Sets the dialog for specified player. Dialog will be set just if the player has our bot selected by cursor (ALT+SHIFT and the LeftMouse button). Note that not all of the Option variables have to be set. But they need to be set succesively starting from 0,1,2 etc. They are parsed in this order and first emty Option will terminate parsing.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>Id of the player we want to set dialog for.</documentation>
+   </property>
+   <property name="DialogId" type="String">
+      <documentation>Our Id of the dialog - we will match this Id in response messages and in PLI messages. We choose this value.</documentation>
+   </property>
+   <property name="Text" type="String">
+      <documentation>Text of the dialog.</documentation>
+   </property>
+   <property name="Option0" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option1" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option2" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option3" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option4" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option5" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option6" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option7" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option8" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <property name="Option9" type="String">
+      <documentation>
+			One of the options (possible answers) for the dialog.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

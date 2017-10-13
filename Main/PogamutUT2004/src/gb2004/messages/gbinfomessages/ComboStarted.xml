@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="COMBO" name="ComboStarted" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. The observed player used a combo.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Type" type="String" category="local">
+      <documentation>
+			Holds the class name of the desired adrenaline combo (can be
+			xGame.ComboBerserk, xGame.ComboDefensive, xGame.ComboInvis
+			or xGame.ComboSpeed).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

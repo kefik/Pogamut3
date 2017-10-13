@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="VEH" name="Vehicle" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. Holds vehicles we see. Id for vehicles doesn't work, so 
+		this message is without Id. We can join vehicles by ENTER command if we are 
+		close enough - ussually 100 ut units or less. Note: Vehicle support is 
+		in aplha testing right now.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+    <classcategory name="base" />
+   	<classcategory name="shared"/>
+   	<classtype name="abstract" />
+   </interface>
+   <interface name="ILocomotive">
+   	<classcategory name="base" />
+   	<classcategory name="shared"/>
+   	<classtype name="abstract" />
+   </interface>
+   <interface name="IRotable">
+   	<classcategory name="base" />
+   	<classcategory name="shared"/>
+   	<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of the vehicle or vehicle part.</documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="shared">
+      <documentation>
+			Which direction the vehicle is facing in absolute terms.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared">
+      <documentation>
+			An absolute location of the vehicle within the map.
+		</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+      <documentation>
+			Absolute velocity of the vehicle as a vector of movement per one
+			game second.
+		</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>
+            If the vehicle is in the field of view of the bot.
+        </documentation>
+   </property>
+   <property name="Team" type="Integer" category="shared" default="255">
+      <documentation>
+			What team the vehicle is on. 255 is no team. 0-3 are red,
+			blue, green, gold in that order.
+		</documentation>
+   </property>
+   <property name="Health" type="Integer" category="shared" default="0">
+      <documentation>
+			How much health the vehicle has left. Ranges from 0 to x, depending on the vehicle type.
+		</documentation>
+   </property>
+   <property name="Armor" type="Integer" category="shared" default="0">
+      <documentation>
+			How much the vehicle has left. Note: This may be 0 all the time. Maybe the vehicles are not supporting armor.
+		</documentation>
+   </property>
+   <property name="Driver" type="UnrealId" category="shared">
+      <documentation>Unique Id of the driver - if any.</documentation>
+   </property>
+   <property name="TeamLocked" type="boolean" category="shared">
+      <documentation>
+            If the vehicle is locked just for its current team.
+        </documentation>
+   </property>
+   <property name="Type" type="String" category="static">
+      <documentation>
+			Class of the vehicle. If it is a car, turret etc.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

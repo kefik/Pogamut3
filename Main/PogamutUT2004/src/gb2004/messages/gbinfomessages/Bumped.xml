@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="BMP" name="Bumped" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Bot bumped into another actor.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of the actor we have bumped to (actors include
+			other players or bots and other physical objects that can
+			block your path).
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>
+			Location of thing you've rammed into.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="USED" name="FactoryUsed" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Response to USE (FactoryUse) command.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Success" type="boolean" category="local">
+      <documentation>
+			If we have successfully used the factory.
+		</documentation>
+   </property>
+   <property name="Reason" type="String" category="local">
+      <documentation>
+			If success is false, the reason why we couldn't use a factory will be here.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

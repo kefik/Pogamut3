@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="HELLO_OBSERVER" name="HelloObserverHandshake"
+               type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. A message sent at the beginning of
+		establishing the connection.
+	</documentation>
+   <property name="Game" type="String" category="local">
+      <documentation>
+			Name of the Unreal Tournament version these GameBots are running on (UT2004, UE2, UDK, UT3...).
+		</documentation>
+   </property>   
+   <property name="Version" type="String" category="local">
+      <documentation>
+			Version number of GameBots.
+		</documentation>
+   </property>	
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

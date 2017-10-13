@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="GAMERESTART" name="GameRestarted" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <!-- DocBook tags can be used inside <documentation> tag. If you arent familiar
+		with DocBook then refere to www.docbook.org !--><documentation>
+		Asynchronous message. Sent when the game is being restarted by the
+                control server. Two messages arrive. One notifying the restart has
+                been started and second notifying the restart has ended.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Started" type="boolean" category="local">
+      <documentation>Game restart sequence has been started.</documentation>
+   </property>
+   <property name="Finished" type="boolean" category="local">
+      <documentation>Game restart has been finished.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

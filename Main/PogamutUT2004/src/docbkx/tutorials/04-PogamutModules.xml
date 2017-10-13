@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="04-PogamutModules"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Pogamut sensor and command modules - the basics</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>Pogamut sensor modules</para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut command modules</para>
+        </listitem>
+      </itemizedlist>Estimated time for completing this tutorial is TODO
+    minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    read <link linkend="00-EmptyBot">00-EmptyBot</link> tutorial.</para>
+  </section>
+
+  <section>
+    <title>Tutorial body</title>
+
+    <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to 
+    PogamutUT2004 and will mostly hold in PogamutUDK examples. </para>
+
+    <para>In this tutorial you will learn about Pogamut modules. The purpose of Pogamut modules is to provide some basic functionality
+	that can be used by users programming their bots. What functionality are we talking about? 
+	Well, there are two types of Pogamut modules - sensor modules and command modules. Sensor modules are a wrappings of the bot WorldView. 
+	They have public methods defined on them that can respond questions such as "Do I see some player?", "What is my location?", "Was I hit recently", etc. 
+	Command modules wrap Pogamut commands - simply by calling preprepared methods, our bot will move, jump, shoot, etc. Note that all Pogamut modules
+	are initialized and accessible in <classname>UT2004BotModuleController</classname> - the ancestor of all Pogamut example bots.
+	Below you will find list of most usefull Pogamut modules.</para>
+
+    <section role="gui">
+      <title>Pogamut sensor modules</title>
+      
+      <para> Here we will describe pogamut sensor modules - what they provide and how we can initialize them (and how we can usually access them - if our bot
+	  is a child of <classname>UT2004BotModuleController</classname>).</para>
+
+    <para><itemizedlist>
+
+
+        <listitem>
+          <para><guimenuitem>AgentInfo</guimenuitem> - accessible via <methodname>info</methodname> is very usefull module providing basic information about the bot itself.
+		  Here we can get how much health the bot has, what is his location, what is his team and more. 
+		  </para>
+        </listitem>
+
+        <listitem>
+          <para><guimenuitem>Players</guimenuitem> - accessible via <methodname>players</methodname>. Want to know more about other players or bots around
+		  the bot? Then this is the module to use. It provides methods that return all currently visible players - friends or enemies. You can ask
+		  it about nearest visible players etc. </para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Items</guimenuitem> - accessible via <methodname>items.</methodname> is a similar module to players module, but now we are handling items.
+		  This module is also capable of optimistic guessing if some item is currently spawned in the environment. Or it can return whether the target item
+		  is pickable (if the bot is capable of picking up the item) - as this may not be automatic (e.g. bot can pick up regular health pack only when his
+		  health is lower than 100).
+		  </para>
+        </listitem>        
+        <listitem>
+          <para><guimenuitem>Weaponry</guimenuitem> - accessible via <methodname>weaponry</methodname>. Provides interface to
+		  bot current weapons and ammo in his inventory. </para>
+        </listitem>		
+        <listitem>
+          <para><guimenuitem>AgentStats</guimenuitem> - accessible via <methodname>stats</methodname> returns the bot statistics - how many players
+		  he killed, how many times he died. Even more thorough statistics are available - how many times a concrete player killed our bot, etc.
+		  </para>
+        </listitem>    
+        <listitem>
+          <para><guimenuitem>Senses</guimenuitem> - accessible via <methodname>senses</methodname>. This modules implements listeners for most of the Pogamut events.
+		  You will get information about last time your bot was damaged or if your bot recently heared a sound.
+		  </para>
+        </listitem>		
+        <listitem>
+          <para><guimenuitem>Game</guimenuitem> - accessible via <methodname>game</methodname>. This module provides basic information about the game the bot 
+		  is currently in. Information such as time limit, maximum number of health, goal frag score, etc. will be provided here. 
+		  </para>
+        </listitem>	
+        <listitem>
+          <para><guimenuitem>ItemDecriptors</guimenuitem> - accessible via <methodname>destriptors</methodname>. Here the detailed information about
+		  UT2004 items are stored. Detailed information about weapons and pickups can be got here. Note that some of the weapons attributes are 
+		  experimental. Also note that here you will get only items parameters, you will not get items locations or a list of items in the environment.
+		  Descriptors are only data classes describing various item types in the environment.
+		  </para>
+        </listitem>			
+      </itemizedlist></para>
+
+<para>Don't forget the Pogamut modules are automatically instanciated in <classname>UT2004BotModuleController</classname>.
+They can be used in any Pogamut example or in PogamutJavaBot project.</para>
+      <para>Here is an example of using modules in <methodname>logic()</methodname> method.
+      Example below is a simple follow bot.</para>
+      <para><programlisting language="java">
+
+    @Override
+    public void logic() throws PogamutException {
+    
+        // a simple follow bot logic
+
+        if (players.canSeePlayers()) {
+            Player followPlayer = players.getNearestVisiblePlayer();
+            if (followPlayer != null)
+                getAct().act(new Move().setFirstLocation(followPlayer.getLocation()));
+        }
+    }
+        </programlisting>
+</para>
+    </section>
+    
+    <section role="gui">
+      <title>Pogamut command and sensomotoric modules</title>
+      <para>Command and sensomotoric modules provides wrappings of Pogamut3 commands. Sensomotoric modules are a mix of sensoric and command modules.
+	  They usually provide information and at the same time are able to issue commands to the bot.
+	  Below we will provide you with a list of most interesting Pogamut command modules with a brief description.</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><guimenuitem>AdvancedLocomotion</guimenuitem> - accessible via <methodname>move</methodname>. 
+		  Locomotion commands can be found here (moving, turning, jumping, strafing etc.).</para>
+        </listitem>
+    
+        <listitem>
+          <para><guimenuitem>AdvancedShooting</guimenuitem> - accessible via <methodname>shoot</methodname>.
+		  Simple and advanced shooting commands can be issued from this module (firing, alternate firing, firing grenades, etc.).</para>
+        </listitem>
+    
+        <listitem>
+          <para><guimenuitem>AgentConfig</guimenuitem> - accessible via <methodname>config</methodname>. With this module some of the 
+		  bot parameters can be configured - e.g. name, frequency of updates, debugging features, etc.</para>
+        </listitem>
+
+        <listitem>
+          <para><guimenuitem>ConfigureCommands</guimenuitem> - commands for bot configuration.</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Raycasting</guimenuitem> - accessible via <methodname>raycasting</methodname>. Wraps commands and messages
+		  associated with ray casting functionality.</para>
+        </listitem>        
+      </itemizedlist></para>
+      
+      <para> The command modules are automatically instanciated in <classname>UT2004BotModuleController</classname> class.
+      You may access them in all examples or PogamutJavaBot projects by typing <methodname>body.</methodname>. Here is an example of jumping
+      bot done through Pogamut modules: </para>
+<para><programlisting language="java">
+
+    @Override
+    public void logic() throws PogamutException {
+        //we can simply use our command module to create a crazy jumping bot
+        body.getLocomotion().jump();
+    }
+    </programlisting>
+</para>
+</section>
+
+    <section role="gui">
+      <title>Other Pogamut modules</title>
+      <para>Here is a list of other interesting Pogamut modules that do no fit into preceding categories.</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><guimenuitem>WeaponPrefs</guimenuitem> - accessible via <methodname>weaponPrefs</methodname>. 
+		  This module enables to set up the bot weapon preferences that can be then used automatically by AdvancedShooting module
+		  allowing the user to quickly specify desired weapon selection behavior.
+		  </para>
+        </listitem>
+    
+        <listitem>
+          <para><guimenuitem>Random</guimenuitem> - accessible via <methodname>random</methodname>. Standard Java random numbers
+		  generator.</para>
+        </listitem>
+    
+        <listitem>
+          <para><guimenuitem>LogCategory</guimenuitem> - accessible via <methodname>log</methodname>. You can log anything you want
+		  with Pogamut logs - they are available for introspection in UT2004Serer window found in Services tab.</para>
+        </listitem>
+
+        <listitem>
+          <para><guimenuitem>UT2004Navigation</guimenuitem> - accessible via <methodname>navigation</methodname>. Completely wraps
+		  bot path finding. You don't need to care about getting the path or handling of jump spots, lifts, etc. This module does everything
+		  for you.
+		  </para>
+        </listitem>      
+      </itemizedlist></para>
+
+</section>
+    </section>
+    
+
+  <section>
+    <title>Advanced topics</title>
+
+    <para>Links to further reading, papers, web pages.</para>
+
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+    <para>
+    <link linkend="01-ResponsiveBot">01-ResponsiveBot</link> - simple responsive bot - peek into secrets of Pogamut listeners
+    </para>
+    <para>
+    <link linkend="02-NavigationBot">02-NavigationBot</link> - basic navigation bot - a bot that runs around in the environment
+    </para>
+    <para>
+    <link linkend="03-RaycastingBot">03-RaycastingBot</link> - how to use simple ray tracing 
+    </para>
+
+
+    <para>For creating links between documents read
+    http://www.sagehill.net/docbookxsl/Olinking.html#LinkBetweenDocs</para>
+  </section>
+</chapter>

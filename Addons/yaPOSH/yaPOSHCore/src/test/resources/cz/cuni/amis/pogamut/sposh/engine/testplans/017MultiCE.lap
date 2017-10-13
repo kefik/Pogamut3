@@ -1,0 +1,16 @@
+; test if I select proper ce
+(
+    (AP testAP (action0 action1))
+
+    (C testC
+        (elements (
+            (ce1 (trigger (tr1)) action)
+            (ce2 (trigger (tr2)) testAP)
+            (ce3 (trigger (tr3)) action))
+        )
+    )
+
+    (DC testDC
+        (drives ((testDE testC)))
+    )
+)

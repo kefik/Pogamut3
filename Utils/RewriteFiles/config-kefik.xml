@@ -1,0 +1,15 @@
+<RewriteFilesConfig>
+			<globals>
+				<includeFile>*.*</includeFile>
+				<excludeDir>.svn</excludeDir>
+				<substitutions>
+          <substitution>
+						<match>kefik.no-ip.org</match>
+						<replace>kefik.ddns.net</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>					
+				</substitutions>
+				<fixLineEndings windowsStyle="false" onlyIfRewritten="true" />
+			</globals>
+			<include dir="D:/Workspaces/NAKI/" />			
+</RewriteFilesConfig>

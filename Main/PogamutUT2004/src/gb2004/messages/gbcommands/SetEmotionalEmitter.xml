@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETEMIT" extends="CommandMessage" name="SetEmotionalEmitter" type="Control">
+	<group name="Bot" />
+	<documentation>
+		Sets the emotional emitter for the bot and configures it. The emitter will float
+        at the bots head following the bot.
+	</documentation>
+
+	<!-- List of all properties of this command. !-->
+
+	<property name="Disable" type="boolean">
+		<documentation>
+            If true disables actual emittor (it will dissappear). No other attributes will be parsed.
+        </documentation>
+	</property>
+	<property name="Pause" type="boolean">
+		<documentation>
+            Should pause the emitter, does not work right now.
+        </documentation>
+	</property>
+	<property name="FirstC" type="Vector3d">
+		<documentation>
+            Starting color of the floating balls.
+        </documentation>
+	</property>
+	<property name="SecondC" type="Vector3d">
+		<documentation>
+			Finishing color of the floating balls.
+		</documentation>
+	</property>
+	<property name="StartVelocity" type="Velocity">
+		<documentation>
+			This is relative velocity direction vector that will affect the speed and direction of the balls
+            going out. Default (2,2,2).
+		</documentation>
+	</property>
+	<property name="EndVelocity" type="Velocity">
+		<documentation>
+			This is relative velocity direction vector that will affect the speed and direction of the balls
+            going in. Default (-10,-10,-10).
+		</documentation>
+	</property>
+	<property name="VelocityRange" type="double">
+		<documentation>
+			This will affect the speed of the balls. Default -20.
+		</documentation>
+	</property>
+	<property name="Size" type="Vector3d">
+		<documentation>
+			This will affect the size of the balls. Default (4,4,8).
+		</documentation>
+	</property>
+	<property name="LifeTime" type="double">
+		<documentation>
+			This will affect the life time of the balls and radius and speed they will
+            be traversing. Default 1.6.
+		</documentation>
+	</property>
+	<property name="FadeTime" type="Vector3d">
+		<documentation>
+			This will affect the fade in and fade out times of the balls. First value affects
+            the starting fade out time. Second value will affect ending fade in time. The third
+            value in the vector is ignored.
+		</documentation>
+	</property>
+
+	<!-- Extra information used by different modules of the Pogamut platform. !-->
+	<extra>
+		<code />
+	</extra>
+</commandobject>

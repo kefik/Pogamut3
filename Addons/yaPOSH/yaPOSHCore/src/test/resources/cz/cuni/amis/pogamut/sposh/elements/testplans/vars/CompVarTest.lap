@@ -1,0 +1,9 @@
+(
+    (C testCompetence vars($var1="default", $var2=12.6, $var3=nil, $var4="stringvalue")
+        (elements ((test runSomething)))
+    )
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testCompetence)))
+    )
+)
+

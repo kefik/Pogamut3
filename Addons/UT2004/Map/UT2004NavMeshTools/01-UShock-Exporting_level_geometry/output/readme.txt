@@ -1,0 +1,1 @@
+If you seek exported geometry, checkout: svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project/Addons/UT2004NavMeshTools/01-UShock-Exporting_level_geometry/output

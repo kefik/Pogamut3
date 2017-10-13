@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DRIVETO" extends="CommandMessage" name="DriveTo" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Only command that is able to move vehicles. Turn towards target 
+		specified and move directly to its destination. If there is
+		an obstacle between target and current position, you will hit it on
+		your way to target (no obstacle avoidance).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Target" type="UnrealId">
+      <documentation>
+			The unique id of a NavPoint, Mover or item (beware, not all of the items
+			have unique id). Recommended is to specify NavPoint Id as it is always unique.
+			Won't work with player IDs.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

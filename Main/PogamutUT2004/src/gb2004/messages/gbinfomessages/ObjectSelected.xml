@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="SEL" name="ObjectSelected" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Asynchronous message. Player selected an object in the environment in PlayerMousing state (by pressing ALT + SHIFT to switch to this state).
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="PlayerId" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of the player that this event is for.
+		</documentation>
+   </property>
+  <property name="PlayerName" type="String" category="local">
+      <documentation>
+			Name of the player that this event is for.
+		</documentation>
+   </property>   
+   <property name="ObjectId" type="UnrealId" category="local">
+      <documentation>
+			Id of the actor the player selected (actors include
+			other players or bots and other physical objects that can
+			block your path and even level geometry actors). Will be "None" if nothing was selected (or actor was deselected).
+		</documentation>
+   </property>   
+   <property name="ObjectLocation" type="Location" category="local">
+      <documentation>
+			Location of the actor the player selected. Sent only if some object selected.
+		</documentation>
+   </property>
+   <property name="ObjectHitLocation" type="Location" category="local">
+      <documentation>
+			Location of the hit point that we have selected this actor through. Sent only if some object selected.
+		</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

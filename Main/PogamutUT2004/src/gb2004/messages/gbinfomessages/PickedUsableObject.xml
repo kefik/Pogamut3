@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PUO" name="PickedUsableObject" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Sent when the observed player picks up usable object.
+    </documentation>
+   <property name="Name" type="String" category="local">
+      <documentation>
+			Name of the picked usable object.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>
+			Location of the usable object.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <title>AMIS Introspection API</title>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <para>This chapter describes purpose of this API. The intended use of this
+    library is to allow for:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>easy saving and loading of program parameters organized in
+          hierarchical folders</para>
+        </listitem>
+
+        <listitem>
+          <para>runtime adjustment and observation of these parameters in
+          table like GUI component</para>
+        </listitem>
+
+        <listitem>
+          <para>remote properties management through JMX, either from JConsole
+          or from user code</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <section>
+      <title>Use cases</title>
+
+      <para>When you may find this library useful:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>you have program with many parameters distributed over
+          multiple objects and you want to save/load them to one properties
+          file without any extra effort</para>
+        </listitem>
+
+        <listitem>
+          <para>you want to observe and change values of these parameters at
+          runtime without need to program your own GUI for this purpose</para>
+        </listitem>
+
+        <listitem>
+          <para>you want to set those properties over TCP/IP conection</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Tutorials</title>
+
+    <section>
+      <title>Beginning - requirements in the user code</title>
+
+      <para>All data fields that you want to expose to the Introspection
+      library have to be marked by the <code>@JProp</code> annotation and
+      references to objects that should be recursively introspected by the
+      library and that will probably contain other properties has to be marked
+      by the <code>@JFolder</code> annotation. That is all a user programmer
+      has to do to enable the Introspection library to work.</para>
+
+      <para>The following class shows how the annotations are used.</para>
+
+      <para><programlisting>public class Person {
+
+    @JProp
+    String name;
+        
+    @JProp
+    int age;
+        
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}</programlisting>Notice the two data fields <code>name</code> and
+      <code>age</code> annotated by <code>@JProp</code>. These are the only
+      differences compared to ordinary POJO.</para>
+    </section>
+
+    <section>
+      <title>Loading and saving properties from/to file</title>
+
+      <para>With definition of Person class this simple code is sufficient to
+      save the annotated fields to a file:</para>
+
+      <para><programlisting>// create new person object
+Person alice = new Person("Alice Aho", 23);
+
+// obtain Folder object representing the "alice" object from Introspector, the folder will be named "Root"
+Folder folder = Introspector.getFolder("Root", alice);
+
+// get standard Java Properties object with String key-value pairs of fields and their values 
+Properties props = folder.createProperties();
+
+// store the key-value pairs to a file
+props.store(new FileOutputStream("example.properties"), "Example file with properties");</programlisting>The
+      <code>example.properties</code> file resulting from the above code looks
+      like this:</para>
+
+      <para><programlisting>#Test file with properties
+#Sat Aug 16 16:55:42 CEST 2008
+Root.age=23
+Root.name=Alice Aho</programlisting>If we want to later load the properties
+      from file we will use this code:</para>
+
+      <para><programlisting>Properties props = new Properties();
+
+// load the properties from previously saved example.properties file
+props.load(new FileInputStream("example.properties"));
+
+// get a folder named "Root", for "alice" object
+Folder folder = Introspector.getFolder("Root", alice);
+
+// initialize annotated field 
+folder.loadFromProperties(props);</programlisting></para>
+    </section>
+
+    <section>
+      <title>Folders example</title>
+
+      <para>Previous example has shown how to load and save data fields from
+      simple annotated object. But what if the fields are in more objects and
+      we don't want to save them by hand? The solution is to use a
+      <code>@JFolder</code> annotation to mark references that we want to also
+      save. Consider this extended example from the previous section:</para>
+
+      <para><programlisting>public class Person {
+
+    @JProp
+    String name;
+        
+    @JProp
+    int age;
+ 
+    @JFolder
+    Person knows = new Person("Bob Burns", 24);     // new field
+       
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}</programlisting>One new field <code>knows</code> of type <code>Person</code>
+      marked by the <code>@JFolder</code> was added. The properties file would
+      then look like this:</para>
+
+      <para><programlisting>#Example file with properties
+#Mon Aug 18 08:48:04 CEST 2008
+Root.age=23
+Root.name=Alice
+Root.knows.name=Bob Burns
+Root.knows.age=24</programlisting>The <code>knows</code> reference was used to
+      create a folder of the same name and properties were saved into this
+      folder. The resulting properties file is readable and can be easily
+      edited in any text editor.</para>
+    </section>
+
+    <section>
+      <title>Custom folder view example</title>
+
+      <para>The annotations can be used to create default views of the
+      objects. But sometimes it can be convenient to provide different view of
+      the properties and sub folders. Imagine that part of your program is
+      implemented in a scripting language and you want to provide
+      introspection for fields defined in Python. The
+      <code>Introspectable</code> interface enables you to provide custom set
+      of properties and folders representing the <code>Introspectable</code>
+      object.</para>
+    </section>
+
+    <section>
+      <title>Exporting folder to JMX</title>
+
+      <para>The whole hierarchy of Folder objects can be exported as set of
+      JMX MBeans by single function call. The JMX provides standard mechanism
+      for remote instrumentation of Java programs. The JConsole is a generic
+      JMX GUI client that enables user to read/write properties on remote
+      MBeans and even more.</para>
+
+      <para>This code exports the Folder object as MBean:</para>
+
+      <para><programlisting>//////////////////////////////////
+///  standard JMX code         ///
+//////////////////////////////////
+
+// start the RMI registry
+LocateRegistry.createRegistry(9999);
+
+// create JMX server
+MBeanServer mbs = MBeanServerFactory.createMBeanServer();
+
+// and make it available through RMI at localhost:9999
+JMXServiceURL url = new JMXServiceURL(
+                "service:jmx:rmi:///jndi/rmi://localhost:9999/server");
+JMXConnectorServer cs =
+                JMXConnectorServerFactory.newJMXConnectorServer(url, null, mbs);
+cs.start();
+
+//////////////////////////////////////////////
+///  Introspection library specific code   ///
+//////////////////////////////////////////////
+
+Person alice = new Person("Alice Aho", 23);
+Folder folder = Introspector.getFolder("Alice", alice);
+
+// export the folder as MBean available under JMX ObjectName "myDomain:type=tutorial,name=Alice"
+FolderMBean.exportFolderHierarchy(folder, mbs, "myDomain", "tutorial");</programlisting></para>
+
+      <para>Once the object was exported the properties can be adjusted in
+      arbitrary JMX client, e.g. JConsole. The screenshot shows how the
+      "alice" object appears in the JConsole.</para>
+
+      <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="media/JConsole.PNG"></imagedata>
+          </imageobject>
+        </mediaobject>Second option is to connect to the JMX server directly
+      from Java, the next section discusses possibility.</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Importing folder from JMX on client</title>
+
+      <para>Every MBean represented in the client code by the
+      <code>DynamicProxy</code> object can be adapted to a <code>Folder</code>
+      object through <code>DynamicMBeanToFolderAdapter</code>. It is an
+      alternative view of the MBeans registered in the MBeanServer. When the
+      MBean represents folder object previously exported through the
+      <code>FolderMBean</code> then it can be again turned into a Folder
+      object, this means that majority of the client code remains unchanged no
+      matter whether the Folder exists in the same JVM or when it is in remote
+      JVM.</para>
+
+      <para>If we want to obtain a folder object</para>
+
+      <programlisting>//////////////////////////////////
+///  standard JMX code         ///
+//////////////////////////////////
+
+// connect to a JMX server through RMI
+JMXServiceURL url = new JMXServiceURL(
+                "service:jmx:rmi:///jndi/rmi://localhost:9999/server");
+JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
+MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+ObjectName objectName = ObjectName.getInstance("myDomain:name=Alice,type=tutorial");
+
+//////////////////////////////////////////////
+///  Introspection library specific code   ///
+//////////////////////////////////////////////
+
+// create proxy object of the MBean represented by the objectName
+DynamicProxy proxy = new DynamicProxy(objectName, mbsc);
+// finally convert the proxy to standard Folder
+Folder jmxFolder = new DynamicMBeanToFolderAdapter(proxy);       </programlisting>
+
+      <para>The jmxFolder object in the client side represents the same folder
+      object referenced by the folder variable on the server side, the JMX is
+      used as a transport protocol in this case.</para>
+
+      <para>The JMX import/export capabilities are summarized on the following
+      figure.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="media/JMXArchitecture.PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>Custom folder view example</title>
+
+      <para>The annotations can be used to create default views of the
+      objects. But sometimes it can be convenient to provide different view of
+      the properties and sub folders. Imagine that part of your program is
+      implemented in a scripting language and you want to provide
+      introspection for fields defined e.g. in Python. The
+      <code>Introspectable</code> interface enables you to provide custom set
+      of properties and folders representing the <code>Introspectable</code>
+      object.</para>
+
+      <para>The following class adds "<code>myCustomProp</code>" property to
+      set of properties obtained through introspection.</para>
+
+      <programlisting>   public class PersonCustomView extends Person implements Introspectable {
+
+        Folder folder;
+
+        public PersonCustomView(String name, int age) {
+            super(name, age);
+        }
+
+        // this method implements the Introspectable interface
+        public Folder getFolder(String name) {
+            if(folder == null) {
+                // new folder is union of standard properties and subfolders obtained through introspection of 
+                // annotated fields (this does the ReflectionObjectFolder object) and custom property provided by
+                // anonymous implementation of the Folder class 
+                folder = new FolderUnion( 
+                    new ReflectionObjectFolder(name, this),
+                    new Folder(name) {
+
+                        @Override
+                        public Folder[] getFolders() {
+                            return new Folder[0]; // there are no subfolders
+                        }
+
+                        @Override
+                        public Property[] getProperties() {
+                            return new Property[]{
+                                        // new custom property that will be added to the set of properties from introspection
+                                        new Property("myCustomProp") {
+
+                                            String myVal = "myCustomValue";
+
+                                            @Override
+                                            public Object getValue() throws IntrospectionException {
+                                                return myVal;
+                                            }
+
+                                            @Override
+                                            public void setValue(Object newValue) throws IntrospectionException {
+                                                myVal = (String) newValue;
+                                            }
+
+                                            @Override
+                                            public Class getType() {
+                                                return String.class;
+                                            }
+                                        }
+                                    };
+                        }
+                    }, name);
+            }
+            return folder;
+        }
+    }</programlisting>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>References</title>
+
+    <para>JMX resources:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Best practices -
+        http://java.sun.com/javase/technologies/core/mntr-mgmt/javamanagement/best-practices.jsp</para>
+      </listitem>
+
+      <listitem>
+        <para>JMX examples -
+        http://java.sun.com/javase/6/docs/technotes/guides/jmx/examples.html</para>
+      </listitem>
+
+      <listitem>
+        <para>Technology tutorial -
+        http://java.sun.com/javase/6/docs/technotes/guides/jmx/tutorial/tutorialTOC.html</para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+</book>

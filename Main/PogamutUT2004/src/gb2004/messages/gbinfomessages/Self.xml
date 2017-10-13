@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="SLF" name="Self" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. Information about your bot's state.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="IPerson">
+   	<classcategory name="base"/>
+   	<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of this self message instance.</documentation>
+   </property>
+    <property name="BotId" type="UnrealId" category="local">
+      <documentation>Unique Id of this bot.</documentation>
+   </property>
+   <property name="Name" type="String" category="local">
+      <documentation>Human readable bot name.</documentation>
+   </property>
+   <property name="Vehicle" type="boolean" category="local">
+      <documentation>If we are vehicle just these attr. are sent in SLF: "Id","Vehicle""Rotation", "Location","Velocity ","Name ","Team" ,"Health" 
+	"Armor","Adrenaline", "FloorLocation", "FloorNormal".</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>
+			An absolute location of the bot.
+		</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="local">
+      <documentation>
+			Absolute velocity of the bot as a vector of movement per one
+			game second.
+		</documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="local">
+      <documentation>
+			Which direction the bot is facing in absolute terms.
+		</documentation>
+   </property>
+   <property name="Team" type="int" category="local">
+      <documentation>
+			What team the bot is on. 255 is no team. 0-3 are red,
+			blue, green, gold in that order.
+		</documentation>
+   </property>
+   <property name="Weapon" type="String" category="local">
+      <documentation>
+			Id of the weapon we are holding. This is unique Id of an
+			item in our inventory and is different from the Id of the
+			item we pick up from the ground! We can parse this string to
+			look which weapon we hold. Weapon strings to look for
+			include: "AssaultRifle", "ShieldGun", "FlakCannon",
+			"BioRifle", "ShockRifle", "LinkGun", "SniperRifle",
+			"RocketLauncher", "Minigun", "LightingGun", "Translocator".
+			TODO: Look if this is all.
+		</documentation>
+   </property>
+   <property name="Shooting" type="boolean" category="local">
+      <documentation>If the bot is shooting or not.</documentation>
+   </property>
+   <!----><property name="Health" type="int" category="local">
+      <documentation>
+			How much health the bot has left. Starts at 100, ranges from
+			0 to 200.
+		</documentation>
+   </property>
+   <property name="PrimaryAmmo" type="int" category="local">
+      <documentation>
+			How much ammo the bot has left for current weapon primary
+			mode.
+		</documentation>
+   </property>
+   <property name="SecondaryAmmo" type="int" category="local">
+      <documentation>
+			How much ammo the bot has left for current weapon secondary
+			mode. Weapon does not have to support sec. fire mode.
+		</documentation>
+   </property>
+   <property name="Adrenaline" type="int" category="local">
+      <documentation>How much adrenaline the bot has.</documentation>
+   </property>
+   <property name="Armor" type="int" category="local">
+      <documentation>
+			Combined size of high armor and low armor (or small armor). The high and low armor are tracked
+                        separately. Low armor is limited to 50 points, while the
+                        high armor can have up to 150 points. Both stacks can have a combined size of 150 points as well,
+                        so if low armor is already at 50 points, high armor can have
+                        100 points at max.
+		</documentation>
+   </property>
+   <property name="SmallArmor" type="int" category="local">
+      <documentation>
+			Also refered to as a "low armor". Ranges from 0 to 50 points.
+		</documentation>
+   </property>
+   <property name="AltFiring" type="boolean" category="local">
+      <documentation>
+			If we are firing in secondary firing mode. 
+		</documentation>
+   </property>
+   <property name="Crouched" type="boolean" category="local">
+      <documentation>
+			If we are currently crouched.
+		</documentation>
+   </property>
+   <property name="Walking" type="boolean" category="local">
+      <documentation>
+			If we are currently in walking mode.
+		</documentation>
+   </property>
+   <property name="FloorLocation" type="Location" category="local">
+      <documentation>
+			Holds current floor location under the bot.
+		</documentation>
+   </property>
+   <property name="FloorNormal" type="Location" category="local">
+      <documentation>
+			Holds current floor normal under the bot.
+		</documentation>
+   </property>
+   <property name="Combo" type="String" category="local">
+      <documentation>
+			Name of the current combo (None if no combo active).
+			Can be xGame.ComboBerserk, xGame.ComboDefensive, xGame.ComboInvis or xGame.ComboSpeed.
+			To trigger combo adrenaline needs to be at 100 (maximum) and no other combo can be active.
+		</documentation>
+   </property>
+   <property name="UDamageTime" type="double" category="local">
+      <documentation>
+			Time when the UDamage effect expires. If the number is higher then the current
+			time, it means the bot has UDamage effect active right now.
+		</documentation>
+   </property>
+   <property name="Action" type="String" category="local">
+      <documentation>
+			Name of the current BDI action.
+		</documentation>
+   </property>
+   <property name="EmotLeft" type="String" category="local">
+      <documentation>
+			For UE2. Holds left emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="EmotCenter" type="String" category="local">
+      <documentation>
+			For UE2. Holds center emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="EmotRight" type="String" category="local">
+      <documentation>
+			For UE2. Holds right emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="Bubble" type="String" category="local">
+      <documentation>
+			For UE2. Holds the bubble of the emoticon of the bot, "None" means none set.
+		</documentation>
+   </property>
+   <property name="Anim" type="String" category="local">
+      <documentation>
+			For UE2. Current played animation of the bot.
+		</documentation>
+   </property>     
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,1 @@
+step.bat config/PogamutRelease-step10-NbPlugins.xml

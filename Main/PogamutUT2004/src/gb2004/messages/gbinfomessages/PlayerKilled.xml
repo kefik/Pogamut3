@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="KIL" name="PlayerKilled" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Some other player died - reporting his
+		death. Additional information about DamageType - DeathString and so are exported just if we can see the dying player.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of the dead player.</documentation>
+   </property>
+   <property name="Killer" type="UnrealId" category="static">
+      <documentation>
+			Unique Id of player that killed if any (the victim might
+			have walked off a ledge).
+		</documentation>
+   </property>
+   <property name="KilledPawn" type="String" category="static">
+      <documentation>
+			The UT Pawn that was killed - support for vehicles. If someone destroyes vehicle
+			we will get it here (Id will be none and in KilledPawn we will have destroyed vehicle).
+		</documentation>
+   </property>
+   <property name="DamageType" type="String" category="static">
+      <documentation>
+			A string describing what kind of damage killed the victim.
+		</documentation>
+   </property>
+   <property name="DeathString" type="String" category="static">
+      <documentation>
+			String describing this type of death.
+		</documentation>
+   </property>
+   <property name="WeaponName" type="String" category="static">
+      <documentation>
+			Name of the weapon that caused this damage.
+		</documentation>
+   </property>
+   <property name="Flaming" type="boolean" category="static">
+      <documentation>
+			If this damage is causing the player to burn. TODO
+		</documentation>
+   </property>
+   <property name="CausedByWorld" type="boolean" category="static">
+      <documentation>
+			If this damage was caused by world - falling into lava, or falling down.
+		</documentation>
+   </property>
+   <property name="DirectDamage" type="boolean" category="static">
+      <documentation>
+			If the damage is direct. TODO
+		</documentation>
+   </property>
+   <property name="BulletHit" type="boolean" category="static">
+      <documentation>
+			If this damage was caused by bullet.
+		</documentation>
+   </property>
+   <property name="VehicleHit" type="boolean" category="static">
+      <documentation>
+			If this damage was caused by vehicle running over us.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

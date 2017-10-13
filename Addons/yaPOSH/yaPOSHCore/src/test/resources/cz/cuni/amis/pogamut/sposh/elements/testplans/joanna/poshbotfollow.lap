@@ -1,0 +1,32 @@
+(
+  (C follow-player
+    (elements
+      ((close-enough (trigger ((close-to-player))) stop-bot))
+      ((move (trigger ((see-player))) move-player))
+    )
+  )
+  (C wander-around
+    (elements
+      ((stuck (trigger ((is-stuck))) avoid))
+      ((pickup (trigger ((see-item))) pickup-item))
+      ((walk-around (trigger ((is-rotating False))) walk))
+    )
+  )
+
+  (AP avoid (stop-bot rotate then-walk))
+
+  (C then-walk
+    (elements
+      ((try-walk (trigger ((is-rotating False))) walk))
+    )
+  )
+
+
+  (RDC life (goal ((fail)))
+      (drives
+        ((hit (trigger((hit-object)(is-rotating False))) avoid))
+        ((follow (trigger((see-player))) follow-player))
+        ((wander (trigger((succeed))) wander-around))
+      )
+  )
+)

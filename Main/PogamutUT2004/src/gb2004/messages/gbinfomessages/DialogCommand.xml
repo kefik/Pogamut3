@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="DLGCMD" name="DialogCommand" type="Event">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Message with data from dialog.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="String" category="local">
+      <documentation>Id of the dialog for with which is this command related to.</documentation>
+   </property>
+   <property name="SourceId" type="String" category="local">
+      <documentation>Id of the component from where the command originates.</documentation>
+   </property>
+   <property name="Command" type="String" category="local">
+      <documentation>Type of the command. SUBMIT and CANCEL carry the data.</documentation>
+   </property>
+   <property name="Data" type="String" optional="true" category="local">
+      <documentation>Data carried in the message, usually in form "param1=value1&amp;param2=value2&amp;...&amp;paramN=valueN", equals, ampersands and backslashes are escaped by backslash.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

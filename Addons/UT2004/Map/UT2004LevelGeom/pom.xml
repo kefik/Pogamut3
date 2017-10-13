@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>cz.cuni.amis</groupId>
+		<artifactId>amis-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../Poms/AmisPom/pom.xml</relativePath>
+	</parent>
+
+	<groupId>cz.cuni.amis</groupId>
+	<artifactId>ut2004-level-geom</artifactId>
+	<version>3.7.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ut2004-level-geom</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<main.class>cz.cuni.pogamut.ut2004.levelgeom.Main</main.class>
+	</properties>
+
+	<dependencies>
+		<!-- WORLD DEPENDENCIES -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+		   <groupId>com.martiansoftware</groupId>
+		   <artifactId>jsap</artifactId>
+		   <version>2.1</version>
+		</dependency>
+
+		<!-- POGAMUT DEPENDENCIES -->
+		<dependency>
+    	    <groupId>cz.cuni.amis.utils</groupId>
+			<artifactId>simple-logging</artifactId>
+			<version>1.0.1</version>
+    	</dependency>
+		<dependency>
+			<groupId>cz.cuni.amis.pogamut</groupId>
+    		<artifactId>pogamut-ut2004</artifactId>
+    		<version>3.7.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Main-Class>${main.class}</Main-Class>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<!--
+			 <plugin>
+                <groupId>de.jflex</groupId>
+                <artifactId>maven-jflex-plugin</artifactId>
+                <version>1.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			-->
+		</plugins>
+	</build>
+	
+	<profiles>
+		<profile>
+			<id>one-jar-package</id>
+			<activation>
+				<file>
+					<missing>skip.one-jar.package</missing>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>buildnumber-maven-plugin</artifactId>
+						<version>1.0-beta-4</version>
+						<executions>
+							<execution>
+								<id>execute-buildnumber-maven-plugin</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.dstovall</groupId>
+						<artifactId>onejar-maven-plugin</artifactId>
+						<version>1.4.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>1v1-onejar</classifier>
+									<mainClass>${main.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>amis-artifactory</id>
+			<name>AMIS Artifactory</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+</project>

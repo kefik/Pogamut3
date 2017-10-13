@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="HIT" name="PlayerDamaged" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Bot hurt another player. Hit them with a
+		shot.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of the player hit.</documentation>
+   </property>
+   <property name="Damage" type="int" category="local">
+      <documentation>Amount of damage done.</documentation>
+   </property>
+   <property name="DamageType" type="String" category="local">
+      <documentation>
+			A string describing what kind of damage.
+		</documentation>
+   </property>
+   <property name="WeaponName" type="String" category="local">
+      <documentation>
+			Name of the weapon that caused this damage.
+		</documentation>
+   </property>
+   <property name="Flaming" type="boolean" category="local">
+      <documentation>
+			If this damage is causing our bot to burn. TODO
+		</documentation>
+   </property>
+   <property name="DirectDamage" type="boolean" category="local">
+      <documentation>
+			If the damage is direct. TODO
+		</documentation>
+   </property>
+   <property name="BulletHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by bullet.
+		</documentation>
+   </property>
+   <property name="VehicleHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by vehicle running over.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

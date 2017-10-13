@@ -1,0 +1,6 @@
+(
+    (RDC testPlan
+	(drives ((test testVariable(12.4, $name="Snowhite"))))
+    )
+)
+

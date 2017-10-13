@@ -1,0 +1,1 @@
+Source files exported by UShock for respective UT2004 maps can be found at: svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project/Addons/UT2004NavMeshTools/01-UShock-Exporting_level_geometry/output

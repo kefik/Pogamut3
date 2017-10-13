@@ -1,0 +1,33 @@
+
+<installation version="1.0">
+    <packs>
+        <pack name="Default" required="yes" hidden="yes">
+            <description>Common files for all packages.</description>
+            <file src="PogamutHomePage.url" targetdir="$INSTALL_PATH/"/>
+        </pack>
+
+        <pack id="maven" name="Apache Maven 3.0.4" required="no" hidden="no">
+            <description>Apache Maven. A build system used to compile Pogamut bots. System PATH variable will be updated to point to Maven install directory.</description>
+            <fileset dir="maven/apache-maven-3.0.4/" targetdir="$MAVEN_BASE/"/>
+            <!--
+            <file src="maven/apache-maven-3.0.4/bin" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/boot" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/conf" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/lib" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/LICENSE.txt" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/README.txt" targetdir="$MAVEN_BASE/"/>
+            <file src="maven/apache-maven-3.0.4/NOTICE.txt" targetdir="$MAVEN_BASE/"/>
+            -->
+        </pack>
+
+
+<!--
+        <pack name="Documentation" required="no">
+            <description>
+                Includes: Pogamut API Javadoc, Pogamut reference guide, Pogamut tutorials, GameBots2004 reference guide.
+            </description>
+            <file src="dist/doc" targetdir="$INSTALL_PATH"/>
+        </pack>
+!-->
+    </packs>
+</installation>

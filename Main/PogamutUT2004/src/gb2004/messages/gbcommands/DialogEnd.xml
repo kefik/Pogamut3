@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DLGEND" extends="CommandMessage" name="DialogEnd" type="Info">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Ends a batch of DialogItem commands, showing the dialog on screen.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the player on who's HUD should be the dialog shown.</documentation>
+   </property>
+   <property name="Id" type="String">
+      <documentation>Dialog identification. This should be an unique positive integer.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

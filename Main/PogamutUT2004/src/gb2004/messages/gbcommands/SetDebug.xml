@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETDEBUG" extends="CommandMessage" name="SetBotDebug" type="Control">
+       <gbpackage name="GameBotsUE2"/>
+       <gbpackage name="GBEmohawk"/>
+	<group name="Bot" />
+	<documentation>
+		Sets the debug information for current bot - displayable on HUD.
+	</documentation>
+
+	<!-- List of all properties of this command. !-->
+	<property name="Clear" type="Boolean">
+	<documentation>
+            If true then erases previously sent debug info.
+        </documentation>
+	</property>
+	<property name="BehName" type="String">
+	<documentation>
+            Name of currently active behavior.
+        </documentation>
+	</property>
+	<property name="StateName" type="String">
+		<documentation>
+            Name of currently active behavior state.
+        </documentation>
+	</property>
+	<property name="FocName" type="String">
+		<documentation>
+            Name of current bot behavior focus - other character.
+        </documentation>
+	</property>
+	<!-- Extra information used by different modules of the Pogamut platform. !-->
+	<extra>
+		<code />
+	</extra>
+</commandobject>

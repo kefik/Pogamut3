@@ -1,0 +1,27 @@
+digraph G {
+	node [shape=Mrecord]
+	subgraph cluster_0 {
+		style=filled;
+		color=goldenrod2;
+		node [style=filled,color=white];
+		EmptyBot -> ResponsiveBot;
+		ResponsiveBot -> RaycastingBot;
+		ResponsiveBot -> NavigationBot;
+		NavigationBot -> Hunter;
+		label = "Basic bots";
+	}
+
+	subgraph cluster_1 {
+		style=filled;
+		color=lightblue;
+		node [style=filled,color=white];
+
+		ASM -> POSH;
+		ACTR;
+		CTF Bot;
+		label = "Advanced bots";
+		color=blue
+	}
+	Hunter -> ASM;
+
+}

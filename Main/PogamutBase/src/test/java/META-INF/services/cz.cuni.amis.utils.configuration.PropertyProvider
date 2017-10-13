@@ -1,0 +1,4 @@
+cz.cuni.amis.utils.configuration.providers.JVMOptionsProvider
+cz.cuni.amis.utils.configuration.providers.EnvironmentVariableProvider
+cz.cuni.amis.pogamut.base.utils.configuration.CustomPropertiesProvider
+cz.cuni.amis.pogamut.base.utils.configuration.PlatformPropertiesProvider

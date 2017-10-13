@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ENT" name="Entity" type="ObjectUpdate">
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Generic physical entity that may be present in the world. Works as a hook for custom objects, such as new items from EmohawkRPG extension.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+   		<classcategory name="base"/>
+   		<classcategory name="shared"/>
+   		<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the item. This Id represents some entity in the world.
+		</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>
+			If the item is in the field of view of the bot.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared" nullable="false">
+      <documentation>Location of the item.</documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="shared" nullable="false">
+      <documentation>Rotation of the item.</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared" nullable="false">
+      <documentation>Velocity of the item.</documentation>
+   </property>
+   <property name="Type" type="String" category="static">
+      <documentation>Type (category) of the entity.</documentation>
+   </property>  
+   <property name="EntityClass" type="String" category="static">
+      <documentation>Type (category) of the entity.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   <extra>
+   </extra>   
+</messageobject>

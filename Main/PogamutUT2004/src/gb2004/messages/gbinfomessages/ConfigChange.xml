@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="CONFCH" name="ConfigChange" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Asynchronous message. Message sent when the bot configuration
+		changed - each agent has a lot of parameters affecting his state
+		in the environment. See each property for the details.
+	</documentation>
+   <!-- @TODO Not sure here if this message should be bot-dependent, but it was implemented this way, so I kept it. [Srlok] -->
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Id of this config message. This Id is generated from BotId, string "_CONFCH" is added at the end.</documentation>
+   </property>
+   <property name="BotId" type="UnrealId" category="local">
+      <documentation>Unique Id of the bot.</documentation>
+   </property>
+   <property name="ManualSpawn" type="boolean" category="local">
+      <documentation>
+			True if we have to spawn the bot manually after each death
+		</documentation>
+   </property>
+   <property name="AutoTrace" type="boolean" category="local">
+      <documentation>
+			True if the bot is using auto ray tracing (is provided with
+			synchronous ATR messages). See ATR messages for more
+			details.
+		</documentation>
+   </property>
+   <property name="Name" type="String" category="local">
+      <documentation>The bot's name.</documentation>
+   </property>
+   <property name="SpeedMultiplier" type="double" category="local">
+      <documentation>
+			Bots default speed will be multiplied by this number. Ranges from 0.1 to 2 (default, can be set in ini in [GameBots2004.RemoteBot] MaxSpeed).
+		</documentation>
+   </property>
+   <property name="RotationRate" type="Rotation" category="local">
+      <documentation>
+			Bot rotation rate. Default rotation rate is: (Pitch=3072,Yaw=60000,Roll=2048) and may be configured in ini file in [GameBots2004.RemoteBot] DefaultRotationRate. (pitch - up/down, yaw - left/right, roll - equivalent of doing a cartwheel)
+		</documentation>
+   </property>     
+   <property name="Invulnerable" type="boolean" category="local">
+      <documentation>
+			If bot is invulnerable (cannot die) or not.
+		</documentation>
+   </property>
+   <property name="SelfUpdateTime" type="double" category="local">
+      <documentation>
+			The delay between two self message synchronous batches 
+			(can range from 0.01 to 2 seconds). Will be used only if NewSelfBatchProtocol
+			attribute is set to true in INIT message.
+		</documentation>
+   </property>   
+   <property name="VisionTime" type="double" category="local">
+      <documentation>
+			The delay between two synchronous batches containing vision updates
+			(can range from 0.1 to 2 seconds). If NewSelfBatchProtocol
+			attribute is set to true in INIT message, more batch messages containing only
+			SELF message will arrive between two vision update batches (containing PLR,PRJ,INV.. messages).
+		</documentation>
+   </property>
+   <property name="LocUpdateMultiplier" type="int" category="local">
+      <documentation>
+			Holds information how many times faster is exported location update message (UPD) compared to sync. batch, e.g. when this multiplier is set to 5 and vision time is 250 ms, UPD message will arrive every 50 ms.
+		</documentation>
+   </property>   
+   <property name="ShowDebug" type="boolean" category="local">
+      <documentation>
+			If some additional debug information will be shown in the
+			UT2004 server console window.
+		</documentation>
+   </property>
+   <property name="ShowFocalPoint" type="boolean" category="local">
+      <documentation>
+			If true an actor visualizing the location the bot is
+			actually looking at will appear in the game.
+		</documentation>
+   </property>
+   <property name="DrawTraceLines" type="boolean" category="local">
+      <documentation>
+			if the GB should draw lines representing the auto ray traces
+			of the bot (for more information see ATR message).
+		</documentation>
+   </property>
+   <property name="SynchronousOff" type="boolean" category="local">
+      <documentation>
+			It informs if sending of all GB synchronous messages is
+			enabled or disabled.
+		</documentation>
+   </property>
+   <property name="AutoPickupOff" type="boolean" category="local">
+      <documentation>
+			It enables/disables automatic pickup of the bot. If true the items can be picked up through PICK command.
+		</documentation>
+   </property>
+   <property name="Action" type="String" category="local">
+      <documentation>
+			Name of current BDI action.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

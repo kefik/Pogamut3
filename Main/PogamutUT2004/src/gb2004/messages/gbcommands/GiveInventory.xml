@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="GIVEINV" extends="CommandMessage" name="GiveInventory"
+               type="Configure">
+   <group name="Bot"/>
+   <documentation>
+		Gives inventory from one bot to another. Bot can give just owned
+		items. (in his inventory chain). He can't give weapon he is
+		wielding right now. This command is not fully tested yet and has
+		issues.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Target" type="UnrealId">
+      <documentation>Id of the receiving bot.</documentation>
+   </property>
+   <property name="ItemId" type="String">
+      <documentation>
+			Id of the item in the inventory chain of the giver.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

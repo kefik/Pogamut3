@@ -1,0 +1,17 @@
+<userInput>
+  <!-- Install -->
+
+ <panel order="0">
+        <field type="title" txt="Apache Maven install directory selection" bold="true" size="1" />
+        
+        <field type="dir" align="left" variable="MAVEN_BASE">
+            <description align="right"
+               txt="Maven install path (e.g. C:\Program Files\apache-maven-3.0.4\):"
+               id="mavenPath"/>
+            <spec txt="Path:"
+            size="25"
+            set="C:\Program Files\apache-maven-3.0.4" mustExist="false" create="true"/>
+        </field>
+    </panel>
+
+</userInput>

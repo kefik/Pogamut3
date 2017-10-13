@@ -1,0 +1,25 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step12-SVNCommitTag">
+	<step id="Commit to SVN (tagging release)." failStop="true">
+    <process>
+			<id>Commit Release</id>
+			<run>$SVN_HOME/bin/svn</run><arg>commit</arg><arg>-m</arg><arg>Release: $POGAMUT_RELEASE_VERSION</arg>
+			<dir>trunk/project</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Tag Release</id>
+			<run>$SVN_HOME/bin/svn</run><arg>copy</arg><arg>trunk/project</arg><arg>tags/Pogamut-$POGAMUT_RELEASE_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Commit Tag</id>
+			<run>$SVN_HOME/bin/svn</run><arg>commit</arg><arg>-m</arg><arg>Tag: Pogamut-$POGAMUT_RELEASE_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>	
+</PogamutReleaseConfig>

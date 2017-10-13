@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="WUP" name="WeaponUpdate" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Send when the bot changed weapon. Here we will export
+        the status of the old weapon - of the weapon that was changed. So we can have
+        correct info about weapons in our inventory. This could be a problem without
+        this message because of synchronous batch delay.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the weapon, based on the inventory weapon's
+			name (this is different from the Id of the weapon that can
+			be picked up in the map).
+		</documentation>
+   </property>
+   <property name="PrimaryAmmo" type="int" category="local">
+      <documentation>
+			Holding primary ammo of the old weapon (that was changed).
+		</documentation>
+   </property>
+   <property name="SecondaryAmmo" type="int" category="local">
+      <documentation>
+			Holding secondary ammo of the old weapon (that was changed)
+		</documentation>
+   </property>
+   <property name="InventoryType" type="String" category="local">
+      <documentation>
+			Class of the weapon in the inventory. Matches InventoryType in the item class (ITC) message.
+		</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

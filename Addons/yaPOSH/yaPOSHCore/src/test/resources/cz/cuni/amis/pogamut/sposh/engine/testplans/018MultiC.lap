@@ -1,0 +1,23 @@
+; this test file is supposed to demonstrate correct function of C in C
+; test if I select proper ce
+(
+    (DC testDC
+        (drives ((testDE testC1)))
+    )
+
+    (C testC1
+        (elements
+            (
+                (ce1 testC2)
+            )
+        )
+    )
+
+   (C testC2 
+        (elements
+            (
+                (ce2 action)
+            )
+        )
+    )
+)

@@ -1,0 +1,8 @@
+; Sample posh plan
+(
+  (RDC life (goal ((fail)))
+      (drives
+        ((hit (trigger((succeed))) do_nothing))
+      )
+  )
+) 

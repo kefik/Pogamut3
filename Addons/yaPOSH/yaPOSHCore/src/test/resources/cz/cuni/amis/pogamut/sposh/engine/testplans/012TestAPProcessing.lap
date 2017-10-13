@@ -1,0 +1,9 @@
+(
+	(AP testAP  (ok1 ok2 ok3 fail1 last))
+
+	(SDC life (goal ((fail)))
+		(drives
+			  ((nothing (trigger ((succeed))) testAP) )
+		)
+	)
+)

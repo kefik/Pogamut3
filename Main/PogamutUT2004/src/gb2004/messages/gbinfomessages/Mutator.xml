@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="MUT" name="Mutator" type="Batch">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <group name="Bot"/>
+   <documentation>
+		Info batch message. Starts with SMUT message, ends with EMUT
+		message. Hold information about current mutators active
+		on the server.
+	</documentation>
+        
+   <interface name="cz.cuni.amis.pogamut.unreal.communication.messages.gbinfomessages.IMutator">
+   		<classcategory name="all"/>
+   </interface>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Id of the mutator. 
+		</documentation>
+   </property>
+   <property name="Name" type="String" category="static">
+      <documentation>
+			Name of the mutator. 
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

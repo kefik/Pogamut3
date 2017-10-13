@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Used when generating MessageObjectsList.xml - Saxon needs some xml to workover... don't delete... -->
+<!DOCTYPE empty [
+<!ELEMENT empty (#PCDATA)>
+]>
+<empty/>

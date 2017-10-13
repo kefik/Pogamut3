@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="NFO" name="GameInfo" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Sent as response to READY command.
+		Information about the game. What type of game is it going to be,
+		number of teams, maximum size of teams etc.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <!-- static or shared?? Lets presume, that we know the gameType for the server -->
+   <property name="Gametype" type="String" category="static">
+      <documentation>
+			What you are playing (BotDeathMatch, BotTeamGame,
+			BotCTFGame,BotDoubleDomination).
+		</documentation>
+   </property>
+   <!-- and also the level -->
+   <property name="Level" type="String" category="static">
+      <documentation>Name of map in game.</documentation>
+   </property>
+   <property name="WeaponStay" type="boolean" category="shared">
+      <documentation>
+			If true respawned weapons will stay on the ground after picked up (but bot cannot pickup same weapon twice).
+		</documentation>
+   </property>
+   <property name="TimeLimit" type="double" category="shared">
+      <documentation>
+			Maximum time game will last (if tied at end may goe to
+			"sudden death overtime" - depends on the game type).
+		</documentation>
+   </property>
+   <property name="FragLimit" type="int" category="shared">
+      <documentation>
+			Number of kills needed to win game (BotDeathMatch only).
+		</documentation>
+   </property>
+   <property name="GoalTeamScore" type="long" category="shared">
+      <documentation>
+			Number of points a team needs to win the game (BotTeamGame,
+			BotCTFGame, BotDoubleDomination).
+		</documentation>
+   </property>
+   <property name="MaxTeams" type="int" category="static">
+      <documentation>
+			Max number of teams. Valid team range will be 0 to (MaxTeams
+			- 1) (BotTeamGame, BotCTFGame, BotDoubleDomination). Usually
+			there will be two teams - 0 and 1.
+		</documentation>
+   </property>
+   <property name="MaxTeamSize" type="int" category="shared">
+      <documentation>
+			Max number of players per side (BotTeamGame, BotCTFGame,
+			BotDoubleDomination).
+		</documentation>
+   </property>
+   <property name="RedBaseLocation" type="Location" category="static">
+      <documentation>
+			Location of the base spawning the red flag (team 0) (BotCTFGame).
+		</documentation>
+   </property>
+   <property name="BlueBaseLocation" type="Location" category="static">
+      <documentation>
+			Location of the base spawning the blue flag (team 1) (BotCTFGame).
+		</documentation>
+   </property>
+   <property name="FirstDomPointLocation" type="Location" category="static">
+      <documentation>
+			Location of the first dom point (BotDoubleDomination).
+		</documentation>
+   </property>
+   <property name="SecondDomPointLocation" type="Location" category="static">
+      <documentation>
+			Location of the second dom point (BotDoubleDomination).
+		</documentation>
+   </property>
+   <property name="GamePaused" type="boolean" category="shared">
+      <documentation>
+			If the game is paused - nobody can move.
+		</documentation>
+   </property>
+   <property name="BotsPaused" type="boolean" category="shared">
+      <documentation>
+			If the game is paused just for bots - human controlled
+			players can normally move.
+		</documentation>
+   </property>
+   <property name="FactoryLocation" type="Location" category="static">
+      <documentation>
+			Sent only in BotScenario game type. Location of the factory.
+		</documentation>
+   </property>
+   <property name="FactoryRadius" type="double" category="static">
+      <documentation>
+			Sent only in BotScenario game type. Radius of the factory.
+		</documentation>
+   </property>
+   <property name="DisperserLocation" type="Location" category="static">
+      <documentation>
+			Sent only in BotScenario game type. Location of the goal point where UDamagePack should be taken.
+		</documentation>
+   </property>
+   <property name="DisperserRadius" type="double" category="static">
+      <documentation>
+			Sent only in BotScenario game type. Radius of the disperser point.
+		</documentation>
+   </property>   
+   <property name="FactoryAdrenalineCount" type="double" category="static">
+      <documentation>
+			Sent only in BotScenario game type. How much adrenaline we need to activate the factory.
+		</documentation>
+   </property>
+   <property name="FactorySpawnType" type="String" category="static">
+      <documentation>
+			Sent only in BotScenario game type. Pickup class our factory spawns when used properly. Item will be spawned at the bot's location.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

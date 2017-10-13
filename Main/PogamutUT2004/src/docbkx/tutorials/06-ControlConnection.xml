@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="06-ControlConnection"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>ControlConnection - special type of connection designed to control the UT game server</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>ControlConnection - special type of connection designed to control the UT game server</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans Plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This tutorial assumes you have completed <link
+    linkend="00-EmptyBot">basic pogamut tutorial</link> and that you are
+    familiar basic Pogamut API.</para>
+  </section>
+
+  <section>
+    <title>Tutorial</title>
+
+    <para>This tutorial will present a special type of connection to
+    UT server - ControlConnection (CC). Purpose of CC is to control UT game server
+    and get some global information about the game. CC can get positions and scores
+    of all players on the server, can respawn other players/bots, restart the game
+    or change the map. </para>
+    <para> In this tutorial we will show you:
+        <itemizedlist>
+            <listitem>
+                <para>How to create your own ControlConnection to the server</para>
+            </listitem>
+            <listitem>
+                <para>How to initialize listeners for players in it</para>
+            </listitem>
+        </itemizedlist>    
+    </para>
+    <para><guimenu>Note:</guimenu> If you are interested specifically in obtaining
+    detailed information about other playres/bots consult the <link linkend="07-ObserverConnection">ObserverConnection</link>
+    tutorial.</para>
+    <section>
+      <title>Setting up the example</title>
+
+      <para>Pogamut 3 has been fully mavenized. This allows you to try and run this example even without installing the Pogamut NetBeans plugin. However in that case you won't be able to
+      use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link>. This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 14-custom-control-server-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	This example should work in UDK as well.
+	</para>      
+     <para><guimenuitem>Note:</guimenuitem> The easiest way how to setup your custom control connection is to download and modify the example archetype above.</para>               
+    </section>  
+
+	<section>
+	<title>Using the Control Connection</title>
+	<para>Control connection can be usefull when you want to get global information about the game or the players. Control connection has access to all player positions at every time. For more
+	detailed observing of players visit  <link linkend="07-ObserverConnection">ObserverConnection</link> tutorial. Below you find example code from the archetype with listener to player messages.
+	
+<programlisting language="java">	
+/**
+ * Control server connected to UT environment. Through this connection we get global
+ * information about the game and can control the game.
+ *
+ * @author Michal Bida
+ */
+public class CustomControlServer extends UT2004Server implements IUT2004Server {
+
+    private double currentUTTime;
+
+    /*
+     * BeginMessage listener - we get current server time here.
+     */
+    IWorldEventListener&lt;BeginMessage&gt; myBeginMessageListener = new IWorldEventListener&lt;BeginMessage&gt;() {
+        public void notify(BeginMessage event) {
+            currentUTTime = event.getTime();
+            System.out.println("Begin: " + event.toString());
+        }
+    };
+
+    /*
+     * Player listener - we simply print out all player messages we receive.
+     */
+    IWorldObjectListener&lt;Player&gt; myPlayerListener = new IWorldObjectListener&lt;Player&gt;() {
+        public void notify(IWorldObjectEvent&lt;Player&gt; event) {
+            System.out.println("Player: " + event.getObject().toString());
+        }
+    };
+
+    @Inject
+    public CustomControlServer(UT2004AgentParameters params, IAgentLogger agentLogger, IComponentBus bus, SocketConnection connection, UT2004WorldView worldView, IAct act) {
+        super(params, agentLogger, bus, connection, worldView, act);
+    }
+
+
+    /*
+     * Our custom hook, where we initialize our listeners. Note that UT2004Server class
+     * is just stub, so no helper methods are present (no prepareBot, botInitialized, etc
+     as with Bot classes)
+     */
+    public void initialize() {
+        getWorldView().addEventListener(BeginMessage.class, myBeginMessageListener);
+        getWorldView().addObjectListener(Player.class, myPlayerListener);
+        System.out.println("ControlConnection initialized.");
+    }
+
+
+    /**
+     * This method is called when the server is started either from IDE or from command line.
+     * It connects the server to the game.
+     * @param args
+     */
+    public static void main(String args[]) throws PogamutException {
+        //creating agent parameters - setting module name and connection adress
+        UT2004AgentParameters params = new UT2004AgentParameters();
+        params.setAgentId(new AgentId("ControlConnection"));
+        params.setWorldAddress(new SocketConnectionAddress("127.0.0.1", 3001));
+
+        //create module that tells guice it should instantiate OUR (this) class
+        CustomControlServerModule module = new CustomControlServerModule();
+
+        //creating pogamut factory
+        UT2004ServerFactory fac = new UT2004ServerFactory(module);
+        CustomControlServer cts = (CustomControlServer) fac.newAgent(params);
+
+        //starting the connection - connecting to the server
+        cts.start();
+        //launching our custom method
+        cts.initialize();
+    }
+}	
+</programlisting>
+	</para>
+	</section>
+	
+	
+    </section>
+
+
+  <section>
+    <title>Where to continue</title>
+    <para>Check out another type of Pogamut UT sever connection - <link linkend="07-ObserverConnection">ObserverConnection</link> -
+    used to observer actions/positions and state of other players and bots.</para>
+  </section>
+</chapter>

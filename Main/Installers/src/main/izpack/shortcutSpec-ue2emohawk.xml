@@ -1,0 +1,15 @@
+
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="Pogamut"
+                  location="applications"/>
+
+    <shortcut
+        name="Pogamut Homepage [online]"
+        target="$INSTALL_PATH\PogamutHomePage.url"
+        description="Online homepage of the Pogamut platform"
+        programGroup="yes">
+        <createForPack name="Default"/>
+    </shortcut>
+
+</shortcuts>

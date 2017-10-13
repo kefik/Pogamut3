@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETNAME" extends="CommandMessage" name="SetName" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <group name="Bot"/>
+   <documentation>
+		Sets the name of the bot.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Name" type="String">
+      <documentation>
+			New name of the bot.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+   </extra>
+</commandobject>

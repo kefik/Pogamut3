@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="GETPATH" extends="CommandMessage" name="GetPath" type="Info">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Get a path to a specified location or a navigation point. An ordered list of path
+		nodes will be returned to you by IPTH messages.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			Message Id made up by you and echoed in response so you can
+			match up response with query.
+		</documentation>
+   </property>
+   <property name="Target" type="UnrealId">
+      <documentation>UnrealId of navigation point you want to find path to. Will be parsed BEFORE Location attribute. If supported, Location attribute won't be parsed. If the point does not exists, blank path will be returned.</documentation>
+   </property>
+   <property name="Location" type="Location">
+      <documentation>Location you want to go to.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

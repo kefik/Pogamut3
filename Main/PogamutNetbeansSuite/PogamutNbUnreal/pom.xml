@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>pogamut-netbeans-suite</artifactId>
+        <groupId>cz.cuni.amis.pogamut</groupId>
+        <version>3.7.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>cz.cuni.amis.pogamut</groupId>
+    <artifactId>pogamut-nb-unreal</artifactId>
+    <version>3.7.1-SNAPSHOT</version>
+    <packaging>nbm</packaging>
+
+    <name>Pogamut NB Unreal</name>
+
+    <dependencies>
+        <!-- Pogamut Libraries !-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>pogamut-nb-libs</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- Pogamut NetBeans Module Deps !-->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>pogamut-nb-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- NetBeans Deps !-->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-visual</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-options-api</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-core-multiview</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-windows</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swing-layout</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectapi</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-loaders</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-actions</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.version}</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>cz.*</publicPackage>
+                        <publicPackage>cz.cuni.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.api.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.api.pogamut.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.api.pogamut.unreal.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.api.pogamut.unreal.server.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.options.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.agent.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.map.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.server.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.services.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.dataobject.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.map.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.records.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.view.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.unreal.timeline.widgets.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.map.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.dataobject.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.map.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.records.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.view.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.nb.pogamut.ut2004.timeline.widgets.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.agent.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.agent.navigation.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.bot.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.bot.impl.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.messages.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.messages.gbcommands.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.messages.gbinfomessages.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.worldview.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.communication.worldview.map.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.server.*</publicPackage>
+                        <publicPackage>cz.cuni.amis.pogamut.unreal.server.exception.*</publicPackage>
+                    </publicPackages>
+                    
+                    <!-- 
+                    Bundling native libararies for Windows.
+                    Read http://forums.netbeans.org/topic30686.html for more info.
+                    !-->
+                    <nbmResources> 
+                        <nbmResource> 
+                            <directory>src/main/libs/amd64</directory> 
+                            <targetPath>modules/lib/amd64</targetPath> 
+                            <includes> 
+                                <include>*.dll</include> 
+                                <include>*.so</include> 
+                            </includes> 
+                        </nbmResource> 
+                        <nbmResource> 
+                            <directory>src/main/libs/x86</directory> 
+                            <targetPath>modules/lib/x86</targetPath> 
+                            <includes> 
+                                <include>*.dll</include> 
+                                <include>*.so</include> 
+                            </includes> 
+                        </nbmResource> 
+                    </nbmResources> 
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- netbeans modules in 6.9+ are 1.6 compatible -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- to have the jar plugin pickup the nbm generated manifest -->
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+        
+        <pluginManagement>
+			<plugins>
+			    <!-- Ignore nbm-maven-plugin execution for M2E -->
+			    <plugin>
+			        <groupId>org.eclipse.m2e</groupId>
+			        <artifactId>lifecycle-mapping</artifactId>
+			        <version>1.0.0</version>
+			        <configuration>
+			            <lifecycleMappingMetadata>
+			                <pluginExecutions>
+			                    <!-- copy-dependency plugin -->
+			                    <pluginExecution>
+			                        <pluginExecutionFilter>
+			                            <groupId>org.codehaus.mojo</groupId>
+                						<artifactId>nbm-maven-plugin</artifactId>
+			                            <versionRange>[0.0.1,)</versionRange>
+			                            <goals>
+			                            	<goal>manifest</goal>
+			                            </goals>
+			                        </pluginExecutionFilter>
+			                        <action>
+			                            <ignore />
+			                        </action>
+			                    </pluginExecution>
+			                </pluginExecutions>
+			            </lifecycleMappingMetadata>
+			        </configuration>
+			    </plugin>
+	   		</plugins>
+	   	</pluginManagement>
+    </build>
+</project>

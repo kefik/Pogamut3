@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: cz/cuni/pogamut/posh/Bundle.properties
+OpenIDE-Module-Layer: cz/cuni/pogamut/posh/layer.xml

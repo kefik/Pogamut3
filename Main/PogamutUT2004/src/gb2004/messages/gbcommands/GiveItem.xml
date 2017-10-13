@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="GIVE" extends="CommandMessage" name="GiveItem" type="Control">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Bot gives an item to other bot (regardless of the automatic pickup settings). Note that other bot
+		must be within reach - less than 200 ut units away (approx. 2 meters). Bot receives message GIVERES
+		with the result of this command - if it was successfull or not.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Id" type="UnrealId">
+      <documentation>
+			Id of the bot we want to give item to.
+		</documentation>
+   </property>
+   <property name="Type" type="String">
+      <documentation>
+			Class of the item, e.g. "GBEmohawk.ItemBall" (without quotes) we want to give to the bot.
+		</documentation>
+   </property>  
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

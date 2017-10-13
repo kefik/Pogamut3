@@ -1,0 +1,13 @@
+(
+    (RDC PoshBot
+	(drives 
+            ((case0 primitive(12.5, "anotherValue", "color", 7, "numerousValues")))
+            ((case1 primitive(12.5, "anotherValue", "color", 7, "numerousValues") nil))
+            ((case2 primitive(12.5, "anotherValue", "color", 7, "numerousValues") (minutes 2)))
+            ((case3 primitive))
+            ((case4 primitive nil))
+            ((case5 primitive (seconds 2)))
+        )
+    )
+)
+

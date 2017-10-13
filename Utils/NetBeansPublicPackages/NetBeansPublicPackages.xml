@@ -1,0 +1,19 @@
+<NetBeansPublicPackages>
+
+  <targetPom>../../Main/PogamutNetbeansSuite/PogamutNbBase/pom.xml</targetPom>
+	
+	<!-- THESE PACKAGES WILL BE REMOVED FROM NetBeansModule pom.xml -->
+	<packagePrefix>cz.cuni.amis.base</packagePrefix>
+	<packagePrefix>cz.cuni.amis.utils</packagePrefix>
+	
+	<!-- GLOBAL DEFINITIONS THAT APPLIED TO ALL <include> TAGS -->
+	<excludeDir>.svn</excludeDir>      <!-- WILDCARDS NOT ALLOWED, RELATIVE PATH THAT IS BLOCKED == **/path/defined/in/exclude/dir -->
+	
+	<!-- FOLLOWING DIRECTORIES WILL BE INTERPRETED AS JAVA-SOURCES DIRs CONTAINING PACKAGES THAT SHOULD BE ALL BE PUBLIC  -->
+	<!-- DEFINES DIRESTORIES TO WALK THROUGH, MAY ADD ADDITIONAL EXCLUDEs -->
+	<include dir="../../Main/PogamutBase/src/main/java" />
+
+  <!-- excludeDir are inherited here -->"
+	<include dir="../../Utils/AmisUtils/src/main/java" />
+
+</NetBeansPublicPackages>

@@ -1,0 +1,12 @@
+(
+    (C testCompetence vars($var1="default", $var2=12.6, $var3=nil, $who="All")
+        (elements 
+            ((test1 (trigger (  (rewarded($var1, 12.5)) (highMoralGround ($who, $var1) true ==) (playerClose(12.4, $second=$who, $third="lala"))  )) runSomething1)) 
+            ((test2 runSomething2))
+        )
+    )
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testCompetence)))
+    )
+)
+

@@ -1,0 +1,9 @@
+(
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testCompetence)))
+    )
+    (AP testCompetence vars
+        (murder death kill)
+    )
+)
+

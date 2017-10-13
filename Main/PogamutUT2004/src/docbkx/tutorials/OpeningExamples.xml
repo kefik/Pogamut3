@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="OpeningExamples"
+		xmlns="http://docbook.org/ns/docbook"		
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Opening Pogamut examples</title>
+
+  <section>
+    <title>Opening Pogamut example project</title>  
+	
+	<para>This section shows you how to open and/or add not-installed Pogamut example projects in NetBeans (7.1.1).
+	    <itemizedlist>    
+        <listitem>
+          <para><link linkend="opening.pogamut.example">Opening installed Pogamut example projects</link></para>
+        </listitem>
+        <listitem>
+          <para><link linkend="adding.pogamut.example">Adding new/not-installed Pogamut example projects</link></para>
+        </listitem>
+	</itemizedlist> 
+	</para>
+
+	<section>
+		<title>Opening installed Pogamut example project</title> 
+
+	<anchor xml:id="opening.pogamut.example" ></anchor>		
+		
+	<para><guimenuitem>Step 1.</guimenuitem> If you have installed Pogamut with Pogamut installer a number of Pogamut example projects should be available in your
+	local Maven NetBeans repository. To access them click <guimenuitem>File->New Project</guimenuitem>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-01.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 2.</guimenuitem> Select <guimenuitem>Maven</guimenuitem> tab then select <guimenuitem>Project from Archetype</guimenuitem> and click <guimenuitem>Next</guimenuitem>.
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-02.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 3.</guimenuitem> Unfold <guimenuitem>Local Archetype Catalog</guimenuitem>. A number of Pogamut examples should appear. Select one of the examples (preferably Pogamut Empty Bot example) and click <guimenuitem>Next</guimenuitem>.	
+	Note that if the Pogamut examples projects are missing or if you encounter problems with opening them, see the next section on how to add Pogamut example projects to NetBeans from scratch. 
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-03.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 4.</guimenuitem> You can name the project - this will affect the name of the folder on disk and NOT the name of the project in NetBeans. The name of the project depends on the example you were opening (e.g. Empty Bot will be named 00-empty-bot, etc.). You can still change the name later. Continue with clicking <guimenuitem>Finish</guimenuitem>. Maven now tries to open the project and download the project dependencies (you NEED to be connected to internet, otherwise it won't work).
+	<anchor xml:id="opening.pogamut.example.step4" ></anchor>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-04.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>	
+	<para><guimenuitem>Step 5.</guimenuitem> If everything proceeded normally a new project should appear in your NetBeans project tab (00-empty-bot) and in NetBeans output window the log shoud end with BUILD SUCCESS line. 
+	
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-05.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>		
+	<para><guimenuitem>Step 6.</guimenuitem> To prepare the project for the development (and to get rid of all error messages) it is now necessary to rebuild the project. Do this by right clicking the project in NetBeans project tab and select <guimenuitem>Clean and Build</guimenuitem>. The project should be rebuilt and the Maven should donwload rest of the dependencies. In the end all error messages should disappear and in the output window you should see BUILD SUCCESS again. 
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-06.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>			
+	
+	<para><guimenuitem>Step 7.</guimenuitem> For some reason NetBeans 7.1.1 sometimes does not download automatically project JavaDoc and Pogamut source code for reviewing. To do this manually unfold the project in NetBeans tab and right click <guimenuitem>Dependencies</guimenuitem>. 
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-07.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	<para><guimenuitem>Step 8.</guimenuitem> Now click <guimenuitem>Download Sources</guimenuitem> and wait until everything is downloaded (see the progres bar in lower right of NetBeans IDE, it should not take more than 2 minutes), the JavaDoc should appear right away. If not, try to <guimenuitem>Download JavaDoc</guimenuitem> and then <guimenuitem>Download Sources</guimenuitem> again. If the JavaDoc is still missing, try to restart NetBeans - the JavaDoc should now appear in the IDE. 
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-08.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	<para><guimenuitem>Troubleshooting.</guimenuitem> If you encountered some problem during the opening of the example, you can add Pogamut example manually to NetBeans, which should work everytime and which is adressed below in section <guimenuitem>Adding Pogamut example projects </guimenuitem>
+	</para>
+	
+	
+	</section>
+	<section>
+		<title>Adding Pogamut example projects</title>  	
+		
+	<anchor xml:id="adding.pogamut.example" ></anchor>
+	
+	<para> This section covers how to add a Pogamut example project from our online Maven artifactory to NetBeans. Note that you don't need to have Pogamut installed on your machine in order to do this. To see a list of all Pogamut Maven archetypes you can add visit our <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link>. We recommend to use latest archetypes versions that are AT THE BOTTOM of the file!
+	</para>
+	
+	<para><guimenuitem>Step 1.</guimenuitem> To add a Pogamut example project from our online Maven repository to NetBeans click <guimenuitem>File->New Project</guimenuitem>
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-01.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 2.</guimenuitem> Select <guimenuitem>Maven</guimenuitem> tab then select <guimenuitem>Project from Archetype</guimenuitem> and click <guimenuitem>Next</guimenuitem>.
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-open-example-02.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 3.</guimenuitem> When <guimenuitem>Maven Archetype</guimenuitem> window appears, click the <guimenuitem>Add...</guimenuitem> button.
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-add-example-01.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>
+	
+	<para><guimenuitem>Step 4.</guimenuitem> A window named <guimenuitem>Specify archetype details</guimenuitem> should appear. Here you can manually fill out the information about what Maven archetype you want to download. In our example we are filling out our basic example - the empty bot. 
+    <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 00-empty-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.0</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist> 
+	Double check if every line is filled out correctly - any mistake prevent the archetype to be downloaded. When you are finished click <guimenuitem>Ok</guimenuitem>. Again, to see a list of all Pogamut Maven archetypes you can add visit our <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link>. We recommend to use latest archetypes versions that are AT THE BOTTOM of the file!
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-add-example-02.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>	
+	<para><guimenuitem>Step 5.</guimenuitem> A new custom archetype should appear in <guimenuitem>Maven Archetype</guimenuitem> window. Select it and click next. You can now continue with <link linkend="opening.pogamut.example.step4">Step 4</link> in previous guide (Opening Pogamut example project). 
+		<mediaobject>
+			<imageobject>
+				<imagedata fileref="media/install/nb-add-example-03.png"></imagedata>
+            </imageobject>
+        </mediaobject>
+	</para>	
+	</section>
+	
+  </section>
+</chapter>

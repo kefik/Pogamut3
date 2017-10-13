@@ -1,0 +1,1654 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="05-CTFBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>CTF bot - timeline</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>CTF game, its quirks</para>
+        </listitem>
+
+        <listitem>
+          <para>How to create FSM bot</para>
+        </listitem>
+
+        <listitem>
+          <para>How to record, save and load events that has happened in the
+          environment.</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This tutorial assumes you have completed <link
+    linkend="00-EmptyBot">basic pogamut tutorial</link> and that you are
+    familiar with Finit State Machines.</para>
+  </section>
+
+  <section>
+    <title>Tutorial</title>
+
+    <para>Purpose of this tutorial is to familiarize you with the timeline
+    functionality of the Pogamut, what is it and how to use it. In order to do
+    that, you will first create a bot that will try to capture the flag in the
+    CTF game of UT2004. After finishing the bot, the functionality of timeline
+    will be demonstrated using the bot. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link> (if the archetype is not present, follow adding new Pogamut example project guide). This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 09-ctf-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.0</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+
+	After opening the example, you can continue to the <link linkend="timeline">second part of the tutorial</link>. 
+	</para>
+	<para>At the
+    end of the tutorial, you will have CTF bot that is providing additional
+    data to the Pogamut Netbeans plugin that makes it easier to know what,
+    where, and when was the CTF bot doing.</para>
+
+    <section role="info">
+      <title>Rules of Capture The Flag game</title>
+
+      <para>Before we even start thinking about creation of a bot, we have to
+      know about the CTF game rules, that are little more complicated than
+      free-for-all DeathMatch.</para>
+
+      <para>CTF is a two-team game, where each team tries to score points by
+      taking enemy flag and carrying it to its team base. Rules of the Capture
+      The Flag game: <itemizedlist>
+          <listitem>
+            <para>There are at least two teams, each team have flag and home
+            base.</para>
+          </listitem>
+
+          <listitem>
+            <para>At the start of the game, each flag is located at the
+            respective There are two teams, each team have flag and home
+            base.</para>
+          </listitem>
+
+          <listitem>
+            <para>Every bot belongs to one team</para>
+          </listitem>
+
+          <listitem>
+            <para>At the start of the game, flags are located at their
+            respective flag base.</para>
+          </listitem>
+
+          <listitem>
+            <para>Team member can pick the enemy flag by running over
+            it.</para>
+          </listitem>
+
+          <listitem>
+            <para>If team member carrying enemy flag is killed, the flag is
+            dropped.</para>
+          </listitem>
+
+          <listitem>
+            <para>If team member runs over its team dropped flag, the flag
+            returned to its home base.</para>
+          </listitem>
+
+          <listitem>
+            <para>Team scores, when team member carries enemy flag to its home
+            base, while its team flag is at home base.</para>
+          </listitem>
+
+          <listitem>
+            <para>Game ends when it is over specified time limit (posted in
+            GameInfo message) or if at least one team achieves score higher
+            than GoalTeamScore (also from GameInfo message).</para>
+          </listitem>
+        </itemizedlist></para>
+        
+        <para>For more information about CTF tactics consult <link xlink:href="http://www.oocities.org/garvelous2004/">Garvelous CTF guide for UT 2004</link>. </para>
+    </section>
+
+    <section role="prog">
+      <title>Team selection and team balancing</title>
+
+      <para>Every bot can specify the team it belongs to in a team attribute
+      of the INIT message that is send during handshake of the bot with the Unreal.
+      The INIT message supplies data necessary for creation of the bot's
+      avatar in the game (such as initial location, name, skin or team) and
+      GameBots creates the avatar upon recieving. Bot can get total number of
+      teams in the game from attribute <structfield>MaxTeams</structfield> of
+      <structname>GameInfo</structname> message. <programlisting
+      language="java">
+    @AgentScoped
+    public class Hunter extends UT2004BotModuleController&lt;UT2004Bot&gt; {
+        // ...
+        @Override
+        public Initialize getInitializeCommand() {
+            int maxTeams = this.game.getMaxTeams();
+            return new Initialize().setName("NavigationBot").setTeam(1);
+        }
+        // ...
+    }
+                
+                </programlisting> 
+      Valid team number is from 0 to
+      <structname>GameInfo</structname>.<structfield>MaxTeams</structfield> -
+      You should also note, that team's size is not unlimited, the maximal
+      size of each team is <structname>GameInfo</structname>.
+      <structfield>MaxTeamSize</structfield>. If the team is not specified in the
+      <structname>INIT</structname> message, GameBots will use team number 
+	  255 in DeathMatch and team number 0 in CTF games.</para>
+
+      <para>In some situations, you may want to select team of a bot based on
+      number of players per team or some other metric thus balancing number of
+      players in teams. This is useful in many situations, such as running
+      same bot program multiple times and still creating two teams with same
+      number of players (one team may have one player more than the other) or
+      if you want your bot to join the team that has lower score and many
+      other situations.</para>
+
+      <para>For further details, consult GameBots documentation.</para>
+    </section>
+
+    <section role="prog">
+      <title>Information about flags and bases</title>
+
+      <para>In CTF game, information about flags is send as synchronous
+      message from the GameBots, so the bot always have up-to-date info about
+      flags. You can retrieve current info from the worldview, e.g. like this:
+      <informalexample>
+          <programlisting language="java">
+    public FlagInfo getFlag(int team) {
+        Collection&lt;FlagInfo&gt; flags = bot.getWorldView().getAll(FlagInfo.class).values();
+        for (FlagInfo flagInfo : flags) {
+            if (flagInfo.getTeam() == team) {
+                return flagInfo;
+            }
+        }
+        throw new IllegalStateException("FlagInfo about with seeked team not found.");
+    }
+                    
+                    </programlisting>
+        </informalexample> You'll get location and possibly holder if you can
+      see the flag (and possibly its carrier), other information is always
+      available. <classname>FlagInfo</classname>.
+      <methodname>getState()</methodname> is probably most useful.</para>
+
+      <para>Unfortunately, you can't directly query the worldview for info
+      about the team base, but we know that base is located at navpoint with a
+      specific id. Following code is showing how to find the home for the
+      specified team: <informalexample>
+          <programlisting language="java">
+    // unreal assigns names to teams by default, team 0 is red, 1 is blue, 2 is green and 3 is gold
+    private static String[] teamColors = new String[] {"Red", "Blue", "Green", "Gold"};
+
+    public NavPoint getTeamBase(int team) {
+        String flagBaseStr = "x" + teamColors[team] + "FlagBase0";
+
+        for (NavPoint navpoint : bot.getWorldView().getAll(NavPoint.class).values()) {
+            if (navpoint.getId().getStringId().contains(flagBaseStr)) {
+                return navpoint;
+            }
+        }
+        throw new IllegalStateException("Unable to find base for " + teamColors[team] + " team.");
+    }
+                    
+                    </programlisting>
+        </informalexample></para>
+    </section>
+
+    <section role="schema">
+      <title>CTF bot schema</title>
+
+      <para>We are going to create our simple CTF bot using FSM(Finite State
+      Machine), so before we start programming anything, it is necessary to
+      specify how the bot should make decisions. You should always start with
+      planning architecture of a bot's logic, it usually saves a lot of
+      trouble and time. We are going to use work in progress library for FSMs
+      that is currently being developed. <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/CTFBot_state_diagram.png"></imagedata>
+          </imageobject>
+        </mediaobject> The bot has three different state types and multiple
+      transitions. Bot starts at the hunt state, so it should wander around
+      map, collect add-ons and kill enemies. When he sees enemy's flag he
+      switches to <emphasis>pickup enemy flag</emphasis> and picks it up, and
+      after he picks it up, he switches into <emphasis>go home</emphasis>.
+      Unfortunately, team flag may be missing, because enemy bot got to it, so
+      bot can switch into hunt mode and hoping to find enemy and kill him
+      (NOTE: that won't return flag home, but if level is small enough, there
+      is a good chance bot will accidently move over the dropped flag while in
+      <emphasis>hunt</emphasis> mode). After flag has been delivered home, go
+      back to the <emphasis>hunt</emphasis> mode. The rest of transitions is
+      for events, when something doesn't go in the expected way, e.g.
+      transition from <emphasis>hunt</emphasis> to <emphasis>go
+      home</emphasis> is for case, when bot accidently moves over enemy flag,
+      that he couldn't see before.</para>
+
+      <para>As you are aware, FSM consists of list of states, start state and
+      transitions between states. Start state is the state "Hunt," bot will
+      switch into that state when he enters the environment or when he is
+      killed.</para>
+
+      <para>States used in the FSMBot library are not exactly states in
+      classical FSM definition, but more like activities the bot is supposed
+      to do. List of states: <itemizedlist>
+          <listitem>
+            <para><classname>Hunt</classname> - in this state bot should
+            behave like hunter, kill members of enemy team and collect
+            weapons, and other add-ons.</para>
+          </listitem>
+
+          <listitem>
+            <para><classname>Pick up enemy flag</classname> - go to the place
+            where is the enemy's flag and pick it up. This state expects that
+            bot knows where the enemy's flag is (e.g. bot sees it).</para>
+          </listitem>
+
+          <listitem>
+            <para><classname>Go home</classname> - return to home base. This
+            state should be used when bot holds enemy's flag.</para>
+          </listitem>
+        </itemizedlist> There are many shortcoming, e.g. state Hunt should
+      preferably shoot at enemy holding our flag or state "Pick up enemy flag"
+      and "Go home" should shoot at visible enemy while racing for their
+      destination.</para>
+
+      <para>Transitions are a little tricky, basically there are two types of
+      transitions that differs by eligibility (under what circumstances are
+      they considered for potential transition from state A to B).
+      <itemizedlist>
+          <listitem>
+            <para>Sequential transition - is eligible only after state has
+            finished(e.g. if bot is supposed to move somewhere, the sequential
+            transition won't be eligible until bot is at the destination). In
+            order for it to be eligible, source state method isFinished must
+            return true.</para>
+          </listitem>
+
+          <listitem>
+            <para>Interrupt transition - is always eligible and if triggered,
+            it interrupts the activity the state was doing, e.g. if bot is
+            supposed to move somewhere, interrupt transition is eligible while
+            bot is moving and after state has finished.</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section role="prog">
+      <title>FSM State flow</title>
+
+      <para>In order to properly utilize FSMBot library, you need to have an
+      idea how do states look like, how to program them and how are they
+      processed. Every state has to implement interface
+      <interfacename>IFSMState</interfacename>. Careful, there is an interface
+      with the same name in afsm library, that is used during communication
+      with GameBots. <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/FSM_state_diagram.png"></imagedata>
+          </imageobject>
+        </mediaobject> There are basically two paths state can go:
+      <itemizedlist>
+          <listitem>
+            <para>State is not interrupted by interrupt transition during its
+            execution: <orderedlist>
+                <listitem>
+                  <methodname>init</methodname>
+                </listitem>
+
+                <listitem>
+                  loop method 
+
+                  <methodname>isReady</methodname>
+
+                  , until it returns 
+
+                  <returnvalue>true</returnvalue>
+                </listitem>
+
+                <listitem>
+                  if 
+
+                  <methodname>isFinished</methodname>
+
+                   returns 
+
+                  <returnvalue>true</returnvalue>
+
+                   
+
+                  <orderedlist>
+                    <listitem>
+                      <methodname>cleanup</methodname>
+                    </listitem>
+
+                    <listitem>loop method <methodname>isCleaned</methodname>,
+                    until it returns
+                    <returnvalue>true</returnvalue></listitem>
+
+                    <listitem>The state has been finished, for now and FSM
+                    will start to execute another</listitem>
+                  </orderedlist>
+                </listitem>
+
+                <listitem>
+                  <methodname>run</methodname>
+                </listitem>
+
+                <listitem>
+                  Go to point 2
+                </listitem>
+              </orderedlist></para>
+          </listitem>
+
+          <listitem>
+            <para>State is interrupted by interrupt transition: <orderedlist>
+                <listitem>
+                  <methodname>init</methodname>
+                </listitem>
+
+                <listitem>
+                  loop method 
+
+                  <methodname>isReady</methodname>
+
+                  , until it returns 
+
+                  <returnvalue>true</returnvalue>
+                </listitem>
+
+                <listitem>
+                  if FSM detects eligible interrupt transition that can be triggered 
+
+                  <orderedlist>
+                    <listitem>
+                      <methodname>interrupt</methodname>
+                    </listitem>
+
+                    <listitem>loop method
+                    <methodname>isInterrupted</methodname>, until it returns
+                    <returnvalue>true</returnvalue></listitem>
+
+                    <listitem>The state has been interrupted, FSM will start
+                    to execute another</listitem>
+                  </orderedlist>
+                </listitem>
+
+                <listitem>
+                  <methodname>run</methodname>
+                </listitem>
+
+                <listitem>
+                  Go to point 3
+                </listitem>
+              </orderedlist></para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>I attemp to make sure that destination state of transition sees
+      the environment same way the transition did, so the condition that
+      triggered the transition itself is still valid even in a destination
+      state (e.g. if transition is supposed to trigger when visible player
+      appears, the destination state will see player at the same position and
+      still visible). This behavior is not guaranteed if state has to loop
+      over any of following methods: <itemizedlist>
+          <listitem>
+            <methodname>isReady</methodname>
+          </listitem>
+
+          <listitem>
+            <methodname>isInterrupted</methodname>
+          </listitem>
+
+          <listitem>
+            <methodname>isCleaned</methodname>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section role="gui">
+      <title>Creating the project</title>
+
+      <para>In this section we will create the project and set up dependencies
+      necessary for us to build FSM bot.</para>
+
+      <orderedlist>
+        <listitem>
+          Start up Netbeans
+        </listitem>
+
+        <listitem>
+          Once Netbeans are loaded, create a new project:
+
+          <orderedlist>
+            <listitem>Choose <guimenu>File</guimenu> → <guimenu>New Project
+            (Ctrl+Shift+N)</guimenu>. Under category <guimenu>Pogamut
+            UT2004</guimenu> select <guimenu>Java Bot Project</guimenu> and
+            click <guibutton>Next</guibutton>.</listitem>
+
+            <listitem>In the <guimenu>Name and Location</guimenu> panel, type
+            <application>CTFBot</application> in the <guilabel>Project
+            Name</guilabel>. Choose <guilabel>Project Location</guilabel> to
+            appropriate directory on your computer, such as
+            <filename>c:/development</filename>. Click
+            <guibutton>Finish</guibutton>.</listitem>
+          </orderedlist>
+
+           The IDE will create and open new project CTFBot with one package 
+
+          <package>ctfbot</package>
+
+           and default empty bot.
+        </listitem>
+
+        <listitem>
+          Add FSMBot library as library to your project: 
+
+          <para>
+            <itemizedlist>
+			<listitem>
+                <para>Open properties of CTFBot project <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="media/CTFBot/CTFBot-properties.png"></imagedata>
+                    </imageobject>
+                  </mediaobject></para>
+              </listitem>
+              <listitem>
+                In <guimenu>Libraries</guimenu>, select tab
+                <guimenu>Compile</guimenu> and click on <guibutton>Add
+                Library...</guibutton>.
+              </listitem>
+              <listitem>
+                <para>In the file dialog find the "Pogamut FSMEngine" library, select it
+                and click on <guibutton>Add Library</guibutton>.
+                <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="media/CTFBot/CTFBot_AddDependency.png"></imagedata>
+                    </imageobject>
+                  </mediaobject>
+				</para>
+				<para>If you can't find the library in the list of available libraries, make sure that you have installed Netbeans plugin of Pogamut 3.1 or later.</para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section role="prog">
+      <title>Necessary infrastructure</title>
+
+      <para>Before we start with our translation of CTF bot schema into the
+      states and transitions, we need to create some infrastructure, that will
+      execute a FSM machine with our states.</para>
+
+      <para>Necessary infrastructure consists of</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <emphasis role="term">FSM</emphasis>
+
+             itself - created and filled by 
+
+            <methodname>createFSM()</methodname>
+
+             
+
+            <programlisting language="java">
+                            
+                            private IBotFSM createFSM() {
+                                BotFSM fsm = new BotFSM();
+                                // create states
+                                // e.g. IFSMState&lt;CTFBot&gt; exampleState= new StateEmpty();
+
+                                // add states
+                                // e.g. fsm.addState(exampleState)
+
+                                // add transitions
+                                // e.g. fsm.addTransition(new SomeCondition(), sourceState, targetState, 100, TransitionType.INTERRUPT);
+
+                                // set starting state of FSM
+                                // e.g. fsm.setInititialState(exampleState);
+
+                                return fsm;
+                            }
+                            
+                        </programlisting>
+
+             For now, this method only creates a FSM, but doesn't fill it with anything. We will add states and transitions later.
+          </listitem>
+
+          <listitem>
+            <emphasis role="term">Context object</emphasis>
+
+             - object that is shared among all states and transitions. Basically every method of state/transition is passed the context object. What is it good for? It can be used as a memory (e.g. how many times have you been to your rabbit hole), provider of Pogamut modules (like Senses, AgentInfo, CompleteBotCommandsWrapper) or anything else. In our case, we will use class 
+
+            <classname>CTFBot</classname>
+
+             as context, but it is OK to use any object, no matter what. Class of context is used in generics of states and transitions, therefore if you see things like IFSMState&lt;CTFBot&gt; in this tutorial, that denotes fsm state interface with context object of type CTFBot. Always consult javadoc to be sure.
+          </listitem>
+
+          <listitem>
+            <emphasis role="term">FSM executor</emphasis>
+
+             - object that takes FSM and makes sure states are executed and transitions correctly change current state from one to another. FSMlib provides class 
+
+            <classname>BotFSMExecutor</classname>
+
+            . 
+
+            <programlisting language="java">
+                            
+                            private IBotFSMExecutor&lt;CTFBot&gt; fsmExecutor;
+
+                            @Override
+                            public void botInitialized(GameInfo info, ConfigChange config, InitedMessage init) {
+                                // Create FSM executor that will take care of calling methods of states and
+                                // about switching from one state to another.
+                                fsmExecutor = new BotFSMExecutor(createFSM(), getLog());
+                                // initialize fsm executor, parameter is context of fsm
+                                fsmExecutor.init(this);
+                            }
+                            @Override
+                            public void logic() throws PogamutException {
+                                // make a step in execution of FSM, run statem check transitions, if necessary
+                                // switch from one state to another. Passed object is fsm context.
+                                fsmExecutor.step(this);
+                            }
+                            
+                        </programlisting>
+
+             
+
+            <para> <classname>BotFSMExecutor</classname> is instantiated in
+            <methodname>botInitialized</methodname>, because it requires as a
+            parameter a FSM, created by <methodname>createFSM()</methodname>)
+            which in turn instantiates its states and transitions. Some states
+            or transitions may require various modules during instantiation
+            and such modules are initialized by the time bot reaches
+            <methodname>botInitialized</methodname>. We also call
+            <methodname>init</methodname> of
+            <classname>BotFSMExecutor</classname>, that initialized initial
+            state of FSM and the initial state is likely to use some method
+            from some module. </para>
+
+             
+
+            <para>Method <methodname>step</methodname> makes single "step" in
+            FSM, run states, check transitions, if necessary switch states and
+            so on. </para>
+
+             
+
+            <para>As you can see, <classname>IFSMExecutor</classname> and
+            <classname>IFSMState</classname> have generic type CTFBot, that is
+            type of the context = shared object that is passed to all states.
+            In our case, it is convenient to use CTFBot as the context, but it
+            can be any object. </para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>First state</title>
+
+      <para>With necessary infrastructure in place, lets create our very first
+      state, that by itsefl won't do anything useful, think of it as
+      foundation for all other states. <itemizedlist>
+          <listitem>
+            <para>Create new package <package>ctfbot.state</package> where all
+            states will be placed (context menu of package
+            <package>ctfbot</package> under <guilabel>Source
+            Packages</guilabel> of project <guilabel>CTFBot</guilabel> project
+            → <guimenu>New</guimenu> → <guimenu>Java Package</guimenu>, type
+            <guilabel>ctfbot.state</guilabel> into <guilabel>Package
+            Name:</guilabel> and click on
+            <guibutton>Finish</guibutton>).</para>
+          </listitem>
+
+          <listitem>
+            <para>Create class with name <classname>StateEmpty</classname> in
+            package <package>ctfbot.state</package>. <programlisting
+            language="java">
+                                
+                                public class StateEmpty implements IFSMState&lt;CTFBot&gt; {
+
+                                    public void init(CTFBot context) {
+                                    }
+
+                                    public boolean isReady(CTFBot context) {
+                                        return true;
+                                    }
+
+                                    public void run(CTFBot context) {
+                                    }
+
+                                    public boolean isFinished(CTFBot context) {
+                                        return false;
+                                    }
+
+                                    public void cleanup(CTFBot context) {
+                                    }
+
+                                    public boolean isCleaned(CTFBot context) {
+                                        return true;
+                                    }
+
+                                    public void interrupt(CTFBot context) {
+                                    }
+
+                                    public boolean isInterrupted(CTFBot context) {
+                                        return true;
+                                    }
+
+                                    public String getName() {
+                                        return "Empty";
+                                    }
+                                }
+                                
+                            </programlisting> As you can see, this state isn't
+            doing anything( <methodname>init()</methodname> and
+            <methodname>run()</methodname> are empty), it is immediately
+            initialized( <methodname>isInitialized()</methodname> returns
+            true), cleaned and interrupted.</para>
+          </listitem>
+
+          <listitem>
+            <para>Add the <classname>StateEmpty</classname> to FSM
+            initialization and set it as the initial state. <programlisting
+            language="java">
+                                
+    private IBotFSM createFSM() {
+        BotFSM fsm = new BotFSM();
+        // create states
+        IFSMState&lt;CTFBot&gt; empty = new StateEmpty();
+
+        // add states
+        fsm.addState(empty);
+
+        // add transitions
+        // nothing yet...
+        // set starting state of FSM
+        fsm.setInititialState(empty);
+
+        return fsm;
+    }
+
+
+                            </programlisting></para>
+          </listitem>
+        </itemizedlist> <para>Start up Unreal server and build and run
+      <guilabel>CTFBot</guilabel> project, bot should appear in the game and
+      last line in the <guilabel>Output</guilabel> window of Netbeans should
+      contain following text: <code> (CTFBot1) [FINE] 18:02:58.791
+      &lt;User&gt; State "Empty" is being initialized. </code> </para></para>
+    </section>
+
+    <section>
+      <title>StateHunt</title>
+
+      <para>Although we finally have working FSM bot, it is not a very useful
+      one. Let's create new state, <classname>StateHunt</classname> from our
+      specification. Just to remind you, bot in the state Hunt should do
+      following: <itemizedlist>
+          <listitem>
+            When bot sees enemy player and has ammo, shoot the enemy player
+          </listitem>
+
+          <listitem>
+            Else (no enemy/no ammo) stop shooting and go to some random 
+
+            <classname>NavPoint</classname>
+
+             in game with spawned item.
+          </listitem>
+        </itemizedlist> That is easy. <itemizedlist>
+          <listitem>
+            Create new class 
+
+            <classname>StateHunt</classname>
+
+             in package 
+
+            <package>ctfbot.state</package>
+
+             and have it implement interface 
+
+            <classname>IFSMState&lt;CTFBot&gt;</classname>
+
+            .
+          </listitem>
+
+          <listitem>
+            We will want to use some modules for this state: 
+
+            <classname>Players</classname>
+
+            , 
+
+            <classname>SimpleShooting</classname>
+
+            , 
+
+            <classname>AgentInfo</classname>
+
+            , 
+
+            <classname>Items</classname>
+
+            , some 
+
+            <classname>PathPlanner</classname>
+
+             and 
+
+            <classname>PathExecutor</classname>
+
+            . Also, collection of all 
+
+            <classname>NavPoint</classname>
+
+             objects will be useful. We could instantiate modules in the state, but that would be wasting of memory, so we will take them from context object. Add getters for the modules into the 
+
+            <classname>CTFBot</classname>
+
+            (our context class). 
+
+            <programlisting language="java">
+    public SimpleShooting getShooting() { return shoot; }
+    public Players getPlayers() { return players; }
+    public AgentInfo getAgentInfo() { return info; }
+    public PathPlanner getPathPlanner() { return pathPlanner; }
+    public PathExecutor getPathExecutor() { return pathExecutor; }
+    public Items getItems() { return items; }
+    public Collection&lt;NavPoint&gt; getNavPoints() { return getWorldView().getAll(NavPoint.class).values(); }                             
+                        </programlisting>
+          </listitem>
+
+          <listitem>
+            Create a initialization for 
+
+            <classname>StateHunt</classname>
+
+            , in this case, we don't need to do anything. Also, remember to set name of state. 
+
+            <programlisting language="java">                            
+    public void init(CTFBot context) {}
+    public boolean isReady(CTFBot context) { return true; }
+    public String getName() { return "Hunt"; }\                                
+                        </programlisting>
+
+             In cases when the state is supposed to do one thing and be immediately finished, then all necessary code can be put into 
+
+            <methodname>init()</methodname>
+
+            . States like "Shoot burst" or "jump" would be candidates for such approach.
+          </listitem>
+
+          <listitem>
+            Implement method 
+
+            <methodname>run()</methodname>
+
+             to make state behave according to specified targets(see above). Remember, this is called many times over execution of state, just like logic, it is therefore quite similar to what you would program into 
+
+            <methodname>logic()</methodname>
+
+             method. 
+
+            <programlisting language="java">                     
+    public void run(CTFBot ctx) {
+        Map&lt;UnrealId, Player&gt; visibleEnemies = ctx.getPlayers().getVisibleEnemies();
+
+        // do we see enemy and can we shoot?
+        if (!visibleEnemies.isEmpty() &amp;&amp; ctx.getAgentInfo().getCurrentAmmo() &gt; 0) {
+            ctx.getPathExecutor().stop();
+            Player nearestPlayer = DistanceUtils.getNearest(visibleEnemies.values(), ctx.getAgentInfo().getLocation());
+            ctx.getShooting().shoot(nearestPlayer.getId());
+            return;
+        }
+        // if we got here, we have no enemy or no ammo, in either case, stop shooting
+        if (ctx.getAgentInfo().isShooting()) {
+            ctx.getShooting().stopShoot();
+        }
+        // we we currently moving somewhere? Like some spawned item or distant navpoint
+        // if so, don't change destination, until movement is finsihed
+        if (ctx.getPathExecutor().isMoving()) {
+            return;
+        }
+        // we have no ammo or no enemy and we are standing at one place. That is waste of time, go somewhere and get stuff
+        Location destination;
+        Item randomSpawnedItem = MyCollections.getRandom(ctx.getItems().getSpawnedItems().values());
+        if (randomSpawnedItem == null) {
+            destination = MyCollections.getRandom(ctx.getNavPoints()).getLocation();
+        } else {
+            destination = randomSpawnedItem.getLocation();
+        }
+        ctx.getPathExecutor().followPath(ctx.getPathPlanner().computePath(destination));
+     }
+                                                        </programlisting>
+          </listitem>
+
+          <listitem>
+            Define when the state is finished, in our case, we are never finished, we want to hunt indefinitely, i.e. until some interrupt transition from the state is triggered. 
+
+            <programlisting language="java">                  
+    public boolean isFinished(CTFBot context) {  return false; }                              
+                        </programlisting>
+          </listitem>
+
+          <listitem>
+            Add routines for interrupt, i.e. routine that actually takes care of the state internals (
+
+            <methodname>interrupt()</methodname>
+
+            ), and the other that says if interruption is finished (
+
+            <methodname>isInterrupted()</methodname>
+
+            ). One of things we typically want to do, when the state is interrupted is to clean it. Actually, in most cases, we just default into cleanup mode, but in some bizzarre cases, it is necessary to differentiate between interruption and finishing. 
+
+            <programlisting language="java">                       
+    public void interrupt(CTFBot context) {
+        cleanup(context);
+    }
+
+    public boolean isInterrupted(CTFBot context) {
+        return isCleaned(context);
+    }        
+                        </programlisting>
+          </listitem>
+
+          <listitem>
+            Implement cleanup routines. Our bot could be interrupted while shooting so stop shooting in that case and stop moving if the bot is moving. We don't do anything else, so cleanup is pretty straightforward and bot is changed into default neutral state (standing, not moving, not shooting). Cleanup is instant, so isCleaned doesn't have to indicate waiting. 
+
+            <programlisting language="java">                            
+    public void cleanup(CTFBot ctx) {
+        if (ctx.getAgentInfo().isShooting())
+            ctx.getShooting().stopShoot();
+
+        if (ctx.getPathExecutor().isMoving())
+            ctx.getPathExecutor().stop();
+    }
+
+    public boolean isCleaned(CTFBot context) {
+        return true;
+    }
+                        </programlisting>
+          </listitem>
+
+          <listitem>
+            Modify 
+
+            <methodname>createFSM()</methodname>
+
+             in 
+
+            <classname>CTFBot</classname>
+
+             to utilize 
+
+            <classname>StateHunt</classname>
+
+             instead of 
+
+            <classname>StateEmpty</classname>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>Feel free to test single-state hunt bot. Not perfect, of course,
+      but it runs and kills. We could implement things like changing to weapon
+      with ammo, either with some additional lines in
+      <methodname>run()</methodname> or utilizing hierarchical sub FSM with
+      states Hunt and ChangeToBestArmedWeapon and interrupt transitions
+      HaveBetterWeapon and sequential transition True. <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/CTFBot_Hunt_subFSM.png"></imagedata>
+          </imageobject>
+        </mediaobject> The ChangeToBestArmedWeapon would probably have all
+      necessary code in <methodname>init()</methodname> and
+      <methodname>isFinished()</methodname> would immediately return true, so
+      sequential transition True would immediately occur.</para>
+    </section>
+
+    <section>
+      <title>"Pickup enemy flag" state</title>
+
+      <para>The demonstrated process is pretty much standard for all other
+      states. Either program them yourself based on the requirements from CTF
+      FSM schema or use provided sample. I would of course recommend
+      programming them yourself, in order to familiarize yourself with FSMLib
+      and Flag handling.</para>
+
+      <para>"Pickup enemy flag" is state that is trying to pickup enemy flag,
+      that is visible by the bot on the ground(=enemy flag is in "dropped" or
+      "home" state). State is finished, when bot loses sight of enemy flag
+      (some obstacle hides it during movement to the flag...) or when someone
+      picks the flag(bot, teammate).</para>
+
+      <para><classname>StatePickupEnemyFlag</classname> has no initialization,
+      and standard cleanup (stop moving). To the CTFBot add method getFlag,
+      shown above. <programlisting language="java">
+    public void run(CTFBot ctx) {
+        // do I still move along the path to the enemy flag?
+        if (ctx.getPathExecutor().isMoving())
+            return;
+
+        // Go to enemy flag.
+        int enemyFlagId = 1-ctx.getAgentInfo().getTeam();
+        FlagInfo enemyFlag = ctx.getFlag(enemyFlagId);
+
+        // enemy flag always have valid location, because it is visible (thx to isFinished running before run)
+        PathHandle path = ctx.getPathPlanner().computePath(enemyFlag.getLocation());
+        ctx.getPathExecutor().followPath(path);
+    }
+
+    public boolean isFinished(CTFBot ctx) {
+        FlagInfo enemyFlag = ctx.getFlag(1-ctx.getAgentInfo().getTeam());
+
+        // flag is visible and on the ground, state is not finished.
+        boolean onGround = "Dropped".equalsIgnoreCase(enemyFlag.getState()) || "Home".equalsIgnoreCase(enemyFlag.getState());
+        if (enemyFlag.isVisible() &amp;&amp; onGround)
+            return false;
+        return true;
+    }
+                                </programlisting>Method
+      <methodname>isFinished</methodname> is ensuring that necessary
+      conditions are still valid (enemy flag is still visible and on the
+      ground) before <methodname>run</methodname> is called. Method
+      <methodname>run</methodname> will repeatedly plan path to the enemy flag
+      and go there. Why repeatedly? In theory, someone could pickup the flag
+      and be immediately (few tens of ms) killed, therefore dropping enemy
+      flag a little off its original position. The bot would go to the
+      original flag position none the wiser and state would never end (because
+      bot would see the flag in its new position).</para>
+
+      <para>Add the <classname>StatePickupEnemyFlag</classname> to the
+      <methodname>createFSM</methodname> method of
+      <classname>CTFBot</classname>, and, if you want to test it out, set the
+      initial state to the instance of
+      <classname>StatePickupEnemyFlag</classname> and spectate in the Unreal,
+      how bot runs from its initial position to the enemy flag, if it can see
+      it. If you are using <command>startGamebotsCTFServer.bat</command> to
+      start the server (recommended), you are using map
+      <emphasis>CTF-1on1-Joust</emphasis>, where bot starts at a position,
+      where he can always see the enemy flag. If enemy flag is not visible or
+      if your bot has picked the flag, state will end, because
+      <methodname>isFinished</methodname> returns true. In such case, the
+      Netbeans <guilabel>output</guilabel> window should contain message:
+      <code> (CTFBot1) [FINE] 14:13:47.494 &lt;User&gt; State "Pickup enemy
+      flag" is finished. </code></para>
+
+      <para>You may have noticed that programing and especially testing
+      individual states is far easier than in complex
+      <methodname>logic</methodname> method, where you mingle enormous ammount
+      if interactions.</para>
+    </section>
+
+    <section>
+      <title>"See enemy flag" condition</title>
+
+      <para>Now we have two states, but no way to change between them. In
+      order to do that, we will have to add a transition (see the FSM schema).
+      Our transition will be interrupt transition from
+      <classname>StateHunt</classname> to
+      <classname>StatePickupEnemyFlag</classname>, that will be triggered,
+      when bot will see enemy flag.</para>
+
+      <para>Transitions are added using method
+      <methodname>addTransition</methodname> of interface
+      <classname>IBotFSM</classname>. That method accepts following
+      parameters: 
+	  <itemizedlist>
+          <listitem>
+		    <emphasis>Condition</emphasis>(<classname>ICondition</classname> - method <methodname>satisfied</methodname> determines if the transition is elegible.
+          </listitem>
+
+          <listitem>
+            <emphasis>Source state</emphasis>(<classname>IFSMState&lt;CONTEXT&gt;</classname>) -  determining the state from which the transition should happen.
+          </listitem>
+
+          <listitem>
+            <emphasis>Target state</emphasis>(<classname>IFSMState&lt;CONTEXT&gt;</classname>) -  determining state to which the transition should happen.
+          </listitem>
+
+          <listitem>
+            <emphasis>Priority</emphasis>(<classname>int</classname>) - priority of transition. If there are multiple elegible transitions, all but the ones with highest priority will be discarded. For more detail look into FSMLib documentation.
+          </listitem>
+
+          <listitem>
+		    <emphasis>Transition type </emphasis>(<classname>TransitionType</classname>) - determines if the transition is interrupt or sequential.
+          </listitem>
+        </itemizedlist> Modify <methodname>createFSM()</methodname> to create
+      new transition. <programlisting language="java">
+        // add states
+        fsm.addState(hunt);
+        fsm.addState(pickupEnemyFlag);
+
+        // add transitions
+        // hunt-pickupEnemyFlag
+        ICondition&lt;CTFBot&gt; seeDroppedEnemyFlag = new ICondition&lt;CTFBot&gt;() {
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo enemyFlag = getFlag(1-ctx.getAgentInfo().getTeam());
+                boolean onGround = !"held".equalsIgnoreCase(enemyFlag.getState());
+                return enemyFlag.isVisible() &amp;&amp; onGround;
+            }
+        };
+        fsm.addTransition(seeDroppedEnemyFlag, hunt, pickupEnemyFlag, 0, TransitionType.INTERRUPT);
+
+        // set starting state of FSM
+        fsm.setInititialState(hunt);                
+                </programlisting> We create <classname>ICondition</classname>
+      as anonymous class, but feel free to put them into their own class file.
+      If you look at FSM schema, you will see this transition there, with
+      exactly the same properties as this one.</para>
+    </section>
+
+    <section>
+      <title>"Go home" state</title>
+
+      <para>Let's create the last state "Go home", that will find and execute
+      path from current bot position to its base. The state is used when bots
+      holds enemy flag and wants to get home in order to score a point. It
+      will ignore enemy fire and all other distractions. State is finished,
+      when bot arrives to its home base.</para>
+
+      <para>Use class name <classname>StateGoHome</classname> in
+      <package>ctfbot.state</package> for the state. State has standard
+      <methodname>interrupt</methodname> and <methodname>cleanup</methodname>
+      methods (stop bot is necessary), but <methodname>init</methodname> and
+      <methodname>run</methodname> are little different. <programlisting
+      language="java">
+    public void init(CTFBot ctx) {
+        NavPoint homeBase = ctx.getTeamBase(ctx.getAgentInfo().getTeam());
+        PathHandle path = ctx.getPathPlanner().computePath(homeBase);
+
+        ctx.getPathExecutor().followPath(path);
+    }
+
+    public boolean isReady(CTFBot ctx) {
+        return ctx.getPathExecutor().isMoving();
+    }
+
+    public void run(CTFBot context) {
+    }
+
+    public boolean isFinished(CTFBot ctx) {
+        return !ctx.getPathExecutor().isMoving();
+    }
+                                </programlisting> In this case, we only need
+      to get home and can therefore set up everything during initialization
+      and no additional code is necessary in the <methodname>run</methodname>.
+      The <methodname>isReady</methodname> makes us wait until the bot starts
+      to move, if we hadn't waited until bot starts moving, the
+      <methodname>isFinished</methodname> method would prematurely signal that
+      state has been finished. That
+      would result in <classname>StateGoHome</classname> finishing
+      prematurely.</para>
+    </section>
+
+    <section>
+      <title>Finishing FSM</title>
+
+      <para>We have finally all states completed, transitions are sill
+      missing. In this section, we will modify
+      <methodname>createFSM</methodname> so it creates the FSM bot from our
+      schema. First, make sure you have all states from schema instantiated
+      and inserted into FSM: <programlisting language="java">
+    private IBotFSM createFSM() {
+        BotFSM fsm = new BotFSM();
+        // create states
+        IFSMState&lt;CTFBot&gt; hunt = new StateHunt();
+        IFSMState&lt;CTFBot&gt; pickupEnemyFlag = new StatePickupEnemyFlag();
+        IFSMState&lt;CTFBot&gt; goHome = new StateGoHome();
+        IFSMState&lt;CTFBot&gt; huntEnemyCarrier = new StateHunt();
+
+        // add states
+        fsm.addState(hunt);
+        fsm.addState(pickupEnemyFlag);
+        fsm.addState(goHome);
+        fsm.addState(huntEnemyCarrier);
+
+        ...
+                </programlisting> Notice that we create two different
+      instances of state <emphasis>Hunt</emphasis>, the
+      <varname>huntEnemyCarrier</varname> is used, when bot has flag, but his
+      flag is not at home and he therefore can't score.</para>
+
+      <para>Now it is necessary to add the remaining transitions, rather
+      boring and gruesome work, do not miss a transitions nor parameters.
+      <programlisting language="java">
+        // add transitions
+        // hunt-pickupEnemyFlag
+        ICondition&lt;CTFBot&gt; seeDroppedEnemyFlag = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo enemyFlag = getFlag(1 - ctx.getAgentInfo().getTeam());
+                boolean onGround = !"held".equalsIgnoreCase(enemyFlag.getState());
+                return enemyFlag.isVisible() &amp;&amp; onGround;
+            }
+        };
+        ICondition&lt;CTFBot&gt; someoneElseTookEnemyFlag = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo enemyFlag = ctx.getFlag(1-ctx.getAgentInfo().getTeam());
+                return !ctx.getAgentInfo().getId().equals(enemyFlag.getHolder());
+            }
+        };
+        fsm.addTransition(seeDroppedEnemyFlag, hunt, pickupEnemyFlag, 0, TransitionType.INTERRUPT);
+        fsm.addTransition(someoneElseTookEnemyFlag, pickupEnemyFlag, hunt, 100, TransitionType.INTERRUPT);
+
+        // pickup enemy flag - go home
+        ICondition&lt;CTFBot&gt; botHasEnemyFlag = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo enemyFlag = ctx.getFlag(1-ctx.getAgentInfo().getTeam());
+                return ctx.getAgentInfo().getId().equals(enemyFlag.getHolder());
+            }
+        };
+        ICondition&lt;CTFBot&gt; always = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot context) {
+                return true;
+            }
+        };
+        fsm.addTransition(botHasEnemyFlag, pickupEnemyFlag, goHome, 100, TransitionType.NORMAL);
+        fsm.addTransition(always, pickupEnemyFlag, hunt, 150, TransitionType.NORMAL);
+
+        // hunt - go home
+        ICondition&lt;CTFBot&gt; botLostEnemyFlag = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo enemyFlag = ctx.getFlag(1-ctx.getAgentInfo().getTeam());
+                return !ctx.getAgentInfo().getId().equals(enemyFlag.getHolder());
+            }
+
+        };
+        fsm.addTransition(botHasEnemyFlag, hunt, goHome, 100, TransitionType.INTERRUPT);
+        fsm.addTransition(botLostEnemyFlag, goHome, hunt, 100, TransitionType.INTERRUPT);
+
+        // hunt enemy carrier - go home
+        ICondition&lt;CTFBot&gt; teamFlagIshome = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo teamFlag = ctx.getFlag(ctx.getAgentInfo().getTeam());
+                return "home".equalsIgnoreCase(teamFlag.getState());
+            }
+        };
+        ICondition&lt;CTFBot&gt; teamFlagIsNotHome = new ICondition&lt;CTFBot&gt;() {
+
+            public boolean satisfied(CTFBot ctx) {
+                FlagInfo teamFlag = ctx.getFlag(ctx.getAgentInfo().getTeam());
+                return !"home".equalsIgnoreCase(teamFlag.getState());
+            }
+        };
+        fsm.addTransition(teamFlagIshome, huntEnemyCarrier, goHome, 100, TransitionType.INTERRUPT);
+        fsm.addTransition(teamFlagIsNotHome, goHome, huntEnemyCarrier, 100, TransitionType.INTERRUPT);
+
+        // set starting state of FSM
+        fsm.setInititialState(hunt);
+                
+                </programlisting> In this case, we are using
+      <varname>botHasFlag</varname> twice, but we can do that only becase it
+      has no internal structures. Generally, you should always create new
+      instance of <classname>ICOndition&lt;CONTEXT&gt;</classname>.</para>
+    </section>
+
+    <section>
+      <title>Try it out</title>
+
+      <para>That's all. You now have reasonably working CTF FSM bot. Start up
+      Unreal server on some CTF map (e.g.
+      <command>startGamebotsCTFServer.bat</command>), run bot and play against
+      him, if you want.</para>
+    </section>
+  </section>
+
+  <section id="timeline">
+    <title>Timeline</title>
+
+    <para>Due to unpredictable nature of AI, it is difficult to review
+    behavior of bot, or replicate possible bugs in their logic. In order to
+    overcome this problem, Pogamut has ability to record information about
+    bots in UT2004 and to review what happend and why. This functionality is
+    called timeline. In this section, we will demonstrate how to use timeline
+    utilizing the CTF bot created in previous section.</para>
+
+    <section>
+      <title>How to create timeline</title>
+
+      <para>To create new timeline, you have to be connected to some server.
+      Once you are connected, click on the tree node <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/add_timeline.png"> </imagedata>
+          </imageobject>
+        </mediaobject> and select name of a file, into which the data will be
+      stored (e.g. current_timeline.ptl). After selecting the name,
+      visualization of timeline will appear. The visualization has two views,
+      one for generic log events and the other for map events.<mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/new_timeline_empty.png"> </imagedata>
+          </imageobject>
+		  <caption>
+		  	<para>Log events view of a new timeline</para>
+		  </caption>
+        </mediaobject> <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/new_timeline_map.png" > </imagedata>
+          </imageobject>
+		  <caption>
+		  	<para>Map view of a new timeline</para>
+		  </caption>
+        </mediaobject> Created timeline doesn't contain any data, you have to
+      manually start and stop data collection. You can do that from context
+      menu of created timeline. <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/timeline_context_menu.png" > </imagedata>
+          </imageobject>
+		  <caption>
+		  	<para>Possible actions for a timeline</para>
+		  </caption>
+        </mediaobject> <itemizedlist>
+          <listitem>Start recording - start recording data into
+          timeline</listitem>
+
+          <listitem>Stop recording - stop recording data into
+          timeline</listitem>
+
+          <listitem>Save - save data from timeline into specified
+          file</listitem>
+        </itemizedlist> Timeline can't be "concatenated" from multiple
+      discrete intervals, i.e. one timeline can be only started and stopped
+      once.</para>
+
+      <para>You can change position and rotation of camera in a map view by
+      dragging mouse. <itemizedlist>
+          <listitem>Dragging mouse with pressed left button - by moving mouse
+          up and down, you move camera forward and backwards, movements in
+          horizontal direction will turn camera to left or right.</listitem>
+
+          <listitem>Dragging mouse with pressed left and right button - mouse
+          movements in horizontal direction will move camera to the left or
+          right, while maintaining angle at which camera looks at the scene,
+          vertical mouse movements move camera up/down and also maintain
+          camera's angle.</listitem>
+
+          <listitem>Dragging mouse with pressed right button - freely change
+          angle of camera.</listitem>
+        </itemizedlist> This is basically the same behavior as in the Unreal
+      editor.</para>
+
+      <para>Timeline enables you to record, save and load following data:
+      <itemizedlist>
+          <listitem>Unreal map</listitem>
+
+          <listitem>Location, rotation and speed of bots</listitem>
+
+          <listitem>Introspection properties</listitem>
+
+          <listitem>Events in the map</listitem>
+
+          <listitem>Generic events</listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>Introspectable variables</title>
+
+      <para>Timeline is automatically recording values of introspectable
+      variables, so you can review them later.</para>
+
+      <para>In order to declare your variable introspectable, e.g.
+      <programlisting language="java">
+    // introspectable variable for counting how many times was bot killed
+    @JProp
+    protected int fragged = 0;
+
+    @Override
+    public void botKilled(BotKilled event) {
+        ++fragged;
+    }
+                
+                </programlisting> Let's try it out: <itemizedlist>
+          <listitem>Create new timeline</listitem>
+
+          <listitem>Start the modified bot</listitem>
+
+          <listitem>Start timeline recording</listitem>
+
+          <listitem>Kill the bot few times</listitem>
+
+          <listitem>Stop timeline recording</listitem>
+        </itemizedlist> Every bot timeline registered during recording is
+      added as a child node of the timeline node in the GUI. In this case,
+      timeline should have recorded two bots, CTFBot and your player, both of
+      them should be displayed as children of the timeline node. <mediaobject>
+          <imageobject>
+            <imagedata fileref="media/CTFBot/timeline_introspection.png"> </imagedata>
+          </imageobject>
+        </mediaobject> Children of recorded bot are his introspection
+      properties, in our case we have only root introspection folder.
+      Right-click on root node of CTFBot and you will see the fragged property
+      along with count of frags.</para>
+
+      <section>
+        <title>Current time</title>
+
+        <para>The showed number "fragged" in the Properties window is number
+        of frags for the current time of timeline (in this case, last time
+        timeline has recorded new info from environment - time when you
+        stopped recording). Current time can be changed in map view. Switch
+        timeline into map view and note the slider under map. The slider is
+        representing current time of timeline.</para>
+
+        <para>Drag the slider and you should see the "fragged" property change
+        to values it had during recording. At the start, it was zero and it
+        has increment few times.</para>
+
+        <para>There is a "Play" and "Stop" button. They are for replaying
+        recorded timeline. Change current time to the start and click "Play."
+        The spheres representing the bots will be at move just like they did
+        during recording and "fragged" property will be updated to reflect
+        ammount of kills. Replay will end when current time reaches end of
+        recording or if you click on "Stop" button.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Events</title>
+
+      <para>Another very useful feature of timeline is ability to record
+      events, there are two types of events: <itemizedlist>
+          <listitem>Map events - event related with position, or something we
+          want to show in the map</listitem>
+
+          <listitem>Log events - event related to time, often needs
+          context</listitem>
+        </itemizedlist></para>
+
+      <section>
+        <title>Map events</title>
+
+        <para>Map event is an event that is diplayed in the timeline map view
+        as cube in color of the bot who raised it. Every map event needs to
+        specify event message, location, and duration. There are following
+        subtypes, based on location and duration requirements: <itemizedlist>
+            <listitem>Fixed location, fixed duration - map event is tied to
+            specific place in the map and lasts for specified duration, e.g.
+            if I take the item from spawn point, I know that there won't be a
+            new item at that particular spawn point for duration specified by
+            spawn point.</listitem>
+
+            <listitem>Fixed location, unknown duration - map event is tied to
+            specific place in the map, but there is no information about how
+            long it will last, e.g. flag is at the base: we know the position
+            of base and we know that enemy flag is there, but we don't know
+            when flag will be picked up.</listitem>
+
+            <listitem>Player location, fixed duration - this type of event is
+            shown at position of player for specified duration of event, i.e.
+            no matter where the player will move, the event message will be
+            displayed at his current position.</listitem>
+
+            <listitem>Player location, unknown duration - map event shown at
+            position of player for duration of event. E.g. event "player is
+            hurt".</listitem>
+          </itemizedlist> All of these events can be created using methods of
+        class <classname>LogCategory</classname>. Preferrably, use
+        <methodname>getLog()</methodname> of
+        <classname>UT2004BotController</classname> (ancestor of every UT bot
+        controller class, such as <classname>CTFBot</classname>). If you need
+        to use another category, get one from
+        <interfacename>IAgentLogger</interfacename> (instance for bot can be
+        retrieved <varname>bot</varname>.
+        <methodname>getLogger()</methodname>).</para>
+
+        <para>If you want to create new map event with fixed location and
+        duration, use <methodname>addMapMark()</methodname>, first parameter
+        is a level of the event, if level is lower than cutoff level of
+        logger, event will be discarded. <programlisting language="java">
+    @Override
+    public void botKilled(BotKilled event) {
+        ...
+        // When bot is killed, show cube at that place for 10 seonds
+        getLog().addMapMark(
+            Level.SEVERE,
+            getAgentInfo().getName() + " was killed here",
+            getAgentInfo().getLocation(),
+            10000);
+    }
+                    </programlisting></para>
+
+        <para>Events with variable duration require more work, because there
+        can be multiple events with variable duration, you need to specify
+        which event should end. When event with variable duration is added
+        using <methodname>addMapMark(Level level, String eventMessage,
+        Location location)</methodname> (notice missing duration), it returns
+        object associated with event. The returned object is used to end the
+        event using <methodname>removeMapMark(mapMark)</methodname>.
+        <programlisting language="java">
+    private final IWorldObjectEventListener&lt;Self, WorldObjectEvent&lt;Self&gt;&gt; healthEvent =
+            new IWorldObjectEventListener&lt;Self, WorldObjectEvent&lt;Self&gt;&gt;() {
+
+                private LogMapMark mapMark;
+
+                public void notify(WorldObjectEvent&lt;Self&gt; event) {
+                    if (mapMark == null) {
+                        if (event.getObject().getHealth() &lt; 50) {
+                            // start new event that will be shown in the map at current position of bot
+                            mapMark = getLog().addMapMark(Level.SEVERE, "Low health", null);
+                        }
+                    } else {
+                        if (event.getObject().getHealth() &gt; 50) {
+                            // end the event
+                            getLog().removeMapMark(mapMark);
+                            mapMark = null;
+                        }
+                    }
+                }
+            };
+
+            @Override
+            public void botInitialized(GameInfo info, ConfigChange config, InitedMessage init) {
+                ...
+                // register the listener
+                getWorldView().addObjectListener(Self.class, healthEvent);
+            }
+                    </programlisting></para>
+
+        <para>In code sample above, we are using null instead of
+        <classname>Location</classname> object. That is how we decide if event
+        should be displayed at some distinct location or if it should be
+        displayed above player sphere in the map.</para>
+
+        <para>Following image is showing two events, map event at place where
+        CTFBot has been killed and map event "low health": <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/CTFBot/timeline_killed_lowhealth.png"> </imagedata>
+            </imageobject>
+          </mediaobject></para>
+      </section>
+
+      <section>
+        <title>Log events</title>
+
+        <para>Log events are displayed in time view of timeline. There are
+        following subtypes: <itemizedlist>
+            <listitem>Log message - message has no duration, it is instant
+            event, e.g. bot picked up an item</listitem>
+
+            <listitem>Log event, fixed duration - event that lasts for some
+            time, but duration is known at the time of creation</listitem>
+
+            <listitem>Log event, variable duration - we don't know how long
+            will the event last, e.g. bot hurt, lost, state of FSM</listitem>
+          </itemizedlist></para>
+
+        <para>To create new log message, use <methodname>addLogMessage(Level
+        level, String text)</methodname>. <programlisting language="java">
+    private final IWorldEventListener&lt;AddInventoryMsg&gt; newInventoryMessage =
+            new IWorldEventListener&lt;AddInventoryMsg&gt;() {
+
+                public void notify(AddInventoryMsg event) {
+                    getLog().addLogMessage(Level.SEVERE, "Added inventory " + event.getType());
+                }
+            };
+
+    @Override
+    public void botInitialized(GameInfo info, ConfigChange config, InitedMessage init) {
+        ...
+        getWorldView().addEventListener(AddInventoryMsg.class, newInventoryMessage);
+    }
+                    </programlisting></para>
+
+        <para>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/CTFBot/timeline_states_log_message.png"> </imagedata>
+            </imageobject>
+          </mediaobject>
+
+          <itemizedlist>
+            <listitem>Time axist at the top is showing time since start of the
+            recording</listitem>
+
+            <listitem>The big green line is showing lifespan of bot, basically
+            when did bot first appeared in the environment and when did he
+            left.</listitem>
+
+            <listitem>The gray line is log line, in our case it is line
+            representing User log, which is the log from
+            <methodname>getLog()</methodname>. There can be multiple log lines
+            for every bot.</listitem>
+
+            <listitem>The black square on the log line is <literal>log
+            message</literal> that was put into the repsective log. Because
+            log message is only small square, whole message is shown in a
+            tooltip. It is convinient to create new log for specific type of
+            messages to avoid cluttering in the User log line.</listitem>
+
+            <listitem>The green rectangles are log events, in this particular
+            case log events displaying states of FSM bot. The whole log event
+            message can be shown using tooltip, if rectangle is too small to
+            display it.</listitem>
+          </itemizedlist>
+        </para>
+
+        <para>Log event with fixed duration is created using
+        <methodname>addLogEvent(Level level, String text, long
+        duration)</methodname>, log event with variable duration are started
+        by calling <methodname>addLogEvent(Level level, String
+        text)</methodname>. That method returns object identifying the event,
+        which is used for ending the event in the same fashion as map events
+        do (use <methodname>removeLogEvent(LogEventMark)</methodname> instead
+        of <methodname>removeMapEvent(LogMapMark)</methodname>).</para>
+
+        <para>Following code will create variable log events for FSM states
+        you could see in description of timeline view. <programlisting
+        language="java">
+    private String currentState;
+    private LogEventMark currentStateEvent;
+
+    @Override
+    public void logic() throws PogamutException {
+        // make a step in execution of FSM, run statem check transitions, if necessary
+        // switch from one state to another...
+        // Passed value is fsm context.
+        fsmExecutor.step(this);
+
+        IFSMState&lt;CTFBot&gt; state = fsmExecutor.getState();
+        if (!state.getName().equalsIgnoreCase(currentState)) {
+            currentState = state.getName();
+            if (currentStateEvent != null)
+                getLog().removeLogEvent(currentStateEvent);
+            currentStateEvent = getLog().addLogEvent(Level.SEVERE, currentState);
+        }
+
+    }
+                    </programlisting></para>
+      </section>
+
+      <section>
+        <title>Saving and loading</title>
+
+        <para>The key aspect of timeline is ability to save and load recorded
+        data.</para>
+
+        <para>You have probably noticed the node <literal>Timelines</literal>
+        in the <literal>project</literal> tab, it is the node under which are
+        avaiable all timelines that have been created during current Pogamut
+        session, meaning all timelines under all servers and all loaded
+        timelines as well. <mediaobject>
+            <imageobject>
+              <imagedata fileref="media/CTFBot/loaded_timeline.png"> </imagedata>
+            </imageobject>
+          </mediaobject> In the image, there is a timeline created during
+        session (localhost_timeline) and one loaded timeline
+        (sample_timeline_12).</para>
+
+        <para>Saving timeline is done by selecting the "Save" menu item from
+        context menu of the respective timeline.</para>
+
+        <para>Loading is done through the standard Netbeans <guimenu>Open
+        file...</guimenu> menu item under <guimenu>File</guimenu> menu. Once
+        you select and open the timeline, it adds itself under the
+        <literal>Timelines</literal> node.</para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+    <para><link xlink:href="http://www.oocities.org/garvelous2004/">Garvelous CTF guide for UT 2004</link></para>
+    
+    <para>FSM bots are fun and easy to create, as long as you don't require something more complicated. Once you do, it gets quite hard and difficult. You may be interested in the <link xlink:href="http://aigamedev.com/open/articles/bt-overview/">behavior trees</link> or .</para>
+
+    <para>Pogamut doesn't have support for behavior trees, but it supports SPOSH, that is quite similar to them. If you are interested, try <link linkend="00-POSH-PreyBot">SPOSH tutorial</link></para>
+  </section>
+</chapter>

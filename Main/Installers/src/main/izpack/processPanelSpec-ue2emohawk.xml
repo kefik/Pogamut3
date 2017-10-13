@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<processing>
+    <executeForPack name="UE2 Example Projects Archetypes"/>
+    <os family="windows" />
+    <job name="UE2 archetypes installation">
+        <executefile name="$INSTALL_PATH/archetypes/ue2/install-all.bat"/>
+    </job>
+</processing>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dash - Yaposh debugger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <p>Dash is a debugger for Yaposh plans, it can display the plan of debugged agent.</p>
+    <p>Dash provides three main functions:</p>
+    <ul>
+        <li><dfn>Plan capture button</dfn> &mdash; State action displayed in the Debug toolbar of NetBeans, class of teh action is stored in  <code>WatchLapAction</code>. When action is enabled, it tries to detect all debugged Yaposh engines by having breakpoint at evaluation method of <code>PoshEngine</code> and assuming that each new thread that reaches the breakpoint is new engine. The thread is basically always logic thread of the agent.</li>
+        <li><dfn>EngineSelectionWindow</dfn> &mdash; Window that can be opened by Menu Window-EngineSelection that displayes all known debugged engines. If you double click on on of them, it will open window showing execution of the engine.</li>
+        <li><dfn>Debug scene</dfn> &mdash; Scene showing execution of the plan by the engine. User can add breakpoints to primitives that will pause the agent thread and the environment.</li>
+    </ul>
+
+    <h2>How does Dash get the info about engine?</h2>
+    <p>Through coopoeration of <code>PoshEngine</code> (Yaposh engine) and NetBeans Debugger API. Example: Dash wants to be informed every time some node of the plan is evaluated. We know that right before the node is evaluated by the engine, it calls <code>EngineLog#pathReached</code>, so Dash uses NetBeans Debugger API to add breakpoint there and listens on it. When breakpoint is reached, the listener is notified. The listener knows that some logic thread is evaluating engine and has reached the node, it only needs to filter such events by thread and now we are informed each time the engine tries to evaluate some node.</p>
+
+    <h2>Phases of engine</h2>
+    <p>Goal of this plugin is basically to create a class that represents planner engine(implementor <code>IDebugEngine</code>, for Yaposh it is <code>YaposhEngine</code>), connect it to the engine and show state of execution of planner in <code>DashWindow</code>. <code>IDebugEngine</code> has listeners that are notified when e.g. engine reaches some path. That way, the widgets and <code>DashWindow</code> can be updated.</p>
+    <p>Lifecycle of <code>IDebugEngine</code>, it must notify its listeners about changes in its lifecycle</p>
+    <ul>
+        <li>Unconnected - Use method <code>initialize()</code> to ask engine to connect to debugged planner</li>
+        <li>Connected - <code>IDebugEngine</code> know that planner exists and is being run, but it doesn't yet have plan of the planner</li>
+        <li>plan received - <code>IDebugEngine</code> got the plan</li>
+        <li>Plan is being evaluated many times:
+            <ul>
+                <li>evaluation reached - called each time the planner is starting evaluating the plan in order to determine which node should be executed next time.</li>
+                <li>path reached - some node in the plan is about to be evaluated. can be called multiple times</li>
+                <li>evaluation finished - planner has found which node it should execute in next evaluation</li>
+            </ul>
+        </li>
+        <li>diconnected</li>
+    </ul>
+    
+</body>
+</html>

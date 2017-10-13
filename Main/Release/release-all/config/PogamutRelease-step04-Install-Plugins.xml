@@ -1,0 +1,16 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step04-InstallRelease-Plugins">
+	<step id="Install (release version, skip-tests)" failStop="true">
+    <!--
+		  
+      NETBEANS SUITE
+      
+		-->	
+		<process>
+			<id>Install PogamutNetbeansSuite</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>trunk/project/Main/PogamutNetbeansSuite</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>
+</PogamutReleaseConfig>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>PogamutUT2004 Reference manual</title>
+
+    <author>
+      <personname>Jakub Gemrot</personname>
+
+      <affiliation>
+        <orgname>Charles University in Prague, Faculty of Mathematics and
+        Physics</orgname>
+      </affiliation>
+
+      <contrib>Author of the text</contrib>
+
+      <email>jakub.gemrot@gmail.com</email>
+    </author>
+
+    <author>
+      <personname><firstname>Rudolf</firstname><surname>Kadlec</surname></personname>
+
+      <affiliation>
+        <orgname>Charles University in Prague, Faculty of Mathematics and
+        Physics</orgname>
+      </affiliation>
+
+      <contrib>Author of the text</contrib>
+
+      <email>rudolf.kadlec@gmail.com</email>
+    </author>
+
+    <org>
+      <orgname>AMIS group</orgname>
+    </org>
+
+    <pubdate></pubdate>
+  </info>
+
+  <chapter>
+    <title>Pogamut UT2004</title>
+
+    <para></para>
+
+    <section>
+      <title>Agents and World</title>
+
+      <para>TODO Describe the Unreal Tournament 2004 and Bots</para>
+    </section>
+
+    <section>
+      <title>Library architecture</title>
+
+      <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="media/WorldViewGamebots.svg" format="SVG"></imagedata>
+          </imageobject>
+        </mediaobject></para>
+
+      <section>
+        <title>Gamebots</title>
+
+        <para>Gamebots documentation is in standalone file.</para>
+      </section>
+
+      <section>
+        <title>WorldView</title>
+
+        <para>These features are specific to the</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Asynchronous events implement InfoMessageObject, WorldEvent
+            and WorldViewEvent.</para>
+          </listitem>
+
+          <listitem>
+            <para>Object updating events implement InfoMessageObject,
+            WorldEvent and WorldViewObject.</para>
+          </listitem>
+
+          <listitem>
+            <para>Path and other (TODO) more complex objects implements
+            InfoMessageObject only. The following object (in terms of the
+            message passing) has to be hand coded.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Agent's Memory</title>
+
+        <para>TODO describe memory modules</para>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Pogamut UT2004 Development</title>
+
+    <para></para>
+
+    <section>
+      <title>Building from sources</title>
+
+      <section>
+        <title>Getting sources and building PogamutUT2004</title>
+
+        <para>First install <application>Subversion</application> client as a
+        source version control system and Apache
+        <application>Ant</application> as a build system.</para>
+
+        <para>Sources can be downloaded from Subversion repository by
+        command:<prompt></prompt><screen>svn checkout svn://artemis.ms.mff.cuni.cz/pogamut/branches/devel</screen></para>
+
+        <para>after downloading you can build PogamutUT2004 project by</para>
+
+        <para><screen>cd PogamutUT2004
+ant jar</screen>this will create a jar file in <filename>dist</filename>
+        subdirectory, documentation can be created by</para>
+
+        <para><screen>ant doc</screen></para>
+
+        <para>documentation will show in <filename>dist/doc</filename>
+        subdirectory.</para>
+
+        <para>Don't forget that in order to connect to the game you have to
+        install the GameBots2004 interface. To do this you have to copy all
+        files from <filename>gamebots</filename> directory to
+        <filename>UT2004/System</filename>.</para>
+      </section>
+
+      <section>
+        <title>Building Netbeans plugin</title>
+
+        <para>Netbeans plugin for PogamutUT2004 is in
+        <filename>PogamutNBSuite</filename> directory, you can build from the
+        IDE or from command line</para>
+
+        <para><screen>cd PogamutNBSuite
+ant nbms</screen></para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Making installer</title>
+
+        <para>IzPack is used for packaging the whole Pogamut. Installer can be
+        created by</para>
+
+        <para><screen>cd PogamutUT2004
+ant -f build-install.xml make-installer</screen></para>
+
+        <para>web based version of the installer is created by</para>
+
+        <para><screen>ant -f build-install.xml make-web-installer</screen></para>
+
+        <para>Resulting files will be in <filename>dist</filename>
+        directory.</para>
+
+        <para>Source scripts for the installer are in
+        <filename>PogamutUT2004/installer</filename>.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>GB &lt;-&gt; PogamutUT2004 communication</title>
+
+      <para>Communication between the GB and the Pogamut Java client can be
+      described by a finite state machine.</para>
+
+      <para><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/BotFSM.gif"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>State diagram of communication between bot and the GB</para>
+          </caption>
+        </mediaobject><mediaobject>
+          <imageobject>
+            <imagedata fileref="img/ServerFSM.gif"></imagedata>
+          </imageobject>
+
+          <caption>
+            <para>State diagram of communication between server and the
+            GB</para>
+          </caption>
+        </mediaobject></para>
+    </section>
+
+    <section>
+      <title>Unit Tests</title>
+
+      <para>Unit tests are fundamental part of open source software
+      development. Before every commit test the functionality you have
+      changed, ideally test the whole project, however running all the tests
+      can take a lot of time since some tests include executing the UT2004
+      server and performing tests inside the environemnt (eg.
+      navigation).</para>
+
+      <para></para>
+
+      <section>
+        <title>Configuring environment for running the test</title>
+
+        <para>Some test need to have a running UCC server with Gamebots
+        installed. Fortunately you don't have to run the server manually each
+        time you want to execute the tests. Instead you simply set pogamut
+        platform variable pointing to the UT2004 installation:<itemizedlist>
+            <listitem>
+              <para><literal>pogamut.ut2004.home=c:\games\UT2004</literal> -
+              points to the install directory of UT2004, eg.
+              <filename>c:\games\UT2004</filename></para>
+            </listitem>
+          </itemizedlist> Tests will ten execute the UCC on their own.</para>
+
+        <para>If you want to observe your bots performing the tests then it is
+        convenient to to make the tests use externaly executed instance of UCC
+        because then you can connect to it with viewer in advance. To force
+        this behaviour set variable:<itemizedlist>
+            <listitem>
+              <para><literal>pogamut.test.useExternalUCC=true</literal>
+              </para>
+            </listitem>
+          </itemizedlist></para>
+
+        <para>Pogamut platform variables can be set as ordinary system
+        environemnt variable, or you can set them throufh
+        <literal>-D</literal> JVM option, or in
+        <filename>PogamutPlatformCustom.properties</filename> file.</para>
+      </section>
+
+      <section>
+        <title>Coding new tests</title>
+
+        <para>The tests are implemented in JUnit 4.5, for tutorial on writing
+        a basic test see
+        <uri>http://junit.sourceforge.net/doc/cookbook/cookbook.htm</uri></para>
+
+        <para>Pogamut provides a few base classes that provide infrastructure
+        for writing PogamutUT2004 test cases. These test base classes are
+        located in package <code>cz.cuni.amis.pogamut.ut2004.testbase</code>.
+        See Javadoc of these classes. And learn from other classes extending
+        these.</para>
+
+        <para></para>
+      </section>
+    </section>
+  </chapter>
+</book>

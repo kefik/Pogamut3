@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="MOVE" extends="CommandMessage" name="Move" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		The bot will start moving towards FirstLocation. After reaching it will continue
+		to SecondLocation (no delay). If no SecondLocation specified, the movement will end at
+		FirstLocation point.
+		You can specify some location or object you will be facing during the movement (if none specified,
+		the bot will start looking towards its destination point). Object	is specified by UnrealId. 
+		Player Ids will work, all NavPoints Ids and Movers. Respawned items should work too, but not all of 
+		the items have unique Id, thus item Ids are not recommended.		
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="FirstLocation" type="Location">
+      <documentation>The bot will start moving to this location first. If not specified, the bot won't move (even if SecondLocation is specified).   </documentation>
+   </property>
+   <property name="SecondLocation" type="Location">
+      <documentation>After reaching FirstLocation, the bot will start moving to location specified here. If not specified the movement will quit at FirstLocation point.</documentation>
+   </property>
+   <property name="FocusTarget" type="UnrealId">
+      <documentation>Here you can specify UnrealId of the object you want to face during movement (typically enemy player you want to shoot at). Player Ids will work, all NavPoints Ids, Movers and some of the items (with unique Id). This attribute is parsed before FocusLocation attribute and if set FocusLocation attribute will be ignored.</documentation>
+   </property>
+   <property name="FocusLocation" type="Location">
+      <documentation>Here you can specify location you want to face during movement. This attribute is parsed after FocusTarget attribute and will be ignored if FocusTarget is set.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

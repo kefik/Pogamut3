@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="RESPAWN" extends="CommandMessage" name="Respawn" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Use this to kill bot and force him to respawn, you can specify
+		start location and rotation. Work also for human players and
+		spectators in the game. This command can be issued also by bot
+		on the bot itself (in this case Id attribute is not parsed).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the bot to be respawned (not used if command sent to
+			bot).
+		</documentation>
+   </property>
+   <property name="StartLocation" type="Location">
+      <documentation>
+			Where bot respawns. If you want to respawn bot at random,
+			don't specify StartLocation.
+		</documentation>
+   </property>
+   <property name="StartRotation" type="Rotation">
+      <documentation>Initial rotation of the bot.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

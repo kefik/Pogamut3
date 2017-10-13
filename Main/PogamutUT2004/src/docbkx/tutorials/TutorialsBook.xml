@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xml:id="Pogamut3Cookbook"
+      xmlns="http://docbook.org/ns/docbook"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:m="http://www.w3.org/1998/Math/MathML"
+      xmlns:html="http://www.w3.org/1999/xhtml"
+      xmlns:db="http://docbook.org/ns/docbook">
+    <info>
+        <title>Pogamut 3 Cookbook</title>
+
+        <author>
+            <personname>
+                <firstname></firstname>
+                <surname>AMIS Team</surname>
+            </personname>
+
+            <affiliation>
+                <orgname>
+                </orgname>
+            </affiliation>
+
+            <contrib>Rudolf Kadlec, Jakub Gemrot, Michal Bida, Jan Havlicek, Radek Pibil, Lukas Zemcak, Radim Vansa and others</contrib>
+
+            <email>rudolf.kadlec@gmail.com</email>
+            <email>jakub.gemrot@gmail.com</email>
+            <email>michal.bida@gmail.com</email>
+            
+        </author>
+
+        <pubdate></pubdate>
+
+        <org>
+            <orgname>AMIS group</orgname>
+        </org>
+    </info>
+
+    <part>
+        <title>Introduction</title>
+
+        <chapter>
+            <title>Pogamut</title>
+
+            <section>
+                <title>Purpose of this book</title>
+
+                <para>This book is intended as cookbook for both the core
+        PogamutUT2004 library and for Pogamut Netbeans plugin that is created
+        to support development of Pogamut bots. However if you skip the
+        Netbeans related parts you can use this book as extended comment of
+        example bots distributed with the Pogamut library.
+                </para>
+            </section>
+
+            <section>
+                <title>How to use it</title>
+
+                <para>Book is separated into stand alone tutorials, after completing
+        each tutorial you will learn about one new functionality of the
+        Pogamut library in conjunction with how to use the Netbeans plugin. It
+        is adviced to have the source code of described bots open in the IDE
+        to be able to quickly switch between the tutorial and the bot's source
+        code.
+                </para>
+            </section>
+        </chapter>
+
+        <xi:include href="Install.xml" xpointer="element(/1)" />
+		<xi:include href="OpeningExamples.xml" xpointer="element(/1)" />
+		<xi:include href="SetupPogamutWithEclipse.xml" xpointer="element(/1)" />
+       <!-- <xi:include href="PogamutAndMaven.xml" xpointer="element(/1)" />-->
+    </part>
+
+    <part>
+        <title xml:id="BasicTutorialsPart">Basic Tutorials</title>
+
+        <xi:include href="00-EmptyBot.xml" xpointer="element(/1)" />
+
+        <xi:include href="01-ResponsiveBot.xml" xpointer="element(/1)" />
+
+        <xi:include href="02-NavigationBot.xml" xpointer="element(/1)" />
+
+        <xi:include href="03-RaycastingBot.xml" xpointer="element(/1)" />
+    
+		<xi:include href="10-HunterBot.xml" xpointer="element(/1)" />
+	
+        <xi:include href="04-PogamutModules.xml" xpointer="element(/1)" />
+
+        <xi:include href="05-CTFBot.xml" xpointer="element(/1)" />
+
+        <xi:include href="06-ControlConnection.xml" xpointer="element(/1)" />
+
+        <xi:include href="07-ObserverConnection.xml" xpointer="element(/1)" />
+
+        <!-- <xi:include href="08-BotsTournamentAndStats.xml" xpointer="element(/1)" /> -->
+
+        <!-- <xi:include href="09-MasteringPogamutPathFinding.xml" xpointer="element(/1)" />  -->
+    
+    </part>
+
+    <part>
+        <title xml:id="AdvancedTutorialsPart">Advanced Tutorials</title>
+        <xi:include href="00-POSH-PreyBot.xml" xpointer="element(/1)" />
+    
+<!-- disabled until refactored
+    <xi:include href="../../../addons/core/AnimationCore/doc/Tutorials/Anim-01-Static.xml"
+                xpointer="element(/1)" />
+
+    <xi:include href="../../../addons/core/AnimationCore/doc/Tutorials/Anim-02-Dynamic.xml"
+                xpointer="element(/1)" />
+
+    <xi:include href="../../../addons/core/EduScenarios/tutorials/ES-01-Basics.xml"
+                xpointer="element(/1)" />
+
+    <xi:include href="../../../addons/core/EduScenarios/tutorials/ES-02-Advanced.xml"
+                xpointer="element(/1)" />
+
+    <xi:include href="../../../addons/core/PoJACTR/PoJACTRUT2004/doc/tutorial/01-MindlessBot.xml"
+                xpointer="element(/1)" />
+
+
+        <xi:include href="../../../addons/core/PoJACTR/PoJACTRUT2004/doc/tutorial/01-EmptyBot.xml"
+                xpointer="element(/1)" />
+        <xi:include href="../../../addons/core/PoJACTR/PoJACTRUT2004/doc/tutorial/02-HunterBot.xml"
+                xpointer="element(/1)" />
+
+        <xi:include href="MapGenerator.xml" xpointer="element(/1)" />
+
+        <xi:include href="../../../addons/core/ALMA/doc/tutorials/ALMA-01-EmotionalBot.xml"
+                xpointer="element(/1)" />
+               
+    </part>
+	
+  <part>
+    <title xml:id="DefConTutorialsPart">Pogamut DefCon Tutorials</title>
+
+    <xi:include href="../../../PogamutDefCon/doc/tutorials/00-HelloWorldBot.xml" xpointer="element(/1)" />
+      -->
+  </part>	
+
+    <glossary>
+        <glossentry>
+            <glossterm>Agent</glossterm>
+
+            <glossdef>
+                <para>Piece of software TODO</para>
+            </glossdef>
+        </glossentry>
+
+        <glossentry>
+            <glossterm>Bot</glossterm>
+
+            <glossdef>
+                <para>Agent embodied in a 3D environment</para>
+            </glossdef>
+        </glossentry>
+
+        <glossentry>
+            <glossterm>GUI</glossterm>
+
+            <glossdef>
+                <para>Graphics user interface</para>
+            </glossdef>
+        </glossentry>
+    </glossary>
+</book>

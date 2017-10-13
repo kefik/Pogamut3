@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="FAL" name="FallEdge" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. This message represents case, where bot
+		stands at the edge of cliff or somewhere the bot can fall. If
+		the bot has ran, it is already falling. When the bot is walking
+		he can't fall from the cliff, so after receiving this message, he
+		is standing at the edge of the cliff.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Fell" type="boolean" category="local">
+      <documentation>
+			Flag for falling, if true, then the bot is already falling.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>Current location of the bot.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

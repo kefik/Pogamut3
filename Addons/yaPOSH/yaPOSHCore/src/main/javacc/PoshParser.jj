@@ -1,0 +1,1019 @@
+/**
+ * Parser using javacc for creating PoshPlan from Posh file.
+ */
+
+options {
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  STATIC = false;
+  IGNORE_CASE = true;
+  FORCE_LA_CHECK = true;
+}
+
+PARSER_BEGIN(PoshParser)
+
+package cz.cuni.amis.pogamut.sposh.elements;
+
+import cz.cuni.amis.pogamut.shady.ArgString;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class PoshParser {
+    final static class Packet<FIRST, SECOND> {
+        Packet(FIRST first, SECOND second) {
+            this.first = first;
+            this.second = second; 
+        }
+        public FIRST first; 
+        public SECOND second;
+    }
+
+    /**
+     * Take the token COMMENT and unescape its content.
+     */
+    private String unescape(String comment)  throws ParseException {
+        // comment token must have at least starting and ending double quote
+        int commentLength = comment.length();
+        if (commentLength < 2)
+            throw new ParseException();
+        if (comment.charAt(0) != '"' || comment.charAt(commentLength - 1) != '"')
+            throw new ParseException();
+        
+        String commentContent = comment.substring(1, commentLength - 1);
+        // ArgString throws different ParseException that this parser.
+        try {
+            return ArgString.unescape(commentContent);
+        } catch (Exception ex) {
+            throw new ParseException(ex.getMessage());
+        }
+    }
+}
+
+final class SenseComponents {
+    public String name;
+    public Object value;
+    public Sense.Predicate predicate;
+}
+
+PARSER_END(PoshParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+SPECIAL_TOKEN :
+{
+  < SINGLE_LINE_COMMENT: ";" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+}
+
+TOKEN :
+{
+  < LBRACE: "(" >
+| < RBRACE: ")" >
+| < DC: ( "DC" | "SDC" | "RDC" |"SRDC") >
+| < AP: "AP" >
+| < AD: "AD" >
+| < COMPETENCE: "C" >
+| < ELEMENTS: "elements" >
+| < GOAL: "goal" >
+| < HOURS: "hours" >
+| < MINUTES: "minutes" >
+| < SECONDS: "seconds" >
+| < HZ: "hz" >
+| < PM: "pm" >
+| < NONE: "none" >
+| < TRIGGER: "trigger" >
+| < NIL: "nil" >
+| < DRIVES: "drives" >
+| < DOCUMENTATION: "documentation">
+| < VARS: "vars">
+| < COMMA: ",">
+| < EQUAL_SIGN: "=">
+| < TRUE: "true">
+| < FALSE: "false">
+}
+
+TOKEN : /* Strings and numbers */
+{
+  < PREDICATE: ( "==" | "=" | "!=" | "<" | ">" | "<=" | ">=" ) >
+|
+  < NUMFLOAT: ("-")? ((["0"-"9"])* "." (["0"-"9"])+|(["0"-"9"])+ "." ) (["e","E"](["+","-"])?(["0"-"9"])+)?  >
+|
+  < NUMINT: ("-")?(["0"-"9"])+ >
+|
+  < NAME: ( ["a"-"z","A"-"Z"] ( ["_","-","a"-"z","A"-"Z","0"-"9"] )* "." )* ["a"-"z","A"-"Z"] ( ["_","-","a"-"z","A"-"Z","0"-"9"] )*>
+|
+  < #JAVA_IDENTIFIER: ["a"-"z","A"-"Z","_"] (["a"-"z","A"-"Z","_","0"-"9"])* > 
+|
+  < ENUM_VALUE: ("'") <JAVA_IDENTIFIER> ( "." <JAVA_IDENTIFIER> )* >
+|
+//  < COMMENT:   "\"" (~["\""])* "\"" >
+  // difference between COMMENT and STRING_LITERAL in Java is that I allow \n and \r
+  < COMMENT:
+      "\"" (
+        (~["\"", "\\"]) | 
+        ("\\" ( ["b", "t", "n", "f", "r", "'", "\"", "\\"] 
+              | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+              | ["0"-"7"] ["0"-"7"]
+              | ["0"-"7"]
+              | ("u")+ ["0"-"9", "a"-"f", "A"-"F"] ["0"-"9", "a"-"f", "A"-"F"] ["0"-"9", "a"-"f", "A"-"F"] ["0"-"9", "a"-"f", "A"-"F"]
+              )
+        )
+      )* "\""
+    >
+|
+// The regexp in the parameter editor must be same as here 
+  < VARIABLE: "$" <NAME> >  
+}
+
+TOKEN : /* chars we don't expect in the file */
+{
+    < ERROR_CHARS: ~[] >
+}
+
+
+/**
+ * FIXME: According to official grammar, plan can consists only from single
+ * competence or action pattern. Sorry, but I don't allow this for now.
+ * plan ::= "(" [ "(" <docstring> ]
+                ( "(" <competence> | <action-pattern> )*
+                  "(" <drive-collection>
+                ( "(" <competence> | <action-pattern> )* ")" 
+ */
+PoshPlan parsePlan() :
+{
+	PoshPlan plan = LapElementsFactory.createPlan();
+}
+{
+	<LBRACE> <LBRACE> planFirstElement(plan) <EOF> {return plan;}
+}
+
+/**
+ * [ "(" <docstring> ]
+ * Part of plan rule. 
+ */ 
+void planFirstElement(PoshPlan plan):
+{
+	ActionPattern ap;
+	Competence c;
+	DriveCollection dc;
+	Adopt ad;
+}
+{
+	docString(plan) "(" planFirstHalf(plan)
+|
+	ap=actionPattern()
+        {
+            plan.addActionPattern(ap);
+            // ex.currentToken = token;
+        } <LBRACE> planFirstHalf(plan)        
+|
+	c=competence()
+        {
+            plan.addCompetence(c);
+            // ex.currentToken = token;
+        } <LBRACE> planFirstHalf(plan)
+|
+	ad=adapt()
+		{
+			plan.addAdopt(ad);
+			// ex.currentToken = token;
+		}  <LBRACE> planFirstHalf(plan)
+| 
+	driveCollection(plan.getDriveCollection()) planSecondHalf(plan)
+}
+
+/**
+ * First half of plan rule.
+ * ( "(" <competence> | <action-pattern> )*
+ */  
+void planFirstHalf(PoshPlan plan):
+{
+	ActionPattern ap;
+	Competence c;
+	Adopt ad;
+}
+{
+	ap=actionPattern() 
+        {
+            try {
+                plan.addActionPattern(ap);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+        } <LBRACE> planFirstHalf(plan)
+|
+	c=competence() {
+            try {
+                plan.addCompetence(c);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+        } <LBRACE> planFirstHalf(plan)
+|
+	ad=adapt()
+		{
+			try {
+                plan.addAdopt(ad);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+		}  <LBRACE> planFirstHalf(plan)
+| 
+	driveCollection(plan.getDriveCollection()) planSecondHalf(plan)
+}
+
+/**
+ * ( "(" <competence> | <action-pattern> )* 
+ *  Part of plan() rule
+ */ 
+void planSecondHalf(PoshPlan plan):
+{
+}
+{
+	<LBRACE> planSecondHalfElements(plan)
+|
+	<RBRACE>			
+}
+
+/**
+ * ( <competence> | <action-pattern> ) planSecondHalf(plan)
+ */ 
+void planSecondHalfElements(PoshPlan plan):
+{
+	ActionPattern ap;
+	Competence c;
+	Adopt ad;
+}
+{
+	ap=actionPattern() 
+        {
+            try {
+                plan.addActionPattern(ap);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+        } planSecondHalf(plan)
+| 
+	c=competence() 
+        {
+            try {
+                plan.addCompetence(c);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+        } planSecondHalf(plan)
+| 
+	ad=adapt() 
+        {
+            try {
+                plan.addAdopt(ad);
+            } catch (ParseException ex) {
+                ex.currentToken = token;
+                throw ex;
+            }
+        } planSecondHalf(plan)
+}
+
+/**
+ * docstring ::= DOCUMENTATION COMMENT COMMENT COMMENT ")" 
+ */
+void docString(PoshPlan plan) :
+{
+    Token name, author, info;
+}
+{
+    <DOCUMENTATION> 
+    name=<COMMENT> { plan.setName(unescape(name.toString())); } 
+    author=<COMMENT> { plan.setAuthor(unescape(author.toString())); } 
+    info=<COMMENT> { plan.setInfo(unescape(info.toString())); } 
+    ")"
+}
+
+/**
+ * Take passed drive collection and put the data (name, drives) into it.
+ * <pre>
+ * driveCollection() :: "DC" <name> [ <goal> ] "(" "drives" ( "(" <drive-element>+ ")" )+ ")" ")"
+ * </pre>
+ * XXX: It has extra braces around <drive-element>, remove them
+ */
+void driveCollection(DriveCollection dc):
+{
+    Token name;
+    DriveElement drive;
+    FormalParameters formalParameters = new FormalParameters();
+}
+{
+    <DC> name=<NAME> { dc.setName(name.toString()); }
+    driveCollectionGoal(dc, formalParameters)  
+    ( 
+        "(" ( drive=driveElement(formalParameters) { dc.addDrive(drive); } )+ ")"
+    )+ 
+    ")" /* ending brace for the brace opened before "drives" token */ 
+    ")" /* ending brace of DC */
+}
+
+/**
+ * Process goal of DC (if exists).
+ * ( NIL | "(" <goal> | ) "(" <DRIVES>
+ * Part of driveCollection() rule.
+ */
+void driveCollectionGoal(DriveCollection dc, FormalParameters formalParameters):
+{
+    List<Sense> goalSenses;
+}
+{
+    "("
+    (
+        goalSenses=goal(formalParameters) {dc.getGoal().addAll(goalSenses);} "(" <DRIVES>
+    |
+        <DRIVES>
+    )
+}
+
+/**
+ * Process goal sense and return them.
+ * goal ::= GOAL <senses> ")"
+ */
+List<Sense> goal(FormalParameters formalParameters):
+{
+    List<Sense> senses;
+}
+{
+    <GOAL> senses=senses(formalParameters) ")"
+    {return senses;}
+}
+
+
+/**
+ * Create a drive and return it.
+ * <pre>
+ * drive-element ::= "(" NAME ( NIL | "(" <trigger> | ) NAME ( NIL | "(" <freq> | ) <opt-comment> ")"
+ * </pre>
+ */
+DriveElement driveElement(FormalParameters formalParameters) :
+{
+    Token name;
+    Packet<Arguments, Freq> packet;
+    Token actionName;
+    List<Sense> triggerSenses;
+    String comment;
+}
+{
+	"(" name=<NAME>
+        triggerSenses=driveElementTrigger(formalParameters) 
+        actionName=<NAME> 
+        packet=driveElementActionFreq(formalParameters)
+        comment=optComment()
+        ")"
+	{
+            return LapElementsFactory.createDriveElement(name.toString(), triggerSenses, new PrimitiveCall(actionName.toString(), packet.first), packet.second, comment);
+	}
+}
+
+/**
+ * Nonterminal for possible arguments of the action call of the drive action and 
+ * the frequency.
+ * <code>
+ * driveElementActionFreq:: ( <nil> | "(" ( <freq> | <args> <freq> ) | )
+ * </code>
+ * I should probably use lookahead of 2 or more, but I really need this fast 
+ * for continuous syntax highlighting.  
+ */ 
+Packet<Arguments, Freq> driveElementActionFreq(FormalParameters formalParameters):
+{
+    Arguments arguments = new Arguments();
+    Freq freq = Freq.INFINITE; 
+}
+{
+    <NIL> 
+        { 
+            return new Packet<Arguments, Freq>(arguments, freq);
+        }
+    |
+    "(" 
+        ( 
+            freq=freq()
+                { 
+                    return new Packet<Arguments, Freq>(arguments, freq);
+                } 
+            | 
+            arguments=callParametersList(formalParameters) freq=driveElementFreq()
+                {
+                    return new Packet<Arguments, Freq>(arguments, freq);
+                } 
+        ) 
+    |
+        { 
+            return new Packet<Arguments, Freq>(arguments, freq);
+        }
+}
+
+/**
+ * Read trigger (list of senses) and return it.
+ * <p/>
+ * <code>( NIL | "(" <trigger> | ) </code>
+ * Part of driveElement rule
+ */
+List<Sense> driveElementTrigger(FormalParameters formalParameters):
+{
+    List<Sense> senses;
+}
+{
+    <NIL>
+    { return Collections.<Sense>emptyList(); }
+|
+    "(" senses=trigger(formalParameters)
+    { return senses; }
+|
+    { return Collections.<Sense>emptyList(); }
+}
+
+/**
+ * Get specified frequency. If no frequency specified, return {@link Freq#INFINITE}.
+ * ( NIL | "(" <freq> | )
+ * Part of driveElementRule
+ */
+Freq driveElementFreq():
+{
+    Freq _freq;
+}
+{
+    <NIL> 
+    { return Freq.INFINITE;}
+|
+    "(" _freq=freq()
+    {return _freq;}
+|
+    {return Freq.INFINITE;}
+}
+
+/**
+ * competence ::= C NAME ( NIL | "(" <time> | ) ( NIL | "(" <goal> | ) "(" ELEMENTS <competence-priorities> ")" <opt-comment> ")" 
+ */
+Competence competence() :
+{
+	Token _name;
+	FormalParameters params = new FormalParameters();
+	List<CompetenceElement> competenceElements;
+	String _comment="";
+}
+{
+	<COMPETENCE> _name=<NAME> [ params=parameters() ] "(" <ELEMENTS> competenceElements=competencePriorities(params) ")" _comment=optComment() ")"
+	{
+		return new Competence(_name.toString(), params, competenceElements);
+	}
+}
+
+/**
+ * Declare parameters in C or AP.
+ * parameters:: "vars" "(" varDeclaration() ( "," varDeclaration() )* ")"
+ */ 
+FormalParameters parameters():
+{
+    FormalParameters.Parameter param = null;
+    FormalParameters params = new FormalParameters();
+    
+}
+{
+    "vars" "(" param=varDeclaration() 
+        { params.add(param); } 
+    ( "," param=varDeclaration() 
+        { try {
+            params.add(param);
+          } catch (IllegalArgumentException ex) {
+            ParseException parseException = new ParseException(ex.getMessage());
+            parseException.currentToken = token;
+            throw parseException;
+          }
+        }  
+    )* ")" 
+        {return params;}
+}
+
+/**
+ * varDeclare:: <VARIABLE> "=" value()
+ */ 
+FormalParameters.Parameter varDeclaration():
+{
+    Token variable = null;
+    Object defaultValue = null;
+}
+{
+    variable=<VARIABLE> "=" defaultValue=value() { return new FormalParameters.Parameter(variable.toString(), defaultValue); }
+} 
+
+/**
+ * ( NIL | "(" <time> | ) ( NIL | "(" <goal> | ) "(" ELEMENTS
+ * Part of competence() rule, Really ugly, but it has to check 8 combinations.
+ */
+/*
+TimeGoal competenceTimeGoal(FormalParameters formalParameters):
+{
+	TimeGoal tg = new TimeGoal();
+}
+{
+    <NIL> tg.goal=competenceGoal(formalParameters) { return tg; }
+|
+    "(" ( 
+			 		tg.time=time()   tg.goal=competenceGoal(formalParameters) { return tg;} 
+			 | 
+					<ELEMENTS> { return tg;}
+		   | 
+			    tg.goal=goal(formalParameters) "(" <ELEMENTS> { return tg;}
+			 	 )
+}*/
+
+/**
+ * ( NIL | "(" <goal> | ) "(" ELEMENTS
+ * Part of competence() rule
+ */
+List<Sense> competenceGoal(FormalParameters formalParameters):
+{
+    List<Sense> goalSenses;
+}
+{
+    <NIL> "(" <ELEMENTS> {return Collections.<Sense>emptyList();}
+|
+    "(" ( goalSenses=goal(formalParameters) | <ELEMENTS> {return Collections.<Sense>emptyList();} ) "(" <ELEMENTS> {return goalSenses;}
+}
+
+
+/**
+ * competence-priorities ::= <competence-elements>+
+ * competence-elements ::= "(" <competence-element>+ ")"
+ *
+ * => competence-priorities ::= ( "(" <competence-element>+ ")" )+.
+ */
+List<CompetenceElement> competencePriorities(FormalParameters formalParameters):
+{
+    CompetenceElement ce;
+    List<CompetenceElement> result = new LinkedList<CompetenceElement>();
+}
+{
+    (
+        "(" 
+            (ce=competenceElement(formalParameters)
+                {
+                    result.add(ce);
+                }
+            )+
+        ")"
+    )+
+    { 
+        return result;
+    }
+}
+
+/**
+ * competence-element ::= "(" NAME [ "(" <trigger> ] NAME [ INTNUM ] <opt-comment> ")"
+ */
+CompetenceElement competenceElement(FormalParameters formalParameters) :
+{
+	CompetenceElement _element;
+	Token name= null;
+        int retries;
+	PrimitiveCall actionCall = null;
+	List<Sense> triggerSenses = Collections.<Sense>emptyList();
+	String comment;
+}
+{
+    "(" name=<NAME> [ "(" triggerSenses=trigger(formalParameters) ] actionCall=senseCall(formalParameters) retries=optRetries() comment=optComment() ")"
+    {
+        return new CompetenceElement(name.toString(), triggerSenses, actionCall, retries, comment);
+    }
+}
+
+/**
+ * Optional number of retries. If missing, return {@link CompetenceElement#INFINITE_RETRIES}.
+ */
+int optRetries():
+{
+    Token retries;
+}
+{
+    retries=<NUMINT> { return Integer.parseInt(retries.toString());}
+    |
+    {return CompetenceElement.INFINITE_RETRIES;}
+}
+
+
+/**
+ * Optional comment, if no comment, return blank string.
+ * opt-comment ::= COMMENT | 
+ * @return Comment or if comment is missing, blank string.
+ */
+String optComment() :
+{
+	Token _comment;
+}
+{
+	_comment=<COMMENT>
+	{
+		return unescape(_comment.toString());
+	}
+|
+    {return "";}
+}
+
+/**
+ * action-pattern ::= AP NAME ( NIL | "(" <time> | ) "(" <action-pattern-elements> <opt-comment> ")"  
+ */
+ActionPattern actionPattern() :
+{
+    ActionPattern ap;
+    Token name;
+    FormalParameters params = new FormalParameters();
+    String comment;
+}
+{
+    <AP> name=<NAME> [ params=parameters() ]
+    {
+        ap = LapElementsFactory.createActionPattern(name.toString(), params);
+    }
+    "(" actionPatternElements(ap, params) comment=optComment() {ap.setComment(comment);} ")"
+    {return ap;}
+}
+
+/**
+ * adapt ::= AD NAME [ <parameters> ] "(" "(" <goal> "(" <actionCall> ")"  
+ */
+Adopt adapt() :
+{
+    Token name;
+    FormalParameters params = new FormalParameters();
+    List<Sense> exitCondition = Collections.<Sense>emptyList();
+    PrimitiveCall actionCall = null;
+}
+{
+	<AD> name=<NAME> [ params=parameters() ] "(" "(" exitCondition=goal(params) "(" actionCall=senseCall(params) ")" ")" ")"
+    {
+        return new Adopt(name.toString(), params, exitCondition, actionCall);
+    }
+}
+
+/**
+ * process actions of the AP and add them into the passed ap.
+ * action-pattern-elements ::= ( <full-sense> | NAME )+ ")"
+ * FIXME: full-sense is not implemented here, because I have no idea what to do with it.
+ *        I have't even seen it used anywhere so it is doable for now.
+ */
+void actionPatternElements(ActionPattern ap, FormalParameters formalParameters):
+{
+    List<TriggeredAction> _actList = new LinkedList<TriggeredAction>();
+    PrimitiveCall actionCall;
+}
+{
+    ( actionCall=senseCall(formalParameters)
+        {
+            ap.addAction(LapElementsFactory.createAction(actionCall));
+        }
+    )+
+    ")"
+}
+
+/**
+ * time ::= <time-unit> <numfloat> ")" 
+ */
+SolTime time() :
+{
+     SolTime.TimeUnits _units;
+	Token _ammount;
+}
+{
+	_units=timeUnit() (_ammount=<NUMFLOAT> | _ammount=<NUMINT>) ")"
+	{
+		return new SolTime( _units, _ammount.toString() );
+	}
+}
+
+/**
+ * time-unit ::= HOURS | MINUTES | SECONDS | NONE
+ */
+SolTime.TimeUnits timeUnit():
+{}
+{
+    <HOURS>   {return SolTime.TimeUnits.HOURS;}
+|
+    <MINUTES> {return SolTime.TimeUnits.MINUTES;}
+|
+    <SECONDS> {return SolTime.TimeUnits.SECONDS;}
+|   
+    <NONE>    {return SolTime.TimeUnits.NONE;}
+}
+
+
+
+
+/**
+ * freq ::= <freq-unit> <numfloat> ")"
+ */
+Freq freq() :
+{
+    Freq.FreqUnits _units;
+	Token _count;
+}
+{
+	_units=freqUnit() (_count=<NUMFLOAT> | _count=<NUMINT> ) ")"
+	{
+		return new Freq(Double.parseDouble(_count.toString()), _units);
+	}
+}
+
+/**
+ *  freq-unit ::= HOURS | MINUTES | SECONDS | HZ | PM | NONE
+ */
+Freq.FreqUnits freqUnit():
+{}
+{
+    <HOURS> { return Freq.FreqUnits.HOURS;}
+|
+    <MINUTES> { return Freq.FreqUnits.MINUTES;}
+|
+    <SECONDS> { return Freq.FreqUnits.SECONDS;}
+|
+    <HZ> { return Freq.FreqUnits.HZ;}
+|
+    <PM> { return Freq.FreqUnits.PM;}
+|
+    <NONE> { return Freq.FreqUnits.NONE;}
+}
+
+
+/**
+ * Get list of senses of a trigger.
+ * trigger ::= <TRIGGER> <senses> ")" 
+ */
+List<Sense> trigger(FormalParameters formalParameters) :
+{
+	List<Sense> triggerSenses;
+}
+{
+	<TRIGGER> triggerSenses=senses(formalParameters) ")"
+	{ return triggerSenses; }
+}
+
+
+
+/**
+ * Get senses (if there are any) and return them.
+ * senses ::= ( NIL | "(" ( NAME | <full-sense> )+ ")" )
+ */
+List<Sense> senses(FormalParameters formalParameters):
+{
+    List<Sense> senses;
+}
+{
+    <NIL>
+    {return Collections.<Sense>emptyList();}
+|
+    "(" senses=sensesList(formalParameters) ")"
+    {return senses;}
+}
+
+/**
+ * ( NAME | <full-sense> )+ 
+ * Part of sense() rule.
+ */
+List<Sense> sensesList(FormalParameters formalParameters):
+{
+    Sense sense;
+    List<Sense> sensesList = new LinkedList<Sense>();
+}
+{
+    ( sense=sensesListElement(formalParameters)
+        { sensesList.add(sense);}
+    )+
+    { return sensesList;}
+}
+
+/**
+ * NAME | <full-sense>
+ * Part of sensesList() rule
+ * XXX: I am using <NAME> in first case, so it is impossible to have (sense1(sense2)) vs (sense1(simple_string))
+ *      because the calling vars are not compulsory, yet   
+ */
+Sense sensesListElement(FormalParameters formalParameters):
+{
+    Token senseName;
+    Sense _sense;
+}
+{
+    senseName=<NAME>
+    { return new Sense(senseName.toString());}
+|
+    _sense=fullSense(formalParameters)
+    { return _sense;}
+}
+
+/**
+ * full-sense ::= "(" NAME [<value> [<predicate>]] ")"
+ */
+Sense fullSense(FormalParameters formalParameters):
+{
+    SenseComponents _senseComp = new SenseComponents();
+    PrimitiveCall senseCall;
+}
+{
+    "(" senseCall=senseCall(formalParameters) senseValue(_senseComp)
+    {
+        // didn't assign
+        if (_senseComp.value == null) {
+            return new Sense(senseCall);
+        } else {
+            return new Sense( senseCall, _senseComp.value, _senseComp.predicate == null
+                ? cz.cuni.amis.pogamut.sposh.elements.Sense.Predicate.DEFAULT
+                : _senseComp.predicate);
+        }
+    }
+}
+
+/**
+ * SenseCall
+ * sense:: <NAME> [ "(" callParametersList() ]
+ */ 
+PrimitiveCall senseCall(FormalParameters formalParameters):
+{
+    Arguments arguments = new Arguments();
+    Token name;
+}
+{
+    name=<NAME> [ "(" arguments=callParametersList(formalParameters) ]
+        {
+            return new PrimitiveCall(name.toString(), arguments);
+        }
+}
+
+/**
+ * callParametersList:: callParameter() ( "," callParameter() )* ")" 
+ */ 
+Arguments callParametersList(FormalParameters formalParameters):
+{
+    int index=0;
+    Arguments arguments = new Arguments();
+    Packet<Arguments.Argument, Boolean> packet = null;
+    boolean named = false;
+}
+{
+    packet=callParameter(index, named) 
+        {
+            named = packet.second;
+            try {
+                arguments.addFormal(packet.first, formalParameters);
+                ++index;
+            } catch (IllegalArgumentException ex) {
+                ParseException parseEx = new ParseException(ex.getMessage());
+                parseEx.currentToken = token;
+                throw parseEx;
+            }
+        } 
+    ( "," packet=callParameter(index, named) 
+        {
+            named = packet.second;
+            try {
+                arguments.addFormal(packet.first, formalParameters);
+                ++index;
+            } catch (IllegalArgumentException ex) {
+                ParseException parseEx = new ParseException(ex.getMessage());
+                parseEx.currentToken = token;
+                throw parseEx;
+            }
+        }
+    )* ")" {
+        return arguments;
+    }
+}
+
+
+/**
+ * Parameter used when calling C/AP/sense/action
+ * callParameter :: <VARIABLE> [ "=" ( <VARIABLE> | value() ) ]
+ * @param named was at least one named call parameter specified in the list before this one?     
+ */ 
+Packet<Arguments.Argument, Boolean> callParameter(int index, boolean named):
+{
+    Token variable = null;
+    Object value = null;
+    Token valueVariable = null;
+}  
+{
+    value=value()
+        {
+            if (named) {
+                // sonar is complaining about \" transformed into unicode \u005c 
+                char doubleQuote = '"';
+                ParseException ex = new ParseException("Specified unnamed parameter " + doubleQuote + index + doubleQuote + " after at least one named parameter.");
+                ex.currentToken = token;
+                throw ex;
+            }
+            return new Packet<Arguments.Argument, Boolean>(new Arguments.ValueArgument(index, value), false);
+        }
+|
+    variable=<VARIABLE> [ "=" ( 
+        valueVariable=<VARIABLE> 
+            {
+                return new Packet<Arguments.Argument, Boolean>(
+                    new Arguments.VariableArgument(variable.toString(), valueVariable.toString()),
+                    true);
+            }
+        | 
+        value=value()
+            {
+                return new Packet<Arguments.Argument, Boolean>(new Arguments.ValueArgument(variable.toString(), value), true);
+            } 
+    ) ] 
+        {
+            if (named) {
+                // sonar is complaining about \" transformed into unicode \u005c 
+                char doubleQuote = '"';
+                ParseException ex = new ParseException("Specified unnamed parameter " + doubleQuote + index + doubleQuote + " after at least one named parameter.");
+                ex.currentToken = token;
+                throw ex;
+            }
+            return new Packet<Arguments.Argument, Boolean>(new Arguments.VariableArgument(index, variable.toString()), false);
+        }
+}
+
+
+/**
+ * value ::= NUMINT | NUMFLOAT | NAME | ENUM_VALUE | NIL
+ * Part of full-sense parsing.
+ */
+void senseValue(SenseComponents _senseComp):
+{
+    Object _value;
+}
+{
+    ")"
+|
+    _value=value() sensePredicate(_senseComp)
+    {
+        _senseComp.value = _value;
+    }
+}
+
+/**
+ * predicate ::= PREDICATE
+ */
+void sensePredicate(SenseComponents _senseComp):
+{
+    Token _predicateToken;
+}
+{
+    ")"
+|
+    _predicateToken=<PREDICATE> ")"
+    {
+        _senseComp.predicate = Sense.Predicate.getPredicate(_predicateToken.toString());
+    }
+}
+
+Object value():
+{
+    Token _value;
+}
+{
+    _value=<NUMINT>
+    {
+        return Integer.parseInt(_value.toString());
+    }
+|
+    _value=<NUMFLOAT>
+    {
+        return Double.parseDouble(_value.toString());
+    }
+|   _value=<TRUE>
+    {
+        return Boolean.TRUE;
+    }
+|   _value=<FALSE>
+    {
+        return Boolean.FALSE;
+    }
+|
+    _value=<ENUM_VALUE>
+    {
+        return new EnumValue(_value.toString().substring(1));
+    }
+|
+    _value=<NIL>
+    {
+        return null;
+    }
+|
+    _value=<COMMENT>
+    {
+        return unescape(_value.toString());
+    }        
+}
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PLI" name="PlayerInput" type="Event">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Aynchronous message. When the player has our bot selected by mouse cursor, he can provide the bot with key input (keys 0 - 9 represented by int 0-9 and key T represented by 10). If the player has some dialog on the HUD, Id of the dialog will be sent (if any).
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Id of the player that sent the input.
+		</documentation>
+   </property>
+   <property name="DialogId" type="String" category="local">
+      <documentation>
+			An Id of the dialog (if set any) that the player has visible on the HUD. This attribute won't be sent at all if DialogId is "" or if no dialog on player HUD.
+		</documentation>
+   </property>
+   <property name="Key" type="int" category="local">
+      <documentation>
+			Which key was pressed. Supported keys: 0 - 9 represented by int 0-9 and key T represented by 10/
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

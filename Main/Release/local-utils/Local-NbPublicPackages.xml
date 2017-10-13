@@ -1,0 +1,50 @@
+<PogamutReleaseConfig baseDir="../..">
+	<step id="NetBeans Modules Public Packages Refresh" failStop="true">
+	  <netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/PogamutNbLibs/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis</packagePrefix>
+      <packagePrefix>math</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Utils/AFSM/src/main/java" />
+      <include dir="Utils/AmisUtils/src/main/java" />
+      <include dir="Utils/Introspection/src/main/java" />
+      <include dir="Utils/JavaGeom/src/main/java" />
+      <include dir="Main/PogamutBase/src/main/java" />
+      <include dir="Main/PogamutUnreal/src/main/java" />
+      <include dir="Main/PogamutUDK/src/main/java" />
+      <include dir="Main/PogamutUT2004/src/main/java" />
+      <include dir="Addons/SPOSH/SPOSHCore/src/main/java" />
+      <include dir="Addons/SPOSH/SPOSHUT2004/src/main/java" />
+		</netbeansPublicPackages>
+		<netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/PogamutNbBase/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis.nb</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Main/PogamutNetbeansSuite/PogamutNbBase/src/main/java" />
+		</netbeansPublicPackages>
+		<netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/PogamutNbUDK/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis.nb</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Main/PogamutNetbeansSuite/PogamutNbUDK/src/main/java" />
+		</netbeansPublicPackages>
+		<netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/PogamutNbUnreal/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis.nb</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Main/PogamutNetbeansSuite/PogamutNbUnreal/src/main/java" />
+		</netbeansPublicPackages>
+		<netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/PogamutNbUT2004/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis.nb</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Main/PogamutNetbeansSuite/PogamutNbUT2004/src/main/java" />
+		</netbeansPublicPackages>
+		<netbeansPublicPackages>
+      <targetPom>Main/PogamutNetbeansSuite/POSHSupport/pom.xml</targetPom>
+      <packagePrefix>cz.cuni.amis.nb</packagePrefix>
+      <excludeDir>.svn</excludeDir>
+      <include dir="Main/PogamutNetbeansSuite/POSHSupport/src/main/java" />
+		</netbeansPublicPackages>
+	</step>
+</PogamutReleaseConfig>

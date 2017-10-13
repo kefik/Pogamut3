@@ -1,0 +1,8 @@
+(
+    (RDC PoshBot (goal ((fail)))
+	(drives
+            ((de primitive(1.0, $variable=12.5, $variable='numerousValues)))
+        )
+    )
+)
+

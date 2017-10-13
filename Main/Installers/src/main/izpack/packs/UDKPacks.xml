@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<installation version="1.0">
+    <packs>
+        <pack id="udkpack" name="Unreal Development Kit stuff" required="no" >
+            <description>Files specific to Unreal Development Kit.</description>
+        </pack>
+        
+        <pack name="UDK Shortcuts" required="no">
+            <description>Useful shortcuts for Pogamut UDK.</description>
+            <fileset dir="shortcuts/UDK" targetdir="$INSTALL_PATH">
+                <include name="*.*" />
+            </fileset>
+        </pack>
+
+
+        <pack name="UDK with GameBots" id="udkGBpack" parent="udkpack" required="no">
+            <description>Complete installation of Unreal Development Kit 2012.02 (UDK) with Gamebots interface included.</description>
+
+            <file src="gb-udk/UDKInstall-GameBotsUDK.exe" targetdir="$INSTALL_PATH/" os="windows"/>
+
+            <executable targetfile="$INSTALL_PATH/UDKInstall-GameBotsUDK.exe" stage="postinstall" failure="ask">
+                <os family="windows"/>
+            </executable>
+        </pack>
+        
+        <pack id="udkarchetypespack" name="UDK Example Project Archetypes" required="no">
+            <description>Installs Maven archetypes for projects using UDK. This makes it easy to start creating your own Maven based projects.</description>
+            
+            <fileset dir="archetypes/udk/" targetdir="$INSTALL_PATH/archetypes/udk"/>
+            <parsable targetfile="$INSTALL_PATH/archetypes/udk/install-all.bat" type="plain" os="win"/>
+        </pack>
+
+    </packs>
+</installation>

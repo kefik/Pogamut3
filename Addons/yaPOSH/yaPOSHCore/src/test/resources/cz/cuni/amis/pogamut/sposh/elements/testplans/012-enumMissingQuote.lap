@@ -1,0 +1,7 @@
+(
+    (DC TestPlan
+        (drives 
+            ((stay test($enumVar=cz.cuni.TestEnum.VALUE)))
+        )
+    )
+)

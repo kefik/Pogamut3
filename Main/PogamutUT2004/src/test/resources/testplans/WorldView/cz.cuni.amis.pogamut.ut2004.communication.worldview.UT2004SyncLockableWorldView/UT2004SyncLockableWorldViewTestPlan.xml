@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <InputEvents>
+    <ut2004messages.BeginMessage>
+      <Time>0.0</Time>
+    </ut2004messages.BeginMessage>
+    <ut2004messages.EndMessage>
+      <Time>0.0</Time>
+    </ut2004messages.EndMessage>
+    <ut2004messages.ItemMessage>
+      <Id unrealId="Wirt&apos;s Leg"/>
+      <Visible>true</Visible>
+      <Reachable>false</Reachable>
+      <Amount>0</Amount>
+      <Dropped>false</Dropped>
+    </ut2004messages.ItemMessage>
+    <ut2004messages.WallCollision/>
+    <ut2004messages.ItemMessage>
+      <Id unrealId="Morte"/>
+      <Visible>true</Visible>
+      <Reachable>false</Reachable>
+      <Amount>0</Amount>
+      <Dropped>false</Dropped>
+    </ut2004messages.ItemMessage>
+  </InputEvents>
+  <ExpectedEvents>
+    <ut2004messages.BeginMessage reference="../../InputEvents/ut2004messages.BeginMessage"/>
+    <ut2004messages.EndMessage reference="../../InputEvents/ut2004messages.EndMessage"/>
+    <ut2004messages.WallCollision reference="../../InputEvents/ut2004messages.WallCollision"/>
+    <base3dmessages.WorldObjectAppearedEvent>
+      <object class="ut2004messages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage"/>
+    </base3dmessages.WorldObjectAppearedEvent>
+    <basemessages.WorldObjectUpdatedEvent>
+      <object class="ut2004messages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage"/>
+    </basemessages.WorldObjectUpdatedEvent>
+    <base3dmessages.WorldObjectDisappearedEvent>
+      <object class="ut2004messages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage"/>
+    </base3dmessages.WorldObjectDisappearedEvent>
+    <base3dmessages.WorldObjectAppearedEvent>
+      <object class="ut2004messages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage[2]"/>
+    </base3dmessages.WorldObjectAppearedEvent>
+  </ExpectedEvents>
+  <EventWrappers>
+    <EventWrapper level="A">
+      <ExpectedEvent reference="../../../InputEvents/ut2004messages.BeginMessage"/>
+    </EventWrapper>
+    <EventWrapper level="A">
+      <ExpectedEvent reference="../../../InputEvents/ut2004messages.EndMessage"/>
+    </EventWrapper>
+    <EventWrapper level="A">
+      <ExpectedEvent reference="../../../InputEvents/ut2004messages.WallCollision"/>
+    </EventWrapper>
+    <ObjectInstanceEventWrapper level="E">
+      <ExpectedEvent reference="../../../ExpectedEvents/base3dmessages.WorldObjectAppearedEvent"/>
+      <Id>Wirt&apos;s Leg</Id>
+    </ObjectInstanceEventWrapper>
+    <ObjectInstanceEventWrapper level="E">
+      <ExpectedEvent reference="../../../ExpectedEvents/basemessages.WorldObjectUpdatedEvent"/>
+      <Id>Wirt&apos;s Leg</Id>
+    </ObjectInstanceEventWrapper>
+    <ObjectInstanceEventWrapper level="E">
+      <ExpectedEvent reference="../../../ExpectedEvents/base3dmessages.WorldObjectDisappearedEvent"/>
+      <Id>Wirt&apos;s Leg</Id>
+    </ObjectInstanceEventWrapper>
+    <ObjectClassEventWrapper level="C">
+      <ExpectedEvent reference="../../../ExpectedEvents/base3dmessages.WorldObjectAppearedEvent[2]"/>
+      <Class>cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ItemMessage</Class>
+    </ObjectClassEventWrapper>
+  </EventWrappers>
+  <InputEventsPlan>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BeginMessage" reference="../../../InputEvents/ut2004messages.BeginMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMessage" reference="../../../InputEvents/ut2004messages.EndMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BeginMessage" reference="../../../InputEvents/ut2004messages.BeginMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMessage" reference="../../../InputEvents/ut2004messages.EndMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BeginMessage" reference="../../../InputEvents/ut2004messages.BeginMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ItemMessage" reference="../../../InputEvents/ut2004messages.ItemMessage"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="3">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.WallCollision" reference="../../../InputEvents/ut2004messages.WallCollision"/>
+    </InputEventWrapper>
+    <InputEventWrapper raiseTimes="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMessage" reference="../../../InputEvents/ut2004messages.EndMessage"/>
+    </InputEventWrapper>
+  </InputEventsPlan>
+  <ExpectedEventsPlan>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectClassEventWrapper" reference="../../../EventWrappers/ObjectClassEventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper[2]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper[2]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper[2]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper[3]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper[2]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectClassEventWrapper" reference="../../../EventWrappers/ObjectClassEventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.ObjectInstanceEventWrapper" reference="../../../EventWrappers/ObjectInstanceEventWrapper[2]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="3">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper[3]"/>
+    </EventWrapperAndCount>
+    <EventWrapperAndCount count="1">
+      <Wrapper class="cz.cuni.amis.pogamut.ut2004.communication.worldview.testplan.wrapper.EventWrapper" reference="../../../EventWrappers/EventWrapper[2]"/>
+    </EventWrapperAndCount>
+  </ExpectedEventsPlan>
+</TestPlan>

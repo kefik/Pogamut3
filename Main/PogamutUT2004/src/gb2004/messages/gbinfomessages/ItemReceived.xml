@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="IRC" name="ItemReceived" type="Event">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Other bot gave us an item. We receive normal IPK message and this message with
+		information about the giver and the item.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+<property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the item. This Id represents just item on the
+			map, not in our inventory.
+		</documentation>
+   </property>
+   <property name="InventoryId" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of the item in our inventory - use this Id to do changeweapons etc.
+			Unreal has different Ids for items in map and actual item in bot's inventory.
+			If the item does not go into our inventory nothing will be here (null).
+		</documentation>
+   </property>
+   <property name="GiverId" type="UnrealId" category="local">
+      <documentation>
+			Unique Id of the bot that gave us this item.
+		</documentation>
+   </property>   
+   <property name="Location" type="Location" category="local">
+      <documentation>Location of the item.</documentation>
+   </property>
+   <property name="Amount" type="int" category="local">
+      <documentation>
+			If this item is some ammo or health pack, here we can find
+			out how much of the attribute this item will add. Works also for weapons - will hold primary ammo amount.
+		</documentation>
+   </property>
+   <property name="Type" type="String" category="local">
+      <documentation>
+			Class of the item.
+		</documentation>
+   </property>   
+   <property name="Dropped" type="Boolean" category="local">
+      <documentation>
+			Whether it is a regular item or dropped by player or bot.
+		</documentation>   
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

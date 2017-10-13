@@ -1,0 +1,8 @@
+(
+    (AP innerAP (action1 action2))
+    (AP outerAP (action0 innerAP action3))
+    (RDC testPlan
+	(drives ((dummy outerAP)))
+    )
+)
+

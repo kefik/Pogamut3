@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DLGITEM" extends="CommandMessage" name="DialogItem" type="Info">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Specifies properties of a new dialog component.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Player" type="String">
+      <documentation>Name of the player on who's HUD should the dialog show.</documentation>
+   </property>
+   <property name="DialogId" type="String" optional="true">
+      <documentation>Id of dialog, which should the message alter. If empty, actually constructed dialog is used.</documentation>
+   </property>
+   <property name="Effect" type="String" optional="true" default="&#34;ADD&#34;">
+      <documentation>What should this message do. Available are: ADD, EDIT.</documentation>
+   </property>
+   <property name="Type" type="String">
+      <documentation>Type of the new component. Available are: PANEL, BUTTON, TEXT, IMAGE, OPTIONLIST, OPTION.</documentation>
+   </property>
+   <property name="Id" type="String">
+      <documentation>Identification of this component. It should be an unique alphanumeric string without spaces.</documentation>
+   </property>
+   <property name="Parent" type="String">
+      <documentation>Id of parent component. If left empty, the parent is dialog itself. Parent must be specified before the child.</documentation>
+   </property>
+   <!-- Following properties depend on the type property --><property name="Size" type="Dimension2D" optional="true">
+      <documentation>Applicable for: PANEL, BUTTON, TEXT, OPTIONLIST, IMAGE. A pair of values in form "Width,Height" where each is in range from 0 to 1 (relative portion of the parent component).</documentation>
+   </property>
+   <property name="Position" type="Point2D" optional="true">
+      <documentation>Applicable for: PANEL, BUTTON, TEXT, OPTIONLIST, IMAGE. A pair of values in form "Left,Top" where each is in range from 0 to 1 (relative portion of the parent component).</documentation>
+   </property>
+   <property name="Background" type="String" optional="true">
+      <documentation>Applicable for: PANEL, BUTTON. Name of texture, which should be used as background.</documentation>
+   </property>
+   <property name="BgColor" type="Color" optional="true">
+      <documentation>Applicable for: PANEL, BUTTON. RGBA color of background.</documentation>
+   </property>
+   <property name="Border" type="Color" optional="true">
+      <documentation>Applicable for: PANEL, BUTTON. Triple of numbers from 0 to 255 separated by commas, specifying the RGB color of border.</documentation>
+   </property>
+   <property name="Text" type="String" optional="true">
+      <documentation>Applicable for: TEXT, BUTTON, OPTION. Text which should be written on the component.</documentation>
+   </property>
+   <property name="TextColor" type="Color" optional="true">
+      <documentation>Applicable for: TEXT, BUTTON, OPTION. Color of text which should be written on the component as RGB triple of numbers from 0 to 255 separated by commas.</documentation>
+   </property>
+   <property name="Action" type="String" optional="true">
+      <documentation>Applicable for: BUTTON, IMAGE. Action which should be performed when the button is pressed. SUBMIT submits data from the dialog using DLGCMD message with Command SUBMIT, RESET resets the dialog and all other values send DLGCMD message with this value as Command - without closing the dialog.</documentation>
+   </property>
+   <property name="Mode" type="String" optional="true">
+      <documentation>Applicable for: OPTIONLIST. Either SINGLE - just one option can be selected at one moment (radio buttons), or MULTI - classic check boxes.</documentation>
+   </property>
+   <property name="Checked" type="String" optional="true">
+      <documentation>Applicable for: OPTION. Name of texture which should be used when the button is checked.</documentation>
+   </property>
+   <property name="NotChecked" type="String" optional="true">
+      <documentation>Applicable for: OPTION. Name of texture which should be used when the button is not checked.</documentation>
+   </property>
+   <property name="Image" type="String" optional="true">
+      <documentation>Applicable for: IMAGE. Name of texture of the image.</documentation>
+   </property>
+   <property name="Origin" type="Point2D" optional="true">
+      <documentation>Applicable for: IMAGE. Left top origin point of the image.</documentation>
+   </property>
+   <property name="Scale" type="Dimension2D" optional="true">
+      <documentation>Applicable for: IMAGE. Left top origin point of the image.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code>
+         <java>
+				        <javaimport import="java.awt.*"/>
+				        <javaimport import="java.awt.geom.*"/>
+			      </java>
+      </code>
+   </extra>
+</commandobject>

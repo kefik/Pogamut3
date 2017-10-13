@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="TURNTO" extends="CommandMessage" name="TurnTo" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Specify a point, rotation value or object to turn towards.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Target" type="UnrealId">
+      <documentation>
+			The unique id of a player/object/nav point/whatever that you
+			want to face. Must be visible.
+		</documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>
+			Absolute rotation you want to spin to. Must be provided as comma
+			delimited ("0,50000,0") and should be in absolute terms and
+			in UT units (2pi = 65535 units). Used only if no target
+			provided. Rotation is parsed: First pitch (up, down), then yaw (left, right), the roll (no effect here, however it is an equivalent of doing a cartwheel).
+		</documentation>
+   </property>
+   <property name="Location" type="Location">
+      <documentation>
+			Location you want to face. Normal rules for location. Only
+			used if no Target or Rotation.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

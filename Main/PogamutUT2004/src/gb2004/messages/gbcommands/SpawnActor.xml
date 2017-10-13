@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SPAWNACTOR" extends="CommandMessage" name="SpawnActor" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Will spawn an actor in the game specified by Type (holds the
+		class of the actor). Be carefull with what you spawn and where
+		you spawn it. Possible use - for some additional inventory
+		spawns.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Location" type="Location">
+      <documentation>
+			Location where the actor will be spawned.
+		</documentation>
+   </property>
+   <property name="Rotation" type="Rotation">
+      <documentation>Initial rotation of the actor.</documentation>
+   </property>
+   <property name="Type" type="String">
+      <documentation>
+			Holds the desired actor class (e.g.
+			xWeapons.FlakCannonPickup).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

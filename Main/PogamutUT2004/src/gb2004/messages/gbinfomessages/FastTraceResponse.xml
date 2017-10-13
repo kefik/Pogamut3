@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="FTR" name="FastTraceResponse" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Response of the FASTTRACE command. Note
+		that trace commands are computationally expensive.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="String" category="local">
+      <documentation>
+			An Id matching the one sent by client. Allows bot to match
+			answer with right query.
+		</documentation>
+   </property>
+   <property name="From" type="Location" category="local">
+      <documentation>
+			Location from which the ray is emitted.
+		</documentation>
+   </property>
+   <property name="To" type="Location" category="local">
+      <documentation>
+			Location to which the ray is sent.
+		</documentation>
+   </property>
+   <property name="Result" type="boolean" category="local">
+      <documentation>
+			True if it hit something, false if not.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

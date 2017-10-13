@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shed overview</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+    <p>Shed is a plugin into NetBeans platform that adds an editor for <code>.lap</code> file. The editor is a MultiView <code>CloneableTopComponent</code> with two <code>MultiViewElement</code>s. The first view is a visual view, where user can see the plan as sort-of tree with palette on the right side that displays and manipulates nodes of the plan. The second view is a text view, it displayes source of the plan with token highlighting and when plan has a syntax error, it displayes error hint red exclamation mark on the line where parsing error was detencetd.</p>
+    
+    <h2>DataObject</h2>
+    <p>In order to add editor of a new type into NetBeans, plugin must create a new <code>DataObject</code>, Shed has <code>PoshDataObject</code> for the lap files. The data object gets <code>FileObject</code> with the plan and its job is to provide cookies according to capability of the <code>PoshDataObject</code>. It basically uses support class to provide cookies - <code>OpenCookie</code>, <code>EditorCookie</code>, <code>SaveCookie</code> and few others. Cookie is basically a capability of <code>DataObject</code>, e.g. <code>SaveCookie</code> has a method <code>save()</code> tha can save the <code>PoshDataObject</code>. In newer versions of NetBeans, cookies are being replaced by <code>Lookup</code>.</p>
+    
+    <p>The plugin also must add resolver for .lap files, so NetBeans can determine when to use the <code>PoshDataObject</code> for lap files, the resolver is specified in  <code>layer.xml</code>, along with templates of plan and few other things.</p>
+    
+    <h2>Model View Presenter</h2>
+    <p>The visual view is displaying the plan using <code>ShedScene</code>, it basically takes <code>ShedWidgetFactory</code>, plugs <code>IPresenterFactory</code>(more precisely <code>ShedPresenterFactory</code>) into it and that creates the scene. The <code>ShedScene</code> is using model-View-Presenter for showing the plan, displayed part of the plan is represented by some sort of <code>Widget</code> (there is a lot of envelopes, but actual rectangle nodes showing info are <code>ShedWidget</code>). The <code>Widget</code> has a <code>IPresenter</code> that has registered all sorts of listeners during  and the presenter is used to update the <code>Widget</code> according to the underlying changes it's notified about (thanks to listeners). <code>Widget</code> is passive element, the <code>IPresenter</code> must listen when changes to the widget should be made and update the widget accordingly. When the <code>Widget</code> shoudl be removed from the scene, its presenter unregisters all its listeners.</p>
+    
+    <p>Example: Trigger &mdash; The trigger has a widget representing the trigger (<code>ShedTriggerEnvelope</code>, subclass of <code>AbstractShedEnvelope</code>) and a presenter <code>TriggerPresenter</code>. The envelope contains widgets representing the senses of trigger. The presenter register itself = it sets presenter of the widget to itself and adds itself as listener for changes to the element of the plan that contains the trigger (trigger is just a structure holding the senses, not a node of the plan). When the node with trigger adds (or delete/move) a new sense, the presenter is notified about new child of node, checks that it is sense and if it is, it creates new widget representing the sense into the envelope to reflect the changes of the underlying structure.</p>
+    
+    <h2>ShedScene and its creation</h2>
+    <p><code>ShedScene</code> is displaying the plan as kind of tree. It has four layers: background (white, nothing in it), widget(all widgets representing the plan), connection (contains arrows between the widgets) and drag and drop (DnD) layer. At the start, scene contains two envelopes: <code>ShedTriggerEnvelope</code> for goal of the DC and <code>ShedDrivesEnvelope</code> for the drives of the plan. Both envelopes are empty, no senses, no drives. Add empty plan to the mix, no goal, no drives, no AP nothing. Now register create goal presenter and associate it with goal envelope of the scene and create DC presenter and associate it with the drives envelope. Envelope and underlying structures are in sync and you can start adding drives and other stuff into the plan, the presenter will make sure that scene reflects the changes of the plan.</p>
+    
+    <p>There is a <code>LapSceneFactory</code> that can create the scene and do the whole initialization.</p>
+    
+    <h2>Content of the plugin</h2>
+    <ul>
+        <li><dfn>Yaposh DataObject</dfn> &mdash; class for loading/saving files from the .lap files into a NetBeans dataobject</li>
+        <li><dfn>MultiView editor with two views</dfn> &mdash; Visual view and Text view.</li>
+        <li><dfn>Token highlighter</dfn> &mdash; Text view of Shed is a descendant of {@link CloneableEditor}, it to detect tokens in the text and display then using different colors.</li>
+        <li><dfn>Yaposh parser</dfn> &mdash; Shed continuously parses the Text view of Shed and displays detected parsing errors using exclamation mark on the right side of editor, it is mostly wrapper for original parser from SPOSH-Core.</li>
+        <li><dfn>Explorer</dfn> &mdash; Shed is attached to the NetBeans and can crawl through classses available to the project. Primitives of the Yaposh plan are classes implementing interface IAction or ISense. Shed has a set of GUI panels called explorers, each type of node in Yaposh plan has its own explorer. The explorer for AP/C will display all patterns/competences and explorers for actions/senses will display list of classes that implement IAction/ISense and are on the project classpath.</li>
+        <li><dfn>Widgets</dfn> &mdash; Different widgets that are displaying the Yaposh tree in the Visual view. Widget has associated presenter responsible for keeping the widget up to date with the data in the Yaposh tree. The Shed is using <code>ShedWidgetFactory</code> and <code>IPresenterFactory</code> for creation of the widgets.</li>
+        <li><dfn>Presenters</dfn> &mdash; Each widget has a presenter that is responsible for listening on nodes of the Yaposh tree and updating the widget. It also provides list of accept actions for drag and drop, list of context menu actions and the edit action of the widget (doubleclick). Presenters are created by the factory, so <code>ShedWidgetFactory</code> can create same Yaposh tree scene with different behaviors.</li>
+        <li><dfn>Inplace editors</dfn> &mdash; nodes of Yaposh plan in visual have properties (e.g. name or parameters) that can be changed. Editors that can change these properties are called inplace editors, because they appear when user double clicks on the node in the scene. Differnt nodes have different editors.</li>
+    </ul>
+    </body>
+</html>

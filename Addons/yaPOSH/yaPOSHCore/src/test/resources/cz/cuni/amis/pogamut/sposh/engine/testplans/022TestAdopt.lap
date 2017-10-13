@@ -1,0 +1,29 @@
+(
+    
+    (DC testPlan
+    	(drives
+            (  (morePrior    (trigger ((sometime))) action0))
+            (  (default      (trigger ((succeed0)))  testC1))
+        )
+    )
+    
+    (C testC1
+        (elements
+            (
+                (ce1 (trigger (fail))         action1)
+                (ce2 (trigger (succeed1)) adoptTestC2)
+            )
+        )
+    )
+
+	(AD adoptTestC2 ( (goal(fail)) (testC2) ) )
+
+    (C testC2 
+        (elements
+            (
+                (ce3 (trigger (succeed2)) action2)
+            )
+        )
+     )
+    
+)

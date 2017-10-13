@@ -1,0 +1,87 @@
+
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="Pogamut"
+                  location="applications"/>
+
+    <shortcut
+        name="Tutorials [offline]"
+        target="$INSTALL_PATH\doc\tutorials\index.html"
+        description="Offline Tutorials for creating bots"
+        programGroup="yes">
+        <createForPack name="Documentation"/>
+    </shortcut>
+
+    <shortcut
+        name="Javadoc [offline]"
+        target="$INSTALL_PATH\doc\javadoc\index.html"
+        description="Offline Javadoc for PogamutUT2004 Java library"
+        programGroup="yes">
+        <createForPack name="Documentation"/>
+    </shortcut>
+
+    <shortcut
+        name="Gamebot documentation [offline]"
+        target="$INSTALL_PATH\doc\gamebots\index.html"
+        description="Offline Gamebots documentation"
+        programGroup="yes">
+        <createForPack name="Documentation"/>
+    </shortcut>
+
+    <shortcut
+        name="Start UE2Runtime Server"
+        target="$INSTALL_PATH\startUE2GamebotsServer.bat"
+        description="Starts server with GameBotsUE2 network interface"
+        programGroup="yes">
+        <createForPack name="GameBotsUE2"/>
+    </shortcut>
+
+    <shortcut
+        name="Start Emohawk Server"
+        target="$INSTALL_PATH\startEmohawkServer.bat"
+        description="Starts Emohawk server on Unreal Runtime 2"
+        programGroup="yes">
+        <createForPack name="Emohawk Pack"/>
+    </shortcut>
+    
+    <shortcut
+        name="Start UE2Runtime Viewer"
+        target="$INSTALL_PATH\startUE2RuntimeLow.bat"
+        description="Starts UE2Runtime that will connect to the running local server"
+        programGroup="yes">
+        <createForPack name="GameBotsUE2"/>
+    </shortcut>
+
+    <shortcut
+        name="Start UT2004 Viewer"
+        target="$INSTALL_PATH\startUT2004low.bat"
+        description="Starts UT2004 that will connect to the running local server"
+        programGroup="yes">
+        <createForPack name="GameBots2004"/>
+    </shortcut>
+
+    <shortcut
+        name="Start UT2004 DM Server"
+        target="$INSTALL_PATH\startGamebotsDMServer.bat"
+        description="Starts Death Match server with GameBots2004 network interface"
+        programGroup="yes">
+        <createForPack name="GameBots2004"/>
+    </shortcut>
+
+    <shortcut
+        name="Start UT2004 CTF Server"
+        target="$INSTALL_PATH\startGamebotsCTFServer.bat"
+        description="Starts Capture the Flag server with GameBots2004 network interface"
+        programGroup="yes">
+        <createForPack name="GameBots2004"/>
+    </shortcut>
+
+    <shortcut
+        name="Pogamut homepage [online]"
+        target="$INSTALL_PATH\PogamutHomePage.url"
+        description="Online homepage of the Pogamut platform"
+        programGroup="yes">
+        <createForPack name="Default"/>
+    </shortcut>
+
+</shortcuts>

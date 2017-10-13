@@ -1,0 +1,270 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cz.cuni.amis</groupId>
+	<artifactId>amis-maven-plugin-pom</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>AmisMavenPluginPom</name>
+	<url>http://maven.apache.org</url>
+
+	<scm>
+		<connection>scm:svn:${svn.project.home}</connection>
+		<developerConnection>scm:svn:${svn.project.home}</developerConnection>
+		<tag>HEAD</tag>
+		<url>${svn.project.home}</url>
+	</scm>
+
+	<organization>
+		<name>AMIS research group, Faculty of Mathematics and Physics, Charles University in Prague, Czech Republic</name>
+		<url>http://amis.mff.cuni.cz</url>
+	</organization>
+
+	<repositories>
+		<repository>
+			<id>amis-artifactory</id>
+			<name>AMIS Artifactory</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>amis-artifactory-plugins-repo</id>
+			<name>AMIS Artifactory (plugins)</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	<properties>
+		<!--
+			This property is used by the parent's POM. SVN repo version is added
+			inside the manifest.mf !
+		-->
+		<svn.project.server.url.base>svn://artemis.ms.mff.cuni.cz/pogamut/branches/maven2</svn.project.server.url.base>
+		<svn.project.home>${svn.project.server.url.base}/Main/AmisPom</svn.project.home>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- MANIFEST PROPERTIES -->
+		<manifest.specification.vendor>AMIS research group</manifest.specification.vendor>
+		<manifest.implementation.vendor>AMIS research group</manifest.implementation.vendor>
+	</properties>
+
+	<issueManagement>
+		<system>Mantis</system>
+		<url>TODO</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://diana.ms.mff.cuni.cz:8080/</url>
+	</ciManagement>
+
+	<distributionManagement>
+		<repository>
+			<id>amis-artifactory-plugins-release-local</id>
+			<name>AMIS Artifactory (local-release-plugin)</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/plugins-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>amis-artifactory-plugins-snapshot-local</id>
+			<name>AMIS Artifactory (local-snapshot-plugin)</name>
+			<url>http://diana.ms.mff.cuni.cz:8081/artifactory/plugins-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.4</source>
+					<target>1.4</target>
+				</configuration>
+				<executions>
+					<execution>
+						<id>compile-tests</id>
+						<phase>process-test-sources</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<source>1.4</source>
+							<target>1.4</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.1</version>
+				<configuration>
+					<argLine>-Xms512m -Xmx1024m</argLine>
+					<includes>
+					 	<include>**/Test*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0-beta-4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+				
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<SCM-Revision>${buildNumber}</SCM-Revision>
+							<Implementation-Version>${project.version}.${buildNumber}</Implementation-Version>
+							<Specification-vendor>${manifest.specification.vendor}</Specification-vendor>
+							<Implementation-vendor>${manifest.implementation.vendor}</Implementation-vendor>
+						</manifestEntries>
+					</archive>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>jar-runtime</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jar-test</id>
+						<phase>package</phase>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>shared/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- Enables test debugging for surefire -->
+			<id>debug</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.7.1</version>
+						<configuration>
+							<forkMode>never</forkMode>
+							<forkedProcessTimeoutInSeconds>0</forkedProcessTimeoutInSeconds>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.0.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.6</targetJdk>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

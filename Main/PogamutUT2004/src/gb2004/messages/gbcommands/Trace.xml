@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="TRACE" extends="CommandMessage" name="Trace" type="Info">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Will send a ray from specified location to specified
+		destination, responds with TRC message. TRACE uses Trace
+		function - slower then FastTrace function, but provides more
+		information about collision.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			Message Id made up by you and echoed in response so you can
+			match up response with query.
+		</documentation>
+   </property>
+   <property name="From" type="Location">
+      <documentation>
+			Origin point of the ray. If you won't support From
+			attribute, current bot location will be taken as From.
+		</documentation>
+   </property>
+   <property name="To" type="Location">
+      <documentation>Target point of the ray.</documentation>
+   </property>
+   <property name="TraceActors" type="boolean">
+      <documentation>
+			When true it means that all actors will be traced – for
+			example players, bots, monsters, items etc. in a game. With
+			TraceActors false we trace just level geometry.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

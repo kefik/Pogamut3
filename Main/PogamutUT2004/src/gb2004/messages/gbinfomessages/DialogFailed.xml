@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="DFAIL" name="DialogFailed" type="Event">
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Aynchronous message. Response to unsuccessfull DIALOG command. Dialog wasn't set for the player on the HUD. Reasons: player has not our bot selected or wrong player Id in DIALOG command.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="String" category="local">
+      <documentation>
+			An Id of the dialog matching the one sent by client. Allows bot to match
+			answer with right query.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

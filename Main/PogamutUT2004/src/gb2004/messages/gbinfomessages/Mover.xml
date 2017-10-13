@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="MOV" name="Mover" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>	
+   <documentation>
+		Synchronous message. Movers can be doors, elevators, or any
+		other chunk of architecture that can move. They generally need
+		to be either run into, or activated by shooting or pressing a
+		button. We are working on ways to provide bots with more of the
+		information they need to deal with movers appropriately.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+   		<classcategory name="base" />
+		<classcategory name="shared" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocomotive">
+		<classcategory name="base" />
+		<classcategory name="shared" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			A unique Id of this mover assigned by the game.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared">
+      <documentation>Location of the mover.</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>If the mover is in the field of view of the bot.</documentation>
+   </property>
+   <property name="DamageTrig" type="boolean" category="static">
+      <documentation>
+			True if the mover needs to be shot to be activated.
+		</documentation>
+   </property>
+   <property name="Type" type="String" category="static">
+      <documentation>String class of the mover.</documentation>
+   </property>
+   <property name="IsMoving" type="boolean" category="static">
+      <documentation>Does the mover move right now?</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+      <documentation>Velocity vector.</documentation>
+   </property>
+   <property name="MoveTime" type="double" category="static">
+      <documentation>How long the mover moves, when it becomes triggered, before it stops.</documentation>
+   </property>
+   <property name="OpenTime" type="double" category="static">
+      <documentation>How long the mover stands still when it reaches its destination position. After
+      this time, the mover returns back to its initial position.</documentation>
+   </property>
+   <property name="BasePos" type="Location" category="static">
+      <documentation>Base position of the mover.</documentation>
+   </property>
+   <property name="BaseRot" type="Location" category="static">
+      <documentation>Base rotation of the mover.</documentation>
+   </property>
+   <property name="DelayTime" type="double" category="static">
+      <documentation>Delay before starting to open (or before lift starts to move).</documentation>
+   </property>
+   <property name="State" type="String" category="shared">
+      <documentation>Name of the state Mover is currently in. Can be used to determine the type of the mover. </documentation>
+   </property>
+   <property name="NavPointMarker" type="UnrealId" category="static">
+      <documentation>Navigation point marking this mover. We can parse this Id to get information about type of the mover. Marker Id contains "lift" string if it is a lift, "door" string if it is a door, etc. </documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

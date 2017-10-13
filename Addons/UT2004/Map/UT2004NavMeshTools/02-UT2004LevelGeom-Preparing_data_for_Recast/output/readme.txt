@@ -1,0 +1,1 @@
+Output for UT2004 maps available at: svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project/Addons/UT2004NavMeshTools/02-UT2004LevelGeom-Preparing_data_for_Recast/output

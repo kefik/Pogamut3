@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CONFGAME" extends="CommandMessage" name="GameConfiguration" type="Configure">
+    <gbpackage name="GameBots2004"/>
+    <gbpackage name="GameBotsUE2"/>
+    <gbpackage name="GBEmohawk"/>
+    <group name="Server"/>
+    <documentation>
+		Configures various attributes of the game.
+    </documentation>
+   <!-- List of all properties of this command. !-->
+    <property name="Restart" type="boolean">
+        <documentation>
+		When set to true, the game state will be restarted (all scores reset to
+                0 and all players and bots will be restarted). This does not affect
+                Unreal native bots! Note that the restart is then announced by GameRestarted message and when finished
+                another GameRestarted message is sent to mark the end.
+        </documentation>
+    </property>
+    <property name="GameMessage" type="String">
+        <documentation>
+		Message that will be displayed in the middle of the HUD.
+        </documentation>
+    </property>
+    <property name="GameMessageTime" type="double">
+        <documentation>
+		Time the displayed message will stay on the HUD.
+        </documentation>
+    </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+    <extra>
+
+    </extra>
+</commandobject>

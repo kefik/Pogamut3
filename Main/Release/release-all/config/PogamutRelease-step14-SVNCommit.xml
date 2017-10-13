@@ -1,0 +1,11 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step14-SVNCommit">
+	<step id="Commit to SVN (version elevation)." failStop="true">
+		<process>
+			<id>Commit ALL</id>
+			<run>$SVN_HOME/bin/svn</run><arg>commit</arg><arg>-m</arg><arg>Version elevation: $POGAMUT_NEW_SNAPSHOT_VERSION</arg>
+			<dir>trunk/project</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>	
+</PogamutReleaseConfig>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="END" name="EndMessage" type="Event">
+	<gbpackage name="GameBots2004" />
+	<gbpackage name="GBScenario" />
+	<gbpackage name="GameBotsAnim" />
+	<gbpackage name="GameBotsUE2" />
+	<gbpackage name="GBEmohawk" />
+	<group name="Bot" />
+	<group name="Observer" />
+	<documentation>
+		Synchronous message. This message signalizes end of
+		synchronous
+		batch.
+	</documentation>
+	<property name="Time" type="double" category="local">
+		<documentation>
+			Time, when the message was sent - intern UT time.
+		</documentation>
+	</property>
+   <property name="VisUpdate" type="boolean" category="local">
+      <documentation>Sent only if new synchronous batch procotol is used (NewSelfBatchProtocol attribute in INIT message). If true it means this sync. batches contains also visiblity information - PLR, INV, PRJ messages... If false, it means that only SELF message is in this synchronous batch.</documentation>
+   </property>	
+	<!--
+		Extra information used by different modules of the Pogamut platform. !
+	-->
+	<extra>
+		<code />
+	</extra>
+</messageobject>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="HRP" name="HearPickup" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message - sent in synchronous batch (events are cached and then exported in the batch due
+		to performance issues). 
+		You hear someone pick up an object from	the ground. If the very same sound is exported repeatedly (same sound, same source), 
+		it won't be exported more than once per second.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Source" type="UnrealId" category="local">
+      <documentation>Unique Id of an object picked up.</documentation>
+   </property>
+   <property name="Type" type="String" category="local">
+      <documentation>Class of the picked up actor.</documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="local">
+      <documentation>
+			How should bot rotate if it would like to be in the
+			direction of the pickuped actor
+		</documentation>
+   </property>
+   <property name="Distance" type="double" category="local">
+      <documentation>
+			How far the noise source is. 
+		</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

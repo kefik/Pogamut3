@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="AIN" name="AddInventoryMsg" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Sent when we get new weapon or ammunition
+		for weapon we do not have yet. Sent just once per weapon type or
+		per new ammunition type (notify new object in our inventory, NOT
+		pickup). 
+		The Id of the object (Inventory Id) here is different from the object that is lying on the 
+		ground and represents this item in the map (Pickup id).
+		If you want to listen to every item pickup use ItemPickedUp message!
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			A unique Id for this inventory item, assigned by the game.
+			Unique, but based on a string describing the item type.
+		</documentation>
+   </property>
+   <property name="Type" type="String" category="local">
+      <documentation>
+			A string representing type (inventory type) of the object.
+		</documentation>
+   </property>
+   <property name="Descriptor" type="ItemDescriptor" jflex="no" category="local">
+      <documentation>
+			Descriptor of the item - according the ItemType you may cast this to various XYZDescriptor. 
+		</documentation>
+   </property>
+   <property name="PickupType" type="ItemType" category="local">
+      <documentation>
+			We get this item if we pick up this pickup class in the map.
+		</documentation>
+      <extra>
+         <code>
+            <yylex>
+					((AddInventoryMsg)actObj).Descriptor = itemDescriptorValue(((AddInventoryMsg)actObj).PickupType);
+				</yylex>
+         </code>
+      </extra>
+   </property>
+   	<property name="Sniping" type="Boolean" category="local">
+		<documentation>
+			If the item is a weapon, contains information whether
+			this weapon is good for sniping.
+		</documentation>
+	</property>
+	<property name="Melee" type="Boolean" category="local">
+		<documentation>
+			If the item is a weapon, contains information whether
+			this weapon is a melee weapon.
+		</documentation>
+	</property>
+	<property name="PrimaryInitialAmmo" type="int" category="local">
+		<documentation>
+			If the item is a weapon, contains information how much
+			primary ammo the weapon initial has.
+		</documentation>
+	</property>
+	<property name="MaxPrimaryAmmo" type="int" category="local">
+		<documentation>
+			If the item is a weapon, contains information how much
+			primary ammo the weapon may have.
+		</documentation>
+	</property>
+	<property name="SecondaryInitialAmmo" type="int" category="local">
+		<documentation>
+			If the item is a weapon, contains information how much
+			secondary ammo the weapon initial has.
+		</documentation>
+	</property>
+	<property name="MaxSecondaryAmmo" type="int" category="local">
+		<documentation>
+			If the item is a weapon, contains information how much
+			secondary ammo the weapon may have.
+		</documentation>
+	</property>
+
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

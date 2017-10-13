@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="STARTPLRS" extends="CommandMessage" name="StartPlayers"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Will start to export IPLR messages regularly (like synchronous
+		batch). Can be used for continuous visualization of players
+		moving around the map. There are three categories (see below).
+		The default values for all category is true, that means that
+		without attributes all the categories will be exported.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Humans" type="boolean">
+      <documentation>
+			All human players will be exported.
+		</documentation>
+   </property>
+   <property name="GBBots" type="boolean">
+      <documentation>
+			All GameBots bots will be exported.
+		</documentation>
+   </property>
+   <property name="UnrealBots" type="boolean">
+      <documentation>All UnrealBots will be exported.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

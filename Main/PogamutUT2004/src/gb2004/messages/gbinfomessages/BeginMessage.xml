@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="BEG" name="BeginMessage" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. Begin message signalizes start of
+		synchronous batch. In the batch are send information about
+		visible navpoints, game status, items and so on.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Time" type="double" category="local">
+      <documentation>Timestamp form the GameBots.</documentation>
+   </property>
+   <property name="VisUpdate" type="boolean" category="local">
+      <documentation>Sent only if new synchronous batch procotol is used (NewSelfBatchProtocol attribute in INIT message). If true it means this sync. batches contains also visiblity information - PLR, INV, PRJ messages... If false, it means that only SELF message is in this synchronous batch.</documentation>
+   </property>
+   			
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

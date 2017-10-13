@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="UPD" name="LocationUpdate" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <group name="Bot"/>
+   <documentation>
+		"Synchronous" message. Arrives outside sync. batch. The frequency of this message is configured through locUpdateMultiplier variable in GameBots2004.ini file. It gets exported N times faster than regular sync. batch where N equals locUpdateMultiplier. Holds information about Location, Velocity and Rotation of the bot and should help us to create more robust navigation.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <!-- List of all properties of this message. !-->
+   
+   <!-- 
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of this update message instance.</documentation>
+   </property>
+   -->
+   <property name="Loc" type="Location" category="local">
+      <documentation>
+			An absolute location of the bot.
+		</documentation>
+   </property>
+   <property name="Vel" type="Velocity" category="local">
+      <documentation>
+			Absolute velocity of the bot as a vector of movement per one
+			game second.
+		</documentation>
+   </property>
+   <property name="Rot" type="Rotation" category="local">
+      <documentation>
+			Which direction the bot is facing in absolute terms.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nbm>
+<!--<moduleType>autoload</moduleType>-->
+<!--<codeNameBase>cz.cuni.amis.pogamut.pogamut.nb/1</codeNameBase>-->
+<licenseName>Apache License, Version 2.0</licenseName>
+<licenseFile>license.txt</licenseFile>
+
+ <dependencies>
+    <dependency>
+        <id>org.netbeans.modules:org-netbeans-modules-maven</id>
+        <type>impl</type>
+        <explicitValue>org.netbeans.modules.maven/1 > 1.9.2</explicitValue>
+    </dependency>
+</dependencies>
+
+</nbm>

@@ -1,0 +1,14 @@
+<RewriteFilesConfig encoding="UTF-8">
+			<globals>
+				<includeFile>*.sql</includeFile>
+				<substitutions>
+                    <substitution>
+						<match>Enable_hand_cursor</match>
+						<replace>/var/lib/tomcat7/webapps/</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>					
+				</substitutions>
+				<fixLineEndings windowsStyle="false" onlyIfRewritten="true" />
+			</globals>
+			<include dir="D:/Workspaces/Pogamut-Trunk/Utils/RewriteFiles/" />			
+</RewriteFilesConfig>

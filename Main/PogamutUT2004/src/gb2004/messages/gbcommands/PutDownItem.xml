@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="PUT" extends="CommandMessage" name="PutDownItem" type="Control">
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Bot putdowns input item at the location he is currently at. Note that If autopickup is set to true he will pick it up immediately back.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Type" type="String">
+      <documentation>
+			Class of the item. E.g. "GBEmohawk.ItemBall" (without quotes).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

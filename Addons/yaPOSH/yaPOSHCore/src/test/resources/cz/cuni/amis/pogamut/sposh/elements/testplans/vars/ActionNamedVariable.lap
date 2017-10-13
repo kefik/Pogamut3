@@ -1,0 +1,8 @@
+(
+    (RDC PoshBot
+	(drives
+            ((de primitive(12.5, "anotherValue", "color", $numero=7, $string="numerousValues")))
+        )
+    )
+)
+

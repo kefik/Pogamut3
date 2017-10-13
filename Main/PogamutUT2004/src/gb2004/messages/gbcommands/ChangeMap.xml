@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CHANGEMAP" extends="CommandMessage" name="ChangeMap" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Will change map to MapName - map must exist on server (won't be
+		tested), will send MAPCHANGE message. When map change occurs all
+		connections to the server will be shutted down.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="MapName" type="String">
+      <documentation>Name of the new map.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

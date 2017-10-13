@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="JMXArchitecture.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="C:\dev\PogamutDev\project\Core\tools\Introspection\doc\media\JMXArchitecture.png"
+   inkscape:export-xdpi="43.732025"
+   inkscape:export-ydpi="43.732025">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3315"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path3297"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path3312"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective5241"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="261.35992"
+     inkscape:cy="648.3511"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:snap-global="true"
+     inkscape:window-width="1280"
+     inkscape:window-height="744"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3169"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.28565729000000010;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3233"
+       width="700.46436"
+       height="339.80273"
+       x="201.57141"
+       y="55.36216" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.27367961000000010;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2391"
+       width="417.49139"
+       height="336.86917"
+       x="-340"
+       y="55.493011" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-320"
+       y="92.362183"
+       id="text3163"><tspan
+         sodipodi:role="line"
+         id="tspan3165"
+         x="-320"
+         y="92.362183">Server</tspan></text>
+    <g
+       id="g3219">
+      <g
+         id="g3204">
+        <rect
+           style="fill:#ffccaa;fill-opacity:1;stroke:#000000;stroke-width:0.6519866;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect3184"
+           width="340.22571"
+           height="99.95401"
+           x="-300.22571"
+           y="132.40817" />
+        <text
+           xml:space="preserve"
+           style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="-280.0517"
+           y="192.58217"
+           id="text3180"><tspan
+             sodipodi:role="line"
+             id="tspan3182"
+             x="-280.0517"
+             y="192.58217">FolderMBean</tspan></text>
+      </g>
+      <g
+         transform="translate(-259.85622,-99.836334)"
+         id="g3214">
+        <rect
+           style="fill:#d45500;fill-opacity:1;stroke:#000000;stroke-width:1.03632867;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect3167"
+           width="119.85622"
+           height="60.163673"
+           x="160"
+           y="252.19852" />
+        <text
+           xml:space="preserve"
+           style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="180"
+           y="292.36218"
+           id="text2387"><tspan
+             sodipodi:role="line"
+             id="tspan2389"
+             x="180"
+             y="292.36218">Folder</tspan></text>
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="220"
+       y="92.362183"
+       id="text3229"><tspan
+         sodipodi:role="line"
+         id="tspan3231"
+         x="220"
+         y="92.362183">Client - custom code</tspan></text>
+    <g
+       id="g3257"
+       transform="translate(121.32017,-457.09029)">
+      <g
+         id="g3252">
+        <rect
+           style="fill:#d45500;fill-opacity:1;stroke:#000000;stroke-width:1.10510838;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect3243"
+           width="660.05585"
+           height="99.9132"
+           x="100.05256"
+           y="592.39642" />
+        <text
+           xml:space="preserve"
+           style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="120"
+           y="652.36218"
+           id="text3235"><tspan
+             sodipodi:role="line"
+             id="tspan3237"
+             x="120"
+             y="652.36218">DynamicMBeanToFolderAdapter</tspan></text>
+      </g>
+      <g
+         transform="translate(240.02115,179.97882)"
+         id="g3247">
+        <rect
+           style="fill:#ffccaa;fill-opacity:1;stroke:#000000;stroke-width:0.95767546;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect3245"
+           width="219.95898"
+           height="60.042324"
+           x="279.97885"
+           y="432.34103" />
+        <text
+           xml:space="preserve"
+           style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+           x="300"
+           y="472.36218"
+           id="text3239"><tspan
+             sodipodi:role="line"
+             id="tspan3241"
+             x="300"
+             y="472.36218">DynamicProxy</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3279">
+      <rect
+         y="292.36218"
+         x="-300"
+         height="60"
+         width="340"
+         id="rect3267"
+         style="fill:#0068e0;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text3269"
+         y="332.36218"
+         x="-200"
+         style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="332.36218"
+           x="-200"
+           id="tspan3271"
+           sodipodi:role="line">MBeanServer </tspan></text>
+    </g>
+    <g
+       id="g3284"
+       transform="translate(61.428574,2.8571472)">
+      <rect
+         y="292.55685"
+         x="160.19466"
+         height="59.610687"
+         width="660.55188"
+         id="rect3273"
+         style="fill:#0068e0;fill-opacity:1;stroke:#000000;stroke-width:1.38931406;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text3275"
+         y="332.36218"
+         x="340"
+         style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="332.36218"
+           x="340"
+           id="tspan3277"
+           sodipodi:role="line">MBeanServerConnection</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 40,322.36218 L 220,322.36218"
+       id="path3289" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M -140,232.36218 L -140,292.36218"
+       id="path5121" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 760,212.36218 L 760,292.36218"
+       id="path5123" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="120"
+       y="312.36218"
+       id="text5125"><tspan
+         sodipodi:role="line"
+         id="tspan5127"
+         x="120"
+         y="312.36218">RMI</tspan></text>
+    <g
+       id="g5167"
+       transform="translate(41.518033,239.55068)">
+      <rect
+         y="432.65857"
+         x="-319.70361"
+         height="59.4072"
+         width="260.74054"
+         id="rect5149"
+         style="fill:#0068e0;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5151"
+         y="472.36218"
+         x="-300"
+         style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="472.36218"
+           x="-300"
+           id="tspan5153"
+           sodipodi:role="line">JMX infrastructure</tspan></text>
+    </g>
+    <g
+       id="g5172"
+       transform="translate(41.518033,139.55068)">
+      <rect
+         y="452.74402"
+         x="-319.61816"
+         height="59.405392"
+         width="261.01044"
+         id="rect5155"
+         style="fill:#ffccaa;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5157"
+         y="492.36218"
+         x="-240"
+         style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="492.36218"
+           x="-240"
+           id="tspan5159"
+           sodipodi:role="line">MBeans</tspan></text>
+    </g>
+    <g
+       id="g5177"
+       transform="translate(40.046173,-100.04617)">
+      <rect
+         y="612.76532"
+         x="-319.59686"
+         height="59.193718"
+         width="261.06873"
+         id="rect5161"
+         style="fill:#d45500;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <text
+         id="text5163"
+         y="652.36218"
+         x="-280"
+         style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="652.36218"
+           x="-280"
+           id="tspan5165"
+           sodipodi:role="line">Folder objects</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="-198.48196"
+       y="491.91287"
+       id="text5182"><tspan
+         sodipodi:role="line"
+         id="tspan5184"
+         x="-198.48196"
+         y="491.91287">Legend</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5226"
+       width="399.60309"
+       height="320.41638"
+       x="200.39691"
+       y="431.9458" />
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="222.6114"
+       y="462.20065"
+       id="text5228"><tspan
+         sodipodi:role="line"
+         id="tspan5230"
+         x="222.6114"
+         y="462.20065">Client - JConsole</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 40,352.36218 L 220,532.36218"
+       id="path5249" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect6832"
+       width="339.90765"
+       height="340.09515"
+       x="-319.90765"
+       y="432.36218" />
+  </g>
+  <image
+     y="471.9267"
+     x="220.37784"
+     id="image5243"
+     height="260"
+     width="348.66666"
+     sodipodi:absref="C:\dev\PogamutDev\project\Core\tools\Introspection\doc\media\JConsole.png"
+     xlink:href="JConsole.png" />
+</svg>

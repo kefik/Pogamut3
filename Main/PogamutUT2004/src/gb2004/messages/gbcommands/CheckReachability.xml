@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CHECKREACH" extends="CommandMessage" name="CheckReachability"
+               type="Info">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Check to see if you can move directly to a destination without
+		hitting an obstruction, falling in a pit, etc. Responding with
+		RCH message.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			Message Id made up by you and echoed in response so you can
+			match up response with query.
+		</documentation>
+   </property>
+   <property name="Target" type="UnrealId">
+      <documentation>
+			The unique Id of a player/object/nav point/whatever.
+		</documentation>
+   </property>
+   <property name="Location" type="Location">
+      <documentation>
+			Location you want to go to. Normal location rules. Only used
+			if no Target is sent.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

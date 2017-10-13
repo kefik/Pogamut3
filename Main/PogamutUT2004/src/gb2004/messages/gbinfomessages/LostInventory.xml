@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="LIN" name="LostInventory" type="Event">
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. We have lost some inventory from our
+		inventory chain (throw away weapon, etc.).
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="String" category="local">
+      <documentation>Id of the inventory lost.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

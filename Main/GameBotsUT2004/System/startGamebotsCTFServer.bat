@@ -1,0 +1,1 @@
+ucc server CTF-1on1-Joust?game=GameBots2004.BotCTFGame?timelimit=999999

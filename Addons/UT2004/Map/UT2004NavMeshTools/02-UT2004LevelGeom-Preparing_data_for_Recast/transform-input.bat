@@ -1,0 +1,1 @@
+FOR %%f in (input/*.xml) DO call transform-one.bat "input/%%f" "%1"

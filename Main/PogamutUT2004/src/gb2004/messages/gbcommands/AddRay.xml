@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ADDRAY" extends="CommandMessage" name="AddRay" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Add custom ray for automatic ray tracing. If you send Id =
+		Default, all rays will be erased and default set of rays will be
+		loaded (straight ahead (1,0,0) with 250 length, 45 degrees left
+		(1,–1,0) with 200 length, 45 degrees right (1,1,0) with 200
+		length). This set of rays is also loaded by default. If you want
+		to change existing ray, just support its Id in ADDRAY command
+		along with new parameters. Direction of the rays work as
+		follows. Bot is looking to x axis, that means if I want ray
+		straight ahead I specify some vector on positive x axis (vectors
+		in unreal are specified by (x,y,z) so it would look like this
+		(1,0,0) or this (123,0,0) – numbers doesn't matter, its about
+		direction - vectors will be normalized). If I want ray behind it
+		would be (–1,0,0). 90 degrees right (0,1,0) etc.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			User set Id of the ray, so the ray can be identified.
+		</documentation>
+   </property>
+   <property name="Direction" type="Vector3d">
+      <documentation>
+			Vector direction of the ray (it will be relative - added to
+			the vector, where the bot is looking, also takes into
+			account angle of the floor the bot is standing on).
+		</documentation>
+   </property>
+   <property name="Length" type="int">
+      <documentation>
+			Specifies the length of the ray (in UT units).
+		</documentation>
+   </property>
+   <property name="FastTrace" type="boolean">
+      <documentation>
+			True if we want to use FastTrace function instead of Trace
+			function (a bit faster but less information provided - just
+			information if we hit something or not).
+		</documentation>
+   </property>
+   <property name="FloorCorrection" type="boolean">
+      <documentation>
+      If we should correct ray directions accoring floor normal. Note: Has issue - we can't set set rays up or down when correction is active.
+		</documentation>
+   </property>
+   <property name="TraceActors" type="boolean">
+      <documentation>
+			If we want to trace also actors – bots, monsters, players,
+			items. False if we want to trace just level geometry.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

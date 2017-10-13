@@ -1,0 +1,87 @@
+
+<userInput>
+  <!-- Install -->
+   
+    <panel order="0">
+        <!--<createForPack name="Pogamut Netbeans plugin" /> -->
+
+        <field type="title" txt="Netbeans IDE home directory selection" bold="true" size="1" />
+        <!-- Keystore -->
+        <field type="search" variable="NB_HOME">
+            <description align="right"
+                    txt="Path must point to NetBeans directory in user's home (e.g. c:\Users\MyLogin\.netbeans\7.1\). If you do not have that directory, try to run NetBeans first, they will create it. Alternatively, if your NB installation does not make the directory in /Users/ folder, you can point to \nb\ folder inside NetBeans installation (e.g. C:\Program Files\Netbeans 7.1\nb\)."
+                    id="nbPath"/>
+            <spec txt="Path to Netbeans platform:"
+                         checkfilename="var"
+                         type="directory"
+                         result="directory">
+                <!-- NB modules can be installed into a user home directory, 
+                     regardless of the platform. It also avoids trouble with 
+                     not having permission to write somewhere (user home is OK).
+                -->
+				<choice value="$USER_HOME\.netbeans\7.1.2" />
+                <choice value="$USER_HOME\.netbeans\7.1.1" />
+                <choice value="$USER_HOME\.netbeans\7.1" />
+          
+                <!-- WINDOWS -->
+				<choice value="C:\Program Files\Netbeans 7.1.2\nb" os="windows" />
+                <choice value="C:\Program Files\Netbeans 7.1.1\nb" os="windows" />
+                <choice value="C:\Program Files\Netbeans 7.1\nb" os="windows" />
+                
+				<choice value="D:\Program Files\Netbeans 7.1.2\nb" os="windows" />
+                <choice value="D:\Program Files\Netbeans 7.1.1\nb" os="windows" />
+                <choice value="D:\Program Files\Netbeans 7.1\nb" os="windows" />
+                
+                <!-- DEVEL -->
+                <choice value="E:\Windows\Program Files\Java\Netbeans 7.1\nb" os="windows" /><!-- rudolf.kadlec -->
+                <choice value="E:\Windows\Program Files\Java\Netbeans 7.1.1\nb" os="windows" /><!-- rudolf.kadlec -->
+                
+                <!-- UNIX -->
+                <!-- dunno... -->
+            </spec>
+        </field>
+    </panel>
+    
+    <panel order="1">
+      <!--  <createForPack name="GameBotsUE2" /> !-->
+       
+        <field type="title" txt="Unreal Engine 2 Runtime install directory selection" bold="true" size="1" />
+        
+        <field type="dir" align="left" variable="UE2_HOME">
+           <description align="right"
+                    txt="Path where UE2Runtime will be installed (e.g. C:\Program Files\UE2RuntimeEmohawk\)."
+                    id="nbPath"/>
+            <spec txt="Path to UE2Runtime:"
+                  size="25"
+                  set="C:\Program Files\UE2RuntimeEmohawk" mustExist="false" create="true"/>
+        </field>
+    </panel>
+    
+    <panel order="2">
+        <field type="title" txt="Apache Maven install directory selection" bold="true" size="1" />
+        
+        <field type="dir" align="left" variable="MAVEN_BASE">
+            <description align="right"
+               txt="Maven install path (e.g. C:\Program Files\apache-maven-3.0.4\):"
+               id="mavenPath"/>
+            <spec txt="Path:"
+            size="25"
+            set="C:\Program Files\apache-maven-3.0.4" mustExist="false" create="true"/>
+        </field>
+    </panel>
+<!--
+    <panel order="3">
+        <field type="title" txt="Goal v4873 directory selection" bold="true" size="1" />
+        
+        <field type="dir" align="left" variable="GOAL_HOME">
+            <description align="right"
+               txt="Goal install path (e.g. C:\Program Files\GOAL\):"
+               id="goalPath"/>
+            <spec txt="Path:"
+            size="25"
+            set="C:\Program Files\GOAL" mustExist="false" create="false"/>
+        </field>
+    </panel>
+-->
+
+</userInput>

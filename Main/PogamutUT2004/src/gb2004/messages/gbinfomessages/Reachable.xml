@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="RCH" name="Reachable" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. A boolean result of a checkreach call.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="String" category="all">
+      <documentation>
+			An Id matching the one sent by client. Allows bot to match
+			answer with right querry.
+		</documentation>
+   </property>
+   <property name="Reachable" type="boolean" category="local">
+      <documentation>
+			True if the bot can run here directly, false otherwise.
+		</documentation>
+   </property>
+   <property name="From" type="Location" category="local">
+      <documentation>
+			Exact location of bot at time of check.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

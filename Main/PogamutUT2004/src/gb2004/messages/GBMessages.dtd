@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : GBMessages.dtd
+    Created on : 17. march 2008, 11:30
+    Author     : Jakub Gemrot
+    Description:
+        Defines the DTD for Gamebots messages that are sent/received by the client/gamebots.
+
+    PUBLIC ID  : -//vendor//vocabulary//EN
+    SYSTEM ID  : http://server/path/GBMessages.dtd
+-->
+
+<!--
+	The 'messages' consists of three things:
+ 	1) 'settings' - configuration for JavaClassesGenerator.xsl and FlexGenerator.xsl
+ 	2) 'infomessages' - definitions of messages that the Gamebots is sending to the Agent
+ 	3) 'commands' - definitions of messages that the Agent may sent to Gamebots
+-->
+<!ELEMENT messages (settings, infomessages, commands)>
+
+<!--
+	The 'settings' has two parts:
+	1) 'javasettings' - configuration for JavaClassesGenerator.xsl
+	2) 'jflexsettings' - configuration for FlexGenerator.xsl
+-->
+<!ELEMENT settings (javasettings, jflexsettings)>
+
+<!--
+	The 'javasettings' contains this:
+	1) 'javapackageinfomessages' - name of the package where all info messages resides
+	2) 'javapackagecommands' - name of the package where all commands resides
+	3) 'javaimport' - what packages has to be imported for every info messages/command class
+	              - those imports are added to produced java classes (like NavPoint.java, Jump.java, etc.)
+-->	
+<!ELEMENT javasettings (javapackageinfomessages, javapackagecommands, javaimport*)>
+<!ELEMENT javapackageinfomessages (#PCDATA)>
+<!ATTLIST javapackageinfomessages package CDATA #REQUIRED>
+<!ELEMENT javapackagecommands (#PCDATA)>
+<!ATTLIST javapackagecommands package CDATA #REQUIRED>
+<!ELEMENT javaimport (#PCDATA)>
+<!ATTLIST javaimport import CDATA #REQUIRED>
+
+<!--
+	The 'jflexsettings' contains:
+	1) 'jflexpackage' - name of the package where Yylex resides
+					- directive 'package' of the flex file
+	2) 'javaimport' - packages that should be imported for the Yylex
+-->				  					
+<!ELEMENT jflexsettings (jflexpackage, javaimport*)>
+<!ELEMENT jflexpackage (#PCDATA)>
+<!ATTLIST jflexpackage package CDATA #REQUIRED>
+
+<!ELEMENT infomessages (messageobject+)>
+<!ELEMENT commands (commandobject+)>
+
+<!--
+	The 'messageobject' is defined by:
+	1) one ore more 'groups'
+		- this is telling you whether the message object is for Bot or Server connection
+		- it also tells us where the message should appear in the GameBots documentation (Bot/Server messages)
+	2) 'documentation'
+		- what will appear as documentation in java / GameBots documentation
+	3) possibly some 'annotations'
+		- this is a hook where you can provide annotations for the result java class
+	4) 'implements'
+		- you may define custom interfaces for the generated java classes (these interfaces will be included in all categories of ObjectUpdates)
+		- these interfaces will be added to all combinations of classcategory/classtype
+	5) 'interface'
+	    - even though it is nice that 'implements' allows you to add interfaces to a message, it won't suffice you in the case of ObjectUpdates type of message
+	      such messages are split into three categories of object static/local/shared and you will need to finegrain the "implements" element
+	      so different interfaces will be included into different categories (classes)
+	    - allows you to specify who has to truly "implement" the interface (which category)
+	6) 'property'
+		- this describes java fields of the class and the message
+		- this fields are reflected both by JavaClassesGenerator.xslt and FlexGenerator.xslt
+		- JavaClassesGenerator.xslt creates java fields + possibly update method (for ObjectUpdate type of messageobject)
+		- FlexParser writes a script to parse this field
+		- IMPORTANT: the name of the property must match (case-sensitive!) the name of the attribute of appropriate message from GameBots
+	7) 'extra'
+		- here we've got hooks to add java / jflex custom code for java classes / flex script
+	======
+	The messageobject must have those attributes:
+	1) 'name'
+		- the name of the message (used as name for java class)
+		- must be correct java variable identifier name
+	2) 'extends'
+		- name of the java class the message extends (should be InfoObject)
+	3) 'message'
+		- identifier of the message from GameBots protocal (like 'INV')
+		- used by FlexParser.xslt to produce correct flex script (to correctly recognize the
+		   category of incoming message)
+	4) 'type'
+		- describes the type of message, what it represents
+		-  1) 'Batch' - those messages comes usually in the beginning of the connection
+		                to provide informations about map (like items, navpoints,...)
+		              - Batch is translated (to Java) as IWorldEvent, IWorldViewEvent  
+		   2) 'Event' - asynchronous messages like 'Hit the wall', 'Got hit', ...
+		   			  - Event is translated (to Java) as IWorldEvent, IWorldViewEvent
+		   3) 'ObjectUpdate' - events about abstract or concrete objects in the worlds
+		   					 - concrete objects are Players, NavPoints, etc.
+		   					 - abstract objects are Scores, AutoTraceRay, etc.
+		   					 - ObjectUpdate is translated (to Java) as IWorldEvent, IWorldObject, IWorldObjectUpdateEvent				
+-->				
+<!ELEMENT messageobject (gbpackage*, group+, documentation, annotation*, implements?, interface*, property*, extra?)>
+<!ATTLIST messageobject name CDATA #REQUIRED>
+<!ATTLIST messageobject extends CDATA #REQUIRED>
+<!ATTLIST messageobject message CDATA #REQUIRED>
+<!ATTLIST messageobject type (Batch|Event|ObjectUpdate) #IMPLIED>
+
+<!--
+	The 'commandobject' is defined by:
+	1) one ore more 'groups'
+		- this is telling you whether the message object is for Bot or Server connection
+		- it also tells us where the message should appear in the GameBots documentation (Bot/Server messages)
+	2) 'documentation'
+		- what will appear as documentation in java / GameBots documentation
+	3) possibly some 'annotations'
+		- this is a hook where you can provide annotations for the result java class
+	4) 'implements'
+		- you may define custom interfaces for the generated java classes
+	5) 'property'(ies)
+		- this describes java fields of the class and the message
+		- this fields are reflected both by JavaClassesGenerator.xslt and FlexGenerator.xslt
+		- JavaClassesGenerator.xslt creates java fields + possibly update method (for ObjectUpdate type of messageobject)
+		- FlexParser writes a script to parse this field
+		- IMPORTANT: the name of the property must match (case-sensitive!) the name of the attribute of appropriate message from GameBots
+	6) 'extra'
+		- here we've got hooks to add java / jflex custom code for java classes / flex script
+	======
+	The messageobject must have those attributes:
+	1) 'command'
+		- the name of the message (used as name for java class)
+		- must be correct java variable identificator name
+	2) 'extends'
+		- name of the java class the message extends (should be descendant of the InfoObject)
+	3) 'name'
+		- identifier of the message from GameBots protocol (like 'INV')
+		- used by FlexParser.xslt to produce correct flex script (to correctly recognize the category of incoming message)
+	4) 'type'
+		- describes the type of message, what it represents
+		- 1) 'Configure' - category of commands that configures something
+		                 - like AddInventory, ...  
+		  2) 'Control' - commands for the bot usually
+		  			   - like run to, shoot, etc.
+		  3) 'Info' - commands requesting some informations
+		  		    - like give me list of current players
+-->	
+<!ELEMENT commandobject (gbpackage*, group+, documentation, annotation*, implements?, property*, extra?)>
+<!ATTLIST commandobject command CDATA #REQUIRED>
+<!ATTLIST commandobject extends CDATA #REQUIRED>
+<!ATTLIST commandobject name CDATA #REQUIRED>
+<!ATTLIST commandobject type (Configure|Control|Info) #IMPLIED>
+
+<!ELEMENT group (#PCDATA)>
+<!ATTLIST group name (Bot|Server|Observer) #IMPLIED>
+
+<!ELEMENT annotation (#PCDATA)>
+<!ATTLIST annotation name CDATA #REQUIRED>
+
+<!ELEMENT implements (#PCDATA)>
+<!ATTLIST implements interfaces CDATA #REQUIRED>
+
+<!ELEMENT interface (classcategory|classtype)*>
+<!ATTLIST interface name CDATA #REQUIRED> 
+
+<!ELEMENT documentation (#PCDATA)>
+
+<!--
+	The messageproperty has three REQUIRED attributes (one has default value so it does not need to be present):
+	1) name     ... name of the property as it appears in the GameBots protocol
+	            ... YOU MUST NOT DECLARE PROPERTY WITH NAME 'SimTime' 
+	2) type     ... Java type of the field in the Java class of the message
+	3) category ... it is either 'static', 'local' or 'shared' (or 'all')
+	                static -> static fields are never updated, once initialized they won't be overridden by future messages
+	                          this represents information that are static for a chosen environment (e.g., navpoint's neighbours)
+	                local  -> the local properties are subjectively perceived by the bot (e.g., some navpoint or player is visible)
+	                	   -> DEFAULT CATEGORY
+	                shared -> shared information are data that are objectively perceived by any bot regardless his position or mind state
+	                          (e.g., item is spawned at location ... this information is different from the information "item is visible" becuase
+	                                 it does not need the subjective context of the bot location, regardless where the bot stands, the item is or is not
+	                                 spawned at certain location)
+	                all    -> specific category that is saying that the value must be present in static/local/shared parts 
+	                          and is static
+	                       -> if you are DECLARING property WITH NAME 'Id' YOU MUST SET ITS CATEGORY TO 'all'
+	            ... no meaning for COMMANDOBJECTs
+	Then there are optional properties:
+	1) default  ... default value of the property if it's not specified (be it a command or infoobject)
+	2) nullable ... whether the property may be set to "null" (has sense only for messageobjects & category local/shared/all), 
+	                used in updates
+				... if appears it must be false (because default is true)
+	3) jflex    ... if specified must be 'no' then it won't appear in the parser + not in toString() method (recursion in NavPoint / Item is around the corner :)
+	            ... no meaning for COMMANDOBJECTs
+	4) jason    ... if specified must be 'yes' then it won't appear in the toJsonLiteral() method
+	            ... no meaning for COMMANDOBJECTs          
+    5) optional ... whether the property is optional for the object (i.e., messageobject == exported / commandobject == expected by GB2004)
+-->
+<!ELEMENT property (documentation, extra?)>
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property type CDATA #REQUIRED>
+<!ATTLIST property category (static|local|shared|all) 'local'>
+<!ATTLIST property default CDATA #IMPLIED>
+<!ATTLIST property nullable (false) #IMPLIED>
+<!ATTLIST property optional (true) #IMPLIED>
+
+<!-- 
+	whether to include into jflex file, default is 'yes', but this is not allowed,
+	if attribute is declared - it has to be 'no'
+	also if this is declared, it won't appear in the GB API Documentation
+-->
+<!ATTLIST property jflex (no) #IMPLIED>
+<!ATTLIST property jason (yes) #IMPLIED>  
+ 
+<!ELEMENT extra (code?)>
+
+<!ELEMENT code ((java*,yylex?)|(yylex?, java*))>
+
+<!-- 
+	May contain two things:
+	 1) #PCDATA - custom java code placed directly to all generated class (in the case of 'ObjectUpdate' this code is placed to all three parts of the object static/shared/local)
+	 2) 'javaimport' - additional custom imports for the generated class 
+-->
+<!ELEMENT java (#PCDATA|javaimport|javapart)*>
+
+<!-- 
+	May contain custom code that is placed to the concrete part of message depending on the children elements 'classcategory' and 'classtype'.
+	Every javapart MUST HAVE at least one <classcategory name="..."/> child element and at least one <classtype name="..."/> child element.
+	The body of the <javapart> contains actual java code that is pasted to the conrete class declaration of the message. 
+	Note that every <javapart> element may contain arbitrary number of <classcategory ... /> and <classtype ... /> children elements allowing
+	you to precisly specify in which classes the custom java code should appear in.
+	
+	NOT RELEVANT TO COMMANDOBJECT!!!
+-->
+<!ELEMENT javapart (#PCDATA|javaimport|classcategory|classtype)*>
+
+<!--	
+	Contains name of the category of the class where the custom java code should be generated into (must be used together with <classtype ... > element).
+	
+	base		... 
+	composite	... 
+	local		... 
+	shared		... 
+	static		... 
+-->
+<!ELEMENT classcategory EMPTY>
+<!ATTLIST classcategory name (all|base|composite|local|shared|static) #REQUIRED>
+
+<!--	
+	Contains name of the type of the class where the custom java code should be generated into (must be used together with <classcategory ... > element).
+	'abstract'      -> 
+	'message'       -> 
+	'impl'          -> 	
+-->
+<!ELEMENT classtype EMPTY>
+<!ATTLIST classtype name (all|abstract|message|impl) #REQUIRED>
+
+
+<!-- CURRENTLY NOT USED! Reserved for future... -->
+<!ELEMENT yylex (#PCDATA)>
+
+<!ELEMENT gbpackage EMPTY>
+<!ATTLIST gbpackage name CDATA #REQUIRED>

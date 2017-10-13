@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<project name="GB2004 messages+parser+docbook generator" default="process-gb-messages">
+
+	<!-- Passed compile-classpath from the maven containing saxon/trax. -->
+
+	<path id="maven.passed.classpath">
+		<path path="${compile-classpath}" />
+	</path>
+	<property name="maven.passed.classpath.property" refid="maven.passed.classpath"/>
+	<echo>Using java classpath: ${maven.passed.classpath.property}</echo>
+	
+	<!-- Build Properties -->
+
+	<property name="source.encoding" value="utf-8" />
+	
+	<!--
+	
+		ANT file has a basedir pointing to the folder where 'gb2004-message.xml' is.
+		JAVA task executes the JVM in the folder of the pogamut-ut2004 project (i.e., from '..')
+	
+	-->
+
+	<!-- Paths to the GBMessages XML definitions / XSLT transformations -->
+	<property name="target.dir" value="../target/gb2004/messages" />	
+	<property name="gbmessages.commands.dir" value="../src/main/java/cz/cuni/amis/pogamut/ut2004/communication/messages/gbcommands" />
+	<property name="gbmessages.infos.dir" value="../src/main/java/cz/cuni/amis/pogamut/ut2004/communication/messages/gbinfomessages" />
+	<property name="gbmessages.xml.dir" value="../src/gb2004/messages" />
+	<property name="gbmessages.xml.commands.dir" value="${gbmessages.xml.dir}/gbcommands" />
+	<property name="gbmessages.xml.listfile.commands" value="${target.dir}/Commands.xml" />
+	<property name="gbmessages.xml.infos.dir" value="${gbmessages.xml.dir}/gbinfomessages" />
+	<property name="gbmessages.xml.listfile.infos" value="${target.dir}/InfoMessages.xml" />
+	
+	<property name="xmllist.target.dir" value="target/gb2004/messages" />	
+	<property name="xmllist.gbmessages.xml.dir" value="src/gb2004/messages" />
+	<property name="xmllist.gbmessages.xml.commands.dir" value="${xmllist.gbmessages.xml.dir}/gbcommands" />
+	<property name="xmllist.gbmessages.xml.listfile.commands" value="${xmllist.target.dir}/Commands.xml" />
+	<property name="xmllist.gbmessages.xml.infos.dir" value="${xmllist.gbmessages.xml.dir}/gbinfomessages" />
+	<property name="xmllist.gbmessages.xml.listfile.infos" value="${xmllist.target.dir}/InfoMessages.xml" />
+	
+	<target name="init">		
+		<echo>Deleting (old) target directory...</echo>
+		<delete dir="${target.dir}" />
+		<echo>Creating target directory...</echo>
+		<mkdir dir="${target.dir}"/>
+	</target>
+	
+	<target name="prepare-message-objects-list" depends="init">				
+		<echo>Creating list of xml files from '${gbmessages.commands.dir}'</echo>
+		
+		<java classname="cz.cuni.amis.tools.XMLDirectoryList"
+			  classpathref="maven.passed.classpath" >
+			<arg value="${xmllist.gbmessages.xml.commands.dir}" />
+			<arg value="${xmllist.gbmessages.xml.listfile.commands}" />
+		</java>
+		
+		<echo>Creating list of xml files from '${gbmessages.infos.dir}'</echo>
+		
+		<java classname="cz.cuni.amis.tools.XMLDirectoryList"
+			  classpathref="maven.passed.classpath" >
+			<arg value="${xmllist.gbmessages.xml.infos.dir}" />
+			<arg value="${xmllist.gbmessages.xml.listfile.infos}" />
+		</java>
+		
+		<echo>Building MessageObjectsList.xml ...</echo>
+		<xslt style="${gbmessages.xml.dir}/BuildMessageObjectsList.xslt"
+			  in="${gbmessages.xml.dir}/Empty.xml"
+			  out="${target.dir}/MessageObjectsList.xml"
+			  processor="org.apache.tools.ant.taskdefs.optional.TraXLiaison"
+			  classpathref="maven.passed.classpath"
+		>
+			<factory name="net.sf.saxon.TransformerFactoryImpl"/>
+		</xslt>		
+		
+		<echo>Copying XSLTs/DTDs into target dir...</echo>
+		<copy todir="${target.dir}">
+			<fileset dir="${gbmessages.xml.dir}">
+				<include name="*.xslt" />
+				<include name="*.dtd" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="process-gb-messages" depends="init, prepare-message-objects-list">
+		<!-- Builds all GB messages from the MessageObjectsList.xml --> 
+		<echo>Removing files from ${gbmessages.commands.dir} ...</echo>
+		<delete includeemptydirs="true">
+			<fileset dir="${gbmessages.commands.dir}" includes="**/*" />
+		</delete>
+		<echo>Removing files from ${gbmessages.infos.dir} ...</echo>
+		<delete includeemptydirs="true">
+			<fileset dir="${gbmessages.infos.dir}" includes="**/*" />
+		</delete>
+		<echo>Processing MessageObjectsList.xml generating Java classes...</echo>
+		<xslt style="${target.dir}/JavaClassesGenerator.xslt"
+			  in="${target.dir}/MessageObjectsList.xml"
+			  out="${target.dir}/temp.tmp"
+			  processor="org.apache.tools.ant.taskdefs.optional.TraXLiaison"
+			  classpathref="maven.passed.classpath"			  
+		>
+			<factory name="net.sf.saxon.TransformerFactoryImpl"/>
+		</xslt>	
+		
+		<echo>Building Yylex parser specification ...</echo>
+		<xslt style="${target.dir}/FlexGenerator.xslt"
+			  in="${target.dir}/MessageObjectsList.xml"
+			  out="../src/main/jflex/GB2004Parser.jflex"
+			  processor="org.apache.tools.ant.taskdefs.optional.TraXLiaison"
+			  classpathref="maven.passed.classpath"			  
+		>
+			<factory name="net.sf.saxon.TransformerFactoryImpl"/>
+		</xslt>	
+	</target>
+
+     <target name="build-gb-docbook" depends="prepare-message-objects-list" description="Translates GB messages into Docbook documentation.">
+        <echo>Generating DocBook documentation for GameBots protocol ...</echo>
+
+    	<xslt style="${target.dir}/GBDocbookGenerator.xslt"
+			  in="${target.dir}/MessageObjectsList.xml"
+			  out="../target/gbdocbook/GBDocumentation.xml"
+			  processor="org.apache.tools.ant.taskdefs.optional.TraXLiaison"
+			  classpathref="maven.passed.classpath"
+		>
+			<factory name="net.sf.saxon.TransformerFactoryImpl"/>
+		</xslt>
+    </target>
+    
+    <target name="doc-gamebots" description="Creates documentation of the Gamebots network protocol">
+        <mkdir dir="./gamebotshtml"/>
+        <!--
+        <docbook-html source="${doc.dir}/gamebots/GB04_user_documentation.xml" output="${dist.doc.dir}/gamebots/GB04_user_documentation.html"/>
+        !-->
+        <docbook-book2html source="C:\Pogamut\PogamutMavenTrunk\Main\PogamutUT2004\target\gbdocbook\GB04_user_documentation.xml" outputDir="./gamebotshtml"/>
+        <!-- copy css !-->
+        <!--<copy todir="${dist.doc.dir}/gamebots/css">
+            <fileset dir="${doc.dir}/gamebots/css/"/>
+        </copy>
+        <copy todir="${dist.doc.dir}/gamebots/img">
+            <fileset dir="${doc.dir}/gamebots/img/"/>
+        </copy>!-->
+    </target>
+
+</project>

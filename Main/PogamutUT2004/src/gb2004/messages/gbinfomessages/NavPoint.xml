@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="NAV" name="NavPoint" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message - however only NavPoints marking item pickup locations are exported synchronously. Other NavPoints are not exported synchronously at all, even if the bot can actually see them (but note that ALL NavPoints are exported in the handshake between bot and the server). Exporting NavPoints synchronously took a lot of UT server resources with limited information gain (in Pogamut there is now available visibility matrix holding static information which points can be seen from other points). NavPoint carries information about UT navigation point - location, paths and some additional information are stored there (if it is an ambush point, or sniper point, etc.).
+   </documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+   		<classcategory name="base" />
+		<classcategory name="shared" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocomotive">
+		<classcategory name="base" />
+		<classcategory name="shared" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			A unique Id of this navigation point assigned by the game.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared" nullable="false">
+      <documentation>Location of navigation point.</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+      <documentation>
+			Velocity of the navigation point (if the navigation point is
+			currently moving). Not sent at the moment.
+		</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>
+			If the point is in the field of view of the bot.
+		</documentation>
+   </property>
+   <property name="Item" type="UnrealId" category="static">
+      <documentation>
+			Unique Id of the respawned item (the item respawns at this
+			point). Not sent if point is not an inventory spot. Sent only in HandShake.
+		</documentation>
+   </property>
+   <property name="ItemClass" type="ItemType" category="static">
+      <documentation>
+            Class of the item (e.g. xWeapons.FlakCannonPickup). Not sent if point is not an inventory spot. Sent only in HandShake.
+        </documentation>
+   </property>
+   <property name="ItemSpawned" type="boolean" category="shared">
+      <documentation>
+            True if the item is spawned at the point. Not sent if point is not an inventory spot. 
+        </documentation>
+   </property>
+   <property name="DoorOpened" type="boolean" category="shared">
+      <documentation>
+            True if this NavPoint is a Door and door is opened. Not sent if point is not a door.
+        </documentation>
+   </property>
+   <property name="Mover" type="UnrealId" category="static">
+      <documentation>
+            If this NavPoint is marking some mover, the mover id will be here. Not sent if point is not a Door, a LiftCenter or a LiftExit. Sent only in HandShake.
+        </documentation>
+   </property>
+   <property name="LiftOffset" type="Vector3d" category="static">
+      <documentation>
+            Starting vector between MyLift location and LiftCenter location. Not sent if point is not a LiftCenter. Sent only in HandShake.
+        </documentation>
+   </property>
+   <property name="LiftJumpExit" type="boolean" category="static">
+      <documentation>
+            Boolean. If we can/should exit the lift by a jump when near the destination place. Not sent if point is not a LiftExit. Sent only in HandShake.
+        </documentation>
+   </property>
+   <property name="NoDoubleJump" type="boolean" category="static">
+      <documentation>
+            Boolean. If we should or not use double jump when exiting lift with a jump. Not sent if point is not a LiftExit. Sent only in HandShake.
+        </documentation>
+   </property>
+   <property name="InvSpot" type="boolean" category="static">
+      <documentation>
+			If this is an inventory spot (item is respawned at this point).
+		</documentation>
+   </property>
+   <property name="PlayerStart" type="boolean" category="static">
+      <documentation>
+			If this is a player start (players and/or bots are respawned at this point).
+		</documentation>
+   </property>
+   <property name="TeamNumber" type="int" category="static">
+      <documentation>
+			Will be sent if this is a player start. In Team games (team deathmatch, capture the flag, domination) holds information about which team respawns at this player start spot. In non-team games will return 0!
+		</documentation>
+   </property>
+      <property name="DomPoint" type="boolean" category="static">
+      <documentation>If this point marks a DominationPoint (for BotDoubleDomination game).</documentation>
+   </property>
+   <property name="DomPointController" type="int" category="shared">
+      <documentation>Exported if this NavPoint is a DominationPoint (for BotDoubleDomination game) - which team controls this point.</documentation>
+   </property>
+
+   <property name="Door" type="boolean" category="static">
+      <documentation>
+			If this point marks a door mover.
+		</documentation>
+   </property>
+   <property name="LiftCenter" type="boolean" category="static">
+      <documentation>
+			If this point marks a lift center (used to mark center of a lift mover, note that this point will be always moved with the lift).
+		</documentation>
+   </property>
+   <property name="LiftExit" type="boolean" category="static">
+      <documentation>
+			If this point marks a lift exit (used to mark exit point of a lift mover).
+		</documentation>
+   </property>
+   <property name="AIMarker" type="boolean" category="static">
+      <documentation>
+			If this point is an AI marker - marks an interesting spot in the environment. May be ambush point or sniping spot, etc.
+		</documentation>
+   </property>
+   <property name="JumpSpot" type="boolean" category="static">
+      <documentation>
+			If this point marks a jump spot (a special device that causes the bot to jump high or far).
+		</documentation>
+   </property>
+   <property name="JumpPad" type="boolean" category="static">
+      <documentation>
+			If this point marks a jump pad (a special device that causes the bot to jump high or far).
+		</documentation>
+   </property>   
+   <property name="JumpDest" type="boolean" category="static">
+      <documentation>
+			If this point marks a jump destination - some place that can be reached by some special jump.
+		</documentation>
+   </property>
+   <property name="Teleporter" type="boolean" category="static">
+      <documentation>
+			If this point marks a teleport. 
+		</documentation>
+   </property>
+   <property name="Rotation" type="Rotation" category="static">
+      <documentation>
+			If the type is AIMarker. The rotation the bot should be
+			facing, when doing the action specified by AIMarker. Sent only in HandShake.
+		</documentation>
+   </property>
+   <property name="RoamingSpot" type="boolean" category="static">
+      <documentation>
+			Some ambush point, where is good chance to intercept
+			approaching opponents. Sent only in HandShake.
+		</documentation>
+   </property>
+   <property name="SnipingSpot" type="boolean" category="static">
+      <documentation>Point good for sniping. Sent only in HandShake.</documentation>
+   </property>
+   <property name="ItemInstance" type="Item" jflex="no" category="static">
+      <documentation>If item should be present at this navpoint it's instance will be here.</documentation>
+   </property>
+   <property name="OutgoingEdges" type="Map&lt;UnrealId, NavPointNeighbourLink&gt;"
+             default="new HashMap&lt;UnrealId, NavPointNeighbourLink&gt;()"
+             jflex="no" category="static">
+      <documentation>Maps edge-LEADING_TO-navpoint-UnrealId to neighbour link, those are outgoing edges (those edges that originates in this navpoint going to another one, those you may usually travel).</documentation>
+   </property>
+   <property name="IncomingEdges" type="Map&lt;UnrealId, NavPointNeighbourLink&gt;"
+             default="new HashMap&lt;UnrealId, NavPointNeighbourLink&gt;()"
+             jflex="no" category="static">
+      <documentation>Maps edge-ORIGINATES_FROM-navpoint-UnrealId to neighbour link, those are incoming edges (those edges that originates in different navpoint and ends here, do not use this to ask whether you can get to navpoint of specific unreal id, use OutgoingEdges instead).</documentation>
+   </property>
+   <property name="PreferedWeapon" type="String" category="static">
+      <documentation>
+			Class of the weapon that should be prefered when using this
+			point for AIMarker specified action. Sent only in HandShake.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !-->
+   
+   <extra>
+      <code>
+         <java>        
+         	<javapart>
+         		<classcategory name="static"/>
+         		<classtype name="impl" />
+         	</javapart>          		   	
+         	<javapart>
+         		<classcategory name="base"/>
+         		<classtype name="message" />
+         	</javapart>
+         	/**
+		     * DO NOT USE THIS METHOD! Reserved for GaviaLib (Pogamut core)! It's used
+		     * to set correct item instance into the NavPoint.
+		     */  	
+		    public void setItemInstance(Item item) {
+		        this.ItemInstance = item;
+		        if (item != null) {
+		        	this.Item = item.getId();
+		        }
+		    } 	
+		</java>
+      </code>
+   </extra>
+</messageobject>

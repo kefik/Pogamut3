@@ -1,0 +1,65 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step11-Installers">
+  <!--
+	<step id="GameBotsUDK build" failStop="true">
+		<process>
+			<id>Install GameBotsUDK</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>trunk/project/Main/Gamebots/GameBotsUDK</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>7200000</timeout>
+		</process>
+	</step>
+	-->
+	<step id="Installer PogamutUT2004 build" failStop="true">
+		<process>
+			<id>Package Installer PogamutUT2004</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run>
+			<arg>clean</arg><arg>package</arg><arg>-Dmaven.test.skip=true</arg>
+			<arg>-Pcommon-download,ut2004-download,installer-ut2004</arg><arg>-U</arg>
+			<dir>trunk/project/Main/Installer</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>7200000</timeout>
+		</process>
+	</step>	
+	<!--
+	<step id="Installer PogamutUT3 build" failStop="true">
+		<process>
+			<id>Package Installer PogamutUT3</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run>
+			<arg>package</arg><arg>-Dmaven.test.skip=true</arg>
+			<arg>-Pcommon-download,ut3-download,installer-ut3</arg><arg>-U</arg>
+			<dir>trunk/project/Main/Installer</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>7200000</timeout>
+		</process>
+	</step>
+	-->
+	<step id="Installer PogamutEmohawk build" failStop="true">
+		<process>
+			<id>Package Installer PogamutEmohawk</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run>
+			<arg>package</arg><arg>-Dmaven.test.skip=true</arg>
+			<arg>-Pcommon-download,ue2-download,installer-ue2emohawk</arg><arg>-U</arg>
+			<dir>trunk/project/Main/Installer</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>7200000</timeout>
+		</process>
+	</step>
+	<step id="Installer PogamutDefCon build" failStop="true">
+		<process>
+			<id>Package Installer PogamutDefCon</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run>
+			<arg>package</arg><arg>-Dmaven.test.skip=true</arg>
+			<arg>-Pcommon-download,defcon-download,installer-defcon</arg><arg>-U</arg>
+			<dir>trunk/project/Main/Installer</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>7200000</timeout>
+		</process>
+	</step>
+
+</PogamutReleaseConfig>

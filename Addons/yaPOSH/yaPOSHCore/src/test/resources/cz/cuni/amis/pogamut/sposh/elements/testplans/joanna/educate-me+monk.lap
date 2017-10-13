@@ -1,0 +1,41 @@
+; educate-me+monk.lap (from educate-monkey, test-child, child-test,
+; rule-learn, prior-learn driven-btest binary-test) 10 Feb 2001 --
+; JJB.  Minor details -- keep track of real right answer for my sake,
+; not just whether to reward.  Uses nested comps
+
+(
+ (C selective-reward
+    (elements ((bad-red (trigger ((board-only 'red) (hand 'white))) buzzer))
+	      ((bad-white (trigger ((board-only 'white)(hand 'blue))) buzzer))
+	      ((bad-blue (trigger ((board-only 'blue)(hand 'green))) buzzer))
+	      ((bad-green (trigger ((board-only 'green)(hand 'yellow))) buzzer))
+	      ((ok-other give-peanut))
+              ))
+ (C record-correctness
+    (elements ((do-reward (trigger ((accounted) (rewarded nil) )) selective-reward))
+	      ((my-bad-red (trigger ((find-red) (hand 'white))) monkey-wrong))
+	      ((my-bad-white (trigger ((find-white)(hand 'blue))) monkey-wrong))
+	      ((my-bad-blue (trigger ((find-blue)(hand 'green))) monkey-wrong))
+	      ((my-bad-green (trigger ((find-green)(hand 'yellow))) monkey-wrong))
+	      ((my-ok-other monkey-right))
+              ))
+ (C pick-test
+    (elements ((set-test (trigger ((criteria 3))) pick-ngram))
+              ((set-pair pick-pair))
+              ))
+ (C educated-grasp
+   (elements ((grasp-it (trigger ((target-chosen))) grasp-seen))
+	     ((avoid-it (trigger ((focus-rule 'avoid))) pick-other))
+	     ((select-it (trigger ((focus-rule 'select))) pick-this))
+	     ((focus-it priority-focus))
+	     ))
+ (AP end-of-test (rules-from-reward save-rule-learning-results check-criteria finish-test))
+ (DC life (goal (test-done hoot clean-up))
+     (drives
+      ((set-puzzle (trigger ((no-test))) pick-test))
+      ((reward (trigger ((grasping)(rewarded nil))) record-correctness))
+      ((get-reward (trigger ((rewarded))) end-of-test))
+      ((choose (trigger ((grasping nil))) educated-grasp))
+      ((complain (trigger nil) hoot)))
+     )
+ )

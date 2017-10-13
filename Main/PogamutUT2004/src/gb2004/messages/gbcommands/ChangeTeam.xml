@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CHANGETEAM" extends="CommandMessage" name="ChangeTeam"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Command for changing the bot team. Responds with TEAMCHANGE
+		message. This command can be issued also by bot on the bot
+		itself (in this case Id attribute is not parsed).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the target bot (won't be parsed if sent to bot
+			connection).
+		</documentation>
+   </property>
+   <property name="Team" type="int">
+      <documentation>
+			This is the team we want to change to (0 for red, 1 for
+			blue, etc.).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

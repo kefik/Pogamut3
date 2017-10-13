@@ -1,0 +1,16 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step06-DeployRelease-Plugins">
+	<step id="Deploy (release version, skip-tests)" failStop="true">
+    <!--
+		  
+      NETBEANS SUITE
+      
+		-->	
+		<process>
+			<id>Deploy PogamutNetbeansSuite</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>deploy</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>trunk/project/Main/PogamutNetbeansSuite</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>
+</PogamutReleaseConfig>

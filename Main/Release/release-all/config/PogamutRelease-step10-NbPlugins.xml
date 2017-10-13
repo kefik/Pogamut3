@@ -1,0 +1,20 @@
+<PogamutReleaseConfig baseDir="D:/Workspaces/Pogamut-Release" id="step10-NbPlugins">
+	<step id="PogamutNetbeansSuite Package" failStop="false">
+		<process>
+			<id>Package PogamutNetbeansSuite</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>package</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>trunk/project/Main/PogamutNetbeansSuite</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>
+	<step id="PogamutNetbeansSuite Deploy" failStop="true">
+		<process>
+			<id>Deploy PogamutNetbeansSuite</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>deploy</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>trunk/project/Main/PogamutNetbeansSuite</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>
+</PogamutReleaseConfig>

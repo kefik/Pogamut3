@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETEMOT" extends="CommandMessage" name="SetEmoticon" type="Control">
+       <gbpackage name="GameBotsUE2"/>
+       <gbpackage name="GBEmohawk"/>
+	<group name="Bot" />
+	<documentation>
+		Sets the emoticon for current bot.
+	</documentation>
+
+	<!-- List of all properties of this command. !-->
+
+	<property name="Center" type="String">
+	<documentation>
+            Sets the center emoticon.
+        </documentation>
+	</property>
+	<property name="CenterSize" type="int">
+	<documentation>
+            Sets the center emoticon size. 0 will disable the emoticon.
+        </documentation>
+	</property>
+	<property name="Left" type="String">
+		<documentation>
+            Sets the left emoticon.
+        </documentation>
+	</property>
+	<property name="LeftSize" type="int">
+	<documentation>
+            Sets the left emoticon size. 0 will disable the emoticon.
+        </documentation>
+	</property>
+	<property name="Right" type="String">
+		<documentation>
+            Sets the right emoticon.
+        </documentation>
+	</property>
+	<property name="RightSize" type="int">
+	<documentation>
+            Sets the right emoticon size. 0 will disable the emoticon.
+        </documentation>
+	</property>
+	<property name="BubbleType" type="String">
+	<documentation>
+            Sets the bubble type behind the emoticons.
+        </documentation>
+	</property>
+	<property name="BubbleSize" type="int">
+	<documentation>
+            Sets the bubble size behind the emoticons. 0 for no bubble.
+        </documentation>
+	</property>
+	<property name="Time" type="double">
+	<documentation>
+            Fade out of the emoticons in seconds.
+        </documentation>
+	</property>
+
+	<!-- Extra information used by different modules of the Pogamut platform. !-->
+	<extra>
+		<code />
+	</extra>
+</commandobject>

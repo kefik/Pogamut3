@@ -1,0 +1,6 @@
+(
+    (RDC testPlan
+	(drives ((dummy dummyPrimitive("ahoj", 12, True, -.02, $named="Named variable"))))
+    )
+)
+

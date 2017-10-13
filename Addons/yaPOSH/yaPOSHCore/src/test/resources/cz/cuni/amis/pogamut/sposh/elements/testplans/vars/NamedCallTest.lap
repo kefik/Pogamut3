@@ -1,0 +1,9 @@
+(
+    (AP testAP vars($who="everyone", $why="who_cares", $when="anytime", $method="brutal")
+        (action1($who, 'killAllHumans, 12.6, $when) action2)
+    )
+    (RDC PoshBot
+        (drives ((stay testAP($when="now", $who="just_first_player")))
+        )
+    )
+)

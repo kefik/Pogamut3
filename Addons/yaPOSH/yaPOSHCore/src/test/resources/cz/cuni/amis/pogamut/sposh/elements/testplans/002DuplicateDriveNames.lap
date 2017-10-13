@@ -1,0 +1,8 @@
+(
+    (RDC life
+        (drives
+            (  (dupl action1))
+            (  (dupl action2))
+        )
+     )
+)

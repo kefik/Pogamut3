@@ -1,0 +1,11 @@
+; Posh template
+; -------------------------------------------------------------------
+(
+    (RDC life (goal ((fail)))
+        (drives
+            (  (nothing1     (trigger ((ok125))) action1))
+            (  (nothing2     (trigger ((ok3))) action2))
+            (  (nothing3     (trigger ((ok1234))) action3))
+        )
+     )
+)

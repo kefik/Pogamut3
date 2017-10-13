@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ADDBOT" extends="CommandMessage" name="AddBot" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Server"/>
+   <documentation>
+		Will add original epic bot to a game. May have issues with team
+		balancing.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Name" type="String" optional="true">
+      <documentation>Optional name of the bot.</documentation>
+   </property>
+   <property name="StartLocation" type="Location" optional="true">
+      <documentation>
+			Optional start location of the bot.
+		</documentation>
+   </property>
+   <property name="StartRotation" type="Rotation" optional="true">
+      <documentation>
+			Optional start rotation of the bot.
+		</documentation>
+   </property>
+   <property name="Skill" type="int" optional="true" default="3">
+      <documentation>
+			Skill of the bot - from 1 to 7 (best).
+		</documentation>
+   </property>
+   <property name="Team" type="int" optional="true">
+      <documentation>
+	Desired team of the of the bot (0 red, 1 blue).
+      </documentation>
+   </property>
+   <property name="Type" type="String" optional="true">
+      <documentation>
+			The class of the added bot - optional.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: cz/cuni/amis/nb/pogamut/base/Bundle.properties
+OpenIDE-Module-Layer: cz/cuni/amis/nb/pogamut/base/layer.xml

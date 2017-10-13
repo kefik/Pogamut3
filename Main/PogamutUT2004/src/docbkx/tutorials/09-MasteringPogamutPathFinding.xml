@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="09-MasteringPogamutPathFinding"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>MasteringPogamutPathFinding</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>MasteringPogamutPathFinding</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans Plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This tutorial assumes you have completed <link
+    linkend="00-EmptyBot">basic pogamut tutorial</link> and that you are
+    familiar basic Pogamut API.</para>
+  </section>
+
+  <section>
+    <title>Tutorial</title>
+
+    <para>This tutorial will present MasteringPogamutPathFinding.</para>
+    <para> In this tutorial we will show you:
+        <itemizedlist>
+        <listitem>
+          <para>MasteringPogamutPathFinding</para>
+        </listitem>
+        </itemizedlist>
+    </para>
+
+
+    <section role="info">
+      <title>Setting up the MasteringPogamutPathFinding.</title>
+
+      <para>MasteringPogamutPathFinding.
+      </para>
+
+      <para><guimenu>MasteringPogamutPathFinding.</guimenu></para>
+
+      <para> <programlisting language="java">
+        MasteringPogamutPathFinding.
+    </programlisting>
+    </para>
+
+    </section>
+    </section>
+
+
+  <section>
+    <title>Where to continue</title>
+    <para>TODO.</para>
+  </section>
+</chapter>

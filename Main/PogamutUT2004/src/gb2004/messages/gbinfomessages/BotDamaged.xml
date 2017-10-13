@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="DAM" name="BotDamaged" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. This bot has been damaged.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Damage" type="int" category="local">
+      <documentation>Amount of damage taken.</documentation>
+   </property>
+   <property name="DamageType" type="String" category="local">
+      <documentation>
+			A string describing what kind of damage.
+		</documentation>
+   </property>
+   <property name="WeaponName" type="String" category="local">
+      <documentation>
+			Name of the weapon that caused this damage. Not sent right now.
+		</documentation>
+   </property>
+   <property name="Flaming" type="boolean" category="local">
+      <documentation>
+			If this damage is causing our bot to burn. TODO
+		</documentation>
+   </property>
+   <property name="CausedByWorld" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by world - falling into lava, or falling down.
+		</documentation>
+   </property>
+   <property name="DirectDamage" type="boolean" category="local">
+      <documentation>
+			If the damage is direct. TODO
+		</documentation>
+   </property>
+   <property name="BulletHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by bullet.
+		</documentation>
+   </property>
+   <property name="VehicleHit" type="boolean" category="local">
+      <documentation>
+			If this damage was caused by vehicle running over us.
+		</documentation>
+   </property>
+   <property name="Instigator" type="UnrealId" category="local">
+      <documentation>
+			Id of the player who is damaging the bot, filled only if
+			instigator is in the field of view of the bot.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

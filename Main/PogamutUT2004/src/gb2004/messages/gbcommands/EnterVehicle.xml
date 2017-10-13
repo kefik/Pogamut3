@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="ENTER" extends="CommandMessage" name="EnterVehicle" type="Control">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Tries to enter vehicle specified by Id. Note:
+		You have to be in vehicle EntryRadius to enter (default 100 ut units). 
+		Response to this command are messages ENTERED and LOCKED.
+		Beware! When in vehicle just command RUNTO with Target specified works for move commands. Any other move commands will cause vehicle to got straight ahead.
+	Also it is not possible to control speed or steering at this moment. Everything is done automaticaly by RUNTO with Target specified.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>Id of the vehicle we want to enter.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

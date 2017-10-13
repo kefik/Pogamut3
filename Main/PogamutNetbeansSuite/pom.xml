@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cz.cuni.amis.pogamut</groupId>
+        <artifactId>pogamut-pom</artifactId>
+        <version>3.7.1-SNAPSHOT</version>
+        <relativePath>../../PogamutPom/pom.xml</relativePath>
+    </parent>
+
+    <groupId>cz.cuni.amis.pogamut</groupId>
+    <artifactId>pogamut-netbeans-suite</artifactId>
+    <version>3.7.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Pogamut Netbeans Module Suite</name>
+
+    <properties>
+        <netbeans.version>RELEASE82</netbeans.version>
+        <!-- <netbeans.installation.path>c:\Program Files\NetBeans 7.1.2\</netbeans.installation.path> -->
+        <!-- <netbeans.installation.path>c:\Program Files (x86)\NetBeans 7.3.1\</netbeans.installation.path> -->
+        <netbeans.installation.path>c:\Program Files (x86)\NetBeans 8.2\</netbeans.installation.path>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>amis-artifactory</id>
+            <name>AMIS Artifactory</name>
+            <url>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</url>
+        </repository>
+    </repositories>
+
+    <modules>
+
+        <module>PogamutNbLibs</module>
+        <module>PogamutNbBase</module>
+        <module>PogamutNbUT2004</module>
+        <module>PogamutNbUnreal</module>
+        <module>PogamutNbUDK</module>
+<!--
+        <module>Support</module>
+-->
+        <module>Shed</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>updatesite</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>nbm-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>site</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>autoupdate</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- <distBase>url where your nbm files are located, if not defined within the nbm files</distBase>
+                                     -->
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <configuration>
+                                    <tasks>
+                                        <mkdir dir="${project.build.directory}"/>
+                                        <zip destfile="${project.build.directory}/nbm-updates.zip">
+                                            <fileset dir="${project.build.directory}/netbeans_site">
+                                                <include name="**/*.*"/>
+                                            </fileset>
+                                        </zip>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>attach-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attach-artifact</goal>
+                                </goals>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <file>${project.build.directory}/nbm-updates.zip</file>
+                                            <type>zip</type>
+                                            <classifier>nbm-updates</classifier>
+                                        </artifact>
+                                    </artifacts>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- netbeans modules in 6.9+ are 1.6 compatible -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>nbm-maven-plugin</artifactId>
+                    <version>3.4</version>
+                    <configuration>
+                        <cluster>foobar</cluster>
+                        <netbeansInstallation>${netbeans.installation.path}</netbeansInstallation>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

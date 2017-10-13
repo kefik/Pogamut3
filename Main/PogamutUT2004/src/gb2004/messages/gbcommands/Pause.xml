@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="PAUSE" extends="CommandMessage" name="Pause" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Will pause/unpause the game. The game can be paused just if
+		bAllowPause = true in GameBots2004.ini (different settings for bots
+		and server possible).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="PauseBots" type="boolean">
+      <documentation>
+			Iif true only bots will be paused – players and spectators
+			will move freely.
+		</documentation>
+   </property>
+   <property name="PauseAll" type="boolean">
+      <documentation>
+			Everyone in the game will be paused if set to true. To
+			unpause send PAUSE command with PauseAll set to false.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

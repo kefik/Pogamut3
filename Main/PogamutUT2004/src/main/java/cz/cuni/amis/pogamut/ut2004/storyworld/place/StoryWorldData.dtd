@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	The Storyworld defines story places inside an UT2004 map.
+-->
+<!ELEMENT storyworld (places, bases)>
+
+<!ELEMENT places (place*)>
+
+<!ELEMENT place>
+
+<!ATTLIST place name CDATA #REQUIRED>
+<!ATTLIST place inside CDATA #IMPLIED>
+
+<!ELEMENT bases (base*) >
+
+<!ELEMENT base (nav*) >
+
+<!ATTLIST base name CDATA #REQUIRED>
+<!ATTLIST base inside CDATA #IMPLIED>
+
+<!ELEMENT nav>

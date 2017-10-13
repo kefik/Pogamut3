@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+    <pack name="GameBots2004">
+        <value name="pogamut.ut2004.home"
+               keypath="Environment"
+               root="HKCU"
+               string="$UT2004_HOME"/>
+    </pack>
+    
+    <pack name="GameBotsUT3">
+        <value name="pogamut.ut3.home"
+               keypath="Environment"
+               root="HKCU"
+               string="$UT3_HOME"/>
+    </pack>
+
+    <pack name="GameBotsUE2">
+        <value name="pogamut.ue2.home"
+               keypath="Environment"
+               root="HKCU"
+               string="$UE2_HOME"/>
+
+        <!-- Set Win98 compatibility mode for UE2 executables !-->
+        <value name="$UE2_HOME/System/UCC.exe"
+               keypath="SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+               root="HKLM"
+               string="WIN98"/>
+        <value name="$UE2_HOME/System/UE2Runtime.exe"
+               keypath="SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"
+               root="HKLM"
+               string="WIN98"/>
+    </pack>
+
+    <pack name="Default">
+       <value name="JAVA_HOME"
+              keypath="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+              root="HKLM"
+              string="$JDKPath"
+       />
+    </pack>
+    
+    <pack name="Apache Maven 3.0.4">
+       <value name="PATH"
+              keypath="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+              root="HKLM"
+              string="$OLD_KEY_VALUE;$MAVEN_BASE\bin"
+       />
+       <value name="MAVEN_HOME"
+              keypath="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+              root="HKLM"
+              string="$MAVEN_BASE\"
+       />
+       <value name="MAVEN_OPTS"
+              keypath="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+              root="HKLM"
+              string="-Xmx1g -Xms512m"
+       />
+    </pack>
+
+</registry>

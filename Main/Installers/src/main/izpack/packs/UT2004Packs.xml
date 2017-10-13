@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<installation version="1.0">
+    <packs>
+        <pack id="ut2004pack" name="Unreal Tournament 2004 stuff" required="no" >
+            <description>Files specific to Unreal Tournament 2004.</description>
+        </pack>
+	
+        <pack name="GameBots2004" id="gb4utpack" parent="ut2004pack" required="no">
+            <description>GameBots2004 network interface for Unreal Tournament 2004 used to control bots and export information about the game state.
+To install GameBots2004 you must have UT2004 installed first!</description>
+            <fileset dir="GameBotsUT2004/" targetdir="$UT2004_HOME/"/>
+            <fileset dir="GameBotsUT2004Scenario/" targetdir="$UT2004_HOME/"/>
+        </pack>
+	
+        <pack id="ut2004patchpack" name="UT2004Patch" required="no" preselected="no" parent="ut2004pack">
+            <description>Unreal Tournament 2004 version 3369 is required to run the GameBots2004 properly. DON'T INSTALL THIS PATCH IT IF YOU INSTALLED UNREAL ANTHOLOGY or IF YOUR UNREAL IS ALREADY at 3369. You can check Unreal Tournament 2004 version by starting Unreal Tournament 2004 GUI, opening the Join Game tab and the news page will have the number in the upper right corner.</description>
+
+            <file src="utpatch/ut2004-winpatch3369.exe" targetdir="$INSTALL_PATH/" os="windows"/>
+
+            <executable targetfile="$INSTALL_PATH/ut2004-winpatch3369.exe" stage="postinstall" failure="ask">
+                <os family="windows"/>
+            </executable>
+            <executable targetfile="$INSTALL_PATH/TODO"  stage="postinstall" failure="ask">
+                <os family="unix"/>
+            </executable>
+        </pack>
+        
+        <pack name="UT2004 Shortcuts" required="no">
+            <description>Useful shortcuts for Pogamut UT2004.</description>
+            
+            <file src="shortcuts/UT2004/startUT2004low.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startUT2004low.bat" type="plain" os="win"/>
+
+            <file src="shortcuts/UT2004/startGamebotsDMServer.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startGamebotsDMServer.bat" type="plain" os="win"/>
+
+            <file src="shortcuts/UT2004/startGamebotsCTFServer.bat" targetdir="$INSTALL_PATH/"/>
+            <parsable targetfile="$INSTALL_PATH/startGamebotsCTFServer.bat" type="plain" os="win"/>
+        </pack>
+    
+        <pack id="ut2004archetypespack" name="UT2004 Example Projects Archetypes" required="no">
+            <description>Installs Maven archetypes for projects using UT2004. This makes it easy to start creating your own Maven based projects.</description>
+            
+            <fileset dir="archetypes/ut2004/" targetdir="$INSTALL_PATH/archetypes/ut2004"/>
+            <parsable targetfile="$INSTALL_PATH/archetypes/ut2004/install-all.bat" type="plain" os="win"/>
+        </pack>
+<!--
+        <pack name="Maps and models for UT" required="no" parent="Unreal Tournament 2004 stuff">
+            <description>
+                Civil maps and models for UT2004.
+            </description>
+        </pack>
+!-->
+    </packs>
+</installation>

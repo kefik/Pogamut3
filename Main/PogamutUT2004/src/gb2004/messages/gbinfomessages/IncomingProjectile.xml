@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="PRJ" name="IncomingProjectile"
+               type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocated">
+   		<classcategory name="base" />
+		<classcategory name="shared" />
+		<classtype name="abstract" />
+   </interface>
+   <documentation>
+		Both asynchronous and synchronous message. Incoming projectile that we can see.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>Unique Id of the projectile.</documentation>
+   </property>
+   <property name="ImpactTime" type="double" category="local">
+      <documentation>Estimated time till impact.</documentation>
+   </property>
+   <property name="Direction" type="Vector3d" category="shared">
+      <documentation>
+			Which direction projectile is heading to -&gt; orientation
+			vector.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="shared">
+      <documentation>
+			Current location of the projectile.
+		</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+      <documentation>
+			Current velocity vector of the projectile.
+		</documentation>
+   </property>
+   <property name="Speed" type="double" category="shared">
+      <documentation>
+			Current speed of the projectile.
+		</documentation>
+   </property>
+   <property name="Origin" type="Location" category="shared" nullable="false">
+      <documentation>
+			Possition of the origin, when combined with direction can
+			define the line of fire.
+		</documentation>
+   </property>
+   <property name="DamageRadius" type="double" category="shared">
+      <documentation>
+			If the projectile has splash damage, how big it is – in ut
+			units.
+		</documentation>
+   </property>
+   <property name="Type" type="String" category="shared">
+      <documentation>
+			The class of the projectile (so you know what is flying
+			against you).
+		</documentation>
+   </property>
+    <property name="Visible" type="boolean" category="local" default="true">
+      <documentation>
+			The class of the projectile (so you know what is flying
+			against you).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

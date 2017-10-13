@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="CHATTR" extends="CommandMessage" name="ChangeAttribute"
+               type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Will change the specified attribute of the bot. This command can
+		be issued also by bot on the bot itself (in this case Id
+		attribute is not parsed). Issuing by bot is allowed just when
+		the game has allowed cheating (bAllowCheats = True in GameBots2004.ini
+		file).
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="UnrealId">
+      <documentation>
+			Id of the target bot. Not used if sent as a command for the
+			bot.
+		</documentation>
+   </property>
+   <property name="Health" type="int">
+      <documentation>Sets the bot health. Maximum health level is 199 in UT2004. </documentation>
+   </property>
+   <property name="Adrenaline" type="int">
+      <documentation>Sets the bot adrenaline. From 0 to 100.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

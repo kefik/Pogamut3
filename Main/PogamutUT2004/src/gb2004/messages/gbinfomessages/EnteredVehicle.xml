@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ENTERED" name="EnteredVehicle" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <documentation>
+		Asynchronous message. Sent as a response to ENTER command. Sent if
+		the ENTER command was successfull. Means we are now driving the vehicle.
+		Beware! When in vehicle just command RUNTO with Target specified works for move commands. Any other move commands will cause vehicle to got straight ahead.
+	Also it is not possible to control speed or steering at this moment. Everything is done automaticaly by RUNTO with Target specified.
+	</documentation>
+   <property name="Id" type="UnrealId" category="local">
+      <documentation>Id of the vehicle entered. </documentation>
+   </property>
+   <property name="Type" type="String" category="local">
+      <documentation>Type of the vehicle entered. What kind of turret or car. </documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>Location of the vehicle.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

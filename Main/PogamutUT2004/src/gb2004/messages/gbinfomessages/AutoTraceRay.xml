@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="ATR" name="AutoTraceRay" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Synchronous message. Contains the results of automatically
+		casted rays. One ATR message is for one casted ray. New
+		automatically casted rays can be defined by ADDRAY command and
+		removed by REMOVERAY command.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			An Id for this ray (should be unique), assigned by the user
+			when adding ray.
+		</documentation>
+   </property>
+   <property name="From" type="Location" category="local">
+      <documentation>
+			Location from which the ray is emitted.
+		</documentation>
+   </property>
+   <property name="To" type="Location" category="local">
+      <documentation>
+			Location to which the ray is sent.
+		</documentation>
+   </property>
+   <property name="FastTrace" type="boolean" category="local">
+      <documentation>
+			True if it is a fast trace, false if not (fast trace is a
+			bit faster version of UT2004 ray trace - but provides us
+			with less information - just true/false if we hit something
+			on the way or not).
+		</documentation>
+   </property>
+   <property name="FloorCorrection" type="boolean" category="local">
+      <documentation>
+      If we should correct ray directions accoring floor normal. Note: Has issue - we can't set set rays up or down when correction is active.
+		</documentation>
+   </property>
+   <property name="Result" type="boolean" category="local">
+      <documentation>
+			True if it hit something, false if not.
+		</documentation>
+   </property>
+   <property name="HitNormal" type="Vector3d" category="local">
+      <documentation>
+			Vector with normal of the plane we have hit (not sent if
+			FastTrace is True).
+		</documentation>
+   </property>
+   <property name="HitLocation" type="Location" category="local">
+      <documentation>
+			Vector with location of the collision (not sent if FastTrace
+			is True).
+		</documentation>
+   </property>
+   <property name="TraceActors" type="boolean" category="local">
+      <documentation>
+			If we traced also actors with this ray (actors – moving
+			things in a game – bots, players, monsters, pickup …) (only
+			if NOT using FastTrace)
+		</documentation>
+   </property>
+   <property name="HitId" type="UnrealId" category="local">
+      <documentation>
+			Id of the actor we have hit. (Sent if FastTrace is False and
+			TraceActors is True).
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

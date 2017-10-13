@@ -1,0 +1,6 @@
+(
+    (RDC testPlan (goal ((succeed)))
+	(drives ((dummy doNothing)))
+    )
+)
+

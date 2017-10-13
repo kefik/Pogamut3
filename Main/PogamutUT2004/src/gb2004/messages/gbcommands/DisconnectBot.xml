@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DISCONNECT" extends="CommandMessage" name="DisconnectBot" type="Configure">
+	<gbpackage name="GameBots2004" />
+	<gbpackage name="GBScenario" />
+	<gbpackage name="GameBotsAnim" />
+	<group name="Bot" />
+	<documentation>
+		Tells the GB2004 to destroy the bot inside UT2004 and
+		close the connection which results in the termination
+		of UT2004Bot as
+		well.
+    </documentation>
+	<code />
+	<extra />   
+</commandobject>

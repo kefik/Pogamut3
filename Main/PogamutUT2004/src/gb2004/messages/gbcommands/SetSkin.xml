@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETSKIN" extends="CommandMessage" name="SetSkin" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>   
+   <gbpackage name="GBEmohawk"/>   
+   <group name="Bot"/>
+   <documentation>
+		Sets the bot current skin through Skin attribute (e.g. SETSKIN
+		{Skin "HumanMaleA.MercMaleA"}). Find all packages and skins
+		through unrealEd (Actor browser, search in UT2004/Animations
+		folder). Supported bot skins are Aliens (Aliens.), Bots (Bot.),
+		human males (HumanMaleA.), human females (HumanFemaleA. ),
+		juggernauts (Jugg.). Skaarj skins are not supported at the time
+		being.
+		In UnrealRuntime we use different attributes to set up textures of 
+		the bots.
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Skin" type="String">
+      <documentation>Holds the desired skin.</documentation>
+   </property>
+   <property name="URHair" type="String">
+      <documentation>A number representing hair. String type is desired here. Parsed only in UnrealRuntime.</documentation>
+   </property>
+   <property name="URClothes" type="String">
+      <documentation>A number representing clothes. String type is desired here. Parsed only in UnrealRuntime.</documentation>
+   </property>
+   <property name="URSkin" type="String">
+      <documentation>A number representing skin. String type is desired here. Parsed only in UnrealRuntime.</documentation>
+   </property>   
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

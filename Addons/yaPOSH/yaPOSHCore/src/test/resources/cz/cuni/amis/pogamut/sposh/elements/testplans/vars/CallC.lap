@@ -1,0 +1,13 @@
+(
+    (C testC vars($var1=12.5, $var2="seznam", $var3=12)
+        (elements ((test runSomething)))
+    )
+
+    (AP testAP vars($who="everyone", $why="who_cares", $when="anytime", $method="brutal")
+        (testC($who, "killAllHumans", 12.6, $when) )
+    )
+    (RDC PoshBot (goal ((fail)))
+	(drives ((stay testAP)))
+    )
+)
+

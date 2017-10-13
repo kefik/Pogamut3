@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <InputEvents>
+    <ut2004messages.HelloBotHandshake/>
+    <ut2004messages.HandShakeStart/>
+    <ut2004messages.GameInfoMessage>
+      <Gametype>BotFSMTest</Gametype>
+      <Level>DM-Test</Level>
+      <WeaponStay>false</WeaponStay>
+      <TimeLimit>0.0</TimeLimit>
+      <FragLimit>0</FragLimit>
+      <GoalTeamScore>0</GoalTeamScore>
+      <MaxTeams>0</MaxTeams>
+      <MaxTeamSize>0</MaxTeamSize>
+      <GamePaused>false</GamePaused>
+      <BotsPaused>false</BotsPaused>
+    </ut2004messages.GameInfoMessage>
+    <ut2004messages.PlayerListStart/>
+    <ut2004messages.PlayerMessage>
+      <Id unrealId="jan" />
+      <Jmx></Jmx>
+      <Name></Name>
+      <Action></Action>
+      <Visible>false</Visible>
+      <Team>0</Team>
+      <Weapon></Weapon>
+      <Reachable>false</Reachable>
+      <Firing>0</Firing>
+    </ut2004messages.PlayerMessage>
+    <ut2004messages.PlayerMessage>
+      <Id unrealId="petr" />
+      <Jmx></Jmx>
+      <Name></Name>
+      <Action></Action>
+      <Visible>false</Visible>
+      <Team>0</Team>
+      <Weapon></Weapon>
+      <Reachable>false</Reachable>
+      <Firing>0</Firing>
+    </ut2004messages.PlayerMessage>
+    <ut2004messages.PlayerListEnd/>
+    <ut2004messages.HandShakeEnd/>
+    <ut2004messages.ConfigChangeMessage>
+      <Id unrealId="he" />
+      <BotId unrealId="co?" />
+      <ManualSpawn>false</ManualSpawn>
+      <AutoTrace>false</AutoTrace>
+      <Name>to jako fakt</Name>
+      <SpeedMultiplier>1.0</SpeedMultiplier>
+      <Invulnerable>false</Invulnerable>
+      <VisionTime>10.0</VisionTime>
+      <ShowDebug>true</ShowDebug>
+      <ShowFocalPoint>false</ShowFocalPoint>
+      <DrawTraceLines>false</DrawTraceLines>
+      <SynchronousOff>false</SynchronousOff>
+      <AutoPickupOff>false</AutoPickupOff>
+    </ut2004messages.ConfigChangeMessage>
+    <ut2004messages.InitedMessageMessage>
+      <BotId unrealId="inited" />
+      <HealthStart>100</HealthStart>
+      <HealthFull>150</HealthFull>
+      <HealthMax>200</HealthMax>
+      <AdrenalineStart>20.0</AdrenalineStart>
+      <AdrenalineMax>100.0</AdrenalineMax>
+      <ShieldStrengthStart>0</ShieldStrengthStart>
+      <ShieldStrengthMax>0</ShieldStrengthMax>
+      <MaxMultiJump>2</MaxMultiJump>
+      <DamageScaling>1.0</DamageScaling>
+      <GroundSpeed>1.0</GroundSpeed>
+      <WaterSpeed>1.0</WaterSpeed>
+      <AirSpeed>1.0</AirSpeed>
+      <LadderSpeed>1.0</LadderSpeed>
+      <AccelRate>1.0</AccelRate>
+      <JumpZ>10.0</JumpZ>
+      <MultiJumpBoost>10.0</MultiJumpBoost>
+      <MaxFallSpeed>100.0</MaxFallSpeed>
+      <DodgeSpeedFactor>50.0</DodgeSpeedFactor>
+      <DodgeSpeedZ>60.0</DodgeSpeedZ>
+      <AirControl>70.0</AirControl>
+    </ut2004messages.InitedMessageMessage>
+    <ut2004messages.Spawn/>
+    <ut2004messages.PathListStart>
+      <MessageId>first path</MessageId>
+    </ut2004messages.PathListStart>
+    <ut2004messages.PathListEnd/>
+    <ut2004messages.BotKilled>
+      <Killer reference="../../ut2004messages.PlayerMessage/Id"/>
+      <DamageType></DamageType>
+      <DeathString></DeathString>
+      <WeaponName></WeaponName>
+      <Flaming>false</Flaming>
+      <CausedByWorld>false</CausedByWorld>
+      <DirectDamage>false</DirectDamage>
+      <BulletHit>false</BulletHit>
+      <VehicleHit>false</VehicleHit>
+    </ut2004messages.BotKilled>
+  </InputEvents>
+  <ExpectedEvents>
+    <translator.shared.events.ReadyCommandRequest/>
+    <ut2004messages.GameInfoMessage reference="../../InputEvents/ut2004messages.GameInfoMessage"/>
+    <ut2004messages.PlayerMessage reference="../../InputEvents/ut2004messages.PlayerMessage"/>
+    <ut2004messages.PlayerMessage reference="../../InputEvents/ut2004messages.PlayerMessage[2]"/>
+    <translator.shared.events.PlayerListObtained>
+      <players>
+        <ut2004messages.PlayerMessage reference="../../../../InputEvents/ut2004messages.PlayerMessage"/>
+        <ut2004messages.PlayerMessage reference="../../../../InputEvents/ut2004messages.PlayerMessage[2]"/>
+      </players>
+    </translator.shared.events.PlayerListObtained>
+    <translator.shared.events.MapPointListObtained/>
+    <translator.shared.events.InitCommandRequest/>
+    <ut2004messages.ConfigChangeMessage reference="../../InputEvents/ut2004messages.ConfigChangeMessage"/>
+    <ut2004messages.InitedMessageMessage reference="../../InputEvents/ut2004messages.InitedMessageMessage"/>
+    <translator.shared.events.BotFirstSpawned/>
+    <ut2004messages.Spawn reference="../../InputEvents/ut2004messages.Spawn"/>
+    <translator.shared.events.Path>
+      <pathId>first path</pathId>
+      <path class="linked-list"/>
+    </translator.shared.events.Path>
+    <ut2004messages.BotKilled reference="../../InputEvents/ut2004messages.BotKilled"/>
+  </ExpectedEvents>
+</TestPlan>

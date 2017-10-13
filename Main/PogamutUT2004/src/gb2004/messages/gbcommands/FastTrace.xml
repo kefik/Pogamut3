@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="FTRACE" extends="CommandMessage" name="FastTrace" type="Info">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <documentation>
+		Will send a ray from specified location to specified
+		destination, responds with FTR message. FTRACE uses FastTrace
+		function, which is faster then Trace function, but still rather
+		slow.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="Id" type="String">
+      <documentation>
+			Message Id made up by you and echoed in response so you can
+			match up response with query.
+		</documentation>
+   </property>
+   <property name="From" type="Location">
+      <documentation>
+			Origin point of the ray. If you won't support From
+			attribute, current bot location will be taken as From.
+		</documentation>
+   </property>
+   <property name="To" type="Location">
+      <documentation>Target point of the ray.</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="WAL" name="WallCollision" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. We have collided with a wall. Note it is
+		common to get a bunch of these when you try to run through a
+		wall or are pushed into one by gunfire or something.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="String" category="all">
+      <documentation>
+			Id of the wall we have hit (level geometry).
+		</documentation>
+   </property>
+   <property name="Normal" type="Vector3d" category="static">
+      <documentation>
+			Normal of the wall bot collided with.
+		</documentation>
+   </property>
+   <property name="Location" type="Location" category="local">
+      <documentation>
+			Absolute location of bot at the time of impact.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

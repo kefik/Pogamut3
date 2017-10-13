@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="INGP" name="NavPointNeighbourLink" type="Batch">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Server"/>
+   <documentation>
+		Info batch message. Start with SNGP, ends with ENGP. Sent for
+		each INAV message at the beginning of the communication. Holds
+		information about NavPoint neighbours. This way the reachability
+		graph can be exported from UT2004. You should interpret this as
+		a DIRECTED EDGE of the navpoint GRAPH that describes the the edge
+		from FromNavPoint to ToNavPoint.
+	</documentation>
+   <!-- List of all properties of this message. !--><property name="Id" type="UnrealId" category="all">
+      <documentation>
+			Unique Id of the NavPoint the link is leading to (end of the link). Always identical to ToNavPoint.getStringId().
+		</documentation>
+   </property>
+   <property name="Flags" type="int" category="static">
+      <documentation>
+			Holds information about the path from the NavPoint to its
+			neighbour that is represented by this message. TODO: see
+			reachspecs on UnrealWiki.
+		</documentation>
+   </property>
+   <property name="CollisionR" type="int" category="static">
+      <documentation>
+			Maximum collision radius of the path between navigation
+			points. Bot bigger then this cannot use this path.
+		</documentation>
+   </property>
+   <property name="CollisionH" type="int" category="static">
+      <documentation>
+			Maximum collision height of the path between navigation
+			points. Bot bigger then this cannot use this path.
+		</documentation>
+   </property>
+   <property name="TranslocZOffset" type="double" category="static">
+      <documentation>
+	       TODO: mystery - we haven't figure it out so far.
+	       Can be:
+	       a) z-coord of the translocator target
+	       b) translocator z-force for the translocator shot
+	   </documentation>
+   </property>
+   <property name="TranslocTargetTag" type="String" category="static">
+      <documentation>
+           TODO: mystery - we haven't figure it out so far.
+           Can be: where you should appear when successfully translocated or where to aim at
+       </documentation>
+   </property>
+   <property name="OnlyTranslocator" type="boolean" default="false" category="static">
+      <documentation>
+           Whether the translocator is the only way how to traverse this navigation edge.
+       </documentation>
+   </property>
+   <property name="ForceDoubleJump" type="boolean" default="false" category="static">
+      <documentation>
+           Whether you need to double jump to get to the neighbour navpoint.
+       </documentation>
+   </property>
+   <property name="NeededJump" type="Vector3d" category="static">
+      <documentation>
+           TODO: mystery how to interpret
+       </documentation>
+   </property>
+   <property name="NeverImpactJump" type="boolean" default="false" category="static">
+      <documentation>
+           TODO: mystery how to interpret
+       </documentation>
+   </property>
+   <property name="NoLowGrav" type="boolean" default="false" category="static">
+      <documentation>
+           TODO: mystery how to interpret
+       </documentation>
+   </property>
+   <property name="CalculatedGravityZ" type="double" default="0" category="static">
+      <documentation>
+           TODO: mystery how to interpret
+       </documentation>
+   </property>
+   <property name="FromNavPoint" type="NavPoint" jflex="no" category="static">
+      <documentation>
+			Start of the link (edge), where the link originates.
+		</documentation>
+   </property>
+   <property name="ToNavPoint" type="NavPoint" jflex="no" category="static">
+      <documentation>
+            End of the link (edge), where the link ends.
+        </documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code>
+         <java>
+         	<javapart>
+         		<classcategory name="all"/>
+         	</javapart>
+            /**
+             * Use to fill missing fields of the Item when creating MapObtained event before
+             * INIT command is requested.
+             */ 
+            public NavPointNeighbourLink(
+              NavPointNeighbourLink orig, 
+              NavPoint from,
+              NavPoint to
+            ) {
+                this(orig);
+                this.FromNavPoint = from;
+                this.ToNavPoint = to;
+            }   
+		</java>
+      </code>
+   </extra>
+</messageobject>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="DRAWLINES" extends="CommandMessage" name="DrawStayingDebugLines" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+	Draws colored staying debug lines in UT2004. Note that these lines may be erased by ALT + G command as well! Drawing works as follows: Two vectors from attribute Vectors are read and line with the specified color is drawn between them, then again two another vectors are read, etc. If there are not enough vectors in the list, line won't be drawn. Color is in RGB format - 0 to 255. ClearAll set to true clears all staying debug lines before drawing (new lines still be drawn if supplied).
+	</documentation>
+   <!-- List of all properties of this command. !-->
+   <property name="Vectors" type="String">
+      <documentation>Attribute holding the vectors for line drawing. Vectors of line points are sent as string. Vectors delimiter is ";" (without quotes), vector X,Y,Z delimiter is "," (without quotes). Example: {Vectors 1000,1000,0;2500,1000,0;3000,1000,0;4000,1000,0}. </documentation>
+   </property>
+   <property name="Color" type="Location">
+      <documentation>Color in RGB format sent as vector. Ranges from 0 to 255. Default is white.</documentation>
+   </property>   
+   <property name="ClearAll" type="Boolean">
+      <documentation>If set to true all previous staying debug lines will be erased prior to drawing.</documentation>
+   </property>      
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

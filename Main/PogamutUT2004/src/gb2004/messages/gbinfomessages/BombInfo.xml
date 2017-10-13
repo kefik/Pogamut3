@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="BOM" name="BombInfo" type="ObjectUpdate">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Synchronous message. BombInfo contains all info about the bomb
+		in the BotBombingRun game mode. Is not sent in other game types.
+	</documentation>
+   <!-- List of interfaces it implements -->
+   <interface name="ILocated">
+		<classcategory name="shared" />
+   </interface>
+   <interface name="ILocomotive">
+		<classcategory name="shared" />
+   </interface>
+   <interface name="IGBViewable">
+		<classcategory name="base" />
+		<classtype name="abstract" />
+   </interface>
+   <interface name="ILocalGBViewable">
+   		<classcategory name="local" />
+   		<classtype name="abstract" />
+   </interface>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="UnrealId" category="all">
+      <documentation>
+			An unique Id for this bomb, assigned by the game.
+		</documentation>
+   </property>
+   <property name="Velocity" type="Velocity" category="shared">
+   	<documentation>
+   		Current velocity of the bomb. TODO not sure if this actually does smthing
+   	</documentation>
+   </property>   
+   <property name="Location" type="Location" category="shared">
+      <documentation>
+			An absolute location of the bomb (Sent if we can actually
+			see the flag).
+		</documentation>
+   </property>
+   <property name="Holder" type="UnrealId" category="shared">
+      <documentation>
+			Id of player/bot holding the bomb. (Sent if we can actually
+			see the bomb and the bomb is being carried, or if the bomb
+			is being carried by us).
+		</documentation>
+   </property>
+   <property name="HolderTeam" type="Integer" category="shared" default="255">
+      <documentation>
+			The team of the current holder (if any).
+		</documentation>
+   </property>
+   <property name="Visible" type="boolean" category="local">
+      <documentation>True if the bot can see the bomb.</documentation>
+   </property>
+   <property name="State" type="String" category="shared">
+      <documentation>
+			Represents the state the bomb is in. Can be "Held",
+			"Dropped" or "Home".
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

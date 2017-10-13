@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE commandobject SYSTEM "../GBMessages.dtd">
+
+<commandobject command="SETLOCK" extends="CommandMessage" name="SetLock" type="Configure">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Server"/>
+   <documentation>
+		Will disable new connections to bot server and or control server
+		- depends on parameters. If last ControlServer instance is
+		leaving. ControlServer lock will be canceled.
+	</documentation>
+   <!-- List of all properties of this command. !--><property name="BotServer" type="boolean">
+      <documentation>
+			If BotConnections should be locked.
+		</documentation>
+   </property>
+   <property name="ControlServer" type="boolean">
+      <documentation>
+			If ControlConnections (server connections) should be locked.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</commandobject>

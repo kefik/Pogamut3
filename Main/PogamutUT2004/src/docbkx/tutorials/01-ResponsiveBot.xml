@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="01-ResponsiveBot"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>Responsive bot - event listening</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>WorldView object</para>
+        </listitem>
+
+        <listitem>
+          <para>registering listeners for asynchronous events and object
+          updates</para>
+        </listitem>
+
+        <listitem>
+          <para>retrieving objects from the WorldView</para>
+        </listitem>
+      </itemizedlist>Time for completing this tutorial is TODO minutes.</para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>Unreal Tournament 2004 / UDK with GameBotsUDK</para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004 / UDK with GameBotsUDK</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para>Netbeans 7.1.1</para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans plugin</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+<section>
+    <title>Video</title>
+
+    <para>This tutorial also has its short
+    <link xlink:href="http://www.youtube.com/watch?v=1LaczUS1VsY">video version</link>. Note that the video may show older version of the GUI and that the API could also have changed.</para>
+</section>
+
+  <section>
+    <title>Tutorial body</title>
+
+    <para><guimenuitem>Note:</guimenuitem> This tutorial can be applied to 
+    PogamutUT2004 and will mostly hold for PogamutUDK examples. </para>
+	
+	<para><guimenuitem>The outline:</guimenuitem>
+       <itemizedlist>
+        <listitem><para><link linkend="responsivebot.settingup">Setting up the example</link></para></listitem>		
+		<listitem><para><link linkend="responsivebot.iworldview">IWorldView abstraction</link></para></listitem>				
+		<listitem><para><link linkend="responsivebot.registering">Registering listeners</link></para></listitem>				
+        </itemizedlist>
+	</para>	
+    
+    <section>
+		<anchor xml:id="responsivebot.settingup" ></anchor>
+      <title>Setting up the example</title>
+
+      <para>This example is installed by Pogamut UT2004 installer. In NetBeans click New Project -&gt; Maven -&gt; Project From Archetype -&gt; Local Archetypes Catalog and select 01-responsive-bot-archetype project.
+	  Moreover, as Pogamut 3 has been fully mavenized you can try and run this example even without installing the Pogamut NetBeans plugin. However in that case you won't be able to use visualization as this is a part of Pogamut NetBeans plugin. To open up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link> (if the archetype is not present, follow "adding new Pogamut example project" section in the same chapter). This archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 01-responsive-bot-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>    
+	For UDK example only change <guimenuitem>Group Id:</guimenuitem> to cz.cuni.amis.pogamut.udk.examples and <guimenuitem>Version:</guimenuitem> 3.2.5-SNAPSHOT . The rest remains the same. 
+	</para>
+      
+     <para><guimenuitem>Note:</guimenuitem> You will find up-to-date list of available archetypes in 
+     <link xlink:href="http://diana.ms.mff.cuni.cz:8081/artifactory/libs-release-local/archetype-catalog.xml"> Pogamut Maven archetypes catalog</link> </para>               
+    </section>  
+    
+    <para>In previous tutorial we have shown how to issue commands using
+    <classname>IAct</classname> interface or by command modules (<methodname>body</methodname>). In this tutorial we will learn how
+    to create a simple bot that will be able to sense the surrounding world
+    and to react to several kinds of events that can occur. The bot behavior will be completely event-driven,
+    i.e., we won't utilize <methodname>logic()</methodname> method.
+    The events we will react to are:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>someone/something hit the bot (bumps to it) – bot will move in an opposite
+        direction</para>
+      </listitem>
+
+      <listitem>
+        <para>player appeared in bot's field of view – bot will greet the
+        player</para>
+      </listitem>
+
+      <listitem>
+        <para>player approached the bot – bot will ask him, what does the
+        player want</para>
+      </listitem>
+
+      <listitem>
+        <para>bot was injured – he will try to run away</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>To handle these events we have to have some mechanism that will
+    notify us about changes in the environment. In general, there are two+one ways
+    how the bot can detect a change:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>actively check state of given object</para>
+      </listitem>
+
+      <listitem>
+        <para>register a listener and wait until the change occurs</para>
+      </listitem>
+      
+      <listitem>
+      	<para>utilize method annotations and let the listeners be registered automatically using Java Reflection API, note 
+      	that this method is similar to previous one but is more convenient (easier to use)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The listener design pattern should be used in favour of active
+    waiting since it is usually more computationaly effective. However
+    sometimes the underlying API doesn't provide a way for registering
+    listeners on every possible event so active waiting is the only choice, this is usually
+    true for all custom variables you declare inside your bot as Java does not allow you to sense changes
+    on arbitrary variable. This tutorial present only the last two approaches, i.e., how to utilize
+    listeners to various events.</para>
+
+    <para>Before we will inspect the source code we will observe bot's
+    behavior in game:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Start UT.</para>
+      </listitem>
+
+      <listitem>
+        <para>If you are in spectator mode (this will happen if you start UT
+        from Netbeans) then press <accel>Esc</accel> and click
+        <guibutton>Join</guibutton> button, now you are connected as a
+        standard player.</para>
+      </listitem>
+
+      <listitem>
+        <para>Find the bot and move close to him, these messages will be
+        printed:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>"Hello {YOUR_NAME}!"</para>
+          </listitem>
+
+          <listitem>
+            <para>"What do you want {YOUR_NAME}?"<mediaobject>
+                <imageobject>
+                  <imagedata fileref="media/01-ResponsiveBot/hello.jpg"></imagedata>
+                </imageobject>
+              </mediaobject></para>
+          </listitem>
+        </orderedlist>
+		<para>If you don't see the messages, you have probably chat visualization turned off in UT2004. However, you will always see the messages in console (press tilde (~) character) or in the text bubble that can be turned on by pressing CTRL + U.</para>		
+      </listitem>
+
+      <listitem>
+        <para>Now bump to the bot, he will move away from you.</para>
+      </listitem>
+
+      <listitem>
+        <para>If you do not have any weapon then find some and return back to
+        the bot (you can switch between multiple weapons using mouse wheel or
+        number keys on your keyboard).</para>
+      </listitem>
+
+      <listitem>
+        <para>Shoot the bot, he will move to avoid the fire.</para>
+      </listitem>
+    </orderedlist>   
+
+    <section>
+		<anchor xml:id="responsivebot.iworldview" ></anchor>
+      <title>IWorldView abstraction</title>
+
+      <para>Before we will register our first listener, we have to understand
+      Pogamut's abstraction of the world where the bot lives. Bot's view of
+      the world is provided through the <classname>IWorldView</classname>
+      interface. This interface serves as both bot's senses and a simple
+      memory. The abstraction used by <classname>IWorldView</classname> the
+      world is represented by:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Objects (<classname>IWorldObject</classname>) – eg. players,
+          items etc.</para>
+        </listitem>
+
+        <listitem>
+          <para>Events (<classname>IWorldEvent</classname>) – eg. bot heard a
+          noise, bot bumped to a wall etc. Events are divided into two
+          categories:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Object events (<classname>IWorldObjectEvent</classname>) –
+              there are five events of this type:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>First encountered
+                  (<classname>WorldObjectFirstEncounteredEvent</classname>) –
+                  raised when the bot encounters some object (eg.
+                  <classname>Player</classname>) for the first time.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Appeared
+                  (<classname>WorldObjectAppearedEvent</classname>) – object
+                  entered bot's field of view.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Updated
+                  (<classname>WorldObjectUpdatedEvent</classname>) – object's
+                  state was updated.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Disappeared
+                  (<classname>WorldObjectDisappearedEvent</classname>) –
+                  object disappeared from bot's field of view.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Destroyed
+                  (<classname>WorldObjectDestroyedEvent</classname>) – object
+                  was destroyed (e.g., the player has been disconnected from the
+                  game).</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>Events not associated with any object (plain
+              <classname>IWorldEvent</classname>) – example of such event can
+              be <classname>HearNoise</classname> that is raised when the bot
+              hears some noise or <classname>BotBumped</classname> that is sent
+              whenever the bot bumps into something (or someone bumps to the bot).</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para><classname>IWorldView</classname> interface together with
+      <classname>IAct</classname> represent the basic API for accessing the
+      world, hence you should get familiar with them.</para>
+    </section>
+
+    <section>
+	<anchor xml:id="responsivebot.registering" ></anchor>
+      <title>Registering listeners</title>
+      
+      <para>
+      	There are two ways how to register listeners. Either you may annotate any method with one of the annotation
+      	<classname>EventListener</classname>, <classname>ObjectEventListener</classname>, <classname>ObjectClassEventListener</classname>,
+      	<classname>ObjectClassEventListener</classname> or <classname>ObjectListener</classname>, or you may manually
+      	register a listener via <classname>IWorldView</classname> interface using one of the <methodname>getWorldView().addEventListener()</methodname> or
+      	<methodname>getWorldView().addObjectListener()</methodname> methods. 
+      </para>
+
+      <para>To see how the listeners are registered on bot's world view, find
+      <methodname>prepareBot()</methodname> method. In the body of this
+      method there is an example of manual listener registration.</para>
+
+      <anchor xml:id="programlisting.listener.registration" ></anchor>
+
+	  <para>
+      <programlisting language="java">
+	public void prepareBot(UT2004Bot bot) {
+		// register the botDamagedListener that we have previously created
+		getWorldView().addEventListener(BotDamaged.class, botDamagedListener);
+	}</programlisting>
+	</para>
+
+      <para>Simillarly to <methodname>getAct()</methodname> the
+      <methodname>getWorldView()</methodname> returns the
+      <classname>IWorldView</classname> implementation associated with this
+      bot. The first line adds a listener for <classname>BotDamaged</classname> event,
+      this event is raised when the bot is hurt by somebody or something.
+      The listener itself is referenced by <varname>botDamagedListener</varname>
+      variable.
+      </para>
+
+      <para>Now let's explore implementation of the listener that was just
+      registered. Click the <varname>botDamagedListener</varname> variable while
+      holding <accel>Ctrl</accel> key to see the listener definition:</para>
+      
+      <programlisting language="java">
+	/**
+	 * Listener that is manually created and manually hooked to the {@link ResponsiveBot#getWorldView()} 
+	 * via {@link IWorldView#addEventListener(Class, IWorldEventListener)} method
+	 * inside {@link ResponsiveBot#prepareBot(UT2004Bot)}.
+	 */
+	IWorldEventListener&lt;BotDamaged&gt; botDamagedListener = new IWorldEventListener&lt;BotDamaged&gt;() {
+		@Override
+		public void notify(BotDamaged event) {
+			// the bot was injured - let's move around the level and hope that we will find a health pack
+			// note that we have to acquire "SECOND" nearest navpoint, as the first one is the navpoint we're standing at
+			NavPoint secondNav = DistanceUtils.getSecondNearest(getWorldView().getAll(NavPoint.class).values(), info.getLocation());
+			// always check even for improbable conditions
+			if (secondNav == null) {
+				// try to locate some navpoint
+				move.turnVertical(30);
+			} else {
+				// move to it
+				move.moveTo(secondNav);
+			}            
+		}
+	};</programlisting>
+		
+	  <para>The <varname>botDamagedListener</varname> variable is of type
+      <classname>IWorldEventListener</classname> parameterized by the
+      <classname>BotDamaged</classname> class.
+      <classname>IWorldEventListener</classname> interface declares one
+      abstract method <methodname>notify(...)</methodname> that is called each
+      time the event occurs with the event as the method's parameter. Body of
+      this method implements a way how to find the second nearest navpoint and run to it in hope
+      it will be reachable and far from the danger.</para>
+
+      <para>Now return back to the code block showing the <link
+      linkend="programlisting.listener.registration">listeners'
+      registration</link>. You can press <accel>Alt + ←</accel> to get to the
+      previous position in the source code. Then again use <accel>Ctrl +
+      LMB</accel> to go to the <varname>botDamagedListener</varname>
+      definition.</para>
+
+	  <para>
+	  	Now for the second way of listener registration - more easier - annotations. There are three methods in the example
+	  	that are called when some event occurs: <methodname>bumped(Bumped event)</methodname>,
+	  	<methodname>playerAppeared(WorldObjectAppearedEvent&lt;Player&gt; event)</methodname> and
+	  	<methodname>playerUpdated(WorldObjectUpdatedEvent&lt;Player&gt; event)</methodname>. Let's check how this magic
+	  	- auto method calling - happens.	  	
+	  </para>
+	  
+	  <para>
+	  	The class <classname>UT2004BotModuleController</classname> that is an ancestor of the <classname>ResponsiveBot</classname>
+	  	(and all other examples as well) is auto-initializing the <classname>AnnotationListenerRegistrator</classname>. Now,
+	  	because you know how we may manually hook a custom listener to the world view, you might already have guessed what
+	  	the registrator is doing. It simply iterates through all methods the <classname>ResponsiveBot</classname> is declaring
+	  	and searches for methods annotated either with <classname>EventListener</classname> or <classname>ObjectEventListener</classname> or <classname>ObjectClassEventListener</classname> or
+      	<classname>ObjectClassEventListener</classname> or <classname>ObjectListener</classname> annotation (that is the 
+      	magical @EventLister that is present above <methodname>bumped(Bumped event)</methodname> method for instance).
+      	Every such annotation refers to a certain category of events (it corresponds with methods of the world view that 
+      	you may manually use to register a listener):
+      	<itemizedlist>
+	        <listitem>
+	          <para><classname>EventListener</classname> - reacts to one arbitrary <classname>IWorldEvent</classname> that
+	          is defined via <methodname>eventClass</methodname> field of the annotation. I.e., to <classname>BotDamaged</classname>
+	          or <classname>Bumped</classname> events.</para>
+	        </listitem>
+	
+	        <listitem>
+	        	<para>
+	        		<classname>ObjectClassListener</classname> - reacts to all events that happens on the <classname>IWorldObject</classname>
+	        		of the certain class that is defined via <methodname>objectClass</methodname> field of the annotation. I.e.,
+	        		it allows you to receive all events regarding some object (as desribed earlier in the text - <classname>WorldObjectFirstEncountered</classname>, ...).
+	        	</para>
+	        </listitem>
+	        
+	        <listitem>
+	        	<para>
+	        		<classname>ObjectClassEventListener</classname> - reacts to events of the certain class that happens
+	        		on any <classname>IWorldObject</classname> of a certain class. I.e., you may for instance react only to
+	        		<classname>WorldObjectUpdated</classname> events that happens over objects of the <classname>Player</classname> class,
+	        		such as the <methodname>playerUpdated(WorldObjectUpdatedEvent&lt;Player&gt; event)</methodname> method is doing. 
+	        	</para>
+	        </listitem>
+	        
+	        <listitem>
+	        	<para>
+	        		<classname>ObjectListener</classname> - reacts to all events that happens over the certain object
+	        		that is identified by the string id (of course this is hard to use as it is hard to obtain the correct
+	        		string id, but we leave it there for the completness of the annotation solution).
+	        	</para>
+	        </listitem>
+	        
+	        <listitem>
+	        	<para>
+	        		<classname>ObjectEventListener</classname> - reacts to all events of the certain class that happens
+	        		over the certain object that is identified by the string id (again, hard to use, but...)
+	        	</para>
+	        </listitem>
+      	</itemizedlist>	  	
+	  </para>
+	  
+	  <para>
+	  	For the concrete implementations:
+	  </para>
+
+      <programlisting language="java">
+	/**
+	 * Listener called when someone/something bumps into the bot. The bot
+	 * responds by moving in the opposite direction than the bump come from.
+	 *
+	 * We're using {@link EventListener} here that is registered by the {@link AnnotationListenerRegistrator} to listen
+	 * for {@link Bumped} events.
+	 */
+	@EventListener(eventClass = Bumped.class)
+	protected void bumped(Bumped event) {
+		// schema of the vector computations
+		//
+		//  e&lt;-&gt;a&lt;------&gt;t
+		//  |   |   v    |
+		//  |   |        target - bot will be heading there
+		//  |   getLocation()
+		//  event.getLocation()
+		
+		Location v = event.getLocation().sub(bot.getLocation()).scale(5);
+		Location target = bot.getLocation().sub(v);
+		
+		// make the bot to go to the computed location while facing the bump source
+		move.strafeTo(target, event.getLocation());
+	}</programlisting>
+
+      <para>The <methodname>bumped(Bumped event)</methodname> method is
+      annotated by the <classname>@EventListener(eventClass = Bumped.class)</classname> that means
+      that the method gets called whenever the <classname>Bumped</classname> message is sent by the GameBots2004
+      to the bot (note how the field <varname>eventClass</varname> inside the annotation is used to specify which
+      event you want to listen to and then the same class <classname>bumped</classname> appears in the method
+      declaration.</para>
+      <para>
+      The method just performs simple vector arithmetic to obtain a vector where to run to to stay away
+      from the source of the collision.
+      </para>
+
+      <programlisting language="java">
+	/**
+	 * Listener called when a player appears.
+	 *
+	 * We're using {@link ObjectClassEventListener} here that is registered by the {@link AnnotationListenerRegistrator}
+	 * to listen on all {@link WorldObjectAppearedEvent} that happens on any object of the class {@link Player}. I.e., 
+	 * whenever the GameBots2004 sends an update about arbitrary {@link Player} in the game notifying us that the player
+	 * has become visible (it's {@link Player#isVisible()} is switched to true and the {@link WorldObjectAppearedEvent}
+	 * is generated), this method is called.
+	 */
+	@ObjectClassEventListener(eventClass = WorldObjectAppearedEvent.class, objectClass = Player.class)
+	protected void playerAppeared(WorldObjectAppearedEvent&lt;Player&gt; event) {
+		// greet player when he appears
+		body.getCommunication().sendGlobalTextMessage("Hello " + event.getObject().getName() + "!");
+	}</programlisting>
+    
+      <para>
+        The <methodname>playerAppeared(WorldObjectAppearedEvent&lt;Player&gt; event)</methodname> method is
+        annotated by the <classname>@ObjectClassEventListener(eventClass = WorldObjectAppearedEvent.class, objectClass = Player.class)</classname>
+        again see how the fields <varname>eventClass</varname> and <varname>objectClass</varname> are used and how they correspond
+        with the method parameters declaration.
+      </para>
+
+      <para>The method is truly simple. You can see that each time a player appears, he is greeted by our
+      bot. You should already be familiar with the
+      <varname>body</varname> module that contains the most commands for the bot.
+      </para>
+      
+      <para>
+      Now inspect the last listener:</para>
+
+      <programlisting language="java">
+	/**
+	 * Listener called each time a player is updated.
+	 *
+	 * Again, we're using {@link ObjectClassEventListener} that is registered by the {@link AnnotationListenerRegistrator}
+	 * to listen on all {@link WorldObjectUpdatedEvent} that happens on any object of the class {@link Player}. I.e., 
+	 * whenever the GameBots2004 sends an update about arbitrary {@link Player} in the game notifying us that some information
+	 * about the player has changed (the {@link WorldObjectUpdatedEvent} is generated), this method is called.
+	 */
+	@ObjectClassEventListener(eventClass = WorldObjectUpdatedEvent.class, objectClass = Player.class)
+	protected void playerUpdated(WorldObjectUpdatedEvent&lt;Player&gt; event) {
+		// Check whether the player is closer than 5 bot diameters.
+		// Notice the use of the UnrealUtils class.
+		// It contains many auxiliary constants and methods.
+		Player player = event.getObject();
+		// First player objects are received in HandShake - at that time we don't have Self message yet or players location!!
+		if (player.getLocation() == null || info.getLocation() == null) return;
+		if (player.getLocation().getDistance(info.getLocation()) &lt; (UnrealUtils.CHARACTER_COLLISION_RADIUS * 10)) {
+		    // If the player wasn't close enough the last time this listener was called,
+		    // then ask him what does he want.
+		    if (!wasCloseBefore) {
+		    	body.getCommunication().sendGlobalTextMessage("What do you want " + player.getName() + "?");
+		        // Set proximity flag to true.
+		        wasCloseBefore = true;
+		    }
+		} else {
+		    // Otherwise set the proximity flag to false.
+		    wasCloseBefore = false;
+		}
+	}</programlisting>
+
+      <para>This listener is called each time a player is updated, it uses the same annotation as the previous one
+      with different arguments. When the player that is visible changes it locatuion (or any other associated property)
+      this method gets called. When the update event
+      is raised we check whether the player is closer than certain threshold,
+      in this case <code>UnrealUtils.CHARACTER_COLLISION_RADIUS * 10</code>.
+      If this condition holds and it didn't hold last time the listener was
+      called then it means that the player came closer to the bot than he was
+      a while before. In that case the bot will ask him what does he
+      want.</para>
+    </section>
+	</section>
+
+  <section>
+    <title>Advanced topics</title>
+
+    <para>Links to futher reading, papers, web pages.</para>
+  </section>
+
+  <section>
+    <title>Where to continue</title>
+
+    <para>
+    <link linkend="02-NavigationBot">02-NavigationBot</link> - basic navigation bot - a bot that runs around in the environment
+    </para>
+    <para>
+    <link linkend="03-RaycastingBot">03-RaycastingBot</link> - how to use simple ray tracing 
+    </para>
+
+  </section>
+</chapter>

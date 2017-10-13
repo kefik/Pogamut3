@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE messageobject SYSTEM "../GBMessages.dtd">
+
+<messageobject extends="InfoMessage" message="VCH" name="VolumeChanged" type="Event">
+   <gbpackage name="GameBots2004"/>
+   <gbpackage name="GBScenario"/>
+   <gbpackage name="GameBotsAnim"/>
+   <gbpackage name="GameBotsUE2"/>
+   <gbpackage name="GBEmohawk"/>
+   <group name="Bot"/>
+   <group name="Observer"/>
+   <documentation>
+		Asynchronous message. Some part of the bot body changed the
+		zone.
+	</documentation>
+   <!-- List of all properties of this message. !-->
+   <property name="Id" type="String" category="all">
+      <documentation>Id of the zone entered.</documentation>
+   </property>
+   <property name="ZoneVelocity" type="Velocity" category="static">
+      <documentation>
+			Zone velocity (?).
+		</documentation>
+   </property>
+   <property name="ZoneGravity" type="Velocity" category="static">
+      <documentation>
+			Gravity in this zone.
+		</documentation>
+   </property>
+   <property name="GroundFriction" type="double" category="static">
+      <documentation>
+			Friction of the floor.
+		</documentation>
+   </property>
+   <property name="FluidFriction" type="double" category="static">
+      <documentation>
+			Friction of the fluid.
+		</documentation>
+   </property>
+   <property name="TerminalVelocity" type="double" category="static">
+      <documentation>
+			Terminal velocity (?).
+		</documentation>
+   </property>
+   <property name="WaterVolume" type="boolean" category="static">
+      <documentation>
+			If this zone is a water.
+		</documentation>
+   </property>
+   <property name="PainCausing" type="boolean" category="static">
+      <documentation>
+			True or false if we get some damage when we stay in this
+			zone.
+		</documentation>
+   </property>
+   <property name="Destructive" type="boolean" category="static">
+      <documentation>
+			If this zone kills most of the actors instantly.
+		</documentation>
+   </property>
+   <property name="DamagePerSec" type="double" category="static">
+      <documentation>
+			Amount of damage we will suffer per second if we stay in this zone.
+		</documentation>
+   </property>
+   <property name="DamageType" type="String" category="static">
+      <documentation>
+			Type of the damage in this zone.
+		</documentation>
+   </property>
+   <property name="NoInventory" type="boolean" category="static">
+      <documentation>
+			If the inventory is allowed here.
+		</documentation>
+   </property>
+   <property name="MoveProjectiles" type="boolean" category="static">
+      <documentation>
+			If this velocity zone should impart velocity to projectiles and effects.
+		</documentation>
+   </property>
+   <property name="NeutralZone" type="boolean" category="static"> 
+      <documentation>
+			Players can't take damage in this zone.
+		</documentation>
+   </property>
+   <!-- Extra information used by different modules of the Pogamut platform. !--><extra>
+      <code/>
+   </extra>
+</messageobject>

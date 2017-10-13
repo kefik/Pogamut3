@@ -1,0 +1,12 @@
+<PogamutReleaseConfig baseDir="../..">
+	<step id="Generate Pogamut JavaDoc" failStop="true">
+	  <process>
+      <id>JavaDoc</id>
+			<run>c:/windows/system32/cmd.exe</run><arg>/k</arg><arg>JavaDoc.bat</arg>
+			<dir>Main/PogamutRelease/local-utils/utils</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+			<timeout>3600000</timeout>
+		</process>
+	</step>
+</PogamutReleaseConfig>

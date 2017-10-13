@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="07-ObserverConnection"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <title>ObserverConnection - special type of connection designed to observe other players/bots on the UT game server</title>
+
+  <section>
+    <title>What will you learn?</title>
+
+    <para>In this tutorial you will learn about:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para>ObserverConnection - special type of connection designed to observe other players/bots on the UT game server</para>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>Before you start with this tutorial make sure that you have
+    installed:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><application>Unreal Tournament 2004</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Gamebots2004</para>
+        </listitem>
+
+        <listitem>
+          <para>Java 1.6</para>
+        </listitem>
+
+        <listitem>
+          <para><application>Netbeans 7.1.1</application></para>
+        </listitem>
+
+        <listitem>
+          <para>Pogamut 3 Netbeans Plugin</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>This tutorial assumes you have completed <link
+    linkend="00-EmptyBot">basic pogamut tutorial</link> and that you are
+    familiar basic Pogamut API.</para>
+  </section>
+
+  <section>
+    <title>Tutorial</title>
+
+    <para>This tutorial will present a special type of connection to
+    UT server - ObserverConnection (OC). Purpose of OC is to observe other player/bot
+    on the UT game server (always one at a time). With OC you are able to get all
+    the GameBots messages that come for the observed player/bot and some other that export
+    for example whether player/bot started/stoped shooting. </para>
+    <para> In this tutorial we will show you:
+        <itemizedlist>
+            <listitem>
+                <para>How to create your own ObserverConnection</para>
+            </listitem>
+            <listitem>
+                <para>How to hook your ObserverConnection to observe desired player/bot</para>
+            </listitem>
+            <listitem>
+                <para>How to initialize listeners and get the information about observed player/bot</para>
+            </listitem>
+        </itemizedlist>
+    </para>
+    <para><guimenu>Note:</guimenu> If you are interested specifically in controlling
+    the game server and obtaining global information, consult the <link linkend="06-ControlConnection">ControlConnection</link>
+    tutorial.</para>
+
+    <section role="info">
+      <title>Setting up the ObserverConnection</title>
+	  
+	  <para>To set up this example in NetBeans follow up the steps in <link linkend="OpeningExamples">Opening Pogamut Examples chapter</link>. We will need to open custom control server archetype and modify it a bit. The archetype information is below.</para>
+      <para> For UT2004 example:
+       <itemizedlist>    
+        <listitem>
+          <para><guimenuitem>Group Id:</guimenuitem> cz.cuni.amis.pogamut.ut2004.examples</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Artifact Id:</guimenuitem> 14-custom-control-server-archetype</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Version:</guimenuitem> 3.3.1</para>
+        </listitem>
+        <listitem>
+          <para><guimenuitem>Repository:</guimenuitem>http://diana.ms.mff.cuni.cz:8081/artifactory/repo</para>
+        </listitem>       
+	</itemizedlist>  
+	Observer connection functionality is not yet implemented in UDK.
+	</para>
+	<para> The easist way how to create your own custom observer connection is to download and modify our observer connection archetype above.
+	</para>
+    </section>
+
+    <section role="observing">
+      <title>Hooking up the observer to start to observe player/bot</title>
+      <para>To start observing a player or bot you have to issue <classname>Initialize</classname>
+      command. In this command either set attribute name or Id to name or Id of the
+      player/bot you want to observer. E.g.:
+          <programlisting language="java">
+              getAct().act(new Initialize().setName("SomePlayerName"));
+          </programlisting>
+      </para>
+    <para>If the player with supplied name or Id is on the server you will start 
+    receive his synchronous messages right away. If it is not, nothing will happen 
+    (and you won't receive any warning message).
+    </para>
+    <para><guimenu>Note:</guimenu> All the players are exported in a handshake right
+    after your ObserverConnection connects to the server, so you may decide which player
+    to observe in playerListener (as in the big code example above). </para>
+    </section>
+	<section>
+      <title>Getting information about the player/bot</title>
+      <para>When you have started to observe a player or a bot you can get information about him the same way as you would get information when
+	  coding a bot. You will hook listeners to messages of interest - e.g. Self message or Player message and store the important pieces of information somewhere.
+	  </para>
+	  <para> The observer connection can be configured, so not all of the messages will be exported for the observed bot or player (this can save some resources as exporting of messages
+	  is in fact a bottleneck of UT2004). See <classname>ConfigurationObserver</classname> command for more information.
+	  </para>
+	  <para>Note that exporting a lot of messages from the environment is computationaly intensive process. E.g. if you hook 5 observer connections to one bot you will
+	  probably get very laggy experience, or the bot maybe won't move at all. Always try to minimize the number of observing connections, good rule of thumb is to not to have more
+	  than 8 connections (bot or observer) to the server at the same time. This may differ depending on your hardware.
+	  </para>
+    </section>	
+  </section>
+
+
+  <section>
+    <title>Where to continue</title>
+    <para>Check how to get more statistics about bot vs. bot matches and how to launch 
+    automatic bot matches - TODO -
+    tutorial.</para>
+  </section>
+</chapter>
