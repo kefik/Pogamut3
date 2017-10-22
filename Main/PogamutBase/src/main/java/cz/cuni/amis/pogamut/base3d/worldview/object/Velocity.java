@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
+import math.geom3d.Vector3D;
+
 /**
  * Velocity within the world.
  * 
@@ -19,6 +21,9 @@ import javax.vecmath.Vector3d;
  * @author Juraj 'Loque' Simlovic
  */
 public class Velocity implements ILocomotive, Serializable, Cloneable {
+
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Velocity representing NONE.
 	 */
@@ -67,6 +72,10 @@ public class Velocity implements ILocomotive, Serializable, Cloneable {
 
 	public Vector3d asVector3d() {
 		return new Vector3d(x, y, z);
+	}
+	
+	public Vector3D asVector3D() {
+		return new Vector3D(x, y,z );
 	}
 
 	public Location asLocation() {
@@ -590,6 +599,14 @@ public class Velocity implements ILocomotive, Serializable, Cloneable {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Velocity( Vector3d vector ) {
+		this(vector.getX(), vector.getY(), vector.getZ());
+	}
+	
+	public Velocity( Vector3D vector ) {
+		this(vector.getX(), vector.getY(), vector.getZ());
 	}
 	
 	private int computeHashCode() {
