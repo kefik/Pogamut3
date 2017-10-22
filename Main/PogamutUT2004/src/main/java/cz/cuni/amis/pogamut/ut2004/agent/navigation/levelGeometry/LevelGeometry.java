@@ -220,7 +220,7 @@ public class LevelGeometry implements Serializable {
 				false,
 				rayInfo.floorCorrection,
 				raycastResult.isHit(),
-				( raycastResult.isHit() ? raycastResult.hitNormal.asVector3D() : null ),
+				( raycastResult.isHit() ? raycastResult.hitNormal.asVector3d() : null ),
 				( raycastResult.isHit() ? raycastResult.hitLocation : null ),
 				false,
 				null
