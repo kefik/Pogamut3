@@ -27,6 +27,8 @@ package math.geom2d;
 
 import java.io.Serializable;
 
+import javax.vecmath.Vector2d;
+
 import math.JavaGeomMath;
 
 // Imports
@@ -35,7 +37,7 @@ import math.JavaGeomMath;
  * A vector in the 2D plane. Provides methods to compute cross product and dot
  * product, addition and subtraction of vectors.
  */
-public class Vector2D implements Cloneable, Serializable {
+public class Vector2D implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -104,6 +106,9 @@ public class Vector2D implements Cloneable, Serializable {
     /**
      * Creates a new vector by specifying the distance to the origin, and the
      * angle with the horizontal.
+     * 
+     * @param rho distance from origin
+     * @param theta angle with the horizontal
      */
     public final static Vector2D createPolar(double rho, double theta) {
         return new Vector2D(rho*Math.cos(theta), rho*Math.sin(theta));
@@ -361,12 +366,15 @@ public class Vector2D implements Cloneable, Serializable {
         return new String("Vector2D(" + x + ", "+y+")");
     }
     
-    @Override
-    public Vector2D clone() {
-        return new Vector2D(x, y);
-    }
-
     public Point2D asPoint2D() {
         return new Point2D( x, y );
+    }
+
+	public Vector2d asVector2d() {
+		return new Vector2d( x, y );
+	}
+
+    public PolarVector2D asPolarVector2D() {
+    	return new PolarVector2D( getNorm(), Math.atan2( y, x ) );
     }
 }

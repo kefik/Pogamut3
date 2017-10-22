@@ -25,11 +25,6 @@
 
 package math.geom2d;
 
-// Imports
-import math.geom2d.Shape2D;
-import math.geom2d.Angle2D;
-import math.geom2d.Point2D;
-import math.geom2d.Vector2D;
 import math.geom2d.line.LinearShape2D;
 import math.geom2d.transform.Bijection2D;
 

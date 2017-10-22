@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+
 import math.geom3d.Box3D;
 import math.geom3d.Point3D;
 import math.geom3d.Shape3D;
 import math.geom3d.Vector3D;
-import math.geom3d.line.StraightLine3D;
 import math.geom3d.transform.AffineTransform3D;
 
 /** Plane in 3D space
@@ -70,9 +70,9 @@ public class Plane3D implements Shape3D {
      * @param vector2 second vector must be linearly independent of vector1
      */
     public Plane3D(Point3D origin, Vector3D vector1, Vector3D vector2) {
-        this.origin = new Point3D(origin);
-        this.vector1 = new Vector3D(vector1);
-        this.vector2 = new Vector3D(vector2);
+        this.origin = origin;
+        this.vector1 = vector1;
+        this.vector2 = vector2;
     }
         
     /** Get origin

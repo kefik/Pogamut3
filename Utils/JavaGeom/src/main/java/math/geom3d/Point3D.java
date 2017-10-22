@@ -31,7 +31,10 @@ import javax.vecmath.Tuple3d;
 import math.JavaGeomMath;
 import math.geom3d.transform.AffineTransform3D;
 
-/**
+/** Point in 3D space.
+ * <p>
+ * Immutable.
+ * 
  * @author dlegland
  */
 public class Point3D implements Shape3D {
@@ -54,11 +57,7 @@ public class Point3D implements Shape3D {
         this.y = y;
         this.z = z;
     }
-    
-    public Point3D(Point3D point) {
-        this(point.getX(), point.getY(), point.getZ());
-    }
-    
+        
     public Point3D(Tuple3d point) {
         this(point.getX(), point.getY(), point.getZ());
     }

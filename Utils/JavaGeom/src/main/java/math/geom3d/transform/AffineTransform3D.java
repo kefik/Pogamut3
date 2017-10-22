@@ -254,6 +254,10 @@ public class AffineTransform3D implements Bijection3D {
         matrix.transform(retval);
         return new Point3D(retval);
     }
+    
+    public Vector3D transformVector(Vector3D vector) {
+    	return new Vector3D( transformPoint( new Point3D(vector) ) );
+    }
 
     /**
      * Compares two transforms. Returns true if all inner fields are equal up to

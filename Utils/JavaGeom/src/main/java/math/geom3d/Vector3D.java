@@ -10,8 +10,9 @@ import math.JavaGeomMath;
 import math.geom3d.transform.AffineTransform3D;
 
 /**
- * Define a vector in 3 Dimensions. Provides methods to compute cross product
- * and dot product, addition and subtraction of vectors.
+ * Define a vector in 3 Dimensions.
+ * <p>
+ * Immutable.
  */
 public class Vector3D {
 
@@ -83,7 +84,7 @@ public class Vector3D {
         this.z = z;
     }
 
-    public Vector3D(Vector3D vector) {
+    public Vector3D(Vector3d vector) {
         this(vector.getX(), vector.getY(), vector.getZ());
     }
     
@@ -268,7 +269,7 @@ public class Vector3D {
         return "Vector3D( "+x+", "+y+", "+z+")";
     }
     
-	public Vector3d asVector3D() {
+	public Vector3d asVector3d() {
 		return new Vector3d( x, y, z);
 	}
 }
