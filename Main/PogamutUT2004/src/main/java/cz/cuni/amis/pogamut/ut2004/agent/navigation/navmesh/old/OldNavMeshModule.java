@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import cz.cuni.amis.pogamut.base.communication.worldview.IWorldView;
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
-import cz.cuni.amis.pogamut.base.communication.worldview.object.WorldObjectId;
 import cz.cuni.amis.pogamut.base.utils.logging.IAgentLogger;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;

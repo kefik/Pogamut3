@@ -53,6 +53,9 @@ import math.geom2d.line.StraightLine2D;
  */
 public class NavMesh implements Serializable {
 
+    public static String pureMeshReadDir = "navmesh"; 
+    public static String processedMeshDir = "navmesh";
+    
 	private static final long serialVersionUID = 1L;
 
 	protected transient Logger log;
@@ -126,7 +129,7 @@ public class NavMesh implements Serializable {
      * @throws IOException if file cannot be read 
      */
     protected void load( Map<UnrealId, NavPoint> navGraph, String mapName ) throws IOException {
-    	String rawNavMeshFileName = NavMeshConstants.pureMeshReadDir + "/" + mapName + ".navmesh";
+    	String rawNavMeshFileName = pureMeshReadDir + "/" + mapName + ".navmesh";
     	RawNavMeshFile rawNavMeshFile = new RawNavMeshFile( new File(rawNavMeshFileName) );
     	NavMeshAnalysis navMeshAnalysis = new NavMeshAnalysis( rawNavMeshFile, navGraph, log );
     	navGraphGlue = navMeshAnalysis.getNavGraphGlue();

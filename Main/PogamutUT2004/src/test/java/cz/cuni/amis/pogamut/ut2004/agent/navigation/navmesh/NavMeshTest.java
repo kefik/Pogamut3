@@ -33,6 +33,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInf
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfoMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 
+@SuppressWarnings("deprecation")
 public class NavMeshTest {
 
 	protected String map = "DM-Flux2";
@@ -40,11 +41,9 @@ public class NavMeshTest {
 	protected OldNavMesh vanillaNavMesh = null;
 	protected NavMesh navMesh = null;
 	protected NavMeshDropGrounder dropGrounder = null;
-	@SuppressWarnings("deprecation")
 	protected NavMeshSegmentedAStarPathPlanner segmentedAStarPathPlanner = null;
 	protected NavMeshAStarPathPlanner aStarPathPlanner = null;
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testMap() {
 		
@@ -119,7 +118,6 @@ public class NavMeshTest {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	boolean comparePolygonPathing( Location src, Location dst ) {
 		try {
 			List<OldINavMeshAtom> vanillaPath = vanillaNavMesh.getPolygonPath( src,  dst );
@@ -174,7 +172,6 @@ public class NavMeshTest {
 	}
 	
 	
-	@SuppressWarnings("deprecation")
 	boolean comparePathing( Location from, Location to ) {
 		
 		try {

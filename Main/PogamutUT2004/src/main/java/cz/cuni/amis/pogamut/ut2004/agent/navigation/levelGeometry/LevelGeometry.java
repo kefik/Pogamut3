@@ -29,21 +29,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
-
 import com.google.inject.internal.Lists;
 import com.google.inject.internal.Maps;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Velocity;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.BSPRayInfoContainer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.RawLevelGeometryFile.RawTriangle;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRayMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
 import cz.cuni.amis.pogamut.ut2004.server.impl.UT2004Server;
+import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import math.bsp.BspTree;
 import math.bsp.node.BspInternalNode;
 import math.bsp.node.BspLeafNode;
@@ -52,13 +50,18 @@ import math.bsp.node.IConstBspInternalNode;
 import math.bsp.node.IConstBspNode;
 import math.geom3d.Axis3D;
 import math.geom3d.Point3D;
+import math.geom3d.Vector3D;
 import math.geom3d.line.StraightLine3D;
 import math.geom3d.plane.AxisAlignedPlane3D;
+import math.geom3d.transform.AffineTransform3D;
 
 /** The geometry of the environment
  */
 public class LevelGeometry implements Serializable {
 	
+    public static String pureLevelGeometryReadDir = "map"; 
+    public static String processedLevelGeometryDir = "map";    
+
 	private static final long serialVersionUID = 4L;
     
 	protected transient Logger log; 
@@ -99,7 +102,7 @@ public class LevelGeometry implements Serializable {
     	}
 
 		try {
-	    	String coreFilename = NavMeshConstants.pureLevelGeometryReadDir + "\\" + mapName;
+	    	String coreFilename = pureLevelGeometryReadDir + "\\" + mapName;
 			RawLevelGeometryFile rawLevelGeometry = new RawLevelGeometryFile(coreFilename, log);
 			for ( RawTriangle rawTriangle : rawLevelGeometry.triangles ) {
 	        	triangles.add( new Triangle( rawTriangle ) );
@@ -169,46 +172,15 @@ public class LevelGeometry implements Serializable {
      */
     public AutoTraceRay getAutoTraceRayMessage(Self self, BSPRayInfoContainer rayInfo) {
 
-        // lets update the direction vector according to agent rotation  
-        Vector3d direction = rayInfo.direction;
-        direction.normalize();
-        
-        // angle up/down
-        double upDownAngle = Math.asin(direction.getZ()/1);
-        
-        double x = rayInfo.direction.x;
-        double y = rayInfo.direction.y;
-        
-        if(x==0 && y==0) {
-            direction = new Vector3d(0,0,1);
-        } else {
-        	double rayYaw = NavMeshConstants.transform2DVectorToRotation(new Vector2d(x,y));
-            // now we have the input yaw
-            // let's add agent's rotation to get the final rotation
-            double Yaw = rayYaw + self.getRotation().getYaw();
-            Vector2d vector2d = NavMeshConstants.transformRotationTo2DVector(Yaw);
-            direction.x = vector2d.x;
-            direction.y = vector2d.y;
-            // now we have the direction on x,y.
-            // we must add back the z direction
-            direction.normalize();
-            direction.z = Math.tan(upDownAngle);           
-        }
-        
-        
-        direction.normalize();
-        // last thing with direction: stretch it to the proper length
-        direction.x *= rayInfo.length;
-        direction.y *= rayInfo.length;
-        direction.z *= rayInfo.length;   
-        // The direction is now Done. The agent's rotation is added
-
-
+        Vector3D relativeDirection = new Vector3D( rayInfo.direction ).getNormalizedVector();
+        AffineTransform3D agentViewTranformation = AffineTransform3D.createRotationOz( UnrealUtils.unrealDegreeToRad(self.getRotation().getYaw()) );
+        Vector3D absoluteDirection = agentViewTranformation.transformVector( relativeDirection );
+        Vector3D rayVector = absoluteDirection.times( rayInfo.length );
         
         // now get the from and to locations
         
         Location from = self.getLocation(); 
-        Location to = new Location(from.x + direction.x, from.y + direction.y, from.z + direction.z); 
+        Location to = from.add( new Velocity(rayVector) ); 
 
         // call the recursive function
         RayCastResult raycastResult = rayCast(from, to);

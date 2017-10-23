@@ -16,20 +16,35 @@
  */
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathfollowing;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.vecmath.Vector2d;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer.ClearanceLimit;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.grounder.NavMeshDropGrounder;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshEdge;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshPolygon;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer.NavMeshPathTracer;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer.RayPath;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
 import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.vecmath.Vector2d;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.Line2D;
+import math.geom2d.line.StraightLine2D;
+import math.geom3d.plane.Plane3D;
+import math.geom3d.plane.Plane3DCoordinateSubsystem;
 
 /**
  * Module for computation of jumps. Decides if the jump is doable, determines
@@ -56,7 +71,8 @@ public class JumpModule {
     public static final double MAX_DOUBLE_JUMP_POWER = 755;
     public static final double MAX_SINGLE_JUMP_POWER = 340;
 
-    private OldNavMesh navMesh;
+    private NavMeshDropGrounder dropGrounder;
+    private NavMeshClearanceComputer clearanceComputer;
 
     private Logger log;
 
@@ -67,8 +83,9 @@ public class JumpModule {
     private static final double BOT_RADIUS = 70;
     private static final double JUMP_PEEK_TIME = 0.39;
 
-    public JumpModule(OldNavMesh mesh, Logger log) {
-        this.navMesh = mesh;
+    public JumpModule(NavMeshModule navMeshModule, Logger log) {
+        this.dropGrounder = navMeshModule.getDropGrounder();
+        this.clearanceComputer = navMeshModule.getClearanceComputer();
         this.log = log;
     }
 
@@ -159,127 +176,19 @@ public class JumpModule {
      * @return Border point in the direction of the path.
      */
     public BorderPoint getBorderPoint(Location start, Location end) {
-        int endPolygonId = navMesh.getPolygonId(end);
-        return getBorderPoint(start, end, -1, endPolygonId, start, 0);
-    }
+    	
+        // compute the direction from start to end
+   		Vector2D direction = new Vector2D( new Point2D( start.x, start.y ), new Point2D( end.x, end.y ) );
 
-    /**
-     * Border point lays on the navigation mesh edge.
-     *
-     * @param start
-     * @param end
-     * @param pId Neighboring polygon id.
-     * @return
-     */
-    private BorderPoint getBorderPoint(Location start, Location end, int pId, int endPolygonId, Location lastCross, int depth) {
-
-        // get a 2D projection of ray
-        Line2D ray = new Line2D(start.x, start.y, end.x, end.y);
-        // get the current polygon
-        if (pId < 0) {
-            pId = navMesh.getPolygonId(start);
-        }
-        if (pId < 0 || depth > 250) {
-            return new BorderPoint(start, null);
-        }
-        if (pId == endPolygonId) {
-            return new BorderPoint(end, null);
-        }
-
-        // how to find end of navmesh?
-        // 1. start on the polygon of starting location
-        // 2. find where the line crosses its border
-        // 3. while there is another polygon behind, repeat
-        // 4. return the last cross
-        int currentPolygonId = pId;
-        int nextPolygonId = -1;
-
-        // find the first cross
-        Point2D cross = null, cross2 = null;
-        int v1 = -1, v2 = -1;
-        int c2v1 = -1, c2v2 = -1;
-        double[] vertex1 = null;
-        double[] vertex2 = null;
-        int[] polygon = navMesh.getPolygon(currentPolygonId);
-        boolean foundFirstCross = false;
-        for (int i = 0; i < polygon.length; i++) {
-            v1 = polygon[i];
-            v2 = polygon[((i == polygon.length - 1) ? 0 : i + 1)];
-            vertex1 = navMesh.getVertex(v1);
-            vertex2 = navMesh.getVertex(v2);
-            Line2D edge = new Line2D(vertex1[0], vertex1[1], vertex2[0], vertex2[1]);
-            cross = ray.getIntersection(edge);
-
-            if (cross != null) {
-                if (((cross.x <= Math.max(edge.p1.x, edge.p2.x) && cross.x >= Math.min(edge.p1.x, edge.p2.x)) || Math.abs(cross.x - edge.p1.x) < 0.0001)
-                        && ((cross.x <= Math.max(ray.p1.x, ray.p2.x) && cross.x >= Math.min(ray.p1.x, ray.p2.x)) || Math.abs(cross.x - ray.p1.x) < 0.0001)) {
-                    // is a cross!
-                    if (foundFirstCross) {
-                        break;
-                    } else {
-                        cross2 = cross;
-                        c2v1 = v1;
-                        c2v2 = v2;
-                        foundFirstCross = true;
-                    }
-                } else {
-                    // it's not a cross
-                    cross = null;
-                }
-            }
-        }
-        // now we have the cross.
-
-        if (cross2 == null) {
-            return new BorderPoint(start, null);
-        } else if (cross == null) {
-            cross = cross2;
-            v1 = c2v1;
-            v2 = c2v2;
-            vertex1 = navMesh.getVertex(v1);
-            vertex2 = navMesh.getVertex(v2);
-        } else {
-            double distToCross = end.getDistance2D(new Location(cross.x, cross.y));
-            double distToCross2 = end.getDistance2D(new Location(cross2.x, cross2.y));
-            if (distToCross > distToCross2) {
-                cross = cross2;
-                v1 = c2v1;
-                v2 = c2v2;
-                vertex1 = navMesh.getVertex(v1);
-                vertex2 = navMesh.getVertex(v2);
-            }
-        }
-
-        // is there another polygon behind?
-        nextPolygonId = navMesh.getNeighbourPolygon(currentPolygonId, v1, v2);
-
-        Location vertex1Loc = new Location(vertex1);
-        Location vertex2Loc = new Location(vertex2);
-        Location crossLocation = new Location(cross.x, cross.y);
-
-        double koef = vertex1Loc.getDistance2D(crossLocation) / vertex1Loc.getDistance2D(vertex2Loc);
-
-        Location border = vertex1Loc.interpolate(vertex2Loc, koef);
-
-        if (nextPolygonId == -1) {
-            // there is no polygon. we return the cross
-
-            return new BorderPoint(border.addZ(NavMeshConstants.liftPolygonLocation), vertex2Loc.sub(vertex1Loc));
-
-        } else {
-            // if there is another polygon, we return recursively border in that direction
-
-            if (border.getDistance2D(lastCross) < 2.0) {
-                // move a little so it is in the neighbour polygon
-                Vector2D directionVector = new Vector2D(end.x - start.x, end.y - start.y);
-                directionVector.normalize();
-                border = border.addX(directionVector.getX() * 3);
-                border = border.addY(directionVector.getY() * 3);
-            }
-
-            log.log(Level.INFO, "getBorderPoint(): Border location: {0} Next polygon: {1}", new Object[]{border, nextPolygonId});
-            return getBorderPoint(border.addZ(NavMeshConstants.liftPolygonLocation), end, nextPolygonId, endPolygonId, border, ++depth);
-        }
+   		ClearanceLimit clearanceLimit = clearanceComputer.findEdge(start, direction, direction.getNorm(), NavMeshDropGrounder.DEFAULT_GROUND_DISTANCE);
+  		
+   		if ( clearanceLimit == null ) {
+   			return new BorderPoint(end, null); // no edge found, use start
+   		} else if ( clearanceLimit.getLocation() == start ) {
+   			return new BorderPoint(start, null); // failed to ground start
+   		} else {
+   			return new BorderPoint( clearanceLimit.getLocation().addZ( NavMeshConstants.liftPolygonLocation ), null);  
+   		}
     }
 
     /**
@@ -720,35 +629,6 @@ public class JumpModule {
         }
 
         return collisionLocation;
-    }
-
-    public Location getNearestMeshDirection(Location location, Location direction) {
-
-        //TODO: Not good enough - centre of polygon not suitable for big polygons
-        OldNavMeshPolygon poly = navMesh.getNearestPolygon(location);
-
-        Line2D ray = new Line2D(location.x, location.y, location.x + direction.x * 10000, location.y + direction.y * 10000);
-
-        int[] polygon = navMesh.getPolygon(poly.getPolygonId());
-        for (int i = 0; i < polygon.length; i++) {
-            int v1 = polygon[i];
-            int v2 = polygon[((i == polygon.length - 1) ? 0 : i + 1)];
-            double[] vertex1 = navMesh.getVertex(v1);
-            double[] vertex2 = navMesh.getVertex(v2);
-            Line2D edge = new Line2D(vertex1[0], vertex1[1], vertex2[0], vertex2[1]);
-            Point2D cross = ray.getIntersection(edge);
-            if (cross != null) {
-                if (((cross.x <= Math.max(edge.p1.x, edge.p2.x) && cross.x >= Math.min(edge.p1.x, edge.p2.x)) || Math.abs(cross.x - edge.p1.x) < 0.0001)
-                        && ((cross.x <= Math.max(ray.p1.x, ray.p2.x) && cross.x >= Math.min(ray.p1.x, ray.p2.x)) || Math.abs(cross.x - ray.p1.x) < 0.0001)) {
-                    // is a cross!
-                    Location vertex1Loc = new Location(vertex1);
-                    Location vertex2Loc = new Location(vertex2);
-
-                    return vertex2Loc.sub(vertex1Loc);
-                }
-            }
-        }
-        return null;
     }
 
     public double getCorrectedVelocity(double velocity, boolean isAccelerating) {

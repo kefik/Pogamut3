@@ -17,14 +17,26 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old;
 //old navmesh
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.logging.Logger;
+
+import javax.vecmath.Vector2d;
+
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathFuture;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathPlanner;
 import cz.cuni.amis.pogamut.base.agent.navigation.impl.PrecomputedPathFuture;
-import cz.cuni.amis.pogamut.base.communication.worldview.IWorldView;
-import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEvent;
-import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEventListener;
-import cz.cuni.amis.pogamut.base.communication.worldview.object.WorldObjectId;
-import cz.cuni.amis.pogamut.base.utils.logging.IAgentLogger;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
@@ -34,30 +46,16 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavigationGraphBuilder;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004EdgeChecker;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.floydwarshall.FloydWarshallMap;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.DrawStayingDebugLines;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
-import cz.cuni.amis.pogamut.ut2004.factory.guice.remoteagent.UT2004ServerFactory;
-import cz.cuni.amis.pogamut.ut2004.factory.guice.remoteagent.UT2004ServerModule;
-import cz.cuni.amis.pogamut.ut2004.server.impl.UT2004Server;
-import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
-import cz.cuni.amis.pogamut.ut2004.utils.UT2004ServerRunner;
 import cz.cuni.amis.utils.ExceptionToString;
 import cz.cuni.amis.utils.NullCheck;
-import cz.cuni.amis.utils.exception.PogamutException;
-import java.io.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.vecmath.Vector2d;
 import math.geom2d.Point2D;
-import math.geom2d.Shape2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.line.StraightLine2D;
 import math.geom3d.Point3D;
 import math.geom3d.Vector3D;
-import math.geom3d.line.StraightLine3D;
 import math.geom3d.plane.Plane3D;
 
 /**
@@ -312,7 +310,7 @@ public class OldNavMesh implements IPathPlanner<ILocated> {
 
         // spocitame vzdalenost od vrcholu 0 na z souradnici. nejmensi vzdalenost = vitez
         //TODO: Fixed - checking for rounding errors before accepting the polygon
-        double minDist = NavMeshConstants.maxDistanceBotPolygon;
+        double minDist = OldNavMeshConstants.maxDistanceBotPolygon;
         int retPId = -2;
         for (int i = 0; i < candidatePolygons.size(); i++) {
             Integer pId = (Integer) candidatePolygons.get(i);
@@ -427,10 +425,10 @@ public class OldNavMesh implements IPathPlanner<ILocated> {
         String mapName = info.getLevel();
         log.warning("Loading NavMesh for: " + mapName);
         
-        String processedNavMeshFileName = NavMeshConstants.processedMeshDir + "/" + mapName + ".navmesh.processed";
+        String processedNavMeshFileName = OldNavMeshConstants.processedMeshDir + "/" + mapName + ".navmesh.processed";
         File processedNavMeshFile = new File(processedNavMeshFileName);
         
-        String pureMeshFileName = NavMeshConstants.pureMeshReadDir + "/" + mapName + ".navmesh";
+        String pureMeshFileName = OldNavMeshConstants.pureMeshReadDir + "/" + mapName + ".navmesh";
         File pureMeshFile = new File(pureMeshFileName);
         
         if (shouldReloadNavMesh) {
@@ -941,7 +939,7 @@ public class OldNavMesh implements IPathPlanner<ILocated> {
     }
 
     protected void saveNavMeshCore(String mapName) {
-        String coreFileName = NavMeshConstants.processedMeshDir + File.separator + mapName + ".navmesh.processed";
+        String coreFileName = OldNavMeshConstants.processedMeshDir + File.separator + mapName + ".navmesh.processed";
         File coreFile = new File(coreFileName);
 
         log.info("Writing NavMesh core to a file: " + coreFile.getAbsolutePath());

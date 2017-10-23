@@ -71,7 +71,7 @@ public class NavMeshCache {
 	public static void reloadNavMesh( NavMesh navMesh, final Map<UnrealId, NavPoint> navGraph, String mapName) {
 		NavMesh cachedNavmesh = null;
 		
-		String navMeshFileName = NavMeshConstants.processedMeshDir + "/" + mapName + ".anm";
+		String navMeshFileName = NavMesh.processedMeshDir + "/" + mapName + ".anm";
 		File navMeshFile = new File(navMeshFileName);
 		
 		ObjectInputStream in = null;

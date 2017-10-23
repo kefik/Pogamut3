@@ -24,7 +24,8 @@ public class PolygonAnalysis {
 	public HashMap<Integer, PolygonInfo> polygonIdToInfoMap = Maps.newHashMap();
 	public HashMap<Integer,VertexInfo> vertexIdToInfoMap = Maps.newHashMap();
 	
-	public PolygonAnalysis(RawNavMeshFile rawNavMesh ) {		
+	public PolygonAnalysis(RawNavMeshFile rawNavMesh ) {
+		
 		for (int i = 0; i<rawNavMesh.vertices.size(); ++i ) {
 			allVertexIds.add(i);
 			vertexIdToInfoMap.put(i, new VertexInfo( rawNavMesh.vertices.get(i) ) );

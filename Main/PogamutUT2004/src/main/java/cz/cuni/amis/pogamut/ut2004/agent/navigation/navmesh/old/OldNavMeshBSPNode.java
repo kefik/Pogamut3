@@ -19,12 +19,8 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import math.geom2d.Point2D;
-import math.geom2d.line.Line2D;
 import math.geom2d.line.StraightLine2D;
 
 /**
@@ -72,7 +68,7 @@ public class OldNavMeshBSPNode implements java.io.Serializable {
     }
     
     public boolean shouldSplit() {
-        return (polys.size() > NavMeshConstants.stopSplittingNumberOfPolygons);
+        return (polys.size() > OldNavMeshConstants.stopSplittingNumberOfPolygons);
     }
     
     public StraightLine2D findSeparatingLine () throws Exception {
@@ -80,13 +76,13 @@ public class OldNavMeshBSPNode implements java.io.Serializable {
         // alg 1:
         // pick 3 polygons at random and try all treir edges. remember the best one
         // criterium is that the greater half of polgons should be as small as it can be - ideally 0.5
-        double bestFoundSplitFactor = NavMeshConstants.maxAllowedSplitFactor;
+        double bestFoundSplitFactor = OldNavMeshConstants.maxAllowedSplitFactor;
         StraightLine2D bestFoundSeparatingLine = null;
         
         ArrayList candidatePolygons = (ArrayList) polys.clone();
         
         // several tries for polygons...
-        for(int i = 0; i < NavMeshConstants.maxNumberOfPolygonsToTry; i++) {
+        for(int i = 0; i < OldNavMeshConstants.maxNumberOfPolygonsToTry; i++) {
             if(candidatePolygons.isEmpty()) break;
             
             int randomId = 0; //random.nextInt(candidatePolygons.size());

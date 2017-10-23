@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import math.bsp.BspOccupation;
 import math.bsp.IBspStrategy;
 import math.bsp.node.IConstBspLeafNode;
@@ -16,9 +15,11 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	extends BspListDataStrategy<TPolygon, StraightLine2D>
 	implements IBspStrategy<ArrayList<TPolygon>, StraightLine2D> {
 	
+    public static int STOP_SPLITTING_NUMBER_OF_POLYGONS = 1;
+    
 	@Override
 	public boolean shouldSplit(IConstBspLeafNode<ArrayList<TPolygon>, StraightLine2D> leafNode) {
-		return leafNode.getData().size() > NavMeshConstants.stopSplittingNumberOfPolygons;
+		return leafNode.getData().size() > STOP_SPLITTING_NUMBER_OF_POLYGONS;
 	}
 
 	@Override

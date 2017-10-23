@@ -117,7 +117,7 @@ public class NavGraphAnalysis {
 			@Override
 			public boolean apply(RayPath<Integer, EdgeDescriptor> rayPath) {
 				return (
-					!rayPath.getPolygons().contains( destinationPolygonId )
+					!rayPath.asPolygons().contains( destinationPolygonId )
 				);
 			}
 		};
@@ -129,7 +129,7 @@ public class NavGraphAnalysis {
     		keepTracingPredicate
         );
         
-        return !rayPath.getPolygons().contains( destinationPolygonId );
+        return !rayPath.asPolygons().contains( destinationPolygonId );
 	}
 	
 	public NavPointInfo getNavPointInfo(NavPoint navPoint) {

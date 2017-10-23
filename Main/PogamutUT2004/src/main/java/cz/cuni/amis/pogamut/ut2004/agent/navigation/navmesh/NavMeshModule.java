@@ -33,6 +33,9 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavigationGraphBuilder;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004MapTweaks;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004ServerProvider;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NavMeshDraw;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.grounder.NavMeshDropGrounder;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarDistanceHeuristic;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarPathPlanner;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
@@ -61,19 +64,23 @@ public class NavMeshModule {
     private IWorldView worldView;
     private Logger log;
     
-    private NavMeshDraw navMeshDraw;
-
-    //
+        //
     // STATE
     //
     private boolean shouldReloadNavMesh = false;
     private GameInfo loadedForMap = null;
 
-    //
-    // NAVMESH DATA STRUCTURES
+    // 
+    // COMPONENTS
     //
     private NavMesh navMesh;
-
+    private NavMeshDropGrounder dropGrounder;
+    private NavMeshAStarDistanceHeuristic aStarDistanceHeuristic;
+    private NavMeshAStarPathPlanner aStarPathPlanner;
+    private NavMeshClearanceComputer clearanceComputer;
+    
+    //private NavMeshDraw navMeshDraw;
+    
     //
     // LISTENER
     //
@@ -100,6 +107,10 @@ public class NavMeshModule {
         NullCheck.check(this.worldView, "worldView");
         
         navMesh = new NavMesh(log);
+        dropGrounder = new NavMeshDropGrounder(navMesh);
+        aStarDistanceHeuristic = new NavMeshAStarDistanceHeuristic(navMesh);
+        aStarPathPlanner = new NavMeshAStarPathPlanner( dropGrounder, navMesh, aStarDistanceHeuristic, log);
+        clearanceComputer = new NavMeshClearanceComputer( dropGrounder );
         //navMeshDraw = new NavMeshDraw(navMesh, log, serverProvider);
         
         GameInfo info = worldView.getSingle(GameInfo.class);
@@ -183,7 +194,23 @@ public class NavMeshModule {
         return navMesh;
     }
     
-    public NavMeshDraw getNavMeshDraw() {
+    public NavMeshDropGrounder getDropGrounder() {
+    	return dropGrounder;
+    }
+
+	public NavMeshAStarDistanceHeuristic getAStarDistanceHeuristic() {
+		return aStarDistanceHeuristic;
+	}
+
+	public NavMeshAStarPathPlanner getAStarPathPlanner() {
+		return aStarPathPlanner;
+	}
+    
+	public NavMeshClearanceComputer getClearanceComputer() {
+		return clearanceComputer;
+	}
+	
+/*    public NavMeshDraw getNavMeshDraw() {
         return navMeshDraw;
-    }    
+    }*/    
 }

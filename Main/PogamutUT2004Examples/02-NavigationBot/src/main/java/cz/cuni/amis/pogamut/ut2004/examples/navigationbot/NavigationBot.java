@@ -448,7 +448,7 @@ public class NavigationBot extends UT2004BotModuleController {
     }
     
     private boolean drawNavMesh() { 
-		if (!navMeshDrawn) {
+		/*if (!navMeshDrawn) {
     		navMeshDrawn = true;
     		say("Drawing NavMesh...");
     		navMeshModule.getNavMeshDraw().clearAll();
@@ -470,12 +470,12 @@ public class NavigationBot extends UT2004BotModuleController {
     			return false;
     		}    		
     	}
-		
+		*/
 		return true;
 	}
 	
 	private boolean drawOffMeshLinks() { 		
-		if (!offMeshLinksDrawn) {
+		/*if (!offMeshLinksDrawn) {
 			offMeshLinksDrawn = true;
 			
 			if (navMeshModule.getNavMesh().getOffMeshPoints().size() == 0) {
@@ -500,7 +500,7 @@ public class NavigationBot extends UT2004BotModuleController {
     		if (waitForOffMeshLinks > 0) {
     			return false;
     		}    		
-    	}
+    	}*/
 		
 		return true;
 	}

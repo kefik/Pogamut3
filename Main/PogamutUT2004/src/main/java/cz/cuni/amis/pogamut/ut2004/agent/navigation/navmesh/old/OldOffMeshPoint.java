@@ -17,15 +17,13 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old;
 //old navmesh
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import math.geom3d.Point3D;
 
 /**
  * CLass representing a navpoint which is a part of an off mesh connection in navMesh

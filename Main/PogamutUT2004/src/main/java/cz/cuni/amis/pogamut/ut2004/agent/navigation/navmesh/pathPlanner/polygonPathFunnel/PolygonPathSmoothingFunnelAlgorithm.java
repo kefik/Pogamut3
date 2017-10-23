@@ -54,8 +54,9 @@ public class PolygonPathSmoothingFunnelAlgorithm {
         	);
             FunnelRay newLeftRay = newGatewayFunnel.getLeftRay();
             FunnelRay newRightRay = newGatewayFunnel.getRightRay();
-            
-            switch ( gatewayFunnel.determineZone( newLeftRay.getCrossing().getLocation().asPoint3D() ) ) {
+           
+            FunnelZone newLeftRayZone = gatewayFunnel.determineZone( newLeftRay.getCrossing().getLocation().asPoint3D() );
+            switch ( newLeftRayZone ) {
             case INSIDE:
             	// update the funnel            	
             	gatewayFunnel = new Funnel( newLeftRay, gatewayFunnel.getRightRay() );
@@ -82,12 +83,13 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             		boundaries.get( index ),
             		index
                 );
-            	break;
+            	continue; // restart from it
             default:
             	throw new AssertionError("Unrecognized FunnelZone.");
             }
-            
-            switch ( gatewayFunnel.determineZone( newRightRay.getCrossing().getLocation().asPoint3D() ) ) {
+                       
+            FunnelZone newRightRayZone = gatewayFunnel.determineZone( newRightRay.getCrossing().getLocation().asPoint3D() );
+            switch ( newRightRayZone ) {
             case INSIDE:
             	// update the funnel
             	gatewayFunnel = new Funnel( gatewayFunnel.getLeftRay(), newRightRay );
@@ -111,7 +113,7 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             		boundaries.get( index ),
             		index
                 );
-            	break;
+                continue; // restart from it
             case OUTSIDE_RIGHT:
             	// do nothing
             	break;

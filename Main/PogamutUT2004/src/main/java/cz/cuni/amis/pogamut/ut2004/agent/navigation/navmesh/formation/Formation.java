@@ -17,15 +17,11 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.formation;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
-import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
-import cz.cuni.amis.utils.exception.PogamutException;
-import javax.vecmath.Vector2d;
+import math.geom2d.Vector2D;
 
 /**
  * A class able to make agents hold formations
@@ -33,6 +29,13 @@ import javax.vecmath.Vector2d;
  */
 public class Formation {
     
+    // forces in formations
+    public static final double FORCE_TO_TARGET = 1;
+    public static final double STEP_SIZE = 75;
+    // force in zero distance
+    public static final double OBSTACLE_MAX_FORCE = 1.5;
+    // in this distance the force is down to 0
+    public static final double OBSTACLE_MAX_DISTANCE = 100;
     
     UT2004BotModuleController bot;
     
@@ -41,10 +44,10 @@ public class Formation {
     double leaderLastSeenRotation = 0;
     long leaderLastTimeSeen = 0;
     
-    Vector2d direction;
+    Vector2D direction;
     double distance;
     
-    OldNavMesh navmesh;
+    NavMeshClearanceComputer clearanceComputer;
     
     // direction is relative to leader's direction
     boolean relativeRotation = true;
@@ -58,8 +61,8 @@ public class Formation {
     
     public Formation(UT2004BotModuleController bot) throws Exception {
         this.bot = bot;
-        navmesh = bot.getNavMeshModule().getNavMesh();
-        if(navmesh==null) throw new Exception("Formation cannot be instatiated because there is no navmesh.");
+        clearanceComputer = bot.getNavMeshModule().getClearanceComputer();
+        if (clearanceComputer==null) throw new Exception("Formation cannot be instatiated because there is no navmesh.");
     }
     
     
@@ -95,19 +98,16 @@ public class Formation {
         // get the point where we want to be
         double yaw = NavMeshConstants.transform2DVectorToRotation(direction);
         if(this.relativeRotation) yaw += leaderLastSeenRotation;
-        Vector2d actualDirection = NavMeshConstants.transformRotationTo2DVector(yaw);
-        // stretch the vector to proper length
-        actualDirection.normalize();
-        actualDirection.x *= distance;
-        actualDirection.y *= distance;
-        // add vector to leaders location
-        double x = leaderLastSeenLocation.x + actualDirection.x;
-        double y = leaderLastSeenLocation.y + actualDirection.y;
-        double z = leaderLastSeenLocation.z;
-        
-        Location targetLocaton = new  Location(x,y,z);
+        Vector2D actualDirection = NavMeshConstants.transformRotationTo2DVector(yaw).getNormalizedVector().times( distance );
+
+        // add vector to leaders location      
+        Location targetLocaton = new  Location(
+    		leaderLastSeenLocation.x + actualDirection.getX(),
+    		leaderLastSeenLocation.y + actualDirection.getY(),
+    		leaderLastSeenLocation.z
+	    );
  
-        if(bot.getInfo().atLocation(targetLocaton, NavMeshConstants.StepSize/2)) {
+        if(bot.getInfo().atLocation(targetLocaton, STEP_SIZE/2)) {
             System.out.println("I am at the right spot.");
             if(this.turnToLeaderAtDestination) bot.getMove().turnTo(this.leaderLastSeenLocation);
             return;
@@ -116,53 +116,39 @@ public class Formation {
         Location currenLocation = bot.getInfo().getLocation();
         
         
-        Vector2d mainForce = new Vector2d(targetLocaton.x-currenLocation.x, targetLocaton.y-currenLocation.y);
-        mainForce.normalize();
-        mainForce.x *= NavMeshConstants.ForceToTarget; 
-        mainForce.y *= NavMeshConstants.ForceToTarget;
-         
+        Vector2D mainForce = new Vector2D(targetLocaton.x-currenLocation.x, targetLocaton.y-currenLocation.y);
+        mainForce = mainForce.getNormalizedVector().times( FORCE_TO_TARGET );
+        
         
         // add ray forces
         yaw = bot.getInfo().getRotation().getYaw();
         double distance;
         double force;
         // 1. front ray
-        Vector2d frontDirection = NavMeshConstants.transformRotationTo2DVector(yaw);
-        distance = navmesh.getDistanceFromEdge(currenLocation, frontDirection, NavMeshConstants.obstacleMaxDistance);
-        if(0 < distance && distance < NavMeshConstants.obstacleMaxDistance) {
-            force = (distance / NavMeshConstants.obstacleMaxDistance) * NavMeshConstants.obstacleMaxForce;
-            Vector2d frontForce = (Vector2d) frontDirection.clone();
-            frontForce.negate();
-            frontForce.normalize();
-            frontForce.x *= force;
-            frontForce.y *= force;
-            mainForce.add(frontForce);
+        Vector2D frontDirection = NavMeshConstants.transformRotationTo2DVector(yaw);
+        distance = clearanceComputer.computeXyProjectionDistanceFromEdge( currenLocation, frontDirection, OBSTACLE_MAX_DISTANCE );
+        if(0 < distance && distance < OBSTACLE_MAX_DISTANCE) {
+            force = (distance / OBSTACLE_MAX_DISTANCE) * OBSTACLE_MAX_FORCE;
+            Vector2D frontForce = frontDirection.getNormalizedVector().times( -force );
+            mainForce = mainForce.plus(frontForce);
         }
         
         // 2. left front ray
-        Vector2d leftFrontDirection = NavMeshConstants.transformRotationTo2DVector(yaw-NavMeshConstants.UTQuarterAngle/2);
-        distance = navmesh.getDistanceFromEdge(currenLocation, leftFrontDirection, NavMeshConstants.obstacleMaxDistance);
-        if(0 < distance && distance < NavMeshConstants.obstacleMaxDistance) {
-            force = (distance / NavMeshConstants.obstacleMaxDistance) * NavMeshConstants.obstacleMaxForce;
-            Vector2d leftFrontForce = (Vector2d) leftFrontDirection.clone();
-            leftFrontForce.negate();
-            leftFrontForce.normalize();
-            leftFrontForce.x *= force;
-            leftFrontForce.y *= force;
-            mainForce.add(leftFrontForce);
+        Vector2D leftFrontDirection = NavMeshConstants.transformRotationTo2DVector(yaw-NavMeshConstants.UTQuarterAngle/2);
+        distance = clearanceComputer.computeXyProjectionDistanceFromEdge( currenLocation, leftFrontDirection, OBSTACLE_MAX_DISTANCE );
+        if(0 < distance && distance < OBSTACLE_MAX_DISTANCE) {
+            force = (distance / OBSTACLE_MAX_DISTANCE) * OBSTACLE_MAX_FORCE;
+            Vector2D leftFrontForce = leftFrontDirection.getNormalizedVector().times( -force );
+            mainForce = mainForce.plus(leftFrontForce);
         }
 
         // 3. right front ray
-        Vector2d rightFrontDirection = NavMeshConstants.transformRotationTo2DVector(yaw+NavMeshConstants.UTQuarterAngle/2);
-        distance = navmesh.getDistanceFromEdge(currenLocation, rightFrontDirection, NavMeshConstants.obstacleMaxDistance);
-        if(0 < distance && distance < NavMeshConstants.obstacleMaxDistance) {
-            force = (distance / NavMeshConstants.obstacleMaxDistance) * NavMeshConstants.obstacleMaxForce;
-            Vector2d rightFrontForce = (Vector2d) rightFrontDirection.clone();
-            rightFrontForce.negate();
-            rightFrontForce.normalize();
-            rightFrontForce.x *= force;
-            rightFrontForce.y *= force;
-            mainForce.add(rightFrontForce);
+        Vector2D rightFrontDirection = NavMeshConstants.transformRotationTo2DVector(yaw+NavMeshConstants.UTQuarterAngle/2);
+        distance = clearanceComputer.computeXyProjectionDistanceFromEdge( currenLocation, rightFrontDirection, OBSTACLE_MAX_DISTANCE );
+        if(0 < distance && distance < OBSTACLE_MAX_DISTANCE) {
+            force = (distance / OBSTACLE_MAX_DISTANCE) * OBSTACLE_MAX_FORCE;
+            Vector2D rightFrontForce = rightFrontDirection.getNormalizedVector().times( -force );
+            mainForce = mainForce.plus(rightFrontForce);
         }   
         
         
@@ -171,13 +157,12 @@ public class Formation {
         // end of adding ray forces
         
         // main force now tells which direction to go. Go there by step size
-        mainForce.normalize();
-        mainForce.x *= NavMeshConstants.StepSize; 
-        mainForce.y *= NavMeshConstants.StepSize;
-        x = currenLocation.x + mainForce.x;
-        y = currenLocation.y + mainForce.y;
-        z = currenLocation.z;
-        Location resultLocation = new Location(x,y,z);
+        mainForce = mainForce.getNormalizedVector().times( STEP_SIZE );
+        Location resultLocation = new Location(
+    		currenLocation.x + mainForce.getX(),
+    		currenLocation.y + mainForce.getY(),
+    		currenLocation.z
+    	);
         
         
         System.out.println("Moving to resultLocation " + resultLocation);
@@ -211,7 +196,7 @@ public class Formation {
         this.leader = leader;
         updateLeaderInfo();
     } 
-    public void setDirection(Vector2d direction) {
+    public void setDirection(Vector2D direction) {
         this.direction = direction;
     }     
     public void setDistance(double distance) {
@@ -224,7 +209,7 @@ public class Formation {
     public Player getLeader() {
         return leader;
     } 
-    public Vector2d getDirection() {
+    public Vector2D getDirection() {
         return direction;
     }     
     public double getDistance() {

@@ -3,17 +3,20 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing;
 import java.util.List;
 import java.util.logging.Logger;
 
-import math.geom3d.Point3D;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathFuture;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldINavMeshAtom;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldOffMeshEdge;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldOffMeshPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.DrawStayingDebugLines;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
+import cz.cuni.amis.pogamut.ut2004.server.impl.UT2004Server;
+import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
+import math.geom3d.Point3D;
 
 public class NavMeshDraw extends UT2004Draw {
 
@@ -53,7 +56,7 @@ public class NavMeshDraw extends UT2004Draw {
 	                DrawStayingDebugLines d = new DrawStayingDebugLines();
 	                String lines = offMeshEdgeToDebugString(oe);
 	                d.setVectors(lines);
-	                d.setColor(NavMeshConstants.getColorForOffMeshConnection(oe, getServer()));
+	                d.setColor(getColorForOffMeshConnection(oe, getServer()));
 	                d.setClearAll(false);                
 	                getServer().getAct().act(d);
 	            }
@@ -281,5 +284,37 @@ public class NavMeshDraw extends UT2004Draw {
         return result.toString(); 
     }
 	
-	
+    public static Location getColorForOffMeshConnection(OldOffMeshEdge oe, UT2004Server server) {
+        
+        NavPoint from = server.getWorldView().get(oe.getFrom().getNavPointId(), NavPoint.class);
+        NavPoint to = server.getWorldView().get(oe.getTo().getNavPointId(), NavPoint.class);
+        
+        if (from == null) return new Location(255,255,100);
+        if (to == null) return new Location(255,255,100);
+
+        //lift is blue
+        if(from.isLiftCenter() || to.isLiftCenter()) return new Location(0, 0, 255);
+        // teleporter is violet
+        if(from.isTeleporter() && to.isTeleporter()) return new Location(150, 0, 255);
+        // return new Location(0, 180, 64);
+        
+        NavPointNeighbourLink link = from.getOutgoingEdges().get(oe.getLinkId());
+        
+        if (link == null) return new Location(255,255,100);
+        
+        int linkFlags = link.getFlags();        
+        if ((linkFlags & LinkFlag.DOOR.get()) > 0) {}
+        if ((linkFlags & LinkFlag.FLY.get()) > 0) {return new Location(255, 0, 0);}
+        if ((linkFlags & LinkFlag.FORCED.get()) > 0) {return new Location(255, 170, 255);}      
+        if ((linkFlags & LinkFlag.LADDER.get()) > 0) {return new Location(255, 0, 0);}
+        if ((linkFlags & LinkFlag.PLAYERONLY.get()) > 0) {return new Location(255, 0, 0);}
+        if ((linkFlags & LinkFlag.PROSCRIBED.get()) > 0) {return new Location(255, 0, 0);}
+        if ((linkFlags & LinkFlag.SPECIAL.get()) > 0) {return new Location(255, 0, 255);}
+        if ((linkFlags & LinkFlag.SWIM.get()) > 0) {return new Location(255, 0, 0);}
+        if ((linkFlags & LinkFlag.WALK.get()) > 0) {}
+        // JUMP is light green
+        if ((linkFlags & LinkFlag.JUMP.get()) > 0) {return new Location(100, 255, 255);}
+        // default
+        return new Location(255,255,100);
+    }
 }

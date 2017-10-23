@@ -25,7 +25,6 @@ public class NavMeshPathTracer {
 	 * @param startPolygon polygon where the tracing starts from
 	 * @param start exact location within the start polygon where the tracing starts from
 	 * @param direction2d direction to go 
-	 * @param context implementation of operations needed by the algorithm
 	 * @param keepGoingCondition condition that stops the algorithm when evaluated to false, such as distance limit 
 	 * @return recorded path
 	 */
@@ -56,8 +55,7 @@ public class NavMeshPathTracer {
 			IPathTraceContext<TPolygon,TEdge> context,
 			Predicate<RayPath<TPolygon,TEdge>> keepGoingCondition
 	) {
-		RayPath<TPolygon,TEdge> rayPath = new RayPath<TPolygon,TEdge>();
-		rayPath.polygons.add(startPolygon);
+		RayPath<TPolygon,TEdge> rayPath = new RayPath<TPolygon,TEdge>(startPolygon);
 		
 		Point2D start2d = context.project(start);
 		Ray2D ray = new Ray2D( start2d, start2d.plus(direction2d) );
@@ -97,15 +95,11 @@ public class NavMeshPathTracer {
             	context.getDestinationVertex(intersectingEdge).asPoint3D()
             );
             Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
-                
-            rayPath.edges.add(intersectingEdge);
-            rayPath.intersections.add(intersection);
-            
             
             previousPolygon = currentPolygon;
             currentPolygon = context.getAdjacentPolygonByEdge( currentPolygon, intersectingEdge );
             
-           	rayPath.polygons.add(currentPolygon);
+            rayPath.addStep( intersection, intersectingEdge,currentPolygon );
         } while ( currentPolygon != null && keepGoingCondition.apply(rayPath) );
         
         return rayPath;
