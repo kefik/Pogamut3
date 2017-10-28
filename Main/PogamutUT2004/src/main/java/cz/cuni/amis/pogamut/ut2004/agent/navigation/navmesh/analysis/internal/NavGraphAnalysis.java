@@ -98,8 +98,6 @@ public class NavGraphAnalysis {
 		NavPoint fromNav = link.getFromNavPoint();
         NavPoint toNav = link.getToNavPoint();
         
-
-        
         final Integer startPolygonId = getNavPointInfo(fromNav).polygonId;
         final Integer destinationPolygonId = getNavPointInfo(toNav).polygonId;
         
@@ -128,7 +126,6 @@ public class NavGraphAnalysis {
     		pathTracingContext,
     		keepTracingPredicate
         );
-        
         return !rayPath.asPolygons().contains( destinationPolygonId );
 	}
 	
@@ -202,7 +199,8 @@ public class NavGraphAnalysis {
 
 		@Override
 		public Integer getAdjacentPolygonByEdge(Integer polygon, EdgeDescriptor edge) {
-			NavMeshBoundaryInfo boundaryInfo = lineSegmentAnalysis.polygonIdToInfoMap.get(polygon).edgeIndexToBoundaryInfoMap.get(edge.edgeIndex);
+			NavMeshBoundaryInfo boundaryInfo = lineSegmentAnalysis.getPolygonInfo(polygon).edgeIndexToBoundaryInfoMap.get(edge.edgeIndex);
+			
 			if ( boundaryInfo == null ) {
 				return null;
 			}
