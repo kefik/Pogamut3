@@ -69,6 +69,8 @@ public class NavigationFactory {
                 return bot.getFwMap();
             } else if (pathPlannerType.equals("navMesh")) {
                 return bot.getNavMeshModule().getAStarPathPlanner();
+            } else if (pathPlannerType.equals("oldNavMesh")) {
+            	return bot.getOldNavMeshModule().getNavMesh();
             }
         }
         return null;

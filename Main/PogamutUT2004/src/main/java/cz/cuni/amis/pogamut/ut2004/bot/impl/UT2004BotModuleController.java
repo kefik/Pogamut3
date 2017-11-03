@@ -387,7 +387,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	/**
 	 * Utility class that provides shared instance of {@link UT2004Server}.
 	 */
-	private IUT2004ServerProvider serverProvider;
+	protected IUT2004ServerProvider serverProvider;
 	
 	/**
 	 * Class providing interface for the use of {@link DrawStayingDebugLines} inside UT2004. Can be used to draw debug stuff (lines) right into UT2004.

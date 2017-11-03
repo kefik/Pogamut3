@@ -1,0 +1,12 @@
+<cz.cuni.amis.pogamut.ut2004.navigation.evaluator.task.NavigationEvaluationTask>
+  <paramsClass>cz.cuni.amis.pogamut.ut2004.navigation.evaluator.bot.BotNavigationParameters</paramsClass>
+  <botClass>cz.cuni.amis.pogamut.ut2004.navigation.evaluator.bot.NavigationEvaluatingBot</botClass>
+  <navigation>acc</navigation>
+  <pathPlanner>oldNavMesh</pathPlanner>
+  <mapName>DM-Flux2</mapName>
+  <onlyRelevantPaths>true</onlyRelevantPaths>
+  <resultBasePath>base:</resultBasePath>
+  <recordType>PATH_FAILED</recordType>
+  <limit>-1</limit>
+  <stringLevel>INFO</stringLevel>
+</cz.cuni.amis.pogamut.ut2004.navigation.evaluator.task.NavigationEvaluationTask>

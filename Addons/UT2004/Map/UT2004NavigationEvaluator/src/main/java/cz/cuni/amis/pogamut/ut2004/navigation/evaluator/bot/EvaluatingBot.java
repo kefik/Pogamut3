@@ -16,6 +16,8 @@
  */
 package cz.cuni.amis.pogamut.ut2004.navigation.evaluator.bot;
 
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 
 /**
@@ -27,6 +29,11 @@ public abstract class EvaluatingBot extends UT2004BotModuleController {
     
     protected boolean isCompleted;
     
+    private OldNavMeshModule oldNavMeshModule;
+    public OldNavMeshModule getOldNavMeshModule() {
+    	return oldNavMeshModule;
+    }
+    
     /**
      * Whether the evaluation is completed.
      * 
@@ -34,6 +41,12 @@ public abstract class EvaluatingBot extends UT2004BotModuleController {
      */
     public boolean isCompleted() {
         return isCompleted;
+    }
+    
+    @Override
+    protected void initializeModules(UT2004Bot bot) {
+    	super.initializeModules(bot);
+    	oldNavMeshModule = new OldNavMeshModule(serverProvider, getWorldView(), bot.getLogger());
     }
     
 }
