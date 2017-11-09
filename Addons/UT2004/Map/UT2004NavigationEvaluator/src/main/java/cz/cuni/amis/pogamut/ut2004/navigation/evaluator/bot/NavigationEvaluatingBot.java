@@ -27,6 +27,11 @@ import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NavMeshDraw;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NewNavMeshDraw;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarPathPlanner;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
@@ -76,6 +81,9 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
     private long lastRespawn = Long.MAX_VALUE;
 
     private boolean teleportFailed = false;
+    
+    boolean isFirstLogic = true;
+    INavMeshDraw navMeshDraw;
 
     public NavigationEvaluatingBot() {
     }
@@ -125,6 +133,12 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
     	super.initializePathFinding(bot);
         myPathPlanner = NavigationFactory.getPathPlanner(this, bot, getParams().getPathPlanner());
         myNavigation = NavigationFactory.getNavigation(this, bot, getParams().getNavigation());
+        
+        if (myPathPlanner instanceof OldNavMesh) {
+            navMeshDraw = new NavMeshDraw(getOldNavMeshModule().getNavMesh(), bot.getLog(), serverProvider);
+        } else if (myPathPlanner instanceof NavMeshAStarPathPlanner) {
+            navMeshDraw =  new NewNavMeshDraw(getNavMesh(), bot.getLog(), serverProvider);
+        }
     }
 
     /**
@@ -208,6 +222,8 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
         }
     }
 
+    
+    
     /**
      * Main method that controls the bot - makes decisions what to do next. It
      * is called iteratively by Pogamut engine every time a synchronous batch
@@ -217,6 +233,13 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
      */
     @Override
     public void logic() {
+        if (isFirstLogic) {
+            isFirstLogic = false;
+            if (navMeshDraw != null) {
+                navMeshDraw.draw(true, false);
+            }
+        }
+        
         // mark that another logic iteration has began
         log.info("--- Logic iteration ---");
 

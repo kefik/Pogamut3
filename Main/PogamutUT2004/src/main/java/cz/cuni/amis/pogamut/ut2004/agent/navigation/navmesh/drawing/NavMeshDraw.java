@@ -18,7 +18,7 @@ import cz.cuni.amis.pogamut.ut2004.server.impl.UT2004Server;
 import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
 import math.geom3d.Point3D;
 
-public class NavMeshDraw extends UT2004Draw {
+public class NavMeshDraw extends UT2004Draw implements INavMeshDraw {
 
 	private OldNavMesh navMesh;
 
