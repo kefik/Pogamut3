@@ -47,7 +47,7 @@ public class NewNavMeshDraw extends UT2004Draw implements INavMeshDraw {
             }
         }
         
-        if (false && drawOffMeshLinks) {
+        if (drawOffMeshLinks) {
             for (OffMeshPoint op : navMesh.getOffMeshPoints()) {
                 for (OffMeshEdge edge : op.getOutgoingEdges()) {
                     DrawStayingDebugLines d = new DrawStayingDebugLines();
@@ -78,8 +78,12 @@ public class NewNavMeshDraw extends UT2004Draw implements INavMeshDraw {
             return new Location(150, 0, 255); // Violet
         }
         
-        NavPointNeighbourLink link = from.getOutgoingEdges().get(oe.getLink().getId());
+        NavPointNeighbourLink oeLink = oe.getLink();
+        if (oeLink == null) {
+            return new Location(255,255,100);
+        }
         
+        NavPointNeighbourLink link = from.getOutgoingEdges().get(oeLink.getId());
         if (link != null)  {
             int linkFlags = link.getFlags();        
             if ((linkFlags & LinkFlag.DOOR.get()) > 0) {}

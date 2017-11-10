@@ -82,7 +82,10 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
 
     private boolean teleportFailed = false;
     
+    boolean drawNavMesh = true;
+    
     boolean isFirstLogic = true;
+    
     INavMeshDraw navMeshDraw;
 
     public NavigationEvaluatingBot() {
@@ -134,10 +137,12 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
         myPathPlanner = NavigationFactory.getPathPlanner(this, bot, getParams().getPathPlanner());
         myNavigation = NavigationFactory.getNavigation(this, bot, getParams().getNavigation());
         
-        if (myPathPlanner instanceof OldNavMesh) {
-            navMeshDraw = new NavMeshDraw(getOldNavMeshModule().getNavMesh(), bot.getLog(), serverProvider);
-        } else if (myPathPlanner instanceof NavMeshAStarPathPlanner) {
-            navMeshDraw =  new NewNavMeshDraw(getNavMesh(), bot.getLog(), serverProvider);
+        if (drawNavMesh) {
+            if (myPathPlanner instanceof OldNavMesh) {
+                navMeshDraw = new NavMeshDraw(getOldNavMeshModule().getNavMesh(), bot.getLog(), serverProvider);
+            } else if (myPathPlanner instanceof NavMeshAStarPathPlanner) {
+                navMeshDraw =  new NewNavMeshDraw(getNavMesh(), bot.getLog(), serverProvider);
+            }
         }
     }
 
@@ -235,8 +240,8 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
     public void logic() {
         if (isFirstLogic) {
             isFirstLogic = false;
-            if (navMeshDraw != null) {
-                navMeshDraw.draw(true, false);
+            if (navMeshDraw != null && drawNavMesh) {
+                navMeshDraw.draw(true, true);
             }
         }
         
