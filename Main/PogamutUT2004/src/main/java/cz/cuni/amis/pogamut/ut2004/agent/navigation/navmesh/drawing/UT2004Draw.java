@@ -203,7 +203,7 @@ public class UT2004Draw {
 		for (int i = 1; i < vertices.length; ++i) {
 			Location v1 = vertices[i-1];
 			Location v2 = vertices[i];
-			drawLine(defaultColor, v1, v2);
+			drawLine(color, v1, v2);
 		}	
 	}
 	

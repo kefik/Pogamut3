@@ -423,7 +423,7 @@ public class NavMeshSegmentedAStarPathPlanner implements IPathPlanner<ILocated>{
      * @param location
      * @return navmesh polygon from which the location can be reached
      */
-    private NavMeshPolygon ground( Location location ) {
+    private INavMeshAtom ground( Location location ) {
     	return grounder.forceGround(location);
     }
     

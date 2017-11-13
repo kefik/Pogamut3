@@ -34,6 +34,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.NavMeshAnalysis;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.file.RawNavMeshFile;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.INavMeshAtom;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshVertex;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
@@ -64,6 +65,7 @@ public class NavMesh implements Serializable {
     protected Set<NavMeshVertex> vertices = null;
     protected Set<NavMeshPolygon> polygons = null;
     protected Set<OffMeshPoint> offMeshPoints = null;
+    protected Set<INavMeshAtom> atoms = null;
     protected transient HashMap<NavPoint,OffMeshPoint> navPointToOffMeshPointMap = null; // constructed from offMeshPoints on demand, use getter
     protected IConstBspTree<ArrayList<NavMeshPolygon>, StraightLine2D> xyProjectionBsp = null;
     
@@ -98,6 +100,12 @@ public class NavMesh implements Serializable {
      */
     public Set<OffMeshPoint> getOffMeshPoints() {
         return Collections.unmodifiableSet( offMeshPoints );
+    }
+    
+    /** Get a collection of all navmesh polygons and off-mesh points.
+     */
+    public Set<INavMeshAtom> getAtoms() {
+    	return Collections.unmodifiableSet( atoms );
     }
     
     public OffMeshPoint getOffMeshPointsByNavPoint(NavPoint navPoint) {
@@ -136,6 +144,9 @@ public class NavMesh implements Serializable {
     	vertices = navMeshAnalysis.getVertices();
     	polygons = navMeshAnalysis.getPolygons();
     	offMeshPoints = navMeshAnalysis.getOffMeshPoints();
+    	atoms = new HashSet<INavMeshAtom>();
+    	atoms.addAll( polygons );
+    	atoms.addAll( offMeshPoints );
     	xyProjectionBsp = navMeshAnalysis.getXyProjectionBsp();
     }
     
@@ -144,6 +155,7 @@ public class NavMesh implements Serializable {
         vertices = new HashSet<NavMeshVertex>( navMesh.vertices );
         polygons = new HashSet<NavMeshPolygon>( navMesh.polygons );
         offMeshPoints = new HashSet<OffMeshPoint>( navMesh.offMeshPoints );
+        atoms = new HashSet<INavMeshAtom>( navMesh.atoms );
         if ( navMesh.navPointToOffMeshPointMap != null ) {
         	navPointToOffMeshPointMap = new HashMap<NavPoint, OffMeshPoint>( navMesh.navPointToOffMeshPointMap );
         } else {
@@ -163,6 +175,7 @@ public class NavMesh implements Serializable {
         vertices = null;
         polygons = null;
         offMeshPoints = null;
+        atoms = null;
         navPointToOffMeshPointMap = null;
         xyProjectionBsp = null;
     }

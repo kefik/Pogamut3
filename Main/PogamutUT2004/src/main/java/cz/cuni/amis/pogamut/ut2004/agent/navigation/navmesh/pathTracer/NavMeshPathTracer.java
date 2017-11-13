@@ -99,7 +99,7 @@ public class NavMeshPathTracer {
             previousPolygon = currentPolygon;
             currentPolygon = context.getAdjacentPolygonByEdge( currentPolygon, intersectingEdge );
             
-            rayPath.addStep( intersection, intersectingEdge,currentPolygon );
+            rayPath.addStep( intersection, intersectingEdge, currentPolygon );
         } while ( currentPolygon != null && keepGoingCondition.apply(rayPath) );
         
         return rayPath;

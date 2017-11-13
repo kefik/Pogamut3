@@ -94,7 +94,7 @@ public class NavGraphAnalysis {
 	 * @param link link to determine whether it is off-mesh (not implied by nav mesh)
 	 * @return 	true if link is not implied by navmesh
 	 */
-	protected boolean isOffMeshEdge(NavPointNeighbourLink link, PolygonAnalysis polygonAnalysis,LineSegmentAnalysis lineSegmentAnalysis) {
+	protected boolean isOffMeshEdge(NavPointNeighbourLink link, PolygonAnalysis polygonAnalysis, LineSegmentAnalysis lineSegmentAnalysis) {
 		NavPoint fromNav = link.getFromNavPoint();
         NavPoint toNav = link.getToNavPoint();
         

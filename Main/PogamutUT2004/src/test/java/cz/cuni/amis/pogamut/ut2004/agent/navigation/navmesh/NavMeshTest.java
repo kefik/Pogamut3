@@ -201,8 +201,8 @@ public class NavMeshTest {
 	boolean compareGrounding( Location location ) {
 		try {
 			OldNavMeshPolygon vanillaPolygon = vanillaNavMesh.getNearestPolygon( location );
-			NavMeshPolygon polygon = dropGrounder.forceGround( location );
-			return comparePolygons( vanillaPolygon, polygon );
+			INavMeshAtom atom = dropGrounder.forceGround( location );
+			return atom instanceof NavMeshPolygon && comparePolygons( vanillaPolygon, (NavMeshPolygon)atom );
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

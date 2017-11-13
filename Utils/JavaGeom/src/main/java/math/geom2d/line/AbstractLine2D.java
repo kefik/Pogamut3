@@ -378,7 +378,7 @@ implements SmoothOrientedCurve2D, LinearShape2D, CirculinearElement2D {
     public Point2D getIntersection(LinearShape2D line) {
     	double t = getIntersectionParametric(line);
     	
-    	if ( Double.isInfinite(t) ) {
+    	if ( Double.isInfinite(t) || Double.isNaN(t) ) {
     		return null;
     	}
     	

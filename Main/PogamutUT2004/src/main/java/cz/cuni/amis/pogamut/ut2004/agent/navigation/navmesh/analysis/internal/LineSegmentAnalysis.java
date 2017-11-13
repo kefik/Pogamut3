@@ -23,6 +23,7 @@ public class LineSegmentAnalysis {
 		
 		// loop through all line segments in all polygons and identify boundaries
 		for ( int polygonId : polygonAnalysis.allPolygonIds ) {
+			getPolygonInfo( polygonId ); // create info object even if we find no neighbors
 			PolygonAnalysis.PolygonInfo polygonInfo = polygonAnalysis.polygonIdToInfoMap.get(polygonId);
 			ArrayList<Integer> vertexIds = polygonInfo.vertexIds;
 			

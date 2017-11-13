@@ -1,5 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.examples.navmeshdebugbot;
 
+import java.awt.Color;
+
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
@@ -61,6 +63,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
 		if (msg.getText().toLowerCase().startsWith("drawnavmesh")) {
 			String[] parts = msg.getText().split(" ");
 			navMeshDraw.draw(true, parts.length > 1 ? Boolean.parseBoolean(parts[1]) : false);
+			sayGlobal("NAVMESH DRAWN");
     	}
     }
    
@@ -86,8 +89,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	
     	if (navigation.isNavigating()) {
     		sayGlobal("NAVIGATING TO: " + navPoint.getId().getStringId());
-    		draw.clearAll();
-    		draw.drawPolyLine(navigation.getCurrentPathDirect());
+    		draw.drawPolyLine( Color.RED, navigation.getCurrentPathDirect());
     	} else {
     		sayGlobal("NO PATH TO: " + navPoint.getId().getStringId());
     	}
