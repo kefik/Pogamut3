@@ -1,8 +1,12 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing;
 
 import java.awt.Color;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
+import cz.cuni.amis.pogamut.base.agent.navigation.IPathFuture;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
@@ -95,14 +99,42 @@ public class UT2004Draw {
 		drawLine(color, from.getLocation(), to.getLocation());
 	}
 	
+	/**
+	 * Draws a path
+	 * @param pathFuture we at least assume its {@link IPathFuture} of {@link ILocated} elements
+	 */
+	public void drawPath(IPathFuture pathFuture) {
+		drawPath(defaultColor, pathFuture);
+	}
+	
+	/**
+	 * Draws a path
+	 * @param pathFuture we at least assume its {@link IPathFuture} of {@link ILocated} elements
+	 */
+	public void drawPath(Color color, IPathFuture pathFuture) {
+		if (pathFuture == null) return;
+		if (!pathFuture.isDone()) return;
+		List elements = pathFuture.get();
+		drawPolyLine(color, (List<ILocated>)elements);
+	}
+	
+	public void drawPolyLine(Collection<ILocated> points) {
+		drawPolyLine(defaultColor, points);
+	}
+	
 	public void drawPolyLine(ILocated... points) {
+		drawPolyLine(defaultColor, points);		
+	}
+	
+	public void drawPolyLine(Color color, Collection<ILocated> points) {
 		if (points == null) return;
-		Location[] locations = new Location[points.length];
-		for (int i = 0; i < points.length; ++i) {
-			if (points[i] == null) return;
-			locations[i] = points[i].getLocation();
+		Location[] locations = new Location[points.size()];
+		Iterator<ILocated> iter = points.iterator();
+		int i = 0;
+		while (iter.hasNext()) {
+			locations[i++] = iter.next().getLocation();
 		}
-		drawPolyLine(locations);
+		drawPolyLine(color, locations);
 	}
 	
 	public void drawPolyLine(Color color, ILocated... vertices) {
@@ -113,7 +145,7 @@ public class UT2004Draw {
 			locations[i] = vertices[i].getLocation();
 		}
 		drawPolyLine(color, locations);
-	}
+	}	
 	
 	public void drawPolygon(ILocated... vertices) {
 		if (vertices == null) return;
