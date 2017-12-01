@@ -23,6 +23,8 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathRunner;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
 import cz.cuni.amis.pogamut.ut2004.bot.command.AdvancedLocomotion;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
@@ -214,7 +216,7 @@ public class NavMeshRunner implements IUT2004PathRunner {
      * @param log
      * @param navMesh
      */
-    public NavMeshRunner(UT2004Bot bot, AgentInfo agentInfo, AdvancedLocomotion locomotion, Logger log, OldNavMesh navMesh) {
+    public NavMeshRunner(UT2004Bot bot, AgentInfo agentInfo, AdvancedLocomotion locomotion, Logger log, NavMeshModule navMeshModule) {
         // setup reference to agent
         NullCheck.check(bot, "bot");
         this.bot = bot;
@@ -231,7 +233,7 @@ public class NavMeshRunner implements IUT2004PathRunner {
             this.log = bot.getLogger().getCategory(this.getClass().getSimpleName());
         }
 
-        this.jumpModule = new JumpModule(navMesh, this.log);
+        this.jumpModule = new JumpModule(navMeshModule, this.log);
         this.collisionDetector = new CollisionDetector();
         
         reset();

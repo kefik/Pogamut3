@@ -270,7 +270,7 @@ public class StraightLine3D implements ContinuousCurve3D {
      */
     public Point3D getPlaneIntersection(Plane3D plane) {
         double t = getPlaneIntersectionParametric(plane);
-        if ( !Double.isInfinite(t) ) {
+        if ( !Double.isInfinite(t) && !Double.isNaN(t) ) {
         	return getPoint(t);
         } else {
         	return null;

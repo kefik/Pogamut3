@@ -47,7 +47,7 @@ public class AxisAlignedPlane3D implements Serializable {
      */
     public Point3D getLineIntersection( StraightLine3D line ) {
         double t = getLineIntersectionParametric(line);
-        if ( !Double.isInfinite(t) ) {
+        if ( !Double.isInfinite(t) && !Double.isNaN(t) ) {
         	return line.getPoint(t);
         } else {
         	return null;

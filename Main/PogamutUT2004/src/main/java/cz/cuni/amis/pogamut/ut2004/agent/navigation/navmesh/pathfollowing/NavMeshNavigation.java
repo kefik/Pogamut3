@@ -22,8 +22,9 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.NavigationState;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004GetBackToNavGraph;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004RunStraight;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarPathPlanner;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.AccUT2004DistanceStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.AccUT2004PositionStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.AccUT2004TimeStuckDetector;
@@ -35,7 +36,6 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMess
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
 import cz.cuni.amis.utils.flag.Flag;
 import cz.cuni.amis.utils.flag.FlagListener;
 
@@ -43,7 +43,7 @@ import cz.cuni.amis.utils.flag.FlagListener;
  * Facade for navigation in UT2004. Method navigate() can be called both
  * synchronously and asynchronously.
  * <br/><br/>
- * Almost identical to {@link UT2004Navigation} but uses {@link OldNavMesh} under the hood and thus requires navmesh files to be present
+ * Almost identical to {@link UT2004Navigation} but uses {@link NavMesh} under the hood and thus requires navmesh files to be present
  * in the root of the project!
  *
  * @author knight
@@ -62,13 +62,13 @@ public class NavMeshNavigation implements IUT2004Navigation {
      */
     protected IUT2004PathExecutor<ILocated> pathExecutor;
     /**
-     * NavMeshModule that is used for path planning, its {@link OldNavMeshModule#getNavMesh()} is saved within {@link #pathPlanner}. 
+     * NavMeshModule that is used for path planning, its {@link NavMeshModule#getNavMesh()} is saved within {@link #pathPlanner}. 
      */
-    protected OldNavMeshModule navMeshModule;
+    protected NavMeshModule navMeshModule;
     /**
      * NavMesh that is used for path planning.
      */
-    protected OldNavMesh pathPlanner;
+    protected NavMeshAStarPathPlanner pathPlanner;
     /**
      * UT2004Bot reference.
      */
@@ -157,22 +157,22 @@ public class NavMeshNavigation implements IUT2004Navigation {
 
 
     /**
-     * Setup navigation for using {@link OldNavMesh}. Currently in utilizes {@link UT2004AcceleratedPathExecutor} and {@link NavMeshRunner}.
+     * Setup navigation for using {@link NavMesh}. Currently in utilizes {@link UT2004AcceleratedPathExecutor} and {@link NavMeshRunner}.
      *
      * @param bot
      * @param info
      * @param move
      */
-    public NavMeshNavigation(UT2004Bot bot, AgentInfo info, AdvancedLocomotion move, OldNavMeshModule navMeshModule) {
+    public NavMeshNavigation(UT2004Bot bot, AgentInfo info, AdvancedLocomotion move, NavMeshModule navMeshModule) {
         this.log = bot.getLogger().getCategory(this.getClass().getSimpleName());
         this.bot = bot;
         this.navMeshModule = navMeshModule;
-        this.pathPlanner = navMeshModule.getNavMesh();
+        this.pathPlanner = navMeshModule.getAStarPathPlanner();
         
         this.pathExecutor = new UT2004AcceleratedPathExecutor<ILocated>(
                 bot, info, move,
                 //TODO: Switch runners by parameter. For testing new runner.
-                new NavMeshNavigator<ILocated>(bot, info, move, new NavMeshRunner(bot, info, move, log, navMeshModule.getNavMesh()), log));
+                new NavMeshNavigator<ILocated>(bot, info, move, new NavMeshRunner(bot, info, move, log, navMeshModule), log));
         
         pathExecutor.addStuckDetector(new AccUT2004TimeStuckDetector(bot, 3000, 100000));
         // if the bot does not move for 3 seconds, considered that it is stuck
@@ -671,11 +671,11 @@ public class NavMeshNavigation implements IUT2004Navigation {
     }
     
     protected boolean isOnNavMesh(ILocated location) {
-    	return navMeshModule.isInitialized() && location != null && location.getLocation() != null && navMeshModule.getNavMesh().getPolygonId(location.getLocation()) >= 0;
+    	return navMeshModule.isInitialized() && location != null && location.getLocation() != null && navMeshModule.getDropGrounder().tryGround(location) != null;
     }
     
     protected boolean isOnNavMesh() {
-    	return isOnNavMesh(bot.getSelf().getLocation());
+    	return isOnNavMesh(bot.getSelf());
     }
 
     private void navigateLocation() {
@@ -907,7 +907,7 @@ public class NavMeshNavigation implements IUT2004Navigation {
         // => we have not started to run along path yet
 
         // ARE WE ON NAV MESH?
-        if (navMeshModule.getNavMesh().getPolygonId(bot.getSelf().getLocation()) >= 0) {
+        if ( isOnNavMesh() ) {
         	// YES, WE ARE!
         	if (getBackToNavGraph.isExecuting()) getBackToNavGraph.stop();
         	usingGetBackToNavGraph = false;

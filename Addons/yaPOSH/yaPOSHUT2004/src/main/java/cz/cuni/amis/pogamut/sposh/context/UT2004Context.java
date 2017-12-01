@@ -367,7 +367,7 @@ public class UT2004Context<BOT extends UT2004Bot> extends UT2004ContextBase<BOT>
 	     * <p><p>
 	     * Initialized inside {@link UT2004BotModuleController#initializeModules(UT2004Bot)}. 
 		 */
-		protected OldNavMeshModule navMeshModule;
+		protected NavMeshModule navMeshModule;
 		
 		/**
 		 * Class providing {@link LevelGeometry} instance via {@link LevelGeometryModule#getLevelGeometry()} method.
@@ -459,12 +459,12 @@ public class UT2004Context<BOT extends UT2004Bot> extends UT2004ContextBase<BOT>
 		protected void initializePathFinding(BOT bot) {
 			ut2004PathPlanner = new UT2004AStarPathPlanner(bot);
 			fwMap             = new FloydWarshallMap(bot);
-			navMeshModule.setFwMap(fwMap); // FW Map must be used because of TELEPORTERS, which cannot be handled correctly by current A* implementation
+			//navMeshModule.setFwMap(fwMap); // FW Map must be used because of TELEPORTERS, which cannot be handled correctly by current A* implementation
 			items.setPathPlanner(fwMap); // FW Map is used for path-distance queries
 			aStar             = new UT2004AStar(bot);		
 			navigation        = new UT2004Navigation(bot, info, move);       
 			nmNav             = new NavMeshNavigation(bot, info, move, navMeshModule);
-			nmPathBuilder     = new PathBuilder(bot, info, navMeshModule.getNavMesh());
+			nmPathBuilder     = new PathBuilder(bot, info, navMeshModule.getAStarPathPlanner());
 		}
 
 		/**
@@ -495,7 +495,7 @@ public class UT2004Context<BOT extends UT2004Bot> extends UT2004ContextBase<BOT>
 			weaponPrefs    = new WeaponPrefs(weaponry, bot);
 			combo          = new AdrenalineCombo(bot, info);
 			serverProvider = new UT2004ServerProvider();
-			navMeshModule  = new OldNavMeshModule(serverProvider, getWorldView(), bot.getLogger());
+			navMeshModule  = new NavMeshModule(serverProvider, getWorldView(), bot.getLogger());
 			levelGeometryModule = new LevelGeometryModule(serverProvider, getWorldView(), bot.getLogger());		 
 			draw           = new UT2004Draw(bot.getLogger().getCategory("Draw"), serverProvider);
 			tcClient       = new UT2004TCClient(bot, bot.getWorldView());
@@ -638,11 +638,11 @@ public class UT2004Context<BOT extends UT2004Bot> extends UT2004ContextBase<BOT>
 			return visibility;
 		}
 		
-		public OldNavMeshModule getNavMeshModule() {
+		public NavMeshModule getNavMeshModule() {
 			return navMeshModule;
 		}
 		
-		public OldNavMesh getNavMesh() {
+		public NavMesh getNavMesh() {
 			if (!navMeshModule.isInitialized()) log.warning("NavMeshModule has not been initialized (yet?)! You are either calling this method too early or missing .navmesh file in the local directory of your bot!");
 			return navMeshModule.getNavMesh();
 		}

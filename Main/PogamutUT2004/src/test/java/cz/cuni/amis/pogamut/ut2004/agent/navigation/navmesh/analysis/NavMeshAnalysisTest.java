@@ -1,6 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import org.junit.Test;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navgraph.NavGraph;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.LineSegmentAnalysis;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.NavGraphAnalysis;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.PolygonAnalysis;
@@ -28,7 +29,7 @@ public class NavMeshAnalysisTest {
 		final NavGraph navGraph = new NavGraph( new File( map + ".navgraph" ) );
 		Logger log = new LogCategory("NavMeshAnalysisTest");
 		
-		String rawNavMeshFileName = NavMeshConstants.pureMeshReadDir + "/" + map + ".navmesh";
+		String rawNavMeshFileName = NavMesh.pureMeshReadDir + "/" + map + ".navmesh";
     	RawNavMeshFile rawNavMeshFile = new RawNavMeshFile( new File(rawNavMeshFileName) );
 		PolygonAnalysis polygonAnalysis = new PolygonAnalysis(rawNavMeshFile);
 		

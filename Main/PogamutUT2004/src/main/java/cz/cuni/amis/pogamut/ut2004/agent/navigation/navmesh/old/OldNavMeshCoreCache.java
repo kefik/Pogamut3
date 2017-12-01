@@ -3,11 +3,7 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +14,6 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base.utils.logging.LogFormatter;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher.ConsolePublisher;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.utils.ExceptionToString;
 
 /**
@@ -62,7 +57,7 @@ public class OldNavMeshCoreCache {
 		OldNavMeshCore result = getNavMeshCoreFromCache(mapName);
 		if (result != null) return result;
 		
-		String processedNavMeshFileName = NavMeshConstants.processedMeshDir + "/" + mapName + ".navmesh.processed";
+		String processedNavMeshFileName = OldNavMeshConstants.processedMeshDir + "/" + mapName + ".navmesh.processed";
         File processedNavMeshFile = new File(processedNavMeshFileName);
 		
 		ObjectInputStream in;

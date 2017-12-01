@@ -38,3 +38,10 @@ target/
 Addons/UT2004/Map/UT2004LevelGeom/output/**
 Addons/UT2004/Map/UT2004NavMeshTools/05-NavMeshMaker/output/**
 Addons/UT2004/Tournament/UT2004Tournament/results/**
+Addons/UT2004/Map/UT2004NavigationEvaluator/results
+Addons/UT2004/Map/UT2004NavigationEvaluator/map
+Addons/UT2004/Map/UT2004NavigationEvaluator/navmesh
+
+# Generated files
+*.navmesh.processed
+

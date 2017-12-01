@@ -9,6 +9,7 @@ import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.INavMeshAtom;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import math.bsp.BspOccupation;
 import math.bsp.IConstBspTree;
@@ -43,13 +44,13 @@ public class NavMeshDropGrounder implements INavMeshGrounder {
     }
     
 	@Override
-    public NavMeshPolygon forceGround(ILocated located) {
+    public INavMeshAtom forceGround(ILocated located) {
     	NavMeshPolygon retval = getPolygonBelow( located.getLocation(), navMesh.getXyProjectionBsp(), shapeToPolygonFunction );
     	if ( retval != null ) {
     		return retval;
     	} else {
     		// this should be rather rare occurrence when being thrown/falling/jumping etc.
-    		return DistanceUtils.getNearest( navMesh.getPolygons(), located );
+    		return DistanceUtils.getNearest( navMesh.getAtoms(), located );
     	}
     }
     
@@ -111,14 +112,15 @@ public class NavMeshDropGrounder implements INavMeshGrounder {
 			Point3D gravityLineIntersection = gravityLine.getPlaneIntersection( polygon.getPlane() );
 			
 			if ( polygon.getDistance( gravityLineIntersection ) > Shape3D.ACCURACY ) {
-				// polygon actually is not above/below 
+				// polygon is not actually above/below 
 				continue;
 			}
 			
 			double dropDistance = point.getZ() - gravityLineIntersection.getZ();
 			
-			if ( dropDistance < 0 ) {
-				// candidate is actually above
+            // TODO it should be dropDistance < 0, but navmesh is often messed up - floating above ground
+			if ( dropDistance < -100 || maxDropDistance < dropDistance ) {
+				// candidate is actually above or too far below
 				continue;
 			}
 

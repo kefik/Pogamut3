@@ -33,9 +33,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base.utils.logging.LogFormatter;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher.ConsolePublisher;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.utils.ExceptionToString;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.LevelGeometry;
 
 /**
  * Used to speed up bots starting time on the same JVM machine, we're caching {@link LevelGeometry} objects for given "map name".
@@ -78,7 +76,7 @@ public class LevelGeometryCache {
 		if (result != null) return result;
 		
 		// try to read it from processed file        
-        String levelGeometryFileName = NavMeshConstants.processedLevelGeometryDir + "\\" + mapName + ".plg";
+        String levelGeometryFileName = LevelGeometry.processedLevelGeometryDir + "\\" + mapName + ".plg";
         File levelGeometryFile = new File(levelGeometryFileName);
         
         ObjectInputStream in = null;

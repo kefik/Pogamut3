@@ -31,7 +31,6 @@ import com.google.inject.internal.Lists;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.utils.ExceptionToString;
 import math.geom3d.Point3D;
 import math.geom3d.Vector3D;
@@ -114,7 +113,7 @@ public class LevelGeometryNaive implements Serializable {
         BufferedReader br;
         
         // read scale
-        fileName = NavMeshConstants.pureLevelGeometryReadDir + "\\" + mapName + ".scale";
+        fileName = LevelGeometry.pureLevelGeometryReadDir + "\\" + mapName + ".scale";
         file = new File(fileName);
         if (!file.exists()) {
         	log.warning("LevelGeometry .scale file does not exist at: " + file.getAbsolutePath());
@@ -126,7 +125,7 @@ public class LevelGeometryNaive implements Serializable {
         br.close();
         
         // read centre
-        fileName = NavMeshConstants.pureLevelGeometryReadDir + "\\" + mapName + ".centre";
+        fileName = LevelGeometry.pureLevelGeometryReadDir + "\\" + mapName + ".centre";
         file = new File(fileName);
         if (!file.exists()) {
         	log.warning("LevelGeometry .centre file does not exist at: " + file.getAbsolutePath());
@@ -142,7 +141,7 @@ public class LevelGeometryNaive implements Serializable {
         br.close();
         
         // read all vertices and triangles from file
-        fileName = NavMeshConstants.pureLevelGeometryReadDir + "\\" + mapName + ".obj";
+        fileName = LevelGeometry.pureLevelGeometryReadDir + "\\" + mapName + ".obj";
         file = new File(fileName);
         if (!file.exists()) {
         	log.warning("LevelGeometry .obj file does not exist at: " + file.getAbsolutePath());

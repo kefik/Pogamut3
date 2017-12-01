@@ -19,16 +19,13 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
  */
 public class NavMeshAStarDistanceHeuristic implements INavMeshAStarHeuristic {
 
+	protected NavMesh navMesh;
 	// teleporter -> distance from teleporter exit to the cached destination
-	protected HashMap<OffMeshPoint, Double> teleporterToDistanceToCachedDestinationMap = Maps.newHashMap(); 
+	protected HashMap<OffMeshPoint, Double> teleporterToDistanceToCachedDestinationMap = null; 
 	protected Location cachedDestination = null; // cached destination for which teleporter exit distances were computed
 	
 	public NavMeshAStarDistanceHeuristic( NavMesh navMesh ) {
-		for ( OffMeshPoint point : navMesh.getOffMeshPoints() ) {
-			if ( point.getNavPoint().isTeleporter() ) {
-				teleporterToDistanceToCachedDestinationMap.put( point, null );
-			}
-		}
+		this.navMesh = navMesh;
 	}
 	
 	/** Compute cost of traveling an existing A* node to an adjacent atom
@@ -92,6 +89,16 @@ public class NavMeshAStarDistanceHeuristic implements INavMeshAStarHeuristic {
 		}
 		
 		cachedDestination = destination;
+		
+		// ensure teleporter locations have been initialized
+		if ( teleporterToDistanceToCachedDestinationMap == null ) {
+			teleporterToDistanceToCachedDestinationMap = Maps.newHashMap();
+			for ( OffMeshPoint point : navMesh.getOffMeshPoints() ) {
+				if ( point.getNavPoint().isTeleporter() ) {
+					teleporterToDistanceToCachedDestinationMap.put( point, null );
+				}
+			}
+		}
 		
 		// the complication here is that the agent may travel through multiple teleporters
 		

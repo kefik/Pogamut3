@@ -43,7 +43,7 @@ public class NavMeshAStarPathPlanner implements IPathPlanner<ILocated>{
      * 
      * @param grounder
      * @param navMesh
-     * @param heuristic
+     * @param heuristic heuristic such as {@link NavMeshAStarDistanceHeuristic}
      * @param log
      */
     public NavMeshAStarPathPlanner( INavMeshGrounder grounder, NavMesh navMesh, INavMeshAStarHeuristic heuristic, Logger log ) {

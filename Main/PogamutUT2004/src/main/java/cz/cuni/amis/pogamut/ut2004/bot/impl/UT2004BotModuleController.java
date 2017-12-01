@@ -48,6 +48,8 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.astar.UT2004AStar;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.floydwarshall.FloydWarshallMap;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.LevelGeometry;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.LevelGeometryModule;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004ServerProvider;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.UT2004Draw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.UT2004ServerProvider;
@@ -101,7 +103,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	protected IUT2004Navigation navigation;
 	
 	/**
-	 * Command module that is internally using {@link OldNavMesh} and {@link OldNavMeshModule} for the path-finding and {@link UT2004AcceleratedPathExecutor} for the
+	 * Command module that is internally using {@link NavMesh} and {@link NavMeshModule} for the path-finding and {@link UT2004AcceleratedPathExecutor} for the
 	 * path execution. It uses own instance of {@link UT2004AcceleratedPathExecutor} !
 	 * <p><p>
 	 * Note that ".navmesh" file for concrete UT2004 map needs to be present inside ${BOT_DIR}/navmesh directory in order for this module to be working.
@@ -355,7 +357,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	protected UT2004AStar aStar;
 	
 	/**
-	 * Class providing {@link OldNavMesh} instance via {@link OldNavMeshModule#getNavMesh()} method.
+	 * Class providing {@link NavMesh} instance via {@link NavMeshModule#getNavMesh()} method.
 	 * <p><p>
 	 * Note that ".navmesh" file for concrete UT2004 map needs to be present inside local directory of the bot in order for this module to be working.
 	 * <p><p>
@@ -366,7 +368,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
      * <p><p>
      * Initialized inside {@link UT2004BotModuleController#initializeModules(UT2004Bot)}. 
 	 */
-	protected OldNavMeshModule navMeshModule;
+	protected NavMeshModule navMeshModule;
 	
 	/**
 	 * Class providing {@link LevelGeometry} instance via {@link LevelGeometryModule#getLevelGeometry()} method.
@@ -385,7 +387,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	/**
 	 * Utility class that provides shared instance of {@link UT2004Server}.
 	 */
-	private IUT2004ServerProvider serverProvider;
+	protected IUT2004ServerProvider serverProvider;
 	
 	/**
 	 * Class providing interface for the use of {@link DrawStayingDebugLines} inside UT2004. Can be used to draw debug stuff (lines) right into UT2004.
@@ -465,12 +467,11 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	protected void initializePathFinding(BOT bot) {
 		ut2004PathPlanner = new UT2004AStarPathPlanner(bot);
 		fwMap             = new FloydWarshallMap(bot);
-		navMeshModule.setFwMap(fwMap); // FW Map must be used because of TEPORTERS, which cannot be handled correctly by current A* implementation
 		items.setPathPlanner(fwMap); // FW Map is used for path-distance queries
 		aStar             = new UT2004AStar(bot);		
 		navigation        = new UT2004Navigation(bot, info, move);       
 		nmNav             = new NavMeshNavigation(bot, info, move, navMeshModule);
-		nmPathBuilder     = new PathBuilder(bot, info, navMeshModule.getNavMesh());
+		nmPathBuilder     = new PathBuilder(bot, info, navMeshModule.getAStarPathPlanner());
 	}
 
 	/**
@@ -500,7 +501,7 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 		weaponPrefs         = new WeaponPrefs(weaponry, bot);
 		combo               = new AdrenalineCombo(bot, info);
 		serverProvider      = new UT2004ServerProvider();
-		navMeshModule       = new OldNavMeshModule(serverProvider, getWorldView(), bot.getLogger());
+		navMeshModule       = new NavMeshModule(serverProvider, getWorldView(), bot.getLogger());
 		levelGeometryModule = new LevelGeometryModule(serverProvider, getWorldView(), bot.getLogger());		 
 		draw                = new UT2004Draw(bot.getLogger().getCategory("Draw"), serverProvider);
 		visibilityAdapter   = new LevelGeometryVisibilityAdapter(levelGeometryModule);
@@ -645,11 +646,11 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 		return visibility;
 	}
 	
-	public OldNavMeshModule getNavMeshModule() {
+	public NavMeshModule getNavMeshModule() {
 		return navMeshModule;
 	}
 	
-	public OldNavMesh getNavMesh() {
+	public NavMesh getNavMesh() {
 		if (!navMeshModule.isInitialized()) log.warning("NavMeshModule has not been initialized (yet?)! You are either calling this method too early or missing .navmesh file in the local directory of your bot!");
 		return navMeshModule.getNavMesh();
 	}

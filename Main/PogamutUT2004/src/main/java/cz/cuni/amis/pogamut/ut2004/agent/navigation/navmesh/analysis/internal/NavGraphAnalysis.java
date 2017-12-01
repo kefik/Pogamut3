@@ -94,11 +94,9 @@ public class NavGraphAnalysis {
 	 * @param link link to determine whether it is off-mesh (not implied by nav mesh)
 	 * @return 	true if link is not implied by navmesh
 	 */
-	protected boolean isOffMeshEdge(NavPointNeighbourLink link, PolygonAnalysis polygonAnalysis,LineSegmentAnalysis lineSegmentAnalysis) {
+	protected boolean isOffMeshEdge(NavPointNeighbourLink link, PolygonAnalysis polygonAnalysis, LineSegmentAnalysis lineSegmentAnalysis) {
 		NavPoint fromNav = link.getFromNavPoint();
         NavPoint toNav = link.getToNavPoint();
-        
-
         
         final Integer startPolygonId = getNavPointInfo(fromNav).polygonId;
         final Integer destinationPolygonId = getNavPointInfo(toNav).polygonId;
@@ -117,7 +115,7 @@ public class NavGraphAnalysis {
 			@Override
 			public boolean apply(RayPath<Integer, EdgeDescriptor> rayPath) {
 				return (
-					!rayPath.getPolygons().contains( destinationPolygonId )
+					!rayPath.asPolygons().contains( destinationPolygonId )
 				);
 			}
 		};
@@ -128,8 +126,7 @@ public class NavGraphAnalysis {
     		pathTracingContext,
     		keepTracingPredicate
         );
-        
-        return !rayPath.getPolygons().contains( destinationPolygonId );
+        return !rayPath.asPolygons().contains( destinationPolygonId );
 	}
 	
 	public NavPointInfo getNavPointInfo(NavPoint navPoint) {
@@ -202,7 +199,8 @@ public class NavGraphAnalysis {
 
 		@Override
 		public Integer getAdjacentPolygonByEdge(Integer polygon, EdgeDescriptor edge) {
-			NavMeshBoundaryInfo boundaryInfo = lineSegmentAnalysis.polygonIdToInfoMap.get(polygon).edgeIndexToBoundaryInfoMap.get(edge.edgeIndex);
+			NavMeshBoundaryInfo boundaryInfo = lineSegmentAnalysis.getPolygonInfo(polygon).edgeIndexToBoundaryInfoMap.get(edge.edgeIndex);
+			
 			if ( boundaryInfo == null ) {
 				return null;
 			}

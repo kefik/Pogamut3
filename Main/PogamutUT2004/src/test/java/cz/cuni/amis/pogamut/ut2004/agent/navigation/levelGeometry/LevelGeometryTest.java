@@ -114,7 +114,7 @@ public class LevelGeometryTest {
 		
 		System.out.println( "Naive   is hit = "+naiveResult.hit );
 		System.out.println( "Gosu    is hit = "+(gosuResult.hitLocation != null) );
-		System.out.println( "Precomp is hit = "+(!Double.isInfinite(precomputedResults.get(requestIndex).hitDistance)) );
+		System.out.println( "Precomp is hit = "+!Double.isInfinite(precomputedResults.get(requestIndex).hitDistance) );
 		System.out.println( "Naive hit triangle number: "+naiveResult.hitTriangle );
 		System.out.println( "Gosu hit triangle number: "+gosuTriangleIndex );
 		System.out.println( "Naive   hit distance = "+naiveDistance );

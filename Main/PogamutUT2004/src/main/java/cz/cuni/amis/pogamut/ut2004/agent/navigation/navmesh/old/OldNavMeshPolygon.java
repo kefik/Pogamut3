@@ -17,8 +17,6 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old;
 //old navmesh
 
-import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-
 import java.util.ArrayList;
 import java.util.List;
 
