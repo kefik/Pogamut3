@@ -82,7 +82,7 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
 
     private boolean teleportFailed = false;
     
-    boolean drawNavMesh = true;
+    boolean drawNavMesh = false;
     
     boolean isFirstLogic = true;
     
@@ -335,6 +335,9 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
                     result.stopRecording(act, currentPath, false);
                 }
                 sendMessageToGame("Path navigating failed!");
+                sendMessageToGame(
+                        "From: " + currentPath.getStart().getId().getStringId() + 
+                        " To: " + currentPath.getEnd().getId().getStringId());
                 ResultType type = failedToBuildPath ? ResultType.NotBuilt : failedInNavigate ? ResultType.FailedInNavigate : ResultType.Failed;
                 result.addResult(currentPath, type, startDate == null ? 0
                         : (new Date()).getTime() - startDate.getTime(), botLocation, nearestNavPoint);
