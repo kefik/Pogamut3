@@ -193,6 +193,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
         return agent.get(0);
     }
     
+	// TODO keep blocking
     @Override
     public synchronized List<AGENT> startAgents(int count) throws PogamutException {
     	PARAMS[] params = (PARAMS[]) new IAgentParameters[count];
@@ -289,6 +290,9 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
 	    	preInitHook();
 	    	
 	    	for (int i = 0; i < params.length; ++i) {
+	    	    // TODO remove FOR
+	    	    // TODO use thread pool
+	    	    // TODO create new agent runner
 	    		if (fillDefaults) {
 	    			params[i].assignDefaults(newDefaultAgentParameters());
 	    		}
