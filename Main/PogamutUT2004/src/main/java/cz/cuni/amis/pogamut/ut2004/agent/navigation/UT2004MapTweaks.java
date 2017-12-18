@@ -160,7 +160,19 @@ public class UT2004MapTweaks {
 
 	protected void tweak_DM_Flux2(NavigationGraphBuilder builder) {
 		builder.removeEdge("PathNode37", "JumpSpot5");
+		builder.removeEdge("PathNode11", "JumpSpot4");
+		builder.removeEdge("PathNode67", "JumpSpot8");
+		builder.removeEdge("PathNode58", "PathNode60");
+		builder.removeEdge("InventorySpot91", "JumpSpot10");
+	    builder.removeEdge("JumpSpot10", "InventorySpot48");
+	    builder.removeEdge("JumpSpot7", "InventorySpot91");
+	    
+	    builder.createSimpleEdge("JumpSpot10", "PathNode92");
+	    builder.modifyNavPoint("JumpSpot10").modifyEdgeTo("PathNode92").setJumpFlag().modifyEdge();
 		
+	    builder.modifyNavPoint("PathNode55").addY(-50).apply();
+		builder.modifyNavPoint("PathNode55").addX(-50).apply();
+		builder.modifyNavPoint("PathNode55").addZ(10).apply();
 	}
 
 	protected void tweak_DM_1on1_Roughinery_FPS(NavigationGraphBuilder builder) {
