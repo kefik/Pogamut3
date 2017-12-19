@@ -5,6 +5,7 @@ import java.util.List;
 import cz.cuni.amis.pogamut.base.agent.IAgentId;
 import cz.cuni.amis.pogamut.base.agent.params.IAgentParameters;
 import cz.cuni.amis.pogamut.base.agent.utils.runner.impl.AgentRunner;
+import cz.cuni.amis.pogamut.base.agent.utils.runner.impl.MultithreadedAgentRunner;
 import cz.cuni.amis.pogamut.base.communication.connection.impl.socket.SocketConnectionAddress;
 import cz.cuni.amis.pogamut.base.factory.IAgentFactory;
 import cz.cuni.amis.pogamut.base.utils.Pogamut;
@@ -32,7 +33,8 @@ import cz.cuni.amis.utils.exception.PogamutException;
  * @param <BOT>
  * @param <PARAMS>
  */
-public abstract class UTBotRunner<BOT extends IUT2004Bot, PARAMS extends UT2004BotParameters> extends AgentRunner<BOT, PARAMS> {
+public abstract class UTBotRunner<BOT extends IUT2004Bot, PARAMS extends UT2004BotParameters> extends MultithreadedAgentRunner<BOT, PARAMS> {
+//public abstract class UTBotRunner<BOT extends IUT2004Bot, PARAMS extends UT2004BotParameters> extends AgentRunner<BOT, PARAMS> {
 
 	/**
 	 * Default host where the instances are going to be connected as defaults, see {@link IAgentParameters#assignDefaults(IAgentParameters)}.

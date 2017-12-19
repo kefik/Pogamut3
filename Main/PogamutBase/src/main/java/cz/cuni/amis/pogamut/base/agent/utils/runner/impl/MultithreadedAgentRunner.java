@@ -1,9 +1,11 @@
 package cz.cuni.amis.pogamut.base.agent.utils.runner.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,48 +34,48 @@ import cz.cuni.amis.utils.flag.FlagListener;
  * you may instance. Instead, the GaviaLib must be used together with some environment-Pogamut bridge
  * that defines a concrete {@link IAgent} with concrete {@link IAgentParameters}.
  * <p><p>
- * The class provides start-synchronization behavior of respective agents via {@link AgentRunner#setPausing(boolean)}.
+ * The class provides start-synchronization behavior of respective agents via {@link MultithreadedAgentRunner#setPausing(boolean)}.
  * For more information see {@link IAgentRunner#setPausing(boolean)}. 
  * <p><p>
  * Note that the class also provides you with hook-methods that can be utilized to additionally configure
- * agent instances as they are created and started. These are {@link AgentRunner#preInitHook()}, {@link AgentRunner#preStartHook(IAgent)},
- * {@link AgentRunner#preResumeHook(IAgent[])}, {@link AgentRunner#postStartHook(IAgent)} and {@link AgentRunner#postStartedHook(IAgent[])}.
+ * agent instances as they are created and started. These are {@link MultithreadedAgentRunner#preInitHook()}, {@link MultithreadedAgentRunner#preStartHook(IAgent)},
+ * {@link MultithreadedAgentRunner#preResumeHook(IAgent[])}, {@link MultithreadedAgentRunner#postStartHook(IAgent)} and {@link MultithreadedAgentRunner#postStartedHook(IAgent[])}.
  * <p><p>
  * This class is (almost complete) implementation that can instantiate and start one or multiple agents (of the same
- * class). The only thing that is left to be implemented is {@link AgentRunner#newDefaultAgentParameters()} that
+ * class). The only thing that is left to be implemented is {@link MultithreadedAgentRunner#newDefaultAgentParameters()} that
  * are used to {@link IAgentParameters#assignDefaults(IAgentParameters)} into user provided parameters (if any of
  * are provided).
  * <p><p>
  * Additional features:
  * <ul>
- * <li>{@link AgentRunner#setLogLevel(Level)} - allows you to set default logging level for the newly created agent (default {@link Level#WARNING})</li>
- * <li>{@link AgentRunner#setConsoleLogging(boolean)} - allows you to attach default console logger (via {@link IAgentLogger#addDefaultConsoleHandler()})</li>
+ * <li>{@link MultithreadedAgentRunner#setLogLevel(Level)} - allows you to set default logging level for the newly created agent (default {@link Level#WARNING})</li>
+ * <li>{@link MultithreadedAgentRunner#setConsoleLogging(boolean)} - allows you to attach default console logger (via {@link IAgentLogger#addDefaultConsoleHandler()})</li>
  * </ul>
  * <p><p>
  * This runner is based on the {@link IAgentFactory} interface that is utilized to create new instances. It is advised
  * that concrete agent runners hides this fact from the user instantiating the factory themselves so the user
  * must not dive deep into GaviaLib architecture.
  * <p><p>
- * <b>USING {@link AgentRunner} FROM THE MAIN METHOD</b>
+ * <b>USING {@link MultithreadedAgentRunner} FROM THE MAIN METHOD</b>
  * <p><p>
  * There is one problem using Pogamut agents that comes from the decision to use JMX for the agents management.
  * If you start the agent in the main method and terminates it at some point in time - the JVM will not exit. That's
  * because of the rmi registry daemon thread that will hang up in the air preventing JVM from termination. This can
  * be handled by calling {@link PogamutPlatform#close()} in the end, that shuts down the rmi registry.
  * <p><p>
- * If you happen to need to use {@link AgentRunner} from the main method, do not forget to call {@link AgentRunner#setMain(boolean)} with param 'true'.
+ * If you happen to need to use {@link MultithreadedAgentRunner} from the main method, do not forget to call {@link MultithreadedAgentRunner#setMain(boolean)} with param 'true'.
  * 
  * @author Jimmy
  */
-public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentParameters> implements IAgentRunner<AGENT, PARAMS> {
+public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS extends IAgentParameters> implements IAgentRunner<AGENT, PARAMS> {
 
 	/**
-	 * Used to uniquely number all agents across all {@link AgentRunner} instances.
+	 * Used to uniquely number all agents across all {@link MultithreadedAgentRunner} instances.
 	 */
 	private static long ID = 0;
 	
 	/**
-	 * Mutex we're synchronizing on when accessing {@link AgentRunner#ID}.
+	 * Mutex we're synchronizing on when accessing {@link MultithreadedAgentRunner#ID}.
 	 */
 	private static Object idMutex = new Object();
 	
@@ -95,7 +97,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
 	protected Logger log;
 	
 	/**
-	 * Whether the pausing feature is enables, see {@link AgentRunner#setPausing(boolean)}.
+	 * Whether the pausing feature is enables, see {@link MultithreadedAgentRunner#setPausing(boolean)}.
 	 */
 	private boolean pausing = false;
 	
@@ -139,9 +141,11 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     protected boolean killingAgents = false;
     
     /**
-     * Guards {@link AgentRunner#killingAgents} access.
+     * Guards {@link MultithreadedAgentRunner#killingAgents} access.
      */
     protected Object killingAgentsMutex = new Object();
+    
+    int cpuThreadCout = Runtime.getRuntime().availableProcessors();
     
 	/**
 	 * Listener that lowers the count on the {@link MainAgentRunner#latch} (if reaches zero, start method resumes and closes the Pogamut platform),
@@ -164,16 +168,16 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
 	 * 
 	 * @param factory preconfigured factory that is going to be used to produce new instances of agents
 	 */
-    public AgentRunner(IAgentFactory<AGENT, PARAMS> factory) {    	
+    public MultithreadedAgentRunner(IAgentFactory<AGENT, PARAMS> factory) {    	
         this.factory = factory;
-        NullCheck.check(this.factory, "factory");        
-    }  
+        NullCheck.check(this.factory, "factory");
+    }
     
     public Logger getLog() {
 		return log;
 	}
 
-	public AgentRunner<AGENT, PARAMS> setLog(Logger log) {
+	public MultithreadedAgentRunner<AGENT, PARAMS> setLog(Logger log) {
 		this.log = log;
 		return this;
 	}  
@@ -193,6 +197,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
         return agent.get(0);
     }
     
+	// TODO keep blocking 
     @Override
     public synchronized List<AGENT> startAgents(int count) throws PogamutException {
     	PARAMS[] params = (PARAMS[]) new IAgentParameters[count];
@@ -219,7 +224,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     @Override
-    public synchronized AgentRunner<AGENT, PARAMS> setPausing(boolean state) {
+    public synchronized MultithreadedAgentRunner<AGENT, PARAMS> setPausing(boolean state) {
     	this.pausing = state;
     	return this;
     }
@@ -230,7 +235,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     @Override
-    public synchronized AgentRunner<AGENT, PARAMS> setMain(boolean state) {
+    public synchronized MultithreadedAgentRunner<AGENT, PARAMS> setMain(boolean state) {
     	this.main = state;
     	return this;
     }
@@ -248,7 +253,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
      * 
      * @return this instance
      */
-    public AgentRunner<AGENT, PARAMS> setLogLevel(Level logLevel) {
+    public MultithreadedAgentRunner<AGENT, PARAMS> setLogLevel(Level logLevel) {
     	this.defaultLogLevel = logLevel;
     	return this;
     }
@@ -261,7 +266,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
      * @param enabled
      * @return
      */
-    public AgentRunner<AGENT, PARAMS> setConsoleLogging(boolean enabled) {
+    public MultithreadedAgentRunner<AGENT, PARAMS> setConsoleLogging(boolean enabled) {
     	this.consoleLogging = enabled;
     	return this;
     }
@@ -278,36 +283,32 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
      * @param params
      * @return
      */
-    protected List<AGENT> startAgentWithParams(boolean fillDefaults, PARAMS... params) {
+    protected List<AGENT> startAgentWithParams(final boolean fillDefaults, PARAMS... params) {
     	if (params == null || params.length == 0) return new ArrayList<AGENT>(0);
     	List<AGENT> result = new ArrayList<AGENT>(params.length);
     	
-    	boolean pausingBehavior = isPausing();
+    	final boolean pausingBehavior = isPausing();
     	
     	try {
     		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preInitHook()...");
 	    	preInitHook();
 	    	
+	    	// Start first agent separately to avoid running twice heavy methods such as navigation loading
+	    	startAndAddAgent(params[0], pausingBehavior, result);
+	    	
+	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCout);
+	    	// Start rest of the agents if any
 	    	for (int i = 0; i < params.length; ++i) {
-	    		if (fillDefaults) {
-	    			params[i].assignDefaults(newDefaultAgentParameters());
-	    		}
-	    		AGENT agent = createAgentWithParams(params[i]);
-	    		
-	    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preStartHook()...");
-	    		preStartHook(agent);
-	    		
-	    		startAgent(agent);
-	    		
-	    		if (pausingBehavior) {
-	    			agent.pause();
-	    		}
-	    		
-	    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling postStartHook()...");
-	    		postStartHook(agent);
-	    		
-	    		result.add(agent);
+	    	    if (fillDefaults) {
+	                params[i].assignDefaults(newDefaultAgentParameters());
+	            }
+	    	    
+	    	    int iLoc = i;
+	    	    executor.submit(() -> startAndAddAgent(params[iLoc], pausingBehavior, result));
 	    	}
+	    	
+	    	executor.shutdown();
+    	    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 	    	
 	    	if (pausingBehavior) {
 	    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preResumeHook()...");
@@ -331,7 +332,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * E.g. {@link AgentRunner#startAgentWithParams(boolean, IAgentParameters[])} but 
+     * E.g. {@link MultithreadedAgentRunner#startAgentWithParams(boolean, IAgentParameters[])} but 
      * provides the blocking mechanism.
 	 */
 	protected List<AGENT> startAgentWithParamsMain(boolean fillDefaults, PARAMS... params) {
@@ -344,56 +345,24 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
 		boolean pausingBehavior = isPausing();
     	
     	try {
-    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preInitHook()...");
-	    	preInitHook();
-	    	
-	    	for (int i = 0; i < params.length; ++i) {	    		
+    	    // Start first agent separately to avoid running twice heavy methods such as navigation loading
+	    	startAndAddAgentMain(params[0], pausingBehavior);
+    	    
+	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCout);
+	    	// Start rest of the agents if any
+	    	for (int i = 1; i < params.length; ++i) {	    		
 	    		if (killed) break;
 	    		
 	    		if (fillDefaults) {
 	    			params[i].assignDefaults(newDefaultAgentParameters());
 	    		}
-	    		AGENT agent = createAgentWithParams(params[i]);
 	    		
-	    		if (killed) break;
-	    		
-	    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preStartHook()...");
-	    		preStartHook(agent);
-	    		
-	    		if (killed) break;
-	    		
-	    		startAgent(agent);
-	    		
-	    		if (killed) {
-	    			killAgent(agent);
-	    			break;
-	    		}
-	    		
-	    		if (pausingBehavior) {
-	    			agent.pause();
-	    		}
-	    		
-	    		if (killed) {
-	    			killAgent(agent);
-	    			break;
-	    		}
-	    		
-	    		if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling postStartHook()...");
-	    		postStartHook(agent);
-	    		
-	    		if (killed) {
-	    			killAgent(agent);
-	    			break;
-	    		}
-	    		
-	    		synchronized(mutex) {
-	    			if (killed) {
-	    				killAgent(agent);
-	    				break;
-	    			}
-	    			agents.add(agent);
-	    		}
+	    		int iLoc = i;
+	    		executor.submit(() -> startAndAddAgentMain(params[iLoc], pausingBehavior));
 	    	}
+	    	
+	    	executor.shutdown();
+	    	executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 	    	
 	    	if (!killed) {
 		    	if (pausingBehavior) {
@@ -434,6 +403,72 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
 		}		
 	};
     
+    private void startAndAddAgentMain(PARAMS params, boolean pausingBehavior)
+    {
+        AGENT agent = createAgentWithParams(params);
+        
+        if (killed) return;
+        
+        if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preStartHook()...");
+        preStartHook(agent);
+        
+        if (killed) return;
+        
+        startAgent(agent);
+        
+        if (killed) {
+            killAgent(agent);
+            return;
+        }
+        
+        if (pausingBehavior) {
+            agent.pause();
+        }
+        
+        if (killed) {
+            killAgent(agent);
+            return;
+        }
+        
+        if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling postStartHook()...");
+        postStartHook(agent);
+        
+        if (killed) {
+            killAgent(agent);
+            return;
+        }
+        
+        synchronized(mutex) {
+            if (killed) {
+                killAgent(agent);
+                return;
+            }
+            agents.add(agent);
+        }
+    }
+    
+    private void startAndAddAgent(PARAMS params, boolean pausingBehavior, List<AGENT> result)
+	    {
+            AGENT agent = createAgentWithParams(params);
+            
+            if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling preStartHook()...");
+            preStartHook(agent);
+            
+            startAgent(agent);
+            
+            if (pausingBehavior) {
+                agent.pause();
+            }
+            
+            if (log != null && log.isLoggable(Level.FINE)) log.fine("Calling postStartHook()...");
+            postStartHook(agent);
+            
+            synchronized(result) {
+                result.add(agent);
+            }
+	    }
+	
+	
     /**
      * Method that is called to provide another default parameters for newly created agents.
      * <p><p>
@@ -451,7 +486,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     
     /**
      * Creates new {@link AgentId} from the 'name' and unique number that is automatically generated
-     * from the {@link AgentRunner#ID}.
+     * from the {@link MultithreadedAgentRunner#ID}.
      * 
      * @param name
      */
@@ -463,7 +498,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Fills defaults parameters into the 'params' by using {@link AgentRunner#newDefaultAgentParameters()}.
+     * Fills defaults parameters into the 'params' by using {@link MultithreadedAgentRunner#newDefaultAgentParameters()}.
      * @param params
      */
     protected void fillInDefaults(PARAMS params) {
@@ -471,7 +506,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Fills defaults parameters into every 'params' of the array by using {@link AgentRunner#newDefaultAgentParameters()},
+     * Fills defaults parameters into every 'params' of the array by using {@link MultithreadedAgentRunner#newDefaultAgentParameters()},
      * i.e., we're creating a new default parameters for every 'params' from the array.
      * @param params
      */
@@ -482,8 +517,8 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Method that is used by {@link AgentRunner#startAgentWithParams(IAgentParameters[])} to instantiate new 
-     * agents. Uses {@link AgentRunner#factory} to do the job. It assumes the params were already configured 
+     * Method that is used by {@link MultithreadedAgentRunner#startAgentWithParams(IAgentParameters[])} to instantiate new 
+     * agents. Uses {@link MultithreadedAgentRunner#factory} to do the job. It assumes the params were already configured 
      * with defaults.
      * 
      * @param params
@@ -502,7 +537,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Method that is used by {@link AgentRunner#startAgentWithParams(IAgentParameters[])} to start newly
+     * Method that is used by {@link MultithreadedAgentRunner#startAgentWithParams(IAgentParameters[])} to start newly
      * created agent.
      * 
      * @param agent
@@ -518,7 +553,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     /**
      * This method is called whenever start/pause/resume of the single agent fails to clean up.
      * <p><p>
-     * Recalls {@link AgentRunner#killAgent(IAgent)} for every non-null agent instance.
+     * Recalls {@link MultithreadedAgentRunner#killAgent(IAgent)} for every non-null agent instance.
      * 
      * @param agents some array elements may be null!
      */
@@ -571,7 +606,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
 	
     /**
-     * Custom hook called before all the agents are going to be instantiated by the {@link AgentRunner#factory}.
+     * Custom hook called before all the agents are going to be instantiated by the {@link MultithreadedAgentRunner#factory}.
      * <p><p>
      * May be utilized by the GaviaLib user to inject additional code into the runner.
      */
@@ -579,7 +614,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
 
     /**
-     * Custom hook called after the agent is instantiated by the {@link AgentRunner#factory} and before
+     * Custom hook called after the agent is instantiated by the {@link MultithreadedAgentRunner#factory} and before
      * the {@link IAgent#start()} is called.
      * <p><p>
      * May be utilized by the GaviaLib user to inject additional code into the runner.
@@ -590,7 +625,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Custom hook called after the agent is instantiated by the {@link AgentRunner#factory} and
+     * Custom hook called after the agent is instantiated by the {@link MultithreadedAgentRunner#factory} and
      * started with {@link IAgent#start()}.
      * <p><p>
      * May be utilized by the GaviaLib user to inject additional code into the runner.
@@ -602,7 +637,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Custom hook called only iff {@link AgentRunner#isPausing()}. This method is called after all the agents have been instantiated by the {@link AgentRunner#factory}
+     * Custom hook called only iff {@link MultithreadedAgentRunner#isPausing()}. This method is called after all the agents have been instantiated by the {@link MultithreadedAgentRunner#factory}
      * and before they are resumed by {@link IAgent#resume()}.
      * <p><p>
      * May be utilized by the GaviaLib user to inject additional code into the runner.
@@ -613,7 +648,7 @@ public abstract class AgentRunner<AGENT extends IAgent, PARAMS extends IAgentPar
     }
     
     /**
-     * Custom hook called after all the agents have been instantiated by the {@link AgentRunner#factory}
+     * Custom hook called after all the agents have been instantiated by the {@link MultithreadedAgentRunner#factory}
      * and started with {@link IAgent#start()}.
      * <p><p>
      * May be utilized by the GaviaLib user to inject additional code into the runner.
