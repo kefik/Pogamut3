@@ -219,6 +219,7 @@ public class UT2004MapTweaks {
 	}
 
 	protected void tweak_DM_Dust2k5(NavigationGraphBuilder builder) {
+	    /* Not working solution to get to minigun */
 	    /*builder.newNavPoint("CustomPathNode1").setLocation(3456, -5639, -93).createNavPoint();
 	    builder.createSimpleEdge("InventorySpot114", "CustomPathNode1");
 	    builder.createSimpleEdge("CustomPathNode1", "InventorySpot110");*/
@@ -226,5 +227,37 @@ public class UT2004MapTweaks {
 	    builder.createSimpleEdge("PathNode79", "InventorySpot111");
 	    builder.modifyNavPoint("PathNode79").modifyEdgeTo("InventorySpot111").setDoubleJump().modifyEdge();
 	    builder.removeEdge("InventorySpot114", "InventorySpot110");*/
+	    
+	    /* Two jumps to get to flak cannon */
+	    builder.createSimpleEdge("InventorySpot163", "InventorySpot162");
+	    builder.modifyNavPoint("InventorySpot163").modifyEdgeTo("InventorySpot162").setDoubleJump().modifyEdge();
+	    builder.createSimpleEdge("InventorySpot162", "InventorySpot161");
+        builder.modifyNavPoint("InventorySpot162").modifyEdgeTo("InventorySpot161").setDoubleJump().modifyEdge();
+        
+        /* Two ways to get to armor */
+        builder.createSimpleEdge("InventorySpot136", "InventorySpot109");
+        builder.modifyNavPoint("InventorySpot136").modifyEdgeTo("InventorySpot109").setDoubleJump().modifyEdge();
+        builder.createSimpleEdge("PathNode52", "InventorySpot109");
+        builder.modifyNavPoint("PathNode52").modifyEdgeTo("InventorySpot109").setDoubleJump().modifyEdge();
+        
+        /* CT link gun */
+        builder.createSimpleEdge("InventorySpot160", "InventorySpot149");
+        builder.modifyNavPoint("InventorySpot160").modifyEdgeTo("InventorySpot149").setDoubleJump().modifyEdge();
+        
+        /* T bio rifle */
+        builder.createSimpleEdge("InventorySpot153", "InventorySpot144");
+        builder.modifyNavPoint("InventorySpot153").modifyEdgeTo("InventorySpot144").setDoubleJump().modifyEdge();
+        
+        /* T Lightning gun */
+        builder.createSimpleEdge("PathNode25", "InventorySpot158");
+        builder.modifyNavPoint("PathNode25").modifyEdgeTo("InventorySpot158").setDoubleJump().modifyEdge();
+        builder.createSimpleEdge("InventorySpot158", "InventorySpot157");
+        builder.modifyNavPoint("InventorySpot158").modifyEdgeTo("InventorySpot157").setDoubleJump().modifyEdge();
+        builder.createSimpleEdge("InventorySpot157", "PathNode26");
+        builder.modifyNavPoint("InventorySpot157").modifyEdgeTo("PathNode26").setJumpFlag().modifyEdge();
+        
+        /* T shock rifle */
+        builder.createSimpleEdge("PathNode21", "InventorySpot156");
+        builder.modifyNavPoint("PathNode21").modifyEdgeTo("InventorySpot156").setDoubleJump().modifyEdge();
     }
 }
