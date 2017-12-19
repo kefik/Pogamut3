@@ -129,6 +129,15 @@ public class UT2004MapTweaks {
 					}
 				}
 			);
+		register(
+		        "DM-Dust2k5",
+		        new IMapTweak() {
+                    @Override
+                    public void tweak(NavigationGraphBuilder builder) {
+                        tweak_DM_Dust2k5(builder);
+                    }
+                }
+	        );
 	}
 	
 	protected void tweak_CTF_Lostfaith(NavigationGraphBuilder builder) {
@@ -209,4 +218,13 @@ public class UT2004MapTweaks {
 		builder.removeEdge("JumpSpot0", "InventorySpot125");
 	}
 
+	protected void tweak_DM_Dust2k5(NavigationGraphBuilder builder) {
+	    /*builder.newNavPoint("CustomPathNode1").setLocation(3456, -5639, -93).createNavPoint();
+	    builder.createSimpleEdge("InventorySpot114", "CustomPathNode1");
+	    builder.createSimpleEdge("CustomPathNode1", "InventorySpot110");*/
+	    /*builder.modifyNavPoint("InventorySpot110").addZ(60).apply();
+	    builder.createSimpleEdge("PathNode79", "InventorySpot111");
+	    builder.modifyNavPoint("PathNode79").modifyEdgeTo("InventorySpot111").setDoubleJump().modifyEdge();
+	    builder.removeEdge("InventorySpot114", "InventorySpot110");*/
+    }
 }
