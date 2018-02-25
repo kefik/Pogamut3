@@ -45,3 +45,4 @@ Addons/UT2004/Map/UT2004NavigationEvaluator/navmesh
 # Generated files
 *.navmesh.processed
 
+/Addons/UT2004/Exercises/E01-SearchBot-Solution
