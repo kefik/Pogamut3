@@ -1,6 +1,8 @@
 package cz.cuni.amis.pogamut.ut2004.examples.navmeshdebugbot;
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
@@ -12,10 +14,19 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GlobalChat;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
+import cz.cuni.amis.utils.IFilter;
+import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.exception.PogamutException;
 
 /**
  * Various routines for debugging NAV MESH...
+ * 
+ * Commands: 
+ * -- next ... to start new navigation request
+ * -- auto ... to start continual navigation
+ * -- autoclear ... to clear everything on new path; drawing navmesh stops this
+ * -- drawnavmesh ... draws navmesh
+ * -- reset ... reset list of visited navpoints
  *
  * @author Jakub Gemrot aka Jimmy
  */
@@ -33,9 +44,29 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     private boolean restartNavigation = true;
     
     /**
+     * Whether to run "auto-navigation", i.e., trying to run around all navpoints.
+     */
+    private boolean auto = true;
+    
+    /**
+     * Auto wipes drawn debug stuff at the beginning of the next navigation request.
+     */
+    private boolean autoclear = true;
+    
+    /**
      * Flip by chat message 'drawNavMesh'.
      */
     private boolean drawNavMesh = true;
+    
+    /**
+     * Navpoint we are running to.
+     */
+    private NavPoint targetNavpoint;
+    
+    /**
+     * Set of visited navpoints; such a navpoints are not chosen to navigate to...
+     */
+    private Set<NavPoint> visited = new HashSet<NavPoint>();
 
     @Override
     public void initializeController(UT2004Bot bot) {
@@ -59,12 +90,37 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     private void teamChat(GlobalChat msg) {
     	if (msg.getText().toLowerCase().equals("next")) {
     		restartNavigation = true;
+    		sayGlobal("Requesting new navigation target...");
     	} else 
 		if (msg.getText().toLowerCase().startsWith("drawnavmesh")) {
 			String[] parts = msg.getText().split(" ");
 			navMeshDraw.draw(true, parts.length > 1 ? Boolean.parseBoolean(parts[1]) : false);
 			sayGlobal("NAVMESH DRAWN");
+			if (autoclear) {
+				autoclear = false;
+				sayGlobal("AUTO-CLEAR OFF, say autoclear to re-enable");
+			}
+    	} else
+    	if (msg.getText().toLowerCase().startsWith("autoclear")) {
+    		autoclear = !autoclear;
+			sayGlobal("Flipping AUTO-CLEAR, new value is " + autoclear);
+    	} else
+    	if (msg.getText().toLowerCase().startsWith("auto")) {
+    		auto = !auto;
+			sayGlobal("Flipping AUTO navigation, new value is " + auto);
+    	} else
+    	if (msg.getText().toLowerCase().startsWith("reset")) {
+    		visited.clear();
+    		sayGlobal("VISITED NAVPOINTS CLEARED");
     	}
+    
+    }
+    
+    @Override
+    public void beforeFirstLogic() {
+    	sayGlobal("AUTO NAVIGATION: " + auto);
+    	sayGlobal("AUTO-CLEAR: " + autoclear);
+    	sayGlobal("LET'S GO!");
     }
    
     @Override
@@ -78,20 +134,49 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	}
     	
     	if (navigation.isNavigating()) return;
+    	else {
+    		if (targetNavpoint != null) {
+    			if (info.atLocation(targetNavpoint)) {
+    				sayGlobal("ARRIVED TO TARGET NAVPOINT");
+    			} else {
+    				sayGlobal("NAVIGATION FAILED");
+    			}
+    			targetNavpoint = null;
+    		}
+    	}
     	
-    	if (!restartNavigation) return;
-    	restartNavigation = false;
+    	if (!auto && !restartNavigation) return;
     	
-    	sayGlobal("NEW NAVIGATION REQUEST");
+    	if (restartNavigation) {
+    		restartNavigation = false;    		
+    	}
     	
-    	NavPoint navPoint = navPoints.getRandomNavPoint();
-    	navigation.navigate(navPoint.getLocation());
+    	sayGlobal("New navigation request...");
+    	
+    	if (navPoints.getNavPoints().size() == visited.size()) {
+    		sayGlobal("Visited all navpoints - restarting...");
+    		visited.clear();
+    	}
+    	
+    	targetNavpoint = MyCollections.getRandom(MyCollections.getFiltered(navPoints.getNavPoints().values(), new IFilter<NavPoint>() {
+			@Override
+			public boolean isAccepted(NavPoint object) {
+				return !visited.contains(object);
+			}    		
+    	}));
+    	visited.add(targetNavpoint);
+    	
+    	navigation.navigate(targetNavpoint.getLocation());
     	
     	if (navigation.isNavigating()) {
-    		sayGlobal("NAVIGATING TO: " + navPoint.getId().getStringId());
+    		sayGlobal("NEW target: " + targetNavpoint.getId().getStringId());
+    		if (autoclear) {
+    			draw.clearAll();
+    		}
     		draw.drawPolyLine( Color.RED, navigation.getCurrentPathDirect());
+    		draw.drawCube( Color.RED, targetNavpoint, 20);
     	} else {
-    		sayGlobal("NO PATH TO: " + navPoint.getId().getStringId());
+    		sayGlobal("NO PATH TO: " + targetNavpoint.getId().getStringId());
     	}
 
     }

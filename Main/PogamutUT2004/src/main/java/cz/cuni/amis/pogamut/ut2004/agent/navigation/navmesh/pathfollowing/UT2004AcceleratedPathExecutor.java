@@ -16,6 +16,11 @@
  */
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathfollowing;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutionEstimator;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
 import cz.cuni.amis.pogamut.base.agent.navigation.IStuckDetector;
@@ -24,7 +29,6 @@ import cz.cuni.amis.pogamut.base.agent.navigation.impl.BasePathExecutor;
 import cz.cuni.amis.pogamut.base.agent.navigation.impl.PrecomputedPathFuture;
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEventListener;
-import cz.cuni.amis.pogamut.base.communication.worldview.object.event.WorldObjectFirstEncounteredEvent;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.event.WorldObjectUpdatedEvent;
 import cz.cuni.amis.pogamut.base.utils.Pogamut;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
@@ -32,6 +36,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathExecutor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathExecutorHelper;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathNavigator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathExecutor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathExecutorStuckState;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.loquenavigator.LoqueNavigator;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.timeoutestimator.UT2004BasicTimeoutEstimator;
@@ -42,14 +47,9 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKill
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.LocationUpdate;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.SelfMessage;
 import cz.cuni.amis.pogamut.ut2004.utils.PogamutUT2004Property;
 import cz.cuni.amis.utils.NullCheck;
 import cz.cuni.amis.utils.Tuple2;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Accelerated version of {@link UT2004Pathexecutor}. Uses

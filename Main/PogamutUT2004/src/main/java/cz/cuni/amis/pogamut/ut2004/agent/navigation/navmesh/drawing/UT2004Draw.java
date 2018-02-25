@@ -127,7 +127,7 @@ public class UT2004Draw {
 	}
 	
 	public void drawPolyLine(Color color, Collection<ILocated> points) {
-		if (points == null) return;
+		if (points == null || points.size() == 0) return;
 		Location[] locations = new Location[points.size()];
 		Iterator<ILocated> iter = points.iterator();
 		int i = 0;
@@ -138,7 +138,7 @@ public class UT2004Draw {
 	}
 	
 	public void drawPolyLine(Color color, ILocated... vertices) {
-		if (vertices == null) return;
+		if (vertices == null || vertices.length == 0) return;
 		Location[] locations = new Location[vertices.length];
 		for (int i = 0; i < vertices.length; ++i) {
 			if (vertices[i] == null) return;
@@ -148,7 +148,7 @@ public class UT2004Draw {
 	}	
 	
 	public void drawPolygon(ILocated... vertices) {
-		if (vertices == null) return;
+		if (vertices == null || vertices.length == 0) return;
 		Location[] locations = new Location[vertices.length];
 		for (int i = 0; i < vertices.length; ++i) {
 			if (vertices[i] == null) return;
@@ -158,7 +158,7 @@ public class UT2004Draw {
 	}
 	
 	public void drawPolygon(Color color, ILocated... vertices) {
-		if (vertices == null) return;
+		if (vertices == null || vertices.length == 0) return;
 		Location[] locations = new Location[vertices.length];
 		for (int i = 0; i < vertices.length; ++i) {
 			if (vertices[i] == null) return;
