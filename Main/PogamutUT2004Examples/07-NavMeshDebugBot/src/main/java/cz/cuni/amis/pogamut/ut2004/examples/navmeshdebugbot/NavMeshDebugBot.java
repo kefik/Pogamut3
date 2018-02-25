@@ -6,6 +6,7 @@ import java.util.Set;
 
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
+import cz.cuni.amis.pogamut.ut2004.agent.module.utils.UT2004Skins;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NewNavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
@@ -78,7 +79,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     
     @Override
     public Initialize getInitializeCommand() {  
-    	return new Initialize().setName("NavMeshDebugBot-" + (INSTANCE++));
+    	return new Initialize().setName("NavMeshDebugBot-" + (INSTANCE++)).setSkin(UT2004Skins.getSkin());
     }
     
     private void sayGlobal(String msg) {
@@ -192,11 +193,8 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     public static void main(String args[]) throws PogamutException {
         new UT2004BotRunner(     // class that wrapps logic for bots executions, suitable to run single bot in single JVM
                 NavMeshDebugBot.class,  // which UT2004BotController it should instantiate
-                "EmptyBot"       // what name the runner should be using
+                "NavBot  "       // what name the runner should be using
         ).setMain(true)          // tells runner that is is executed inside MAIN method, thus it may block the thread and watch whether agent/s are correctly executed
          .startAgents(1);        // tells the runner to start 1 agent
-
-        // It is easy to start multiple bots of the same class, comment runner above and uncomment following
-        // new UT2004BotRunner(EmptyBot.class, "EmptyBot").setMain(true).startAgents(3); // tells the runner to start 3 agents at once
     }
 }
