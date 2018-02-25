@@ -140,7 +140,7 @@ public class NavMeshCache {
             navMesh.copyFrom( cachedNavmesh );
             return;
 		} catch (Exception e) {
-			throw new RuntimeException( "Unable to load level geometry files.", e );
+			throw new RuntimeException( "Unable to load navmesh file; the navmesh is expected to be inside 'navmesh' directory; you can download some from: https://github.com/kefik/Pogamut3/tree/master/Addons/UT2004/Map/UT2004NavMeshTools/04-NavMeshes", e );
 		}
 	}
 }
