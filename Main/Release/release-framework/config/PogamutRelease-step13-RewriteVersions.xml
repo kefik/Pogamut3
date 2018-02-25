@@ -1,0 +1,45 @@
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step13-RewriteVersions">
+	<step id="Rewrite new snapshot version" failStop="true">
+		<rewrite>
+			<globals>
+				<includeFile>pom.xml</includeFile>
+				<includeFile>*.property</includeFile>
+				<excludeDir>.svn</excludeDir>
+				<substitutions>
+					<substitution>
+						<match>$POGAMUT_RELEASE_VERSION</match>
+						<replace>$POGAMUT_NEW_SNAPSHOT_VERSION</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+				</substitutions>
+				<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
+			</globals>
+      <include dir="Addons" />
+			<include dir="Main" />
+			<include dir="Poms" />
+			<include dir="Utils/AmisUtils" />			
+			<include dir="Utils/AmisPathFinding" />
+			<include dir="Utils/AmisTests" />
+			<include dir="Utils/JavaGeom" />
+			<include dir="Utils/NetBeansPublicPackages" />
+			<include dir="Utils/ProcessExecution" />			
+		</rewrite>
+	</step>
+	<step id="Rewrite CLIRR compare version" failStop="true">
+		<rewrite>
+			<globals>
+				<includeFile>pom.xml</includeFile>
+				<excludeDir>.git</excludeDir>
+				<substitutions>
+					<substitution>
+						<match>$POGAMUT_PREVIOUS_RELEASE_VERSION</match>
+						<replace>$POGAMUT_RELEASE_VERSION</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+				</substitutions>
+				<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
+			</globals>
+			<include dir="trunk/project/Poms/PogamutPom" />
+		</rewrite>
+	</step>
+</PogamutReleaseConfig>

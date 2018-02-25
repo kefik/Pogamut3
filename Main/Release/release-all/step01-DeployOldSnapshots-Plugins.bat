@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step01-DeployOldSnapshots-Plugins.xml

@@ -5,13 +5,13 @@
     <parent>
 		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	  	<artifactId>pogamut-ut2004-pom</artifactId>
-	  	<version>3.7.1-SNAPSHOT</version>
+	  	<version>3.8.1-SNAPSHOT</version>
 		<relativePath>../../Poms/PogamutUT2004Pom/pom.xml</relativePath>
 	</parent>
 
     <groupId>cz.cuni.amis.pogamut.ut2004</groupId>
     <artifactId>navigation-evaluator</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>navigation-evaluator</name>
@@ -92,7 +92,7 @@
         <dependency>
             <groupId>cz.cuni.amis.utils</groupId>
             <artifactId>process-execution</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>3.8.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         

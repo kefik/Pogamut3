@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step14-SVNCommit.xml

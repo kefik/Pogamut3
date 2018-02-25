@@ -46,9 +46,11 @@ Steps which must be done manually:
 
 6) have "mvn" on path
 
-7) have "SVN_HOME" defined (e.g. d:\svn ... WITHOUT /bin)
+7) check your maven installation, if bin/mvn.bat does not exist, copy bin/mvn.cmd into bin/mvn.bat
 
-8) GOOD LUCK :-)
+8) have "GIT_HOME" defined (e.g. d:\svn ... WITHOUT /bin)
+
+9) GOOD LUCK :-)
 
 =============
 TIPS & TRICKS

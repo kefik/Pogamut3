@@ -1,0 +1,243 @@
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step03-Install-Libs">
+	<step id="Install (new release version, skips tests)" failStop="true">
+    <process>
+			<id>Install PogamutPom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Poms/PogamutPom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+    <process>
+			<id>Install AmisTests</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Utils/AmisTests</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install JavaGeom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Utils/JavaGeom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install AmisUtils</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Utils/AmisUtils</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install ProcessExecution</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Utils/ProcessExecution</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install AmisPathFinding</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Utils/AmisPathFinding</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutBase</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutBase</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>		
+		<process>
+			<id>Install PogamutUnreal</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUnreal</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>		
+		<process>
+			<id>Install yaPOSH Core</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/yaPOSH/yaPOSHCore</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>	
+		<process>
+			<id>Install PogamutUT2004Pom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Poms/PogamutUT2004Pom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install UT2004TeamComm</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Agent/UT2004TeamComm</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>	
+		<process>
+			<id>Install UT2004Tournament</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Tournament/UT2004Tournament</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install UT2004Tournament-DM-Table</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Tournament/UT2004Tournament-DM-Table</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install UT2004SteeringLibrary</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Agent/UT2004SteeringLibrary</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004BotPom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Poms/PogamutUT2004BotPom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004TournamentPom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Poms/PogamutUT2004TournamentPom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install UT2004Tag</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Mods/UT2004Tag</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install UT2004HideAndSeek</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Mods/UT2004HideAndSeek</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>	
+		<process>
+			<id>Install UT2004CounterStrikeVIP</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Mods/UT2004CounterStrikeVIP</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install yaPOSH UT2004</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/yaPOSH/yaPOSHUT2004</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>	
+		<process>
+			<id>Install PogamutUT2004yaPOSHBotPom</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Poms/PogamutUT2004yaPOSHBotPom</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		
+		<!-- EXAMPLES -->
+				
+		<process>
+			<id>Install PogamutUT2004Examples/00-EmptyBot</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/00-EmptyBot</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/01-ResponsiveBot</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/01-ResponsiveBot</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/02-NavigationBot</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/02-NavigationBot</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/04-HunterBot</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/04-HunterBot</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/05-DeathMatch1v1</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/05-DeathMatch1v1</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>  
+		<process>
+			<id>Install PogamutUT2004Examples/06-DeathMatch1vNative</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/06-DeathMatch1vNative</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/07-NavMeshDebugBot</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/07-NavMeshDebugBot</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Install PogamutUT2004Examples/08-HunterBotFSM</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Main/PogamutUT2004Examples/08-HunterBotFSM</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		
+		<!--
+		  
+            T3D
+      
+		-->
+		<process>
+			<id>Install T3DGenerator</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Map/T3DGenerator</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		
+		<!--
+		
+		   NAVIGATION EVALUATOR
+		   
+		 -->
+		<process>
+			<id>Install NavigatorEvaluator</id>
+			<run>$MAVEN_HOME/bin/mvn.bat</run><arg>clean</arg><arg>install</arg><arg>-Dmaven.test.skip=true</arg>
+			<dir>Addons/UT2004/Map/UT2004NavigationEvaluator</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process> 
+	</step>
+</PogamutReleaseConfig>

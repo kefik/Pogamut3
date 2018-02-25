@@ -4,12 +4,12 @@
     <parent>
         <artifactId>pogamut-netbeans-suite</artifactId>
         <groupId>cz.cuni.amis.pogamut</groupId>
-        <version>3.7.1-SNAPSHOT</version>
+        <version>3.8.1-SNAPSHOT</version>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-nb-unreal</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>Pogamut NB Unreal</name>

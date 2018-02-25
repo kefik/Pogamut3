@@ -1,0 +1,18 @@
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step14-GITCommit">
+	<step id="Commit to GIT (version elevation)." failStop="true">
+		<process>
+			<id>Stage All</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>add</arg><arg>-A</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+    <process>
+			<id>Commit Tag</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>commit</arg><arg>-m</arg><arg>Version elevation: $POGAMUT_NEW_SNAPSHOT_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>	
+</PogamutReleaseConfig>

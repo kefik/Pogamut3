@@ -1,1 +1,0 @@
-step.bat ../release-all/config/PogamutRelease-step03-DeployRelease.xml

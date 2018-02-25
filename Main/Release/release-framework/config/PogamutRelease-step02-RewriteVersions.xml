@@ -1,0 +1,28 @@
+<PogamutReleaseConfig basedir="E:/W/PogRelGit" id="step02-RewriteVersions-Release">
+	<step id="Rewrite version to release" failStop="true">
+		<rewrite>
+			<globals>
+				<includeFile>pom.xml</includeFile>
+				<includeFile>*.property</includeFile>
+				<excludeDir>.svn</excludeDir>
+				<substitutions>
+					<substitution>
+						<match>$POGAMUT_CURRENT_VERSION</match>
+						<replace>$POGAMUT_RELEASE_VERSION</replace>
+						<caseSensitive>false</caseSensitive>
+					</substitution>
+				</substitutions>
+				<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
+			</globals>
+			<include dir="Addons" />
+			<include dir="Main" />
+			<include dir="Poms" />
+			<include dir="Utils/AmisUtils" />			
+			<include dir="Utils/AmisPathFinding" />
+			<include dir="Utils/AmisTests" />
+			<include dir="Utils/JavaGeom" />
+			<include dir="Utils/NetBeansPublicPackages" />
+			<include dir="Utils/ProcessExecution" />			
+		</rewrite>
+	</step>	
+</PogamutReleaseConfig>

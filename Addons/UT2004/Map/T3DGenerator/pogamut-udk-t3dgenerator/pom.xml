@@ -6,13 +6,13 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-t3dgenerator-parent</artifactId>
-        <version>3.7.1-SNAPSHOT</version>
+        <version>3.8.1-SNAPSHOT</version>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-udk-t3dgenerator</artifactId>
     <packaging>jar</packaging>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.1-SNAPSHOT</version>
     <name>T3D Generator - UDK Classes</name>
 
     <url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.parent.artifactId}/${project.artifactId}/</url>

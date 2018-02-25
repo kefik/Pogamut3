@@ -4,12 +4,12 @@
     <parent>
         <artifactId>pogamut-netbeans-suite</artifactId>
         <groupId>cz.cuni.amis.pogamut</groupId>
-        <version>3.7.1-SNAPSHOT</version>
+        <version>3.8.1-SNAPSHOT</version>
     </parent>
     
     <groupId>cz.cuni.amis</groupId>
     <artifactId>shed</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>Shed</name>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>cz.cuni.amis</groupId>
             <artifactId>sposh-core</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>3.8.1-SNAPSHOT</version>
         </dependency>
 
         <!-- Netbeans module deps !-->

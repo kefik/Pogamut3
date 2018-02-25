@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step04-Install-Plugins.xml

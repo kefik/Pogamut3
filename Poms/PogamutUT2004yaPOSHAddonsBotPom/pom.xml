@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 		<artifactId>pogamut-ut2004-bot-pom</artifactId>
-		<version>3.7.1-SNAPSHOT</version>
+		<version>3.8.1-SNAPSHOT</version>
 		<relativePath>../PogamutUT2004BotPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	<artifactId>pogamut-ut2004-yaposh-addons-bot-pom</artifactId>
-	<version>3.7.1-SNAPSHOT</version>
+	<version>3.8.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>pogamut-ut2004-yaposh-addons-bot-pom</name>
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>cz.cuni.amis.pogamut.ut2004</groupId>
       <artifactId>yaposh-ut2004-addons</artifactId>
-      <version>3.7.1-SNAPSHOT</version>
+      <version>3.8.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 	
