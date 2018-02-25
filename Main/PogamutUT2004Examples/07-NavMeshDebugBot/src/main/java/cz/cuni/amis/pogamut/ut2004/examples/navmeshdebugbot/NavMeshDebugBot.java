@@ -33,6 +33,8 @@ import cz.cuni.amis.utils.exception.PogamutException;
 @AgentScoped
 public class NavMeshDebugBot extends UT2004BotModuleController {
 
+	private static int INSTANCE = 0;
+	
     private long   lastLogicTime        = -1;
     private long   logicIterationNumber = 0;
     
@@ -76,7 +78,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     
     @Override
     public Initialize getInitializeCommand() {  
-    	return new Initialize().setName("NavMeshDebugBot");
+    	return new Initialize().setName("NavMeshDebugBot-" + (INSTANCE++));
     }
     
     private void sayGlobal(String msg) {
@@ -192,7 +194,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
                 NavMeshDebugBot.class,  // which UT2004BotController it should instantiate
                 "EmptyBot"       // what name the runner should be using
         ).setMain(true)          // tells runner that is is executed inside MAIN method, thus it may block the thread and watch whether agent/s are correctly executed
-         .startAgents(1);        // tells the runner to start 1 agent
+         .startAgents(8);        // tells the runner to start 1 agent
 
         // It is easy to start multiple bots of the same class, comment runner above and uncomment following
         // new UT2004BotRunner(EmptyBot.class, "EmptyBot").setMain(true).startAgents(3); // tells the runner to start 3 agents at once
