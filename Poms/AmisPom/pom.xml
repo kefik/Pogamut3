@@ -12,10 +12,10 @@
     <url>http://amis.mff.cuni.cz</url>
 
     <scm>
-        <connection>scm:svn:${svn.project.home}</connection>
-        <developerConnection>scm:svn:${svn.project.home}</developerConnection>
+        <connection>scm:git:${scm.project.home}</connection>
+        <developerConnection>scm:git:${scm.project.home}</developerConnection>
         <tag>HEAD</tag>
-        <url>${svn.project.home}</url>
+        <url>${scm.project.server.url.base}</url>
     </scm>
 
     <organization>
@@ -53,8 +53,8 @@
 			This property is used by the parent's POM. SVN repo version is added
 			inside the manifest.mf !
 		-->
-        <svn.project.server.url.base>svn://artemis.ms.mff.cuni.cz/pogamut/trunk/project</svn.project.server.url.base>
-        <svn.project.home>${svn.project.server.url.base}/Poms/AmisPom</svn.project.home>
+        <scm.project.server.url.base>https://github.com/kefik/Pogamut3.git</scm.project.server.url.base>
+        <scm.project.home>${svn.project.server.url.base}/tree/master/Poms/AmisPom</scm.project.home>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>${project.build.sourceEncoding}</project.build.resourceEncoding>
@@ -214,7 +214,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.8</version>
+                        <version>3.0.0</version>
                         <configuration>
                             <detectLinks>true</detectLinks>
                             <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
@@ -229,7 +229,6 @@
                             </docletArtifact>
                             <additionalparam>-views</additionalparam>
                             <useStandardDocletOptions>true</useStandardDocletOptions>
-
                             <defaultAuthor>AMIS Research Group</defaultAuthor>
                             <defaultVersion>${project.version}</defaultVersion>
                             <links>
@@ -242,6 +241,10 @@
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
+                                <configuration>
+                                    <additionalparam>-Xdoclint:none</additionalparam>
+                                    <failOnError>false</failOnError>
+                                </configuration>
                             </execution>
                         </executions>                                     
                     </plugin>
@@ -261,7 +264,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>buildnumber-maven-plugin</artifactId>
-                        <version>1.0-beta-4</version>
+                        <version>1.4</version>
                         <executions>
                             <execution>
                                 <id>execute-buildnumber-maven-plugin</id>
