@@ -5,13 +5,13 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-pom</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1-SNAPSHOT</version>
         <relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-ut2004</artifactId>
-    <version>3.8.0</version>
+    <version>3.8.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>pogamut-ut2004</name>
@@ -83,7 +83,7 @@
       <dependency>
     		<groupId>cz.cuni.amis</groupId>
     		<artifactId>amis-tests</artifactId>
-    		<version>3.8.0</version>
+    		<version>3.8.1-SNAPSHOT</version>
     		<scope>test</scope>
     	</dependency>	
 
@@ -108,12 +108,12 @@
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-unreal</artifactId>
-            <version>3.8.0</version>
+            <version>3.8.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-base</artifactId>
-            <version>3.8.0</version>
+            <version>3.8.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cz.cuni.amis</groupId>
@@ -123,7 +123,7 @@
         <dependency>
            <groupId>cz.cuni.amis</groupId>
 		   <artifactId>amis-path-finding</artifactId>
-		   <version>3.8.0</version>
+		   <version>3.8.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

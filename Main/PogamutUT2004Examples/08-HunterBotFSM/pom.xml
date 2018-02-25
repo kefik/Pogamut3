@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 		<artifactId>pogamut-ut2004-bot-pom</artifactId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 		<relativePath>../../../Poms/PogamutUT2004BotPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut.ut2004.examples</groupId>
 	<artifactId>ut2004-04-hunter-bot</artifactId>
-	<version>3.8.0</version>
+	<version>3.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>ut2004-04-hunter-bot</name>

@@ -6,13 +6,13 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-t3dgenerator-parent</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1-SNAPSHOT</version>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-t3dgenerator-base</artifactId>
     <packaging>jar</packaging>
-    <version>3.8.0</version>
+    <version>3.8.1-SNAPSHOT</version>
     <name>T3D Generator base</name>
 
     <url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.parent.artifactId}/${project.artifactId}/</url>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>cz.cuni.amis</groupId>
             <artifactId>amis-utils</artifactId>
-            <version>3.8.0</version>
+            <version>3.8.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     

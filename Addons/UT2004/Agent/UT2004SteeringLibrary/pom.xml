@@ -6,14 +6,14 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-pom</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1-SNAPSHOT</version>
     </parent>
 
 
   <groupId>cz.cuni.amis.pogamut.ut2004.steerings</groupId>
   <artifactId>ut2004-steering-library</artifactId>
   <packaging>jar</packaging>
-  <version>3.8.0</version>
+  <version>3.8.1-SNAPSHOT</version>
   <name>ut2004-steering-library</name>  
   
   <url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.artifactId}/</url>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-ut2004</artifactId>
-            <version>3.8.0</version>
+            <version>3.8.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.lib.awtextra</groupId>

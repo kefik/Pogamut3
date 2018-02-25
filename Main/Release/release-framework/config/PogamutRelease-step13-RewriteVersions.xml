@@ -1,4 +1,4 @@
-<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step13-RewriteVersions-Snapshot">
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step13-RewriteVersions">
 	<step id="Rewrite new snapshot version" failStop="true">
 		<rewrite>
 			<globals>
@@ -14,37 +14,22 @@
 				</substitutions>
 				<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
 			</globals>
-			<include dir="trunk/project/Addons/LevelMetadata" />
-			<include dir="trunk/project/Addons/T3DGenerator" />
-			<include dir="trunk/project/Addons/SPOSH" />
-			<include dir="trunk/project/Addons/GOAL" />
-			<include dir="trunk/project/Addons/UT2004NavigationEvaluator" />		
-			<include dir="trunk/project/Addons/UT2004Tournament" />
-			<include dir="trunk/project/Addons/UT2004Tournament-DM-Table" />
-			<include dir="trunk/project/Addons/UT2004SteeringLibrary" />
-			<include dir="trunk/project/Addons/PogamutDefConJasonInterface" />
-			<include dir="trunk/project/Addons/UnrealWeaponShooting" />		
-			<include dir="trunk/project/Addons/UT2004WeaponryShooting" />	
-			<include dir="trunk/project/Addons/UT2004Tag" />
-			<include dir="trunk/project/Addons/UT2004HideAndSeek" />				
-			<include dir="trunk/project/Addons/UT2004TeamComm" />				
-			<include dir="trunk/project/Archetypes" />
-			<include dir="trunk/project/Poms" />
-			<include dir="trunk/project/Main" />
-			<include dir="trunk/project/Utils/AmisUtils" />			
-			<include dir="trunk/project/Utils/AmisPathFinding" />	
-			<include dir="trunk/project/Utils/AmisTests" />
-			<include dir="trunk/project/Utils/JavaGeom" />		
-			<include dir="trunk/project/Utils/NetBeansPublicPackages" />
-			<include dir="trunk/project/Utils/ProcessExecution" />	
-			<include dir="trunk/project/Utils/UT2004LevelGeom" />			
+      <include dir="Addons" />
+			<include dir="Main" />
+			<include dir="Poms" />
+			<include dir="Utils/AmisUtils" />			
+			<include dir="Utils/AmisPathFinding" />
+			<include dir="Utils/AmisTests" />
+			<include dir="Utils/JavaGeom" />
+			<include dir="Utils/NetBeansPublicPackages" />
+			<include dir="Utils/ProcessExecution" />			
 		</rewrite>
 	</step>
 	<step id="Rewrite CLIRR compare version" failStop="true">
 		<rewrite>
 			<globals>
 				<includeFile>pom.xml</includeFile>
-				<excludeDir>.svn</excludeDir>
+				<excludeDir>.git</excludeDir>
 				<substitutions>
 					<substitution>
 						<match>$POGAMUT_PREVIOUS_RELEASE_VERSION</match>

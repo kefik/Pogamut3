@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 		<artifactId>pogamut-ut2004-pom</artifactId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 		<relativePath>../PogamutUT2004Pom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	<artifactId>pogamut-ut2004-bot-pom</artifactId>
-	<version>3.8.0</version>
+	<version>3.8.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>pogamut-ut2004-bot-pom</name>

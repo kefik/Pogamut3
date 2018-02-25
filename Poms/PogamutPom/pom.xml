@@ -11,7 +11,7 @@
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-pom</artifactId>
-    <version>3.8.0</version>
+    <version>3.8.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>PogamutPom</name>

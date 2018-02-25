@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut</groupId>
 		<artifactId>pogamut-pom</artifactId>
-		<version>3.8.0</version>
+		<version>3.8.1-SNAPSHOT</version>
 		<relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut</groupId>
 	<artifactId>pogamut-release</artifactId>
-	<version>3.8.0</version>
+	<version>3.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>pogamut-release</name>
@@ -43,13 +43,13 @@
 		<dependency>
 			<groupId>cz.cuni.amis</groupId>
 			<artifactId>amis-utils</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
         <groupId>cz.cuni.amis</groupId>
         <artifactId>amis-tests</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1-SNAPSHOT</version>
         <scope>test</scope>
     </dependency>
 		
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>cz.cuni.amis.utils</groupId>
 			<artifactId>process-execution</artifactId>
-			<version>3.8.0</version>
+			<version>3.8.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>cz.cuni.amis</groupId>
 		    <artifactId>amis-tests</artifactId>
-		    <version>3.8.0</version>
+		    <version>3.8.1-SNAPSHOT</version>
 		    <scope>test</scope>
 		</dependency> 
 

@@ -6,13 +6,13 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-pom</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1-SNAPSHOT</version>
         <relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>installer</artifactId>
-    <version>3.8.0</version>
+    <version>3.8.1-SNAPSHOT</version>
 
     <name>Pogamut Installer</name>
 
@@ -270,7 +270,7 @@
                                 <artifactItem>
                                   <groupId>nl.tudelft.goal</groupId>
                                   <artifactId>goal-ut2004-environment</artifactId>
-                                  <version>3.8.0</version>
+                                  <version>3.8.1-SNAPSHOT</version>
                                   <type>jar</type>
                                   <classifier>eis_environment</classifier>
                                   <outputDirectory>${ue2runtime.dir}/GOAL</outputDirectory>
@@ -722,8 +722,8 @@
         <defcon.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/DEFCON</defcon.archetypes.svn>
         <udk.archetypes.svn>${pogamut.trunk.svn}/project/Archetypes/UDK</udk.archetypes.svn>
 
-        <nb.plugin.version>3.8.0</nb.plugin.version>
-        <gbudk.version>3.8.0</gbudk.version>
+        <nb.plugin.version>3.8.1-SNAPSHOT</nb.plugin.version>
+        <gbudk.version>3.8.1-SNAPSHOT</gbudk.version>
 
         <ue2runtime.dir>${staging.dir}/UE2Runtime</ue2runtime.dir>
 
