@@ -29,6 +29,13 @@
 			<redirectStdOut>true</redirectStdOut>
 		</process>
 		<process>
+			<id>Stage All</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>add</arg><arg>-A</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
 			<id>Commit Master</id>
 			<run>$GIT_HOME/bin/git.exe</run><arg>commit</arg><arg>-m</arg><arg>Merged release: Pogamut-$POGAMUT_RELEASE_VERSION</arg>
 			<dir>.</dir>
