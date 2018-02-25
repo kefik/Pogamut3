@@ -35,8 +35,7 @@ import cz.cuni.amis.utils.exception.PogamutException;
  * @param <BOT>
  * @param <PARAMS>
  */
-public class UT2004BotRunner<BOT extends IUT2004Bot, PARAMS extends UT2004BotParameters>
-		extends UTBotRunner<BOT, PARAMS> {
+public class UT2004BotRunner<BOT extends IUT2004Bot, PARAMS extends UT2004BotParameters> extends UTBotRunner<BOT, PARAMS> {
 
 	/**
 	 * Construct the runner + specify all defaults.

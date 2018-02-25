@@ -1,7 +1,5 @@
 package cz.cuni.amis.pogamut.ut2004.utils;
 
-import java.util.List;
-
 import cz.cuni.amis.pogamut.base.agent.IAgentId;
 import cz.cuni.amis.pogamut.base.agent.params.IAgentParameters;
 import cz.cuni.amis.pogamut.base.agent.utils.runner.impl.AgentRunner;
@@ -11,13 +9,8 @@ import cz.cuni.amis.pogamut.base.factory.IAgentFactory;
 import cz.cuni.amis.pogamut.base.utils.Pogamut;
 import cz.cuni.amis.pogamut.base.utils.PogamutPlatform;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004Bot;
-import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;
-import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.params.UT2004BotParameters;
-import cz.cuni.amis.pogamut.ut2004.factory.guice.remoteagent.UT2004BotFactory;
-import cz.cuni.amis.pogamut.ut2004.factory.guice.remoteagent.UT2004BotModule;
 import cz.cuni.amis.utils.NullCheck;
-import cz.cuni.amis.utils.exception.PogamutException;
 
 /**
  * Class used for creating, connecting and starting servers with default settings that are taken from the properties.

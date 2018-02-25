@@ -66,6 +66,7 @@ import cz.cuni.amis.utils.flag.FlagListener;
  * If you happen to need to use {@link MultithreadedAgentRunner} from the main method, do not forget to call {@link MultithreadedAgentRunner#setMain(boolean)} with param 'true'.
  * 
  * @author Jimmy
+ * @author Aldarrion
  */
 public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS extends IAgentParameters> implements IAgentRunner<AGENT, PARAMS> {
 
@@ -145,7 +146,7 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
      */
     protected Object killingAgentsMutex = new Object();
     
-    int cpuThreadCout = Runtime.getRuntime().availableProcessors();
+    protected int cpuThreadCount = Runtime.getRuntime().availableProcessors();
     
 	/**
 	 * Listener that lowers the count on the {@link MainAgentRunner#latch} (if reaches zero, start method resumes and closes the Pogamut platform),
@@ -283,9 +284,9 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
      * @param params
      * @return
      */
-    protected List<AGENT> startAgentWithParams(final boolean fillDefaults, PARAMS... params) {
+    protected List<AGENT> startAgentWithParams(final boolean fillDefaults, final PARAMS... params) {
     	if (params == null || params.length == 0) return new ArrayList<AGENT>(0);
-    	List<AGENT> result = new ArrayList<AGENT>(params.length);
+    	final List<AGENT> result = new ArrayList<AGENT>(params.length);
     	
     	final boolean pausingBehavior = isPausing();
     	
@@ -296,15 +297,20 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
 	    	// Start first agent separately to avoid running twice heavy methods such as navigation loading
 	    	startAndAddAgent(params[0], pausingBehavior, result);
 	    	
-	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCout);
+	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCount);
 	    	// Start rest of the agents if any
 	    	for (int i = 0; i < params.length; ++i) {
 	    	    if (fillDefaults) {
 	                params[i].assignDefaults(newDefaultAgentParameters());
 	            }
 	    	    
-	    	    int iLoc = i;
-	    	    executor.submit(() -> startAndAddAgent(params[iLoc], pausingBehavior, result));
+	    	    final int iLoc = i;
+	    	    executor.submit(new Runnable() {
+					@Override
+					public void run() {
+						startAndAddAgent(params[iLoc], pausingBehavior, result);
+					}	    	    	    	    	
+	    	    });
 	    	}
 	    	
 	    	executor.shutdown();
@@ -335,20 +341,20 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
      * E.g. {@link MultithreadedAgentRunner#startAgentWithParams(boolean, IAgentParameters[])} but 
      * provides the blocking mechanism.
 	 */
-	protected List<AGENT> startAgentWithParamsMain(boolean fillDefaults, PARAMS... params) {
+	protected List<AGENT> startAgentWithParamsMain(boolean fillDefaults, final PARAMS... params) {
 		if (params == null || params.length == 0) return new ArrayList<AGENT>(0);
 		latch = new CountDownLatch(params.length);
 		
 		agents = new ArrayList<AGENT>(params.length);
     	killed = false;
 		
-		boolean pausingBehavior = isPausing();
+		final boolean pausingBehavior = isPausing();
     	
     	try {
     	    // Start first agent separately to avoid running twice heavy methods such as navigation loading
 	    	startAndAddAgentMain(params[0], pausingBehavior);
     	    
-	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCout);
+	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCount);
 	    	// Start rest of the agents if any
 	    	for (int i = 1; i < params.length; ++i) {	    		
 	    		if (killed) break;
@@ -357,8 +363,15 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
 	    			params[i].assignDefaults(newDefaultAgentParameters());
 	    		}
 	    		
-	    		int iLoc = i;
-	    		executor.submit(() -> startAndAddAgentMain(params[iLoc], pausingBehavior));
+	    		final int iLoc = i;
+	    		executor.submit(new Runnable() {
+
+					@Override
+					public void run() {
+						startAndAddAgentMain(params[iLoc], pausingBehavior);
+					}
+	    			
+	    		});
 	    	}
 	    	
 	    	executor.shutdown();
