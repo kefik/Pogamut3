@@ -16,7 +16,7 @@
 		</process>
 		<process>
 			<id>Push Tag</id>
-			<run>$GIT_HOME/bin/git.exe</run><arg>push</arg><arg>origin</arg>
+			<run>$GIT_HOME/bin/git.exe</run><arg>push</arg><arg>origin</arg><arg>$POGAMUT_RELEASE_VERSION</arg>
 			<dir>.</dir>
 			<redirectStdErr>true</redirectStdErr>
 			<redirectStdOut>true</redirectStdOut>
