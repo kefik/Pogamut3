@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step07-RefreshArchetypes.xml

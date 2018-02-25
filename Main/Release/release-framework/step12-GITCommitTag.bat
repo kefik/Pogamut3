@@ -1,0 +1,1 @@
+step.bat config/PogamutRelease-step12-GITCommitTag.xml

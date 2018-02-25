@@ -4,12 +4,12 @@
     <parent>
         <artifactId>pogamut-netbeans-suite</artifactId>
         <groupId>cz.cuni.amis.pogamut</groupId>
-        <version>3.7.1-SNAPSHOT</version>
+        <version>3.8.0</version>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-nb-udk</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.0</version>
     <packaging>nbm</packaging>
 
     <name>Pogamut NB UDK</name>
@@ -19,20 +19,20 @@
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-nb-libs</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>3.8.0</version>
         </dependency>
 
         <!-- Pogamut NetBeans Module Deps !-->
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-nb-base</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>3.8.0</version>
         </dependency>
         
         <dependency>
             <groupId>cz.cuni.amis.pogamut</groupId>
             <artifactId>pogamut-nb-unreal</artifactId>
-            <version>3.7.1-SNAPSHOT</version>
+            <version>3.8.0</version>
         </dependency>
 
         <!-- NetBeans Deps !-->

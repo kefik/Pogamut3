@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step05-DeployRelease-Libs.xml

@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step00-DeployOldSnapshots-Libs.xml

@@ -1,0 +1,46 @@
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step12-GITCommitTag">
+	<step id="Commit to GIT (tagging release)." failStop="true">
+    <process>
+			<id>Stage All</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>add</arg><arg>-A</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+    <process>
+			<id>Commit Tag</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>commit</arg><arg>-m</arg><arg>RELEASE: Pogamut-$POGAMUT_RELEASE_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Push Tag</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>push</arg><arg>origin</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Checkout Master</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>checkout</arg><arg>master</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Merging into Master</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>merge</arg><arg>$POGAMUT_RELEASE_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>Commit Master</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>commit</arg><arg>-m</arg><arg>Merged release: Pogamut-$POGAMUT_RELEASE_VERSION</arg>
+			<dir>.</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+	</step>	
+</PogamutReleaseConfig>

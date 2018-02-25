@@ -1,0 +1,18 @@
+<PogamutReleaseConfig baseDir="E:/W/PogRelGit" id="step01-GITBranch">
+	<step id="GIT Branch (tagging release)." failStop="true">
+    <process>
+			<id>GIT Branch</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>branch</arg><arg>$POGAMUT_RELEASE_VERSION</arg>
+			<dir>./</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>
+		<process>
+			<id>GIT Checkout</id>
+			<run>$GIT_HOME/bin/git.exe</run><arg>checkout</arg><arg>$POGAMUT_RELEASE_VERSION</arg>
+			<dir>./</dir>
+			<redirectStdErr>true</redirectStdErr>
+			<redirectStdOut>true</redirectStdOut>
+		</process>		
+	</step>	
+</PogamutReleaseConfig>

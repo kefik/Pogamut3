@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step03-Install-Libs.xml

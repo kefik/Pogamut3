@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-pom</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.0</version>
 		<relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut</groupId>
 	<artifactId>pogamut-base</artifactId>
-	<version>3.7.1-SNAPSHOT</version>
+	<version>3.8.0</version>
 	<packaging>jar</packaging>
 
 	<name>pogamut-base</name>
@@ -56,18 +56,18 @@
 		<dependency>
     		<groupId>cz.cuni.amis</groupId>
     		<artifactId>amis-tests</artifactId>
-    		<version>3.7.1-SNAPSHOT</version>
+    		<version>3.8.0</version>
     		<scope>test</scope>
     	</dependency>		
 		<dependency>
 			<groupId>cz.cuni.amis</groupId>
 			<artifactId>amis-utils</artifactId>
-			<version>3.7.1-SNAPSHOT</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>cz.cuni.amis</groupId>
 			<artifactId>javageom</artifactId>
-			<version>3.7.1-SNAPSHOT</version>
+			<version>3.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>cz.cuni.amis</groupId>

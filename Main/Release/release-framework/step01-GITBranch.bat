@@ -1,0 +1,1 @@
+step.bat config/PogamutRelease-step01-GITBranch.xml

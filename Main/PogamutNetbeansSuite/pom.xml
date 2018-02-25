@@ -5,13 +5,13 @@
     <parent>
         <groupId>cz.cuni.amis.pogamut</groupId>
         <artifactId>pogamut-pom</artifactId>
-        <version>3.7.1-SNAPSHOT</version>
+        <version>3.8.0</version>
         <relativePath>../../PogamutPom/pom.xml</relativePath>
     </parent>
 
     <groupId>cz.cuni.amis.pogamut</groupId>
     <artifactId>pogamut-netbeans-suite</artifactId>
-    <version>3.7.1-SNAPSHOT</version>
+    <version>3.8.0</version>
     <packaging>pom</packaging>
 
     <name>Pogamut Netbeans Module Suite</name>

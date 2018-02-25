@@ -1,1 +1,0 @@
-step.bat config/PogamutRelease-step11-Installers.xml

@@ -1,1 +1,0 @@
-step.bat ../release-all/config/PogamutRelease-step08-RewriteVersions.xml

@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut</groupId>
 		<artifactId>pogamut-pom</artifactId>
-		<version>3.7.1-SNAPSHOT</version>
+		<version>3.8.0</version>
 		<relativePath>../../Poms/PogamutPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	<artifactId>ut2004-tournament</artifactId>
-	<version>3.7.1-SNAPSHOT</version>
+	<version>3.8.0</version>
 	<packaging>jar</packaging>
 
 	<name>ut2004-tournament</name>
@@ -25,12 +25,12 @@
 	    <dependency>
 	        <groupId>cz.cuni.amis.pogamut</groupId>
 	        <artifactId>pogamut-ut2004</artifactId>
-	        <version>3.7.1-SNAPSHOT</version>
+	        <version>3.8.0</version>
 	    </dependency>
 	    <dependency>
 	    	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 			<artifactId>ut2004-team-comm</artifactId>
-			<version>3.7.1-SNAPSHOT</version>
+			<version>3.8.0</version>
 	    </dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -49,7 +49,7 @@
     	<dependency>
     		<groupId>cz.cuni.amis</groupId>
     		<artifactId>amis-tests</artifactId>
-    		<version>3.7.1-SNAPSHOT</version>
+    		<version>3.8.0</version>
     		<scope>test</scope>
     	</dependency>
 	</dependencies>

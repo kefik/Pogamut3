@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	  <artifactId>pogamut-ut2004-tournament-pom</artifactId>
-	  <version>3.7.1-SNAPSHOT</version>
+	  <version>3.8.0</version>
 		<relativePath>../../Poms/PogamutUT2004TournamentPom/pom.xml</relativePath>
 	</parent>
 
 	<groupId>cz.cuni.amis.pogamut.ut2004</groupId>
 	<artifactId>ut2004-hide-and-seek</artifactId>
-	<version>3.7.1-SNAPSHOT</version>
+	<version>3.8.0</version>
 	<packaging>jar</packaging>
 
 	<name>ut2004-hide-and-seek</name>
