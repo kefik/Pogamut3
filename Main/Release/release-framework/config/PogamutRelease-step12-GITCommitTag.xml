@@ -15,13 +15,6 @@
 			<redirectStdOut>true</redirectStdOut>
 		</process>
 		<process>
-			<id>Push Tag</id>
-			<run>$GIT_HOME/bin/git.exe</run><arg>push</arg><arg>origin</arg><arg>$POGAMUT_RELEASE_VERSION</arg>
-			<dir>.</dir>
-			<redirectStdErr>true</redirectStdErr>
-			<redirectStdOut>true</redirectStdOut>
-		</process>
-		<process>
 			<id>Checkout Master</id>
 			<run>$GIT_HOME/bin/git.exe</run><arg>checkout</arg><arg>master</arg>
 			<dir>.</dir>
