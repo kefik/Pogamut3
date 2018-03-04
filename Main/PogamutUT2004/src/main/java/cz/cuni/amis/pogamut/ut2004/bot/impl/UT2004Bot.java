@@ -433,11 +433,17 @@ public class UT2004Bot<WORLD_VIEW extends IVisionWorldView, ACT extends IAct, CO
         if (initializeCommand.getRotation() == null) {
         	initializeCommand.setRotation(params.getInitialRotation());
         }
-        try {
-            // set the JMX name
-            initializeCommand.setJmx(getJMX().enableJMX());
-        } catch (Exception e) {
-            throw new PogamutJMXException("Error seting up JMX name of the agent.", e, log, this);
+        
+        if ((Boolean)PogamutUT2004Property.POGAMUT_UT2004_BOT_JMX_ENABLED.getValue()) {
+        	log.fine("Enabling JMX...");
+	        try {
+	            // set the JMX name
+	            initializeCommand.setJmx(getJMX().enableJMX());
+	        } catch (Exception e) {
+	            throw new PogamutJMXException("Error seting up JMX name of the agent.", e, log, this);
+	        }
+        } else {
+        	log.info("JMX Disabled");
         }
         
         String  defaultName  = (String) PogamutUT2004Property.POGAMUT_UT2004_BOT_INIT_NAME.getValue();

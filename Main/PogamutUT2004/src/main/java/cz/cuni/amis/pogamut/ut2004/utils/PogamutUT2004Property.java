@@ -1,8 +1,6 @@
 package cz.cuni.amis.pogamut.ut2004.utils;
 
-import cz.cuni.amis.pogamut.base.utils.DefaultPogamutPlatform;
 import cz.cuni.amis.pogamut.base.utils.Pogamut;
-import cz.cuni.amis.pogamut.base.utils.PogamutPlatformProxy;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.visibility.model.VisibilityMatrix;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;
@@ -10,6 +8,12 @@ import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
 
 public enum PogamutUT2004Property {
+	/**
+	 * Whether the bot should have its JMX module enabled (must be enabled in order for the NetBeans plugin be working...).
+	 * GameBots2004)
+	 */
+	POGAMUT_UT2004_BOT_JMX_ENABLED("pogamut.ut2004.bot.jmx.enabled", Boolean.class, Boolean.FALSE),
+	
 	/**
 	 * Where the bot should connect to (hostname of the server running
 	 * GameBots2004)
