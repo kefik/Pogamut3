@@ -122,29 +122,37 @@ public class NavMeshModule {
     }
     
     private void load(GameInfo info) {
-        if (info == null) {
-            log.severe("Could not load for 'null' GameInfo!");
-            return;
-        }
-        if ( loadedForMap != null &&  loadedForMap.getLevel().equals(info.getLevel()) ) {
-            return;
-        }
-        
-        Map<WorldObjectId, NavPoint> worldViewOfNavPoints = worldView.getAll( NavPoint.class );
-        HashMap<UnrealId, NavPoint> navGraph = Maps.newHashMap();
-        synchronized ( worldViewOfNavPoints ) {
-        	for ( NavPoint navPoint : worldViewOfNavPoints.values() ) {
-        		navGraph.put( navPoint.getId(), navPoint );
-        	}
-        }
-        
-        if ( shouldReloadNavMesh ) {
-        	NavMeshCache.reloadNavMesh( navMesh, navGraph, info.getLevel() );
-        } else {
-        	NavMeshCache.loadNavMesh( navMesh, navGraph, info.getLevel() );
-        }
-        
-        loadedForMap = info;
+    	try {
+            
+    	
+	    	if (info == null) {
+	            log.severe("Could not load for 'null' GameInfo!");
+	            return;
+	        }
+	        if ( loadedForMap != null &&  loadedForMap.getLevel().equals(info.getLevel()) ) {
+	            return;
+	        }
+	        
+	        Map<WorldObjectId, NavPoint> worldViewOfNavPoints = worldView.getAll( NavPoint.class );
+	        HashMap<UnrealId, NavPoint> navGraph = Maps.newHashMap();
+	        synchronized ( worldViewOfNavPoints ) {
+	        	for ( NavPoint navPoint : worldViewOfNavPoints.values() ) {
+	        		navGraph.put( navPoint.getId(), navPoint );
+	        	}
+	        }
+	        
+	        if ( shouldReloadNavMesh ) {
+	        	NavMeshCache.reloadNavMesh( navMesh, navGraph, info.getLevel() );
+	        } else {
+	        	NavMeshCache.loadNavMesh( navMesh, navGraph, info.getLevel() );
+	        }
+	        
+	        loadedForMap = info;
+	        
+    	} catch (Exception e) {
+    		log.warning("Failed to load NavMesh...");
+    		loadedForMap = null;
+    	}
     }
 
     // ================
