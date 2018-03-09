@@ -40,6 +40,9 @@ var bool bFirstSyncBAfterSpawnExported;
 // what is our current sleep time
 var float sleepTime;
 
+// how oftern are we sending only LOC UPDATES
+var float locUpdateMultiplierCurrent;
+
 //if true we will ignore maximum player limit on the server - note this can lead
 //to pawn spawning malfunctions
 var config bool bIgnoreMaxPlayers;
@@ -170,6 +173,8 @@ function PostBeginPlay()
 
 	//init sleeptime here
 	sleepTime = visionTime / float(locUpdateMultiplier);
+	if (sleepTime < 0.05) sleepTime = 0.05; // UT2004 cannot sleep less then this...
+	locUpdateMultiplierCurrent = visionTime / sleepTime;
 }
 
 //triggered when weve gotten READY message from client, or after succesfull password check
@@ -1443,9 +1448,12 @@ function ReceivedConf() {
 				theBot.bGodMode = bool(argValue);
 			else if (argName == "VisionTime") {
 				floatNumber = float(argValue);
-				if ((floatNumber >= 0.1) && (floatNumber <= 2)) {
+				if ((floatNumber >= 0.05) && (floatNumber <= 2)) {
 					visionTime = floatNumber;
 					sleepTime = visionTime / float(locUpdateMultiplier);
+					if (sleepTime < 0.05) sleepTime = 0.05; /// UT2004 cannot sleep less then 0.05s
+					locUpdateMultiplierCurrent = visionTime / sleepTime;
+					log("VisionTime configured to " $ visionTime);
 				}
 			} else if (argName == "SynchronousOff") {
 				theBot.myConnection.bSynchronousMessagesOff = bool(argValue);
@@ -2421,13 +2429,16 @@ state monitoring
 {
 Begin:
 Running:
-	if (sleepTime == 0) //sanity check
+	if (sleepTime == 0) { //sanity check
 		sleepTime = visionTime / float(locUpdateMultiplier);
+		if (sleepTime < 0.05) sleepTime = 0.05;
+		locUpdateMultiplierCurrent = visionTime / sleepTime;
+	}
 
 	if (bSynchronousMessagesOff)
 		goto 'SynchronousOff';
 	if(theBot != none && Level.Pauser == none && !theBot.IsInState('Dead') && !theBot.IsInState('GameEnded') ) {
-		if (locInfoCount >= locUpdateMultiplier || !bFirstSyncBAfterSpawnExported) {
+		    if (locInfoCount >= locUpdateMultiplierCurrent || !bFirstSyncBAfterSpawnExported) {
 			bFirstSyncBAfterSpawnExported = true;
 			locInfoCount = 0;
 			//export sync. batch
@@ -2443,14 +2454,14 @@ Running:
 			SendLine("END {Time " $ Level.TimeSeconds $"}");
 			egs++;
 //			log("EXPORT: SleepTime is " $ sleepTime $ " Level.TimeSeconds is " $ Level.TimeSeconds);
-		}
-		
+//                log("END EXPORTED");
+            }
 		locInfoCount++;
 		
 		theBot.ExportLocationUpdate();		
 	}
 	
-//	log("SleepTime is " $ sleepTime);
+//	log("SleepTime is " $ sleepTime $ ", locInfoCount " $ locInfoCount $ ", Level.TimeSeconds is " $ Level.TimeSeconds $ ", visionTime is " $ visionTime $ ", locUpdateMultiplierCurrent is " $ locUpdateMultiplierCurrent);
 
 	if (bIterative)
 		Level.Pauser=theBot.PlayerReplicationInfo;
