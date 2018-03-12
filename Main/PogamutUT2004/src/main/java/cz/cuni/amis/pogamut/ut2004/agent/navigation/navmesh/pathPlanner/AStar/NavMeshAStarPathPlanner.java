@@ -69,7 +69,7 @@ public class NavMeshAStarPathPlanner implements IPathPlanner<ILocated>{
     @Override
     public double getDistance(ILocated from, ILocated to) {
     	List<ILocated> path = computePath(from, to).get();
-    	if ( path.size() == 0 ) {
+    	if ( path == null || path.size() == 0 ) {
     		return Double.POSITIVE_INFINITY;
     	} else {
     		double result = 0;

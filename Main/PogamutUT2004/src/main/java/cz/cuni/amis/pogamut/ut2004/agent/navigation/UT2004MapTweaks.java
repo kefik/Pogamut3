@@ -143,6 +143,7 @@ public class UT2004MapTweaks {
 		builder.modifyNavPoint("InventorySpot149").addZ(-30).apply();
 		builder.removeEdgesBetween("PathNode70", "PathNode74");
 		builder.removeEdgesBetween("PathNode0", "PathNode42");
+		builder.removeEdge("InventorySpot165", "JumpSpot1");
 	}
 
 	protected void tweak_DM_1on1_Lea_ESWC2k5(NavigationGraphBuilder builder) {

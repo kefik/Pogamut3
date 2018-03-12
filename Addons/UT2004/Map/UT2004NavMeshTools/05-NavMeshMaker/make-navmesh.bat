@@ -1,1 +1,1 @@
-java -jar ut2004-navmesh-maker-3.6.2-SNAPSHOT.one-jar.jar -uD:/Games/UT2004-Devel -mDM-Dust2k5
+java -jar ut2004-navmesh-maker-3.6.2-SNAPSHOT.one-jar.jar -uE:/Games/Devel/UT2004/UT2004-Devel -mDM-deathMaze
