@@ -23,6 +23,9 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Velocity;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.NavMeshBoundaryInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshBoundary;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshEdge;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
@@ -42,20 +45,20 @@ public class NavMeshMinimalTest {
 			final HashMap<UnrealId, NavPoint> navGraph = Maps.newHashMap();
 			
 			// vertices of polygon ABC, ABD and JKL
-			int vertexAId = 0;
-			int vertexBId = 1;
-			int vertexCId = 2;
-			int vertexDId = 3;
+			VertexId vertexAId = new VertexId( 0 );
+			VertexId vertexBId = new VertexId( 1 );
+			VertexId vertexCId = new VertexId( 2 );
+			VertexId vertexDId = new VertexId( 3 );
 			
-			int polygonABCId = 1;
-			int edgeABC_ABId = 10;
-			int edgeABC_BCId = 11;
-			int edgeABC_CAId = 12;
+			PolygonId polygonABCId = new PolygonId( 1 );
+			EdgeId edgeABC_ABId = new EdgeId( 10 );
+			EdgeId edgeABC_BCId = new EdgeId( 11 );
+			EdgeId edgeABC_CAId = new EdgeId( 12 );
 						
-			int polygonABDId = 2;
-			int edgeABD_ABId = 20;
-			int edgeABD_BDId = 21;
-			int edgeABD_DAId = 22;
+			PolygonId polygonABDId = new PolygonId( 2 );
+			EdgeId edgeABD_ABId = new EdgeId( 20 );
+			EdgeId edgeABD_BDId = new EdgeId( 21 );
+			EdgeId edgeABD_DAId = new EdgeId( 22 );
 					
 			NavMeshBoundaryInfo boundaryInfoAB = new NavMeshBoundaryInfo( vertexAId, vertexBId, polygonABCId, 0, polygonABDId, 0 );
 	

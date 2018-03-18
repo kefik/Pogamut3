@@ -18,6 +18,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogFormatter;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher.ConsolePublisher;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.file.RawNavMeshFile;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 
 /**
@@ -27,6 +28,8 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoin
  */
 public class NavMeshCache {
 	
+	public static String processedMeshDir = "navmesh";
+    public static String pureMeshReadDir = "navmesh";
 	public static LogCategory log = new LogCategory("AnalysedNavMeshCache");
 	
 	static {
@@ -71,7 +74,7 @@ public class NavMeshCache {
 	public static void reloadNavMesh( NavMesh navMesh, final Map<UnrealId, NavPoint> navGraph, String mapName) {
 		NavMesh cachedNavmesh = null;
 		
-		String navMeshFileName = NavMesh.processedMeshDir + "/" + mapName + ".anm";
+		String navMeshFileName = processedMeshDir + "/" + mapName + ".anm";
 		File navMeshFile = new File(navMeshFileName);
 		
 		ObjectInputStream in = null;
@@ -111,8 +114,11 @@ public class NavMeshCache {
         }
         
 		try {
-			cachedNavmesh = new NavMesh(log);
-			cachedNavmesh.load(navGraph, mapName);
+			cachedNavmesh = new NavMesh(log);	
+	    	String rawNavMeshFileName = pureMeshReadDir + "/" + mapName + ".navmesh";
+	    	RawNavMeshFile rawNavMeshFile = new RawNavMeshFile( new File(rawNavMeshFileName) );
+	    	cachedNavmesh.load( navGraph, rawNavMeshFile );
+
             cache.put(mapName, new SoftReference<NavMesh>(cachedNavmesh));
             
         	log.info("NavMesh LOADED SUCCESSFULLY.");

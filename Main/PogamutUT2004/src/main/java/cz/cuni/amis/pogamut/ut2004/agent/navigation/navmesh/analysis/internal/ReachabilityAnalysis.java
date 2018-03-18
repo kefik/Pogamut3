@@ -7,17 +7,19 @@ import java.util.logging.Logger;
 import com.google.common.collect.Maps;
 import com.google.inject.internal.Sets;
 
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
 
 public class ReachabilityAnalysis {
 
-	public HashSet<Integer> reachablePolygons = Sets.newHashSet();
-	public HashSet<Integer> reachableVertices = Sets.newHashSet();
+	public HashSet<PolygonId> reachablePolygons = Sets.newHashSet();
+	public HashSet<VertexId> reachableVertices = Sets.newHashSet();
 	public HashSet<NavMeshBoundaryInfo> reachableBoundaries = Sets.newHashSet();
 	public HashSet<NavPoint> reachableOffMeshNavPoints = Sets.newHashSet();
 	public HashSet<NavPointNeighbourLink> reachableOffMeshNavLinks = Sets.newHashSet();
-	public HashMap<Integer,HashSet<Integer>> vertexIdToContainingPolygonsMap = Maps.newHashMap();
+	public HashMap<VertexId,HashSet<PolygonId>> vertexIdToContainingPolygonsMap = Maps.newHashMap();
 		
 	/**
      * Some polygons cannot be reached we find them with the help of navigation
@@ -46,8 +48,8 @@ public class ReachabilityAnalysis {
         log.info("Reachability analysis: There are " + reachablePolygons.size() + " reachable polygons containing " + reachableVertices.size() + " vertices.");
         
         // create vertex ID to containing polygon map without unreachable polygons
-        for (int reachableVertexId : reachableVertices ) {
-        	HashSet<Integer> containingPolygonIds = Sets.newHashSet();
+        for (VertexId reachableVertexId : reachableVertices ) {
+        	HashSet<PolygonId> containingPolygonIds = Sets.newHashSet();
         	containingPolygonIds.addAll( polygonAnalysis.vertexIdToInfoMap.get(reachableVertexId).containingPolygonIdToVertexIndexMap.keySet() );
         	containingPolygonIds.retainAll(reachablePolygons);
         	vertexIdToContainingPolygonsMap.put( reachableVertexId, containingPolygonIds );
@@ -59,7 +61,7 @@ public class ReachabilityAnalysis {
      * @param polygonId ID of a reachable polygon or null
      */
     protected void recursivelyMarkAsReachable(
-    	Integer polygonId,
+    	PolygonId polygonId,
     	PolygonAnalysis polygonAnalysis,
     	LineSegmentAnalysis lineSegmentAnalysis
     ) {
@@ -74,7 +76,7 @@ public class ReachabilityAnalysis {
         reachableVertices.addAll( polygonAnalysis.polygonIdToInfoMap.get(polygonId).vertexIds );
         reachableBoundaries.addAll( lineSegmentAnalysis.polygonIdToInfoMap.get(polygonId).edgeIndexToBoundaryInfoMap.values() );
         
-        for ( int adjacentPolygonId : lineSegmentAnalysis.getPolygonInfo(polygonId).adjPolygonIdToBoundaryInfoMap.keySet() ) {
+        for ( PolygonId adjacentPolygonId : lineSegmentAnalysis.getPolygonInfo(polygonId).adjPolygonIdToBoundaryInfoMap.keySet() ) {
         	recursivelyMarkAsReachable( adjacentPolygonId, polygonAnalysis, lineSegmentAnalysis );
         }
     }

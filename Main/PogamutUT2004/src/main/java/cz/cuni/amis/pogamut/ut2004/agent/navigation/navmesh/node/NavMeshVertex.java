@@ -17,6 +17,9 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.IDeferredConstructor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 
 /** Vertex of a nav mesh polygon
  * 
@@ -26,7 +29,7 @@ public class NavMeshVertex implements Serializable, ILocated {
 	
 	private static final long serialVersionUID = 1L;
 	
-	protected int id;
+	protected VertexId id;
 	protected Location location;
 	
 	protected HashMap<NavMeshPolygon,Integer> polygonToVertexIndexMap = Maps.newHashMap();
@@ -38,10 +41,10 @@ public class NavMeshVertex implements Serializable, ILocated {
 	protected boolean isOnWalkableAreaEdge;
 	
 	public NavMeshVertex(
-			final int id,
+			final VertexId id,
 			Location location,
-			final Map<Integer,Integer> polygonIdToVertexIndexMap,
-			final List<Integer> edgeIds,
+			final Map<PolygonId,Integer> polygonIdToVertexIndexMap,
+			final List<EdgeId> edgeIds,
 			boolean isOnWalkableAreaEdge,
 			final NodeConstructionCoordinator constructionCoordinator
 	) {
@@ -54,14 +57,14 @@ public class NavMeshVertex implements Serializable, ILocated {
 			new IDeferredConstructor() {
 				@Override
 				public void construct() {
-					for ( Entry<Integer, Integer> entry : polygonIdToVertexIndexMap.entrySet() ) {
+					for ( Entry<PolygonId, Integer> entry : polygonIdToVertexIndexMap.entrySet() ) {
 						polygonToVertexIndexMap.put(
 							constructionCoordinator.getPolygonById( entry.getKey() ),
 							entry.getValue()
 						);
 					}
 					
-					for ( Integer edgeId : edgeIds ) {
+					for ( EdgeId edgeId : edgeIds ) {
 						edges.add( constructionCoordinator.getEdgeById(edgeId) );
 					}
 				}
@@ -71,7 +74,7 @@ public class NavMeshVertex implements Serializable, ILocated {
 	
 	/** Get ID
 	 */
-	public int getId() {
+	public VertexId getId() {
 		return id;
 	}
 	

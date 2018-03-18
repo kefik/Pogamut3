@@ -6,6 +6,9 @@ import java.util.List;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.NavMeshBoundaryInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.IDeferredConstructor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import math.geom2d.line.LineSegment2D;
 import math.geom3d.line.LineSegment3D;
 
@@ -18,7 +21,7 @@ public class NavMeshEdge implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	protected int id;
+	protected EdgeId id;
 	protected int index;
 	protected NavMeshPolygon polygon;
 	protected NavMeshVertex source;
@@ -26,11 +29,11 @@ public class NavMeshEdge implements Serializable {
 	protected NavMeshBoundary boundary;
 	
 	public NavMeshEdge(
-			int id,
+			EdgeId id,
 			int index,
-			final int polygonId,
-			final int sourceVertexId,
-			final int destinationVertexId,
+			final PolygonId polygonId,
+			final VertexId sourceVertexId,
+			final VertexId destinationVertexId,
 			final NavMeshBoundaryInfo boundaryInfo,
 			final NodeConstructionCoordinator coordinator
 	) {
@@ -138,12 +141,12 @@ public class NavMeshEdge implements Serializable {
 		);
 	}
 	
-	public int getId() {
+	public EdgeId getId() {
 		return id;
 	}
 	
 	@Override
 	public String toString() {
-		return "NME( "+id+", "+source.toString()+", "+destination.toString()+" )";
+		return "NME( "+id+", "+source+", "+destination+" )";
 	}
 }

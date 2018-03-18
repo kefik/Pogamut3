@@ -16,12 +16,11 @@
  */
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,9 +31,11 @@ import com.google.common.collect.Maps;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.IRawNavMesh;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.NavMeshAnalysis;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.file.RawNavMeshFile;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.INavMeshAtom;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshVertex;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
@@ -53,20 +54,17 @@ import math.geom2d.line.StraightLine2D;
  * @author David Holan
  */
 public class NavMesh implements Serializable {
-
-    public static String pureMeshReadDir = "navmesh"; 
-    public static String processedMeshDir = "navmesh";
-    
+	
 	private static final long serialVersionUID = 1L;
 
 	protected transient Logger log;
     
 	protected NavMeshNavGraphGlue navGraphGlue = null;
-    protected Set<NavMeshVertex> vertices = null;
-    protected Set<NavMeshPolygon> polygons = null;
+    protected Map<VertexId, NavMeshVertex> vertices = null;
+    protected Map<PolygonId, NavMeshPolygon> polygons = null;
     protected Set<OffMeshPoint> offMeshPoints = null;
     protected Set<INavMeshAtom> atoms = null;
-    protected transient HashMap<NavPoint,OffMeshPoint> navPointToOffMeshPointMap = null; // constructed from offMeshPoints on demand, use getter
+    protected transient Map<NavPoint,OffMeshPoint> navPointToOffMeshPointMap = null; // constructed from offMeshPoints on demand, use getter
     protected IConstBspTree<ArrayList<NavMeshPolygon>, StraightLine2D> xyProjectionBsp = null;
     
     public NavMesh(Logger log) {
@@ -86,20 +84,44 @@ public class NavMesh implements Serializable {
     
     /** Get all navmesh polygons
      */
-    public Set<NavMeshPolygon> getPolygons() {
-        return Collections.unmodifiableSet( polygons );
+    public Collection<NavMeshPolygon> getPolygons() {
+        return polygons.values();
+    }
+    
+	/** Get map from polygon ID to polygon
+     */
+    public Map<PolygonId, NavMeshPolygon> getIdToPolygonMap() {
+        return polygons;
+    }
+    
+    /** Get polygon by ID
+     */
+    public NavMeshPolygon getPolygonById(PolygonId id) {
+    	return polygons.get(id);
     }
 
     /** Get all vertices of navmesh polygons
      */
-    public Set<NavMeshVertex> getVertices() {
-        return Collections.unmodifiableSet( vertices );
+    public Collection<NavMeshVertex> getVertices() {
+        return vertices.values();
+    }
+    
+    /** Get map from vertex ID to vertex
+     */
+    public Map<VertexId, NavMeshVertex> getIdToVertexMap() {
+        return vertices;
+    }
+    
+    /** Get vertex by ID
+     */
+    public NavMeshVertex getVertexById( VertexId id ) {
+    	return vertices.get(id);
     }
     
     /** Get all {@link OffMeshPoint}s
      */
-    public Set<OffMeshPoint> getOffMeshPoints() {
-        return Collections.unmodifiableSet( offMeshPoints );
+    public Collection<OffMeshPoint> getOffMeshPoints() {
+        return offMeshPoints;
     }
     
     /** Get a collection of all navmesh polygons and off-mesh points.
@@ -116,12 +138,13 @@ public class NavMesh implements Serializable {
 		return xyProjectionBsp;
 	}
 	
-	protected HashMap<NavPoint,OffMeshPoint> getNavPointToOffMeshPointMap() {
+	protected Map<NavPoint,OffMeshPoint> getNavPointToOffMeshPointMap() {
     	if ( navPointToOffMeshPointMap == null ) {
     		navPointToOffMeshPointMap = Maps.newHashMap();
 	    	for ( OffMeshPoint offMeshPoint : offMeshPoints ) {
 	    		navPointToOffMeshPointMap.put( offMeshPoint.getNavPoint(), offMeshPoint );
 	    	}
+	    	navPointToOffMeshPointMap = Collections.unmodifiableMap( navPointToOffMeshPointMap );
     	}
 		return navPointToOffMeshPointMap;
 	}
@@ -130,34 +153,45 @@ public class NavMesh implements Serializable {
     	navGraphGlue.setNavGraph(navGraphView);
     }
     
-    /** Load NavMesh
+    /** Load NavMesh from raw data
      * 
-     * @param world map world view
-     * @param mapName 
-     * @throws IOException if file cannot be read 
+     * @param navGraph navigation graph
+     * @param rawNavMesh raw navmesh data
      */
-    protected void load( Map<UnrealId, NavPoint> navGraph, String mapName ) throws IOException {
-    	String rawNavMeshFileName = pureMeshReadDir + "/" + mapName + ".navmesh";
-    	RawNavMeshFile rawNavMeshFile = new RawNavMeshFile( new File(rawNavMeshFileName) );
-    	NavMeshAnalysis navMeshAnalysis = new NavMeshAnalysis( rawNavMeshFile, navGraph, log );
+    public void load( Map<UnrealId, NavPoint> navGraph, IRawNavMesh rawNavMesh ) throws IOException {
+    	NavMeshAnalysis navMeshAnalysis = new NavMeshAnalysis( rawNavMesh, navGraph, log );
     	navGraphGlue = navMeshAnalysis.getNavGraphGlue();
-    	vertices = navMeshAnalysis.getVertices();
-    	polygons = navMeshAnalysis.getPolygons();
-    	offMeshPoints = navMeshAnalysis.getOffMeshPoints();
+    	
+    	vertices = Maps.newHashMap();
+    	for ( NavMeshVertex vertex :  navMeshAnalysis.getVertices() ) {
+    		vertices.put( vertex.getId(), vertex );
+    	}
+    	vertices = Collections.unmodifiableMap( vertices );
+    	
+    	polygons = Maps.newHashMap();
+    	for ( NavMeshPolygon polygon : navMeshAnalysis.getPolygons() ) {
+    		polygons.put( polygon.getId(),  polygon );
+    	}
+    	polygons = Collections.unmodifiableMap( polygons );
+    	
+    	offMeshPoints = Collections.unmodifiableSet( navMeshAnalysis.getOffMeshPoints() );
+    	
     	atoms = new HashSet<INavMeshAtom>();
-    	atoms.addAll( polygons );
+    	atoms.addAll( polygons.values() );
     	atoms.addAll( offMeshPoints );
+    	atoms = Collections.unmodifiableSet( atoms );
+    	
     	xyProjectionBsp = navMeshAnalysis.getXyProjectionBsp();
     }
     
     protected void copyFrom( NavMesh navMesh ) {
     	navGraphGlue = navMesh.navGraphGlue;
-        vertices = new HashSet<NavMeshVertex>( navMesh.vertices );
-        polygons = new HashSet<NavMeshPolygon>( navMesh.polygons );
-        offMeshPoints = new HashSet<OffMeshPoint>( navMesh.offMeshPoints );
-        atoms = new HashSet<INavMeshAtom>( navMesh.atoms );
+        vertices = navMesh.vertices;
+        polygons = navMesh.polygons;
+        offMeshPoints = navMesh.offMeshPoints;
+        atoms = navMesh.atoms;
         if ( navMesh.navPointToOffMeshPointMap != null ) {
-        	navPointToOffMeshPointMap = new HashMap<NavPoint, OffMeshPoint>( navMesh.navPointToOffMeshPointMap );
+        	navPointToOffMeshPointMap = navMesh.navPointToOffMeshPointMap;
         } else {
         	navPointToOffMeshPointMap = null;
         }

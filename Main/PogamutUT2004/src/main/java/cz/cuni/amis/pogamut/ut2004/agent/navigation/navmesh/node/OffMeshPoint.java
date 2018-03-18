@@ -29,6 +29,7 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.IDeferredConstructor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.internal.NavMeshNavGraphGlue;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
@@ -56,7 +57,7 @@ public class OffMeshPoint implements ILocated, INavMeshAtom, Serializable {
     public OffMeshPoint(
     		NavMeshNavGraphGlue navGraphGlue,
     		final NavPoint navPoint,
-    		final Integer polygonId,
+    		final PolygonId polygonId,
     		final Collection<NavPointNeighbourLink> outgoingNavLinks,
     		final Collection<NavPointNeighbourLink> incomingNavLinks,
     		final NodeConstructionCoordinator constructionCoordinator

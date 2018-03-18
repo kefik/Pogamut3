@@ -34,6 +34,9 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.NavMeshBoundaryInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.IDeferredConstructor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import math.geom3d.Point3D;
 import math.geom3d.polygon.SimplePlanarPolygon3D;
@@ -48,7 +51,7 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
 	
 	private static final long serialVersionUID = 1L;
 
-	protected int id;
+	protected PolygonId id;
     
     protected ArrayList<NavMeshVertex> vertices = Lists.newArrayList();
     protected transient List<NavMeshVertex> constVertices;
@@ -75,15 +78,14 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
      * Uses deferred constructor to break reference cycles.
      */
     public NavMeshPolygon( 
-    		final int id, 
-    		final List<Integer> vertexIds,
-    		final List<Integer> edgeIds,
+    		final PolygonId id, 
+    		final List<VertexId> vertexIds,
+    		final List<EdgeId> edgeIds,
     		final Map<Integer, NavMeshBoundaryInfo> edgeIndexToBoundaryInfoMap,
-    		final Map<Integer, NavMeshBoundaryInfo> adjPolygonIdToBoundaryInfoMap,
+    		final Map<PolygonId, NavMeshBoundaryInfo> adjPolygonIdToBoundaryInfoMap,
     		final List<NavPoint> offMeshNavPoints,
     		final NodeConstructionCoordinator constructionCoordinator 
     ) {
-	    assert(id >= 0);
         this.id = id;
         initializeConstCollections();
 		
@@ -91,11 +93,11 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
         	new IDeferredConstructor() {
 				@Override
 				public void construct() {				
-					for ( int vertexId : vertexIds ) {
+					for ( VertexId vertexId : vertexIds ) {
 						vertices.add( constructionCoordinator.getVertexById(vertexId) );
 					}
 					
-					for (int edgeId : edgeIds  ) {
+					for (EdgeId edgeId : edgeIds  ) {
 						edges.add( constructionCoordinator.getEdgeById( edgeId ) );
 					}
 					
@@ -107,7 +109,7 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
 						);
 					}
 					
-					for ( Entry<Integer, NavMeshBoundaryInfo> entry : adjPolygonIdToBoundaryInfoMap.entrySet() ) {
+					for ( Entry<PolygonId, NavMeshBoundaryInfo> entry : adjPolygonIdToBoundaryInfoMap.entrySet() ) {
 						adjPolygonToBoundaryMap.put( 
 							constructionCoordinator.getPolygonById( entry.getKey() ), 
 							constructionCoordinator.getBoundaryByBoundaryInfo(entry.getValue())
@@ -125,12 +127,16 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
 		);
     }
     
-    public int getId() {
+    public PolygonId getId() {
         return id;
     }
     
     public Map<NavMeshPolygon,NavMeshBoundary> getAdjPolygonToBoundaryMap() {
     	return constAdjPolygonToBoundaryMap;
+    }
+    
+    public NavMeshBoundary getBoundaryByAdjPolygon( NavMeshPolygon adjPolygon ) {
+    	return constAdjPolygonToBoundaryMap.get(adjPolygon);
     }
     
     public List<OffMeshPoint> getOffMeshPoints() {
@@ -202,7 +208,7 @@ public class NavMeshPolygon implements Serializable, INavMeshAtom, ILocated {
     
     @Override
     public int hashCode() {
-    	return 23*id; 
+    	return 23*id.getValue(); 
     }
     
 	@Override

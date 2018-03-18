@@ -1,24 +1,27 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal;
 
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
+
 /** 
  * 
  */
 public class NavMeshBoundaryInfo {
-	public int sourceVertexId;
-	public int destinationVertexId;
+	public VertexId sourceVertexId;
+	public VertexId destinationVertexId;
 	
-	public int polygonAId;
+	public PolygonId polygonAId;
 	public int polygonAEdgeIndex;
 
-	public int polygonBId;
+	public PolygonId polygonBId;
 	public int polygonBEdgeIndex;
 	
 	public NavMeshBoundaryInfo(
-		int sourceVertexId,
-		int destinationVertexId,
-		int polygonAId,
+		VertexId sourceVertexId,
+		VertexId destinationVertexId,
+		PolygonId polygonAId,
 		int polygonAEdgeIndex, 
-		int polygonBId,
+		PolygonId polygonBId,
 		int polygonBEdgeIndex
 	) {
 		this.sourceVertexId = sourceVertexId;

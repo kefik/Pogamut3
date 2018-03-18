@@ -11,7 +11,6 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.Na
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.PolygonAnalysis;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.ReachabilityAnalysis;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NavMeshConstruction;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.file.RawNavMeshFile;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshVertex;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
@@ -24,7 +23,7 @@ public class NavMeshAnalysis {
 
 	protected NavMeshConstruction navMeshConstruction;
 	
-	public NavMeshAnalysis( RawNavMeshFile rawNavMesh, Map<UnrealId, NavPoint> navGraph, Logger log) {
+	public NavMeshAnalysis( IRawNavMesh rawNavMesh, Map<UnrealId, NavPoint> navGraph, Logger log) {
 		
 		// analysis
 		

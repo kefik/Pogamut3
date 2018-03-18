@@ -15,15 +15,18 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshVertex;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshEdge;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
 
 public class NodeConstructionCoordinator {
 	protected ArrayList<IDeferredConstructor> deferredConstructors;
 	
-	protected HashMap<Integer, NavMeshPolygon> polygonIdToPolygonMap;
-	protected HashMap<Integer, NavMeshVertex> vertexIdToVertexMap;
-	protected HashMap<Integer, NavMeshEdge> polygonEdgeIdToEdgeMap;
+	protected HashMap<PolygonId, NavMeshPolygon> polygonIdToPolygonMap;
+	protected HashMap<VertexId, NavMeshVertex> vertexIdToVertexMap;
+	protected HashMap<EdgeId, NavMeshEdge> polygonEdgeIdToEdgeMap;
 	protected HashMap<NavMeshBoundaryInfo, NavMeshBoundary> boundaryInfoToBoundaryMap;
 	protected HashMap<NavPoint, OffMeshPoint> offMeshNavPointToOffMeshPointMap;
 	protected HashMap<NavPointNeighbourLink, OffMeshEdge> offMeshNavLinkToOffMeshEdgeMap;
@@ -56,17 +59,17 @@ public class NodeConstructionCoordinator {
 	
 	// stub registry
 	
-	public NavMeshVertex getVertexById(int vertexId) {
+	public NavMeshVertex getVertexById(VertexId vertexId) {
 		assert( vertexIdToVertexMap.containsKey( vertexId ) );
 		return vertexIdToVertexMap.get(vertexId);
 	}
 
-	public NavMeshPolygon getPolygonById(int polygonId) {
+	public NavMeshPolygon getPolygonById(PolygonId polygonId) {
 		assert( polygonIdToPolygonMap.containsKey( polygonId ) );
 		return polygonIdToPolygonMap.get(polygonId);
 	}
 
-	public NavMeshEdge getEdgeById(int edgeId) {
+	public NavMeshEdge getEdgeById(EdgeId edgeId) {
 		assert( polygonEdgeIdToEdgeMap.containsKey( edgeId ) );
 		return polygonEdgeIdToEdgeMap.get( edgeId );
 	}
@@ -94,7 +97,7 @@ public class NodeConstructionCoordinator {
 		polygonIdToPolygonMap.put( polygon.getId(), polygon );
 	}
 	
-	public void addPolygonEdge(NavMeshEdge edge) {
+	public void addPolygonEdge( NavMeshEdge edge ) {
 		polygonEdgeIdToEdgeMap.put( edge.getId(), edge );
 	}
 	

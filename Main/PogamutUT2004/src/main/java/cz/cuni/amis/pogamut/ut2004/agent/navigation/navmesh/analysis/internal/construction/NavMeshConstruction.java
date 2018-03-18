@@ -25,6 +25,9 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshVertex;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshEdge;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.OffMeshPoint;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.internal.NavMeshNavGraphGlue;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
@@ -63,17 +66,18 @@ public class NavMeshConstruction {
 			}}
 		);
 		
-		for ( int reachablePolygonId : reachabilityAnalysis.reachablePolygons ) {
+		for ( PolygonId reachablePolygonId : reachabilityAnalysis.reachablePolygons ) {
 			PolygonAnalysis.PolygonInfo paPolygonInfo = polygonAnalysis.polygonIdToInfoMap.get(reachablePolygonId);
 			LineSegmentAnalysis.PolygonInfo lsaPolygonInfo = lineSegmentAnalysis.getPolygonInfo(reachablePolygonId);
 			
 			
-			ArrayList<Integer> edgeIds = Lists.newArrayList();
+			ArrayList<EdgeId> edgeIds = Lists.newArrayList();
 			for ( int vertexIndex = 0; vertexIndex < paPolygonInfo.vertexIds.size(); ++vertexIndex ) {
 				int edgeIndex = vertexIndex; // these two are equal
+				EdgeId edgeId = paPolygonInfo.edgeIds.get( edgeIndex );
 				
 				NavMeshEdge edge = new NavMeshEdge(
-					paPolygonInfo.edgeIds.get( edgeIndex ),
+					edgeId,
 					edgeIndex,
 					reachablePolygonId,
 					paPolygonInfo.vertexIds.get( vertexIndex ),
@@ -82,10 +86,10 @@ public class NavMeshConstruction {
 					coordinator
 				);
 				coordinator.addPolygonEdge( edge );
-				edgeIds.add( edge.getId() );
+				edgeIds.add( edgeId );
 			}
 			
-			coordinator.addPolygon( 
+			coordinator.addPolygon(
 				new NavMeshPolygon(
 					reachablePolygonId,
 					paPolygonInfo.vertexIds,
@@ -98,16 +102,16 @@ public class NavMeshConstruction {
 			);
 		}
 		
-		for ( Integer reachableVertexId : reachabilityAnalysis.reachableVertices ) {
+		for ( VertexId reachableVertexId : reachabilityAnalysis.reachableVertices ) {
 			PolygonAnalysis.VertexInfo paVertexInfo = polygonAnalysis.vertexIdToInfoMap.get(reachableVertexId);
 			LineSegmentAnalysis.VertexInfo lsaVertexInfo = lineSegmentAnalysis.getVertexInfo(reachableVertexId);
 
-			HashMap<Integer,Integer> polygonIdToVertexIndexMap = Maps.newHashMap();
-			for ( Entry<Integer, Integer> entry : paVertexInfo.containingPolygonIdToVertexIndexMap.entrySet() ) {
+			HashMap<PolygonId,Integer> polygonIdToVertexIndexMap = Maps.newHashMap();
+			for ( Entry<PolygonId, Integer> entry : paVertexInfo.containingPolygonIdToVertexIndexMap.entrySet() ) {
 				polygonIdToVertexIndexMap.put( entry.getKey(), entry.getValue() );
 			}
 			
-			coordinator.addVertex( 
+			coordinator.addVertex(
 				new NavMeshVertex(
 					reachableVertexId,
 					paVertexInfo.location,

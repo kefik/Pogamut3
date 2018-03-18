@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.IDeferredConstructor;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal.construction.NodeConstructionCoordinator;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
 import math.geom2d.line.LineSegment2D;
 import math.geom3d.line.LineSegment3D;
 
@@ -19,8 +20,8 @@ public class NavMeshBoundary implements Serializable {
 	protected NavMeshEdge edgeB;
 	
 	public NavMeshBoundary(
-			final int edgeAId,
-			final int edgeBId,
+			final EdgeId edgeAId,
+			final EdgeId edgeBId,
 			final NodeConstructionCoordinator coordinator
 	) {
 		coordinator.addDeferredConstructor(

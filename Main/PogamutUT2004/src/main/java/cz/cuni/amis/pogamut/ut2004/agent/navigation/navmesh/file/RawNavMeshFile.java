@@ -6,19 +6,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.IRawNavMesh;
 
-public class RawNavMeshFile {
+public class RawNavMeshFile implements IRawNavMesh {
 	
 	public static final String VERTEX_ENTRY_TYPE = "v";
 	public static final String POLYGON_ENTRY_TYPE = "p";
 
-	public ArrayList<Location> vertices = Lists.newArrayList();
-	public ArrayList<ArrayList<Integer>> polygons = Lists.newArrayList(); // polygons as lists of indices into vertices
+	protected ArrayList<Location> vertices = Lists.newArrayList();
+	protected ArrayList<ArrayList<Integer>> polygons = Lists.newArrayList(); // polygons as lists of indices into vertices
 	
     public RawNavMeshFile(File file) throws IOException {
     	
@@ -95,4 +97,14 @@ public class RawNavMeshFile {
         
         polygons.add(polygon);
     }
+
+	@Override
+	public List<? extends Location> getVertices() {
+		return Collections.unmodifiableList( vertices );
+	}
+
+	@Override
+	public List<? extends List<Integer>> getPolygons() {
+		return Collections.unmodifiableList( polygons );
+	}
 }

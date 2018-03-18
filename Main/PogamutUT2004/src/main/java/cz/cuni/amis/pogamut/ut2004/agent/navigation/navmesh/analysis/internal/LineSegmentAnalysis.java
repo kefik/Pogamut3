@@ -6,15 +6,19 @@ import java.util.HashMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.EdgeId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.PolygonId;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.Identifiers.VertexId;
+
 /** Adjacency analysis
  * 
  * Go through polygon edges and find those that are shared by two polygons.
  */
 public class LineSegmentAnalysis {
 	// (vertexId, vertexId) -> incidence
-	protected HashMap<Integer,HashMap<Integer,Integer>> vertexIncidenceMatrix = Maps.newHashMap();  
-	protected HashMap<Integer, PolygonInfo> polygonIdToInfoMap = Maps.newHashMap();
-	protected HashMap<Integer, VertexInfo> vertexIdToInfoMap = Maps.newHashMap();
+	protected HashMap<VertexId,HashMap<VertexId,Integer>> vertexIncidenceMatrix = Maps.newHashMap();  
+	protected HashMap<PolygonId, PolygonInfo> polygonIdToInfoMap = Maps.newHashMap();
+	protected HashMap<VertexId, VertexInfo> vertexIdToInfoMap = Maps.newHashMap();
 	
 	public LineSegmentAnalysis( PolygonAnalysis polygonAnalysis ) {
 		// map for remembering encountered line segments
@@ -22,14 +26,14 @@ public class LineSegmentAnalysis {
 		HashMap<LineSegment,NavMeshBoundaryInfo> lineSegmentToBoundaryMap = Maps.newHashMap();
 		
 		// loop through all line segments in all polygons and identify boundaries
-		for ( int polygonId : polygonAnalysis.allPolygonIds ) {
+		for ( PolygonId polygonId : polygonAnalysis.allPolygonIds ) {
 			getPolygonInfo( polygonId ); // create info object even if we find no neighbors
 			PolygonAnalysis.PolygonInfo polygonInfo = polygonAnalysis.polygonIdToInfoMap.get(polygonId);
-			ArrayList<Integer> vertexIds = polygonInfo.vertexIds;
+			ArrayList<VertexId> vertexIds = polygonInfo.vertexIds;
 			
 			for ( int vertexIndex = 0; vertexIndex < vertexIds.size(); ++vertexIndex ) {
-				int vertexIdA = vertexIds.get( vertexIndex );
-				int vertexIdB = vertexIds.get( (vertexIndex+1)%vertexIds.size() );
+				VertexId vertexIdA = vertexIds.get( vertexIndex );
+				VertexId vertexIdB = vertexIds.get( (vertexIndex+1)%vertexIds.size() );
 				int edgeIndex = vertexIndex;
 				
 				getVertexInfo(vertexIdA).edgeIds.add( polygonInfo.edgeIds.get(edgeIndex) );
@@ -38,7 +42,7 @@ public class LineSegmentAnalysis {
 				incrementIncidency(vertexIdA, vertexIdB);
 				
 				LineSegment lineSegment;
-				if ( vertexIdA < vertexIdB ) {
+				if ( vertexIdA.getValue() < vertexIdB.getValue() ) {
 					lineSegment = new LineSegment(vertexIdA, vertexIdB);
 				} else {
 					lineSegment = new LineSegment(vertexIdB, vertexIdA);
@@ -73,11 +77,11 @@ public class LineSegmentAnalysis {
 			}
 		}
 		
-		for ( Integer vertexId : polygonAnalysis.allVertexIds ) {
+		for ( VertexId vertexId : polygonAnalysis.allVertexIds ) {
 			vertexIdToInfoMap.put( vertexId, new VertexInfo() );
 		}
 		
-		for ( Integer vertexId : polygonAnalysis.allVertexIds ) {
+		for ( VertexId vertexId : polygonAnalysis.allVertexIds ) {
 			for (Integer incidenceCount : getIncidence(vertexId).values()) {
 				assert(0 <= incidenceCount && incidenceCount <= 2);
 				if (incidenceCount == 1) {
@@ -94,8 +98,8 @@ public class LineSegmentAnalysis {
 	 * 
 	 * @return how many times line segment (vertexA, vertexB) poses as polygon edge
 	 */
-	public Integer getIncidency(int vertexAId, int vertexBId) {
-		HashMap<Integer,Integer> incidencyOfA = getIncidence(vertexAId);
+	public Integer getIncidency(VertexId vertexAId, VertexId vertexBId) {
+		HashMap<VertexId,Integer> incidencyOfA = getIncidence(vertexAId);
 		if (!incidencyOfA.containsKey(vertexBId)) {
 			return 0;
 		} else {
@@ -103,27 +107,27 @@ public class LineSegmentAnalysis {
 		}
 	}
 	
-	protected void incrementIncidency(int vertexIdA, int vertexIdB) {
+	protected void incrementIncidency(VertexId vertexIdA, VertexId vertexIdB) {
 		int previousIncidency = getIncidency(vertexIdA, vertexIdB);
 		getIncidence(vertexIdA).put(vertexIdB, previousIncidency+1);
 		getIncidence(vertexIdB).put(vertexIdA, previousIncidency+1);
 	}
 	
-	public HashMap<Integer,Integer> getIncidence(int vertexId) {
+	public HashMap<VertexId,Integer> getIncidence(VertexId vertexId) {
 		if (!vertexIncidenceMatrix.containsKey(vertexId)) {
-			vertexIncidenceMatrix.put(vertexId, new HashMap<Integer,Integer>());
+			vertexIncidenceMatrix.put(vertexId, new HashMap<VertexId,Integer>());
 		}
 		return vertexIncidenceMatrix.get(vertexId);
 	}
 
-	public PolygonInfo getPolygonInfo(int polygonId) {
+	public PolygonInfo getPolygonInfo(PolygonId polygonId) {
 		if ( !polygonIdToInfoMap.containsKey(polygonId) ) {
 			polygonIdToInfoMap.put(polygonId, new PolygonInfo());
 		}
 		return polygonIdToInfoMap.get(polygonId);
 	}
 	
-	public VertexInfo getVertexInfo( int vertexId ) {
+	public VertexInfo getVertexInfo( VertexId vertexId ) {
 		if ( !vertexIdToInfoMap.containsKey(vertexId) ) {
 			vertexIdToInfoMap.put(vertexId, new VertexInfo());
 		}
@@ -132,44 +136,44 @@ public class LineSegmentAnalysis {
 	
 	public static class PolygonInfo {
 		public HashMap<Integer, NavMeshBoundaryInfo> edgeIndexToBoundaryInfoMap = Maps.newHashMap();
-		public HashMap<Integer, NavMeshBoundaryInfo> adjPolygonIdToBoundaryInfoMap = Maps.newHashMap();
+		public HashMap<PolygonId, NavMeshBoundaryInfo> adjPolygonIdToBoundaryInfoMap = Maps.newHashMap();
 	}
 	
 	public static class VertexInfo {
 		public boolean isOnWalkableAreaEdge = false;
-		public ArrayList<Integer> edgeIds = Lists.newArrayList();
+		public ArrayList<EdgeId> edgeIds = Lists.newArrayList();
 	}
 	
 	protected static class PolygonEdgeInfo {
-		public int polygonId;
+		public PolygonId polygonId;
 		public int edgeIndex;
 		
-		public PolygonEdgeInfo( int polygonId, int edgeIndex ) {
+		public PolygonEdgeInfo( PolygonId polygonId, int edgeIndex ) {
 			this.polygonId = polygonId;
 			this.edgeIndex = edgeIndex;
 		}
 	}
 	
 	protected static class LineSegment {
-		protected int vertexAId;
-		protected int vertexBId;
+		protected VertexId vertexAId;
+		protected VertexId vertexBId;
 		
-		public LineSegment(int vertexAId, int vertexBId) {
+		public LineSegment(VertexId vertexAId, VertexId vertexBId) {
 			this.vertexAId = vertexAId;
 			this.vertexBId = vertexBId;
 		}
 		
-		public int getVertexAId() {
+		public VertexId getVertexAId() {
 			return vertexAId;
 		}
 		
-		public int getVertexBId() {
+		public VertexId getVertexBId() {
 			return vertexBId;
 		}
 		
 		@Override
 		public int hashCode() {
-			return vertexAId+2*vertexBId;
+			return vertexAId.hashCode()+2*vertexBId.hashCode();
 		}
 		
 		@Override
@@ -177,9 +181,9 @@ public class LineSegmentAnalysis {
 			if (other instanceof LineSegment) {
 				LineSegment otherLineSegment = (LineSegment) other;
 				return (
-					vertexAId == otherLineSegment.vertexAId
+					vertexAId.equals( otherLineSegment.vertexAId )
 					&&
-					vertexBId == otherLineSegment.vertexBId
+					vertexBId.equals( otherLineSegment.vertexBId )
 				); 
 			}
 			
