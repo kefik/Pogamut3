@@ -135,7 +135,7 @@ extends WeakHashMap<PRIMARY_KEY, Map<SECONDARY_KEY,Map<TERTIARY_KEY,Map<QUATERNA
 		return Collections.synchronizedMap( new HashTriMap<SECONDARY_KEY, TERTIARY_KEY, QUATERNARY_KEY,ITEM>(secondaryCapacity,tertiaryCapacity,quaternaryCapacity));
 	}
 	
-	public Map<TERTIARY_KEY,Map<QUATERNARY_KEY,ITEM>> remove(PRIMARY_KEY primaryKey, SECONDARY_KEY secondaryKey)
+	public Map<TERTIARY_KEY,Map<QUATERNARY_KEY,ITEM>> remove2(PRIMARY_KEY primaryKey, SECONDARY_KEY secondaryKey)
 	{
 		 Map<TERTIARY_KEY,Map<QUATERNARY_KEY,ITEM>> result = get(primaryKey).remove(secondaryKey);
 		 if (result != null)

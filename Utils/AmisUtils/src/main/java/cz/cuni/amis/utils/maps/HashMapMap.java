@@ -88,7 +88,7 @@ public class HashMapMap<PRIMARY_KEY, SECONDARY_KEY, ITEM>
 	 * @param secondaryKey
 	 * @return
 	 */
-	public ITEM remove(PRIMARY_KEY primaryKey, SECONDARY_KEY secondaryKey) {
+	public ITEM remove2(PRIMARY_KEY primaryKey, SECONDARY_KEY secondaryKey) {
 		return get(primaryKey).remove(secondaryKey);
 	}
 

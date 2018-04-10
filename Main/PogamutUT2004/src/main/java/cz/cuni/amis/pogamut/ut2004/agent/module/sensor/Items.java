@@ -915,13 +915,13 @@ public abstract class Items extends SensorModule<UT2004Bot> {
 			{
 				// remove from visible(s)
 				visible.remove(uid);
-				visibleCategories.remove(item.getType(), item.getId());
+				visibleCategories.remove2(item.getType(), item.getId());
 			}
 
 			// remove non-visible thrown items
 			if (!isVisible && item.isDropped()) {
 				all.remove(uid);
-				allCategories.remove(item.getType(), item.getId());
+				allCategories.remove2(item.getType(), item.getId());
 			}
 	
 		}
