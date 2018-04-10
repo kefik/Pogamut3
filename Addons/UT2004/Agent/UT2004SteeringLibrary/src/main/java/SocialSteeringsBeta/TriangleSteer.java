@@ -647,7 +647,8 @@ public class TriangleSteer implements ISocialSteering {
             Location shift = (fstL.sub(sndL)).scale(((double) fromFst) / 100);
             Location result = sndL.add(shift);
             return result;
-        } else if (headingType.compareTo(KTowards) == 0) {
+        } else 
+        if (headingType.compareTo(KTowards) == 0) {
             return null;
         } else {
             return null;

@@ -8,7 +8,7 @@ import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.Eve
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.UT2004Skins;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NewNavMeshDraw;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
@@ -74,7 +74,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     @Override
     public void initializeController(UT2004Bot bot) {
     	super.initializeController(bot);
-    	navMeshDraw = new NewNavMeshDraw(navMeshModule.getNavMesh(), log, serverProvider);
+    	navMeshDraw = new NavMeshDraw(navMeshModule.getNavMesh(), log, serverProvider);
     }
     
     @Override

@@ -1,30 +1,23 @@
 package cz.cuni.amis.pogamut.ut2004.examples.fasttick;
 
-import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.ObjectClassEventListener;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.event.WorldObjectUpdatedEvent;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
-import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavigationGraphBuilder;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.NavigationState;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004MapTweaks.IMapTweak;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.SendMessage;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotDamaged;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKilled;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
-import cz.cuni.amis.utils.Cooldown;
 import cz.cuni.amis.utils.exception.PogamutException;
-import cz.cuni.amis.utils.flag.FlagListener;
 
 /**
- * This examples show you how to speed your vision updates.
+ * This examples show you how to speed your vision updates and thus speed up the logic().
+ * 
+ * By default, logic() method is ticking every 250ms. In this example, we configure vision time
+ * to 100ms and thus logic() will start ticking every 100ms as the result; see {@link #botInitialized(GameInfo, ConfigChange, InitedMessage)}.
  *
  * @author Jakub Gemrot aka Jimmy
  * @author Michal Bida aka Knight
@@ -46,6 +39,7 @@ public class FastTickBot extends UT2004BotModuleController {
 
     @Override
     public void botInitialized(GameInfo gameInfo, ConfigChange currentConfig, InitedMessage init) {
+    	// SETTING THE VISION TO 100ms
     	act.act(new Configuration().setVisionTime(0.1));
     }
     

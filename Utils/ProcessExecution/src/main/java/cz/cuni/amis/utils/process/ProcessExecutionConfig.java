@@ -97,44 +97,57 @@ public class ProcessExecutionConfig {
 		return timeout;
 	}
 
-	public void setTimeout(Long timeoutMillis) {
+	public ProcessExecutionConfig setTimeout(Long timeoutMillis) {
 		this.timeout = timeoutMillis;
+		return this;
 	}
 	
-	public void setTimeout(long timeoutMillis) {
+	public ProcessExecutionConfig setTimeout(long timeoutMillis) {
 		this.timeout = timeoutMillis;
+		return this;
 	}
 
 	public String getPathToProgram() {
 		return pathToProgram;
 	}
 
-	public void setPathToProgram(String pathToProgram) {
+	public ProcessExecutionConfig setPathToProgram(String pathToProgram) {
 		this.pathToProgram = pathToProgram;
+		return this;
 	}
 
 	public List<String> getArgs() {
 		return args;
 	}
+	
+	public ProcessExecutionConfig addArg(String arg) {
+		if (this.args == null) this.args = new ArrayList<String>();
+		this.args.add(arg);
+		return this;
+	}
 
-	public void setArgs(List<String> args) {
+	public ProcessExecutionConfig setArgs(List<String> args) {
 		this.args = args;
+		return this;
 	}
 
 	public String getExecutionDir() {
 		return executionDir;
 	}
 
-	public void setExecutionDir(String executionDir) {
+	public ProcessExecutionConfig setExecutionDir(String executionDir) {
 		this.executionDir = executionDir;
+		return this;
 	}
 
-	public void setRedirectStdErr(boolean redirectStdErr) {
+	public ProcessExecutionConfig setRedirectStdErr(boolean redirectStdErr) {
 		this.redirectStdErr = redirectStdErr;
+		return this;
 	}
 
-	public void setRedirectStdOut(boolean redirectStdOut) {
+	public ProcessExecutionConfig setRedirectStdOut(boolean redirectStdOut) {
 		this.redirectStdOut = redirectStdOut;
+		return this;
 	}
 
 	@Override

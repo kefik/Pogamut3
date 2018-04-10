@@ -299,7 +299,7 @@ public abstract class MultithreadedAgentRunner<AGENT extends IAgent, PARAMS exte
 	    	
 	    	ExecutorService executor = Executors.newFixedThreadPool(cpuThreadCount);
 	    	// Start rest of the agents if any
-	    	for (int i = 0; i < params.length; ++i) {
+	    	for (int i = 1; i < params.length; ++i) {
 	    	    if (fillDefaults) {
 	                params[i].assignDefaults(newDefaultAgentParameters());
 	            }

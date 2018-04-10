@@ -39,7 +39,6 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Rotation;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Velocity;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.ProjectileCleanUp;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;
 import cz.cuni.amis.pogamut.ut2004.bot.jmx.BotJMXMBeanAdapter;
@@ -73,8 +72,6 @@ import cz.cuni.amis.utils.ExceptionToString;
 import cz.cuni.amis.utils.NullCheck;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.exception.PogamutJMXException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * Ancestor of all UT2004 bots.

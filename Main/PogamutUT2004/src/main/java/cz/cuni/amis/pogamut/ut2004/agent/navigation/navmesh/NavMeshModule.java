@@ -64,7 +64,7 @@ public class NavMeshModule {
     private IWorldView worldView;
     private Logger log;
     
-        //
+    //
     // STATE
     //
     private boolean shouldReloadNavMesh = false;
@@ -74,6 +74,7 @@ public class NavMeshModule {
     // COMPONENTS
     //
     private NavMesh navMesh;
+    private NavMeshDraw navMeshDraw;
     private NavMeshDropGrounder dropGrounder;
     private NavMeshAStarDistanceHeuristic aStarDistanceHeuristic;
     private NavMeshAStarPathPlanner aStarPathPlanner;
@@ -95,6 +96,7 @@ public class NavMeshModule {
             load(info);
         }
     };
+	
     
     public NavMeshModule(IUT2004ServerProvider serverProvider, IWorldView worldView, IAgentLogger logger) {
         if (logger == null) {
@@ -111,7 +113,7 @@ public class NavMeshModule {
         aStarDistanceHeuristic = new NavMeshAStarDistanceHeuristic(navMesh);
         aStarPathPlanner = new NavMeshAStarPathPlanner( dropGrounder, navMesh, aStarDistanceHeuristic, log);
         clearanceComputer = new NavMeshClearanceComputer( dropGrounder );
-        //navMeshDraw = new NavMeshDraw(navMesh, log, serverProvider);
+        navMeshDraw = new NavMeshDraw(navMesh, log, serverProvider);
         
         GameInfo info = worldView.getSingle(GameInfo.class);
         if (info != null) {

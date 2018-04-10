@@ -94,8 +94,9 @@ public class UCCWrapperConf implements Serializable {
      * 
      * @param unrealHome
      */
-	public void setUnrealHome(String unrealHome) {
+	public UCCWrapperConf setUnrealHome(String unrealHome) {
 		this.unrealHome = unrealHome;
+		return this;
 	}
 
 	/**
@@ -128,6 +129,16 @@ public class UCCWrapperConf implements Serializable {
     public UCCWrapperConf setGameType(String gameType) {
         this.gameType = gameType;
         return this;
+    }
+    
+    /**
+     * Sets a game type from an enum so you do not have to remember concrete strings.
+     * @param gameType
+     * @return
+     */
+    public UCCWrapperConf setGameType(UCCGameType gameType) {
+    	this.gameType = gameType.gameType;
+    	return this;
     }
 
     /**

@@ -21,30 +21,18 @@ import java.util.logging.Logger;
 
 import javax.vecmath.Vector2d;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer.ClearanceLimit;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshConstants;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer.ClearanceLimit;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.grounder.NavMeshDropGrounder;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshEdge;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshPolygon;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer.NavMeshPathTracer;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer.RayPath;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointNeighbourLink;
 import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
-import math.geom2d.line.Line2D;
-import math.geom2d.line.StraightLine2D;
-import math.geom3d.plane.Plane3D;
-import math.geom3d.plane.Plane3DCoordinateSubsystem;
 
 /**
  * Module for computation of jumps. Decides if the jump is doable, determines

@@ -243,18 +243,9 @@ public class ProcessExecution {
 				throw new PogamutException("Could not start the process according to config " + config + " as the path to program was not specified (is null).", this);
 			}
 			
-			String command = config.getPathToProgram();
+			List<String> commandParts = getCommandParts();
 			
-			List<String> commandParts = new ArrayList<String>();
-			commandParts.add(command);
-			
-			String fullCommand = command;
-			
-			if (config.getArgs() != null) {
-				for (String arg : config.getArgs()) {
-					commandParts.add(arg);
-				}
-			}
+			String fullCommand = config.getPathToProgram();
 			
 			for (int i = 0; i < commandParts.size(); ++i) {
 				String part = substituteParams(commandParts.get(i), log);
@@ -319,6 +310,23 @@ public class ProcessExecution {
 	        running.setFlag(true);    // we're ONLINE!
 	        waitForEndThread.start(); // execute the thread that will wait for the end of the process to switch 'running' back to false
 		}
+	}
+	
+	/**
+	 * Assembles list of command parts, i.e. {@link ProcessExecutionConfig#getPathToProgram()} plus program arguments.
+	 * All parts then undergo {@link #substituteParams(String, Logger)} routine.
+	 */
+	protected List<String> getCommandParts() {
+		List<String> commandParts = new ArrayList<String>();
+		commandParts.add(config.getPathToProgram());
+		
+		if (config.getArgs() != null) {
+			for (String arg : config.getArgs()) {
+				commandParts.add(arg);
+			}
+		}
+		
+		return commandParts;
 	}
 	
 	/**

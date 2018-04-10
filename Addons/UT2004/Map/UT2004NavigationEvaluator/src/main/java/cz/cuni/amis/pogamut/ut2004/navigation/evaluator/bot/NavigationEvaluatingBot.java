@@ -17,6 +17,7 @@
 package cz.cuni.amis.pogamut.ut2004.navigation.evaluator.bot;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
@@ -29,9 +30,6 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NavMeshDraw;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NewNavMeshDraw;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarPathPlanner;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
@@ -49,7 +47,6 @@ import cz.cuni.amis.pogamut.ut2004.navigation.evaluator.data.PathResult.ResultTy
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
-import java.util.HashSet;
 
 /**
  * Bot for evaluating navigations. Initialized with navigation given by
@@ -138,11 +135,12 @@ public class NavigationEvaluatingBot extends EvaluatingBot {
         myNavigation = NavigationFactory.getNavigation(this, bot, getParams().getNavigation());
         
         if (drawNavMesh) {
-            if (myPathPlanner instanceof OldNavMesh) {
-                navMeshDraw = new NavMeshDraw(getOldNavMeshModule().getNavMesh(), bot.getLog(), serverProvider);
-            } else if (myPathPlanner instanceof NavMeshAStarPathPlanner) {
-                navMeshDraw =  new NewNavMeshDraw(getNavMesh(), bot.getLog(), serverProvider);
-            }
+//            if (myPathPlanner instanceof OldNavMesh) {
+//            	// DEPRECATED
+//                //navMeshDraw = new NavMeshDraw(getOldNavMeshModule().getNavMesh(), bot.getLog(), serverProvider);
+//            } else if (myPathPlanner instanceof NavMeshAStarPathPlanner) {
+            navMeshDraw =  new NavMeshDraw(getNavMesh(), bot.getLog(), serverProvider);
+//            }
         }
     }
 

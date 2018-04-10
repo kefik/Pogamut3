@@ -16,6 +16,9 @@
  */
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathfollowing;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObject;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
@@ -23,9 +26,8 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.IUT2004PathRunner;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.loquenavigator.KefikRunner;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
 import cz.cuni.amis.pogamut.ut2004.bot.command.AdvancedLocomotion;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Move;
@@ -35,8 +37,6 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.WallCol
 import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import cz.cuni.amis.utils.NullCheck;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Runner for navigation with navigation mesh. Evolved from {@link KefikRunner}.

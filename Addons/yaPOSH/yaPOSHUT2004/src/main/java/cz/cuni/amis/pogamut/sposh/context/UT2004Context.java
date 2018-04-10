@@ -51,8 +51,6 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004ServerProvider;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.UT2004Draw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.UT2004ServerProvider;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMesh;
-import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.old.OldNavMeshModule;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathfollowing.NavMeshNavigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathfollowing.UT2004AcceleratedPathExecutor;
 import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;

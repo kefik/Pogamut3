@@ -70,7 +70,8 @@ public class NavigationFactory {
             } else if (pathPlannerType.equals("navMesh")) {
                 return bot.getNavMeshModule().getAStarPathPlanner();
             } else if (pathPlannerType.equals("oldNavMesh")) {
-            	return bot.getOldNavMeshModule().getNavMesh();
+            	throw new RuntimeException("oldNavMesh is deprecated!");
+            	//return bot.getOldNavMeshModule().getNavMesh();
             }
         }
         return null;
