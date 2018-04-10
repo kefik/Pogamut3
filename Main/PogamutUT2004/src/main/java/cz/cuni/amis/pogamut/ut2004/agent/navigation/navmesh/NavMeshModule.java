@@ -31,6 +31,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavigationGraphBuilder;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004MapTweaks;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004ServerProvider;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.NavMeshDraw;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.grounder.NavMeshDropGrounder;
@@ -219,8 +220,9 @@ public class NavMeshModule {
 	public NavMeshClearanceComputer getClearanceComputer() {
 		return clearanceComputer;
 	}
-	
-/*    public NavMeshDraw getNavMeshDraw() {
-        return navMeshDraw;
-    }*/    
+
+	public INavMeshDraw getNavMeshDraw() {
+		return navMeshDraw;
+	}
+
 }

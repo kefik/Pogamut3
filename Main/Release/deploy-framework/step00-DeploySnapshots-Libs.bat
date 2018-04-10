@@ -1,0 +1,1 @@
+step.bat config/PogamutRelease-step00-DeploySnapshots-Libs.xml

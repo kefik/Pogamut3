@@ -49,12 +49,17 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     /**
      * Whether to run "auto-navigation", i.e., trying to run around all navpoints.
      */
-    private boolean auto = true;
+    private boolean auto = false;
+    
+    /**
+     * Whether to be running between inventory spots only; flipped by saying 'items'
+     */
+    private boolean navigateItems = true;
     
     /**
      * Auto wipes drawn debug stuff at the beginning of the next navigation request.
      */
-    private boolean autoclear = true;
+    private boolean autoclear = false;
     
     /**
      * Flip by chat message 'drawNavMesh'.
@@ -74,7 +79,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     @Override
     public void initializeController(UT2004Bot bot) {
     	super.initializeController(bot);
-    	navMeshDraw = new NavMeshDraw(navMeshModule.getNavMesh(), log, serverProvider);
+    	navMeshDraw = navMeshModule.getNavMeshDraw();
     }
     
     @Override
@@ -112,6 +117,10 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     		auto = !auto;
 			sayGlobal("Flipping AUTO navigation, new value is " + auto);
     	} else
+		if (msg.getText().toLowerCase().startsWith("items")) {
+    		navigateItems = !navigateItems;
+			sayGlobal("Flipping ITEMS navigation, new value is " + navigateItems);
+    	} else
     	if (msg.getText().toLowerCase().startsWith("reset")) {
     		visited.clear();
     		sayGlobal("VISITED NAVPOINTS CLEARED");
@@ -122,7 +131,12 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     @Override
     public void beforeFirstLogic() {
     	sayGlobal("AUTO NAVIGATION: " + auto);
-    	sayGlobal("AUTO-CLEAR: " + autoclear);
+    	sayGlobal("NAVIGATE ONLY ITEMS: " + navigateItems);
+    	sayGlobal("AUTO-DRAW-CLEAR: " + autoclear);
+    	sayGlobal("DRAW-NAVMESH: " + drawNavMesh);
+    	if (drawNavMesh) {
+    		navMeshDraw.draw(drawNavMesh, false);
+    	}
     	sayGlobal("LET'S GO!");
     }
    
@@ -164,7 +178,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	targetNavpoint = MyCollections.getRandom(MyCollections.getFiltered(navPoints.getNavPoints().values(), new IFilter<NavPoint>() {
 			@Override
 			public boolean isAccepted(NavPoint object) {
-				return !visited.contains(object);
+				return !visited.contains(object) && (!navigateItems || object.isInvSpot());
 			}    		
     	}));
     	visited.add(targetNavpoint);
