@@ -4,17 +4,17 @@
 
 	<groupId>cz.cuni.amis</groupId>
 	<artifactId>amis-maven-plugin-pom</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>AmisMavenPluginPom</name>
 	<url>http://maven.apache.org</url>
 
 	<scm>
-		<connection>scm:svn:${svn.project.home}</connection>
-		<developerConnection>scm:svn:${svn.project.home}</developerConnection>
-		<tag>HEAD</tag>
-		<url>${svn.project.home}</url>
+            <connection>scm:git:${scm.project.home}</connection>
+            <developerConnection>scm:git:${scm.project.home}</developerConnection>
+            <tag>HEAD</tag>
+            <url>${scm.project.server.url.base}</url>
 	</scm>
 
 	<organization>
@@ -52,10 +52,11 @@
 			This property is used by the parent's POM. SVN repo version is added
 			inside the manifest.mf !
 		-->
-		<svn.project.server.url.base>svn://artemis.ms.mff.cuni.cz/pogamut/branches/maven2</svn.project.server.url.base>
-		<svn.project.home>${svn.project.server.url.base}/Main/AmisPom</svn.project.home>
+            <scm.project.server.url.base>https://github.com/kefik/Pogamut3.git</scm.project.server.url.base>
+            <scm.project.home>${svn.project.server.url.base}/tree/master/Poms/AmisPom</scm.project.home>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            <project.build.resourceEncoding>${project.build.sourceEncoding}</project.build.resourceEncoding>
 
 		<!-- MANIFEST PROPERTIES -->
 		<manifest.specification.vendor>AMIS research group</manifest.specification.vendor>
@@ -126,20 +127,22 @@
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-				</configuration>
+                        <artifactId>buildnumber-maven-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>execute-buildnumber-maven-plugin</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <revisionOnScmFailure>revision-unknown</revisionOnScmFailure>
+                            <doCheck>false</doCheck>
+                            <doUpdate>false</doUpdate>
+                        </configuration>
 			</plugin>
 			
 			<plugin>
@@ -164,11 +167,11 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<SCM-Revision>${buildNumber}</SCM-Revision>
-							<Implementation-Version>${project.version}.${buildNumber}</Implementation-Version>
-							<Specification-vendor>${manifest.specification.vendor}</Specification-vendor>
-							<Implementation-vendor>${manifest.implementation.vendor}</Implementation-vendor>
-						</manifestEntries>
+                <SCM-Revision>${buildNumber}</SCM-Revision>
+                <Implementation-Version>${project.version}.${buildNumber}</Implementation-Version>
+                <Specification-vendor>${manifest.specification.vendor}</Specification-vendor>
+                <Implementation-vendor>${manifest.implementation.vendor}</Implementation-vendor>
+            </manifestEntries>
 					</archive>
 				</configuration>
 
@@ -244,7 +247,7 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.6</targetJdk>
+					<targetJdk>1.8</targetJdk>
 				</configuration>
 			</plugin>
 

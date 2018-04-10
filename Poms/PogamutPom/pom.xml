@@ -5,7 +5,7 @@
     <parent>
         <groupId>cz.cuni.amis</groupId>
         <artifactId>amis-pom</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
         <relativePath>../AmisPom/pom.xml</relativePath>
     </parent>
 
