@@ -134,9 +134,30 @@ public class UT2004BotExecution {
 	public void start(String host, int port) throws PogamutIOException {
 		String javaHome = System.getenv("JAVA_HOME");
 		if (javaHome == null || (javaHome.trim().equals(""))) {
-			start(host, port, null);
+			start(host, port, -1, null);
 		} else {
-			start(host, port, javaHome);
+			start(host, port, -1, javaHome);
+		}
+	}
+	
+	/**
+     * Start the bot process. Throws {@link PogamutIOException} if it fails to start the JVM.
+     * <p><p>
+     * JVM is located via $JAVA_HOME environment variable.
+     * <p><p>
+     * It is wise to observe the state of the {@link UT2004BotExecution#getRunning()} flag to obtain the state of the process
+     * (whether the process is running or is dead). Usage of {@link FlagListener} is advised, see {@link ImmutableFlag#addListener(FlagListener)}.
+     * 
+     * @param host GB2004 host
+     * @param botPort GB2004 bot port
+     * @param controlPort GB2004 control port
+     */
+	public void start(String host, int botPort, int controlPort) throws PogamutIOException {
+		String javaHome = System.getenv("JAVA_HOME");
+		if (javaHome == null || (javaHome.trim().equals(""))) {
+			start(host, botPort, controlPort, null);
+		} else {
+			start(host, botPort, controlPort, javaHome);
 		}
 	}
     
@@ -147,10 +168,11 @@ public class UT2004BotExecution {
      * (whether the process is running or is dead). Usage of {@link FlagListener} is advised, see {@link ImmutableFlag#addListener(FlagListener)}.
      * 
      * @param host GB2004 host
-     * @param port GB2004 bot port
+     * @param botPort GB2004 bot port
+     * @param controlPort GB2004 control port
      * @param javaHome path/to/dir which is JAVA home
      */
-	public void start(String host, int port, String javaHome) throws PogamutIOException {
+	public void start(String host, int botPort, int controlPort, String javaHome) throws PogamutIOException {
 		synchronized(running) {
 			if (running.getFlag()) {
 				throw new PogamutException("Could not start the bot again, it is already running! stop() it first!", log, this);
@@ -178,9 +200,19 @@ public class UT2004BotExecution {
 			if (origHost != null) {
 				if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_BOT_HOST.getKey() + " from value '" + String.valueOf(origHost) + "' to value '" + host + "'.");
 			}
-			Object origPort = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_BOT_PORT.getKey(), port);
+			Object origPort = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_BOT_PORT.getKey(), botPort);
 			if (origPort != null) {
-				if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_BOT_HOST.getKey() + " from value '" + String.valueOf(origPort) + "' to value '" + port + "'.");
+				if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_BOT_PORT.getKey() + " from value '" + String.valueOf(origPort) + "' to value '" + botPort + "'.");
+			}
+			if (controlPort > 0) {
+				Object origControlHost = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_SERVER_HOST.getKey(), host);
+				if (origControlHost != null) {
+					if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_SERVER_HOST.getKey() + " from value '" + String.valueOf(origControlHost) + "' to value '" + host + "'.");
+				}
+				Object origControlPort = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_SERVER_PORT.getKey(), controlPort);
+				if (origControlPort != null) {
+					if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_SERVER_PORT.getKey() + " from value '" + String.valueOf(origControlPort) + "' to value '" + controlPort + "'.");
+				}
 			}
 			
 			List<String> commandForProcessBuilder = new ArrayList<String>(3 + config.getParameters().size());

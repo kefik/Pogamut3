@@ -135,7 +135,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	sayGlobal("AUTO-DRAW-CLEAR: " + autoclear);
     	sayGlobal("DRAW-NAVMESH: " + drawNavMesh);
     	if (drawNavMesh) {
-    		navMeshDraw.draw(drawNavMesh, false);
+    		navMeshDraw.draw(drawNavMesh, true);
     	}
     	sayGlobal("LET'S GO!");
     }

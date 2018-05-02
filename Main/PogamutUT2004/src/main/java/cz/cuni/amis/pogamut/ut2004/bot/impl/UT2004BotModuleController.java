@@ -649,7 +649,6 @@ public class UT2004BotModuleController<BOT extends UT2004Bot> extends UT2004BotL
 	}
 	
 	public NavMesh getNavMesh() {
-		if (!navMeshModule.isInitialized()) log.warning("NavMeshModule has not been initialized (yet?)! You are either calling this method too early or missing .navmesh file in the local directory of your bot!");
 		return navMeshModule.getNavMesh();
 	}
 	

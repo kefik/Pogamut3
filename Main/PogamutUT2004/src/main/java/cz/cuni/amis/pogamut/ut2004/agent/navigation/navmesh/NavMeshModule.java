@@ -202,6 +202,7 @@ public class NavMeshModule {
      * @return
      */
     public NavMesh getNavMesh() {
+    	if (!isInitialized()) throw new RuntimeException("NAVMESH IS NOT INITIALIZED; you are either calling this method too early or missing .navmesh file in the local directory of your bot! We expect navmesh to be stored within ./navmesh directory; NavMeshes can be downloaded from: https://github.com/kefik/Pogamut3/tree/master/Addons/UT2004/Map/UT2004NavMeshTools/04-NavMeshes");	
         return navMesh;
     }
     

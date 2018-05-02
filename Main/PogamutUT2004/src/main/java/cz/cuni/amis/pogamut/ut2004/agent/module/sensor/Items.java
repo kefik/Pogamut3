@@ -32,6 +32,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMess
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ItemPickedUp;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.ut2004.communication.translator.shared.events.MapPointListObtained;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import cz.cuni.amis.utils.NullCheck;
@@ -810,9 +811,19 @@ public abstract class Items extends SensorModule<UT2004Bot> {
 	 *
 	 * @see getKnownPickups(boolean,boolean)
 	 */
-	public boolean willPickupBeSpawnedIn(Item item, double seconds) {
+	public boolean willPickupBeSpawnedIn(Item item, double seconds) {		
 		if (isPickupSpawned(item)) return true;
 		return !items.itemMissing.willBeTaboo(item, seconds);
+	}
+	
+	/**
+	 * Returns the number of seconds you believe the pickup will be spawned in.
+	 * @param item
+	 * @return
+	 */
+	public double getItemTimeToSpawn(Item item) {
+		if (isPickupSpawned(item)) return 0;
+		return items.itemMissing.getTabooTime(item);
 	}
 	
 	/**

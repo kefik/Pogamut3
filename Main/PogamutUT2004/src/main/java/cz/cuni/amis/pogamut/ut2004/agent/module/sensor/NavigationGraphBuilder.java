@@ -1,13 +1,12 @@
 package cz.cuni.amis.pogamut.ut2004.agent.module.sensor;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.vecmath.Vector3d;
@@ -33,7 +32,6 @@ import cz.cuni.amis.pogamut.ut2004.utils.LinkFlag;
 import cz.cuni.amis.pogamut.ut2004.utils.UnrealUtils;
 import cz.cuni.amis.utils.NullCheck;
 import cz.cuni.amis.utils.exception.PogamutException;
-import cz.cuni.amis.utils.exception.PogamutIOException;
 
 /**
  * This class can be used to manually improve the navigation graph of the UT2004 by manually adding/removing edges from it.
@@ -1147,6 +1145,27 @@ public class NavigationGraphBuilder extends SensorModule<UT2004Bot> {
 		fromNavPointId = autoPrefix(fromNavPointId);
 		toNavPointId = autoPrefix(toNavPointId);
 		modifyNavPoint(fromNavPointId).removeEdgeTo(toNavPointId);
+	}
+	
+	/**
+	 * Goes through all navpoints deleting edges that leads 'toNavPointId' except when originating from 'exceptNavPointIds'.
+	 * @param toNavPointId
+	 */
+	public void removeEdgesTo(String toNavPointId, String... exceptNavPointIds) {
+		NullCheck.check(toNavPointId, "toNavPointId");
+		Set<String> except = new HashSet<String>();
+		
+		toNavPointId = autoPrefix(toNavPointId);
+		if (exceptNavPointIds != null) {
+			for (String exceptId : exceptNavPointIds) {
+				except.add(autoPrefix(exceptId));
+			}
+		}
+		
+		for (NavPoint navPoint : worldView.getAll(NavPoint.class).values()) {
+			if (except.contains(navPoint.getId().getStringId())) continue;
+			modifyNavPoint(navPoint.getId().getStringId()).removeEdgeTo(toNavPointId);
+		}		
 	}
 	
 	/**

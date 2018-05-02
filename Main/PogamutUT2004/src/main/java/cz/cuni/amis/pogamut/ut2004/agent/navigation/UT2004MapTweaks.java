@@ -191,6 +191,9 @@ public class UT2004MapTweaks {
 		builder.modifyNavPoint("InventorySpot323").modifyEdgeTo("PlayerStart3").removeJumpFlag().modifyEdge();
 		builder.modifyNavPoint("PlayerStart3").modifyEdgeTo("InventorySpot323").removeJumpFlag().modifyEdge();
 		builder.modifyNavPoint("InventorySpot327").addZ(-30).apply();
+		builder.removeEdge("PathNode62", "InventorySpot338");
+		builder.removeEdgesTo("JumpSpot2", "PlayerStart7");
+		builder.removeEdgesTo("PlayerStart7", "JumpSpot2");		
 	}
 
 	protected void tweak_DM_1on1_Trite(NavigationGraphBuilder builder) {

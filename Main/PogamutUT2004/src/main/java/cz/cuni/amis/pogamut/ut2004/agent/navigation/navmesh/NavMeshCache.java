@@ -2,9 +2,11 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher;
 import cz.cuni.amis.pogamut.base.utils.logging.LogPublisher.ConsolePublisher;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
+import cz.cuni.amis.utils.ExceptionToString;
 
 /**
  * Used to speed up bots starting time on the same JVM machine, we're caching {@link NavMesh} objects for given "map name".
@@ -27,7 +30,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoin
  */
 public class NavMeshCache {
 	
-	public static LogCategory log = new LogCategory("AnalysedNavMeshCache");
+	public static LogCategory log = new LogCategory("NavMeshCache");
 	
 	static {
 		ConsolePublisher publisher = new LogPublisher.ConsolePublisher();
@@ -117,7 +120,9 @@ public class NavMeshCache {
             
         	log.info("NavMesh LOADED SUCCESSFULLY.");
         	
-/*            // save analyzed navmesh for next time
+            // save analyzed navmesh for next time
+        	
+        	/*
         	ObjectOutputStream out = null;
             try {
                 log.warning("Writing navmesh to a file at: " + navMeshFile.getAbsolutePath());
@@ -136,7 +141,8 @@ public class NavMeshCache {
     				}
             	}
             }
-*/            
+            */
+            
             navMesh.copyFrom( cachedNavmesh );
             return;
 		} catch (Exception e) {
