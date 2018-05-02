@@ -70,13 +70,15 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             	crossings.add( crossing );
                 
             	index = gatewayFunnel.getRightRay().getIndex() + 1;
-            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
-            			||
-            			crossing.equals( boundaries.get(index).getDestinationVertex() )
-            	) {
-            		// the next boundary shares the vertex we picked as a crossing so skip it            		
-            		++index;
-            	}
+            	
+            	// TODO: trying to fix occasional bug when the destination is after the bending the path to the right... is this correct?
+//            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
+//            			||
+//            			crossing.equals( boundaries.get(index).getDestinationVertex() )
+//            	) {
+//            		// the next boundary shares the vertex we picked as a crossing so skip it            		
+//            		++index;
+//            	}
             	
                 gatewayFunnel = Funnel.createFromBoundary( 
             		crossing,
@@ -100,13 +102,15 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             	crossings.add( crossing );
             	
             	index = gatewayFunnel.getLeftRay().getIndex() + 1;
-            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
-            			||
-            			crossing.equals( boundaries.get(index).getDestinationVertex() )
-            	) {
-            		// the next boundary shares the vertex we picked as a crossing so skip it
-            		++index;
-            	}
+            	
+            	// TODO: trying to fix occasional bug when the destination is after the bending the path to the right... is this correct?
+//            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
+//            			||
+//            			crossing.equals( boundaries.get(index).getDestinationVertex() )
+//            	) {
+//            		// the next boundary shares the vertex we picked as a crossing so skip it
+//            		++index;
+//            	}
             	
                 gatewayFunnel = Funnel.createFromBoundary( 
             		crossing,

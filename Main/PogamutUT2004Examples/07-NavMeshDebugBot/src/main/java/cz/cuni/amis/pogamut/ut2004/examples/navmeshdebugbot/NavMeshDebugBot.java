@@ -49,7 +49,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     /**
      * Whether to run "auto-navigation", i.e., trying to run around all navpoints.
      */
-    private boolean auto = false;
+    private boolean auto = true;
     
     /**
      * Whether to be running between inventory spots only; flipped by saying 'items'
@@ -124,8 +124,11 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	if (msg.getText().toLowerCase().startsWith("reset")) {
     		visited.clear();
     		sayGlobal("VISITED NAVPOINTS CLEARED");
-    	}
-    
+    	} else
+    	if (msg.getText().toLowerCase().startsWith("clear")) {
+    		draw.clearAll();
+    		sayGlobal("ALL CLEARED!");
+    	}    
     }
     
     @Override
