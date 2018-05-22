@@ -157,12 +157,22 @@ public class TCMinaServer implements IoHandler {
 			if (ioAcceptor != null) {
 				log.warning("Closing TCMinaServer Socket!");
 				try {
+					ioAcceptor.setCloseOnDeactivation(true);
+					int i = 0;
+					for (IoSession ss : ioAcceptor.getManagedSessions().values()) {
+						log.warning("Closing managed sessions: " + "(++i)");
+						ss.close(true);
+					}
+					log.warning("Unbinding ioAcceptor...");
 					ioAcceptor.unbind();
-				} catch (Exception e) {				
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				log.warning("Disposing ioAcceptor...");
 				try {
 					ioAcceptor.dispose();
 				} catch (Exception e) {
+					e.printStackTrace();
 					ioAcceptor = null;
 				}			
 			}
