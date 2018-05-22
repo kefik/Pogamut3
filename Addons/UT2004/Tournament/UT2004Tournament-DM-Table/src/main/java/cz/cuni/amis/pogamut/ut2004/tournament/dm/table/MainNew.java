@@ -1,6 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.dm.table;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +25,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.tournament.UT2004Ini;
 import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch;
 import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatchConfig;
+import cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report.CSV;
 import cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report.MainExcelReport;
 import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004BotConfig;
 
@@ -384,6 +386,10 @@ public class MainNew {
 			String name = file.getName();
 			if (name.endsWith(".jar") && name.contains("one-jar")) {
 				// JAR FILE!
+				if (name.startsWith("rewrite")) {
+					// BAD ONE
+					continue;
+				}				
 				botJarFiles.add(file);
 				String botName = name.substring(0, name.indexOf("one-jar"));
 				while (botName.endsWith(".")) botName = botName.substring(0, botName.length()-1);
@@ -674,6 +680,14 @@ public class MainNew {
 	}
 	
 	private static UT2004DeathMatch executeMatch(Match match) {		
+		// DELETE THE RESULT FOLDER
+		File resultFolder = new File(new File(resultDir), match.matchName);
+		try {
+			FileUtils.deleteDirectory(resultFolder);
+		} catch (Exception e) {			
+		}
+		
+		// CONFIGURE AND FIRE THE MATCH
 		UT2004DeathMatchConfig config = new UT2004DeathMatchConfig();
 		
 		UT2004BotConfig bot1Config = new UT2004BotConfig();
@@ -729,6 +743,12 @@ public class MainNew {
 			this.bot2Jar = bot2Jar;
 			this.bot2Id = bot2Id;
 		}
+		
+		@Override
+		public String toString() {
+			return "Match[" + matchName + "]";
+		}
+		
 	}
 	
 	private static class ExecuteOne extends Thread {
@@ -800,7 +820,20 @@ public class MainNew {
 						Match match = matches[currentMatch];
 						File resultFolder = new File(new File(resultDir), match.matchName);
 						if (resultFolder.exists() && resultFolder.isDirectory()) {
-							warning("Result folder for the match " + match.matchName + " already exists, skipping this match.");
+							warning("Result folder for the match " + match.matchName + " already exists, checking the result...");
+							File resultFile = new File(resultFolder, "match-" + match.matchName + "-result.csv");
+							File botScoresFile = new File(resultFolder, "match-" + match.matchName + "-bot-scores.csv");
+							if (!resultFile.exists() || !resultFile.isFile()) {
+								warning("  +-- result file does not exist at: " + resultFile.getAbsolutePath());
+								break;
+							}
+							if (!botScoresFile.exists() || !botScoresFile.isFile()) {
+								warning("  +-- bot-scores file does not exist at: " + botScoresFile.getAbsolutePath());
+								break;
+							}
+							if (!isMatchSuccess(resultFile)) {
+								break;
+							}
 							++skipped;
 						} else {
 							break;
@@ -808,7 +841,7 @@ public class MainNew {
 						++currentMatch;
 					}
 				}
-				
+								
 				if (currentMatch < matches.length) {
 					threads[i] = new ExecuteOne(matches[currentMatch]);
 					++currentMatch;
@@ -834,6 +867,33 @@ public class MainNew {
 		}
 	}
 	
+	private static boolean isMatchSuccess(File resultFile) {		
+		CSV csv = null;
+		try {
+			csv = new CSV(resultFile, ";", true);
+		} catch (Exception e) {
+			warning("  +-- Failed to open: " + resultFile.getAbsolutePath());
+			e.printStackTrace();
+			return false;
+		}
+		if (csv.rows.size() != 1) {
+			warning("  +-- Result file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
+			return false;
+		}
+		
+		if (!csv.keys.contains("Winner")) {
+			warning("  +-- Result file does not contain column 'Winner'. Ignoring.");
+			return false;
+		}
+		String winner = csv.rows.get(0).getString("Winner");
+		if (winner.toLowerCase().contains("failure")) {
+			warning("  +-- Result file is indicating that the match has FAILED!");
+			return false;
+		}
+		info("  +-- Match success");
+		return true;
+	}
+
 	private static void executeMatches() throws InterruptedException {
 		
 		int matchCount = botJarFiles.size() * (botJarFiles.size()-1) / 2;		
@@ -862,14 +922,16 @@ public class MainNew {
 	}
 
 	public static void main(String[] args) throws JSAPException {
-		String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2017-Labs\\Tournaments\\Tournament2017-3-DeathMatch\\Bots";
+		String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
 		
-		String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2017-Labs\\Tournaments\\Tournament2017-3-DeathMatch\\Result";
+		String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\";
+		
+		String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\_Results\\";
 		
 //      FOR TESTING		
 		args = new String[] {
 			"-u",
-			"D:\\Games\\UT2004-Devel",
+			ut2004Dir,
 			"-a",
 			botsDir,
 			"-r",
@@ -879,12 +941,12 @@ public class MainNew {
 			"-m",
 			"DM-1on1-Roughinery-FPS",
 			"-f",
-			"10",
+			"20",
 			"-t",
 			"10",
 			//"-h", // human-like log			
 		    "-c",
-		    "5",
+		    "2",  // concurrent thread count
 		    //"-g", // generate batch-files
 	        "-d", // debug
             "-o"  // continue		
@@ -913,7 +975,7 @@ public class MainNew {
 	    }
 	    
 	    MainExcelReport.main(new String[] {
-	    	"-d",
+	    	"-r",
 	    	resultsDir,
 	    	"-o",
 	    	resultsDir

@@ -41,6 +41,8 @@ public class UT2004CaptureTheFlagResult extends UT2004TeamMatchResult {
 	 */
 	public double matchTimeEnd;
 
+	public boolean matchFailure = false;
+
 	@Override
 	public String toString() {
 		return "UT2004CaptureTheFlagResult[" + (isDraw() ? "DRAW" : ("winnerTeam=" + getWinnerTeam()) ) + "]";

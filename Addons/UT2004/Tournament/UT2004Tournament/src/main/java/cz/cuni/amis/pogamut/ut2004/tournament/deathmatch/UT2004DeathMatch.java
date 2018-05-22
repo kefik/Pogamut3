@@ -98,12 +98,13 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 			};
 			server.getWorldView().addEventListener(PlayerScore.class, scoresListener);
 			
-			for (UT2004BotConfig botConfig : config.getBots().values()) {
+			for (final UT2004BotConfig botConfig : config.getBots().values()) {
 				FlagListener<Boolean> obs = new FlagListener<Boolean>() {
 					@Override
 					public void flagChanged(Boolean changedValue) {
 						if (!changedValue) {
 							// bot has died out
+							bots.diedOff.add(botConfig.getBotId());
 							oneOfBotsDiedOut.set(true);
 							waitLatch.countDown();
 						}
@@ -114,6 +115,7 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 				customBotObservers.put(botConfig.getBotId(), obs);
 				if (!bots.bots.get(botConfig.getBotId()).getRunning().getFlag()) {
 					// bot has died out
+					bots.diedOff.add(botConfig.getBotId());
 					oneOfBotsDiedOut.set(true);
 					waitLatch.countDown();
 					throw new PogamutException("One of custom bots died out from the start, failure!", log, this);
@@ -233,6 +235,7 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 			if (winners.size() == 0) {				
 				throw new PogamutException("There is no winner, impossible! **puzzled**", log, this);
 			}
+			
 			if (winners.size() > 1) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("There is more than one bot with highest score == " + maxFrags + ": ");
@@ -338,17 +341,39 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 			}
 		}
 		
-		if (winners.size() <= 0) {
+		// CHECK FOR MATCH FAILURE
+		// -- WIN-DUE-TO-FRAG-SCORE?
+		boolean matchFailed = false;
+		if (winners.size() > 0 && finalScores.get(winners.get(0)).getScore()+1 >= config.fragLimit) {
+			// CORRECT WIN
+		} else {
+			// CHECK TIME LIMIT
+			double time = result.matchTimeEnd;
+			if (time / 1000 + 15 >= config.getTimeLimit()) {
+				// TIME HAS PASSED OUT
+			} else {
+				// MATCH HAS ENDED PREMATURELY
+				matchFailed = true;
+			}
+		}		
+		result.matchFailure = matchFailed;
+		
+		// DETERMINE WINNER
+		if (!result.matchFailure && winners.size() <= 0) {
 			throw new PogamutException("There is no winner, impossible! **puzzled**", log, this);
 		} else 
-		if (winners.size() == 1) {
+		if (!result.matchFailure && winners.size() == 1) {
 			result.setWinnerBot(bots.getBotId(winners.get(0)));
 		} else {
 			result.setDraw(true);
 		}
 		
 		if (log != null && log.isLoggable(Level.WARNING)) {
-			log.warning(config.getMatchId().getToken() + ": Results processed, " + (result.isDraw() ? "DRAW!" : "WINNER is Bot[botId=" + result.getWinnerBot().getToken() + ", unrealId=" + bots.getUnrealId(result.getWinnerBot()).getStringId() + "]."));
+			if (result.matchFailure) {
+				log.warning(config.getMatchId().getToken() + ": Results processed, FAILURE!");
+			} else {
+				log.warning(config.getMatchId().getToken() + ": Results processed, " + (result.isDraw() ? "DRAW!" : "WINNER is Bot[botId=" + result.getWinnerBot().getToken() + ", unrealId=" + bots.getUnrealId(result.getWinnerBot()).getStringId() + "]."));
+			}
 		}
 		
 		return result;
@@ -371,7 +396,7 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 						config.getFragLimit(),
 						config.getTimeLimit(),
 						result.getWinnerBot() == null ?
-							// DRAW
+							// DRAW / FAILURE
 							(result.getFinalScores().size() == 0 ?
 								0
 								:
@@ -381,7 +406,10 @@ public class UT2004DeathMatch extends UT2004Match<UT2004DeathMatchConfig, UT2004
 							// HAS WINNER
 							result.getFinalScores().get(result.getWinnerBot()).getScore(),
 						result.getMatchTimeEnd(),
-						result.isDraw() ? "DRAW" : String.valueOf(result.getWinnerBot().getToken())
+						result.matchFailure ?
+							"FAILURE"
+							:
+							result.isDraw() ? "DRAW" : String.valueOf(result.getWinnerBot().getToken())
 					);
 			try {
 				writer.close();

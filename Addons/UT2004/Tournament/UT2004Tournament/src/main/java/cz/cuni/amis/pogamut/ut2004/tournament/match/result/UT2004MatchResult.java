@@ -9,7 +9,7 @@ package cz.cuni.amis.pogamut.ut2004.tournament.match.result;
 public abstract class UT2004MatchResult {
 
 	private boolean individual;
-
+	
 	public UT2004MatchResult(boolean individual) {
 		this.individual = individual;
 	}

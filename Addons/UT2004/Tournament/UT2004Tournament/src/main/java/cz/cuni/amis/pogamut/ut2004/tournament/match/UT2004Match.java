@@ -8,9 +8,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +57,6 @@ import cz.cuni.amis.pogamut.ut2004.server.impl.UT2004Server;
 import cz.cuni.amis.pogamut.ut2004.teamcomm.server.UT2004TCServer;
 import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004MatchConfig.BotType;
 import cz.cuni.amis.pogamut.ut2004.tournament.match.result.UT2004MatchResult;
-import cz.cuni.amis.pogamut.ut2004.utils.PogamutUT2004Property;
 import cz.cuni.amis.pogamut.ut2004.utils.UCCWrapper;
 import cz.cuni.amis.utils.ExceptionToString;
 import cz.cuni.amis.utils.FilePath;
@@ -529,6 +530,11 @@ public abstract class UT2004Match<CONFIG extends UT2004MatchConfig, RESULT exten
 		 * If {@link UT2004Analyzer} is used, this will be filled with respective observers in STEP 6. Contains both CUSTOM+NATIVES+HUMAN observers.
 		 */
 		public Map<IToken, IUT2004AnalyzerObserver> botObservers = new HashMap<IToken, IUT2004AnalyzerObserver>();
+		
+		/**
+		 * Which bots have died off?
+		 */
+		public Set<IToken> diedOff = new HashSet<IToken>();
 
 		/**
 		 * {@link System#currentTimeMillis()} when the match was restarted.

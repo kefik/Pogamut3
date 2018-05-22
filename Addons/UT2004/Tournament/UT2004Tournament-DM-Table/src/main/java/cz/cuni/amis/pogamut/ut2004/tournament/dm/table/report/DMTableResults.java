@@ -164,7 +164,7 @@ public class DMTableResults {
 			if (file.isDirectory() && recursive) probeResults(file, recursive);
 			if (file.exists() && file.isFile()) {
 				try {
-					probeFile(file);
+					probeResultFile(file);
 				} catch (Exception e) {
 					throw new RuntimeException("Failed to process file: " + file.getAbsolutePath(), e);
 				}
@@ -173,26 +173,57 @@ public class DMTableResults {
 		
 	}
 
-	private void probeFile(File file) throws FileNotFoundException, IOException {
+	private void probeResultFile(File file) throws FileNotFoundException, IOException {
+		if (!file.exists() || !file.isFile() || !file.getAbsolutePath().toLowerCase().endsWith("-result.csv")) return;
+		
+		info("Found result file: " + file.getAbsolutePath());
+		
+		File botScoresFile = new File(file.getAbsolutePath().replace("-result\\.csv", "-bot-scores.csv"));
+		if (!botScoresFile.exists()) {
+			error("Cannot locate bot-scores file at: " + botScoresFile);
+			return;
+		}
+		info("Found bot-scores file: " + file.getAbsolutePath());
+		
+		CSV csv = new CSV(file, ";", true);
+		if (csv.rows.size() != 1) {
+			warn("-- Result file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
+			return;
+		}
+		
+		if (!csv.keys.contains("Winner")) {
+			warn("-- Result file does not contain column 'Winner'. Ignoring.");
+			return;
+		}
+		String winner = csv.rows.get(0).getString("Winner");
+		if (winner.toLowerCase().contains("failure")) {
+			error("-- Result file is indicating that the match has FAILED!");
+			return;
+		}
+		
+		probeBotScoresFile(botScoresFile);
+	}
+		
+		
+	private void probeBotScoresFile(File file) throws FileNotFoundException, IOException { 
 		if (!file.exists() || !file.isFile() || !file.getAbsolutePath().toLowerCase().endsWith("-bot-scores.csv")) return;
-		info("Found results: " + file.getAbsolutePath());
 		
 		CSV csv;
 		
 		csv = new CSV(file, ";", true);
 		
 		if (csv.rows.size() != 2) {
-			warn("-- Result file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
+			warn("-- Bot-scores file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
 			return;
 		}
 		
 		if (!csv.keys.contains("botId")) {
-			warn("-- Result file does not contain column 'botId'. Ignoring.");
+			warn("-- Bot-scores file does not contain column 'botId'. Ignoring.");
 			return;
 		}
 		
 		if (!csv.keys.contains("score")) {
-			warn("-- Result file does not contain column 'score'. Ignoring.");
+			warn("-- Bot-scores file does not contain column 'score'. Ignoring.");
 			return;
 		}
 		

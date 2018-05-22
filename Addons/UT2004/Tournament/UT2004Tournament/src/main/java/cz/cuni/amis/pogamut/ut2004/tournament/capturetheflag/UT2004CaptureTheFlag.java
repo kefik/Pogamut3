@@ -116,12 +116,13 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 			server.getWorldView().addObjectListener(TeamScore.class, teamScoresListener);
 
 			
-			for (UT2004BotConfig botConfig : config.getBots().values()) {
+			for (final UT2004BotConfig botConfig : config.getBots().values()) {
 				FlagListener<Boolean> obs = new FlagListener<Boolean>() {
 					@Override
 					public void flagChanged(Boolean changedValue) {
 						if (!changedValue) {
 							// bot has died out
+							bots.diedOff.add(botConfig.getBotId());
 							oneOfBotsDiedOut.set(true);
 							waitLatch.countDown();
 						}
@@ -132,6 +133,7 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 				customBotObservers.put(botConfig.getBotId(), obs);
 				if (!bots.bots.get(botConfig.getBotId()).getRunning().getFlag()) {
 					// bot has died out
+					bots.diedOff.add(botConfig.getBotId());
 					oneOfBotsDiedOut.set(true);
 					waitLatch.countDown();
 					throw new PogamutException("One of custom bots died out from the start, failure!", log, this);
@@ -253,7 +255,7 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 					maxScore = entry.getValue().getScore();
 				}
 			}
-			
+							
 			if (winners.size() == 0) {
 				// no one has reached FragLimit
 				throw new PogamutException("There is no winner, impossible! **puzzled**", log, this);
@@ -367,10 +369,29 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 			}
 		}
 		
-		if (winners.size() <= 0) {
+		// CHECK FOR MATCH FAILURE
+		// -- WIN-DUE-TO-FRAG-SCORE?
+		boolean matchFailed = false;
+		if (winners.size() > 0 && teamScores.get(winners.get(0)).getScore()+1 >= config.scoreLimit) {
+			// CORRECT WIN
+		} else {
+			// CHECK TIME LIMIT
+			double time = result.matchTimeEnd;
+			if (time / 1000 + 15 >= config.getTimeLimit()) {
+				// TIME HAS PASSED OUT
+			} else {
+				// MATCH HAS ENDED PREMATURELY
+				matchFailed = true;
+			}
+		}		
+		result.matchFailure = matchFailed;
+		
+		// DETERMINE WINNER	
+		
+		if (!result.matchFailure && winners.size() <= 0) {
 			throw new PogamutException("There is no winner, impossible! **puzzled**", log, this);
 		} else 
-		if (winners.size() == 1) {
+		if (!result.matchFailure && winners.size() == 1) {
 			result.setWinnerTeam(winners.get(0));
 		} else {
 			result.setDraw(true);
@@ -400,7 +421,10 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 						config.getScoreLimit(),
 						config.getTimeLimit(),
 						result.getMatchTimeEnd(),
-						result.isDraw() ? "DRAW" : "TEAM" + String.valueOf(result.getWinnerTeam())
+						result.matchFailure ?
+								"FAILURE"
+								:
+								result.isDraw() ? "DRAW" : "TEAM" + String.valueOf(result.getWinnerTeam())
 					);
 			try {
 				writer.close();
@@ -411,7 +435,11 @@ public class UT2004CaptureTheFlag extends UT2004Match<UT2004CaptureTheFlagConfig
 		}
 		
 		if (log != null && log.isLoggable(Level.INFO)) {
-			log.info(config.getMatchId().getToken() + ": Match result output into " + file.getAbsolutePath() + ".");
+			if (result.matchFailure) {
+				log.warning(config.getMatchId().getToken() + ": Results processed, FAILURE!");
+			} else {
+				log.info(config.getMatchId().getToken() + ": Match result output into " + file.getAbsolutePath() + ".");
+			}
 		}
 		
 	}

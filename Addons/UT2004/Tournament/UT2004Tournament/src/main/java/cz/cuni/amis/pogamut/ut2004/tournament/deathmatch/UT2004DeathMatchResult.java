@@ -38,6 +38,11 @@ public class UT2004DeathMatchResult extends UT2004IndividualMatchResult {
 	 * When the match has ended (in seconds);
 	 */
 	public double matchTimeEnd;
+	
+	/**
+	 * Match failure?
+	 */
+	public boolean matchFailure = false;
 
 	@Override
 	public String toString() {
