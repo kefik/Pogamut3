@@ -16,13 +16,16 @@ import cz.cuni.amis.pogamut.base.agent.state.level1.IAgentStateUp;
 import cz.cuni.amis.pogamut.base.agent.state.level2.IAgentStateRunning;
 import cz.cuni.amis.pogamut.base.communication.command.IAct;
 import cz.cuni.amis.pogamut.base.communication.connection.impl.socket.SocketConnection;
+import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEvent;
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEvent;
 import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectListener;
+import cz.cuni.amis.pogamut.base.communication.worldview.react.EventReactOnce;
 import cz.cuni.amis.pogamut.base.component.bus.IComponentBus;
 import cz.cuni.amis.pogamut.base.utils.logging.IAgentLogger;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.StartPlayers;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerJoinsGame;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerLeft;
@@ -250,13 +253,21 @@ public class UT2004Analyzer extends UT2004Server implements IUT2004Analyzer {
 		cleanUp();
 	}
 	
+	private EventReactOnce addObserversCallback;
+	
 	protected void init() {
 		super.init();
 		synchronized(mutex) {
 	        getAct().act(new StartPlayers(true, true, true));
-	        for (Player player : getWorldView().getAll(Player.class).values()) {
-				addObserver(player.getId(), player.getName(), true);					
-	        }
+	        addObserversCallback = new EventReactOnce<EndMessage>(EndMessage.class, getWorldView()) {
+				@Override
+				protected void react(EndMessage event) {
+					 for (Player player : getWorldView().getAll(Player.class).values()) {
+						addObserver(player.getId(), player.getName(), true);					
+			        }
+				}
+			};
+	       
     	}
     }
 
@@ -265,6 +276,7 @@ public class UT2004Analyzer extends UT2004Server implements IUT2004Analyzer {
 	 */
 	protected void cleanUp() {
 		synchronized(observers) {
+			addObserversCallback.disable();
 			for (IUT2004AnalyzerObserver observer : observers.values()) {
 				if (observer.getState().getFlag() instanceof IAgentStateUp) {
 					try {

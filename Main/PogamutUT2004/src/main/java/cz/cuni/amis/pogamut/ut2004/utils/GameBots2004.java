@@ -43,8 +43,11 @@ public class GameBots2004 {
 
 	private IGameBots2004Task task;
 	
+	private LogCategory log;
+	
 	public GameBots2004(IGameBots2004Task task) {
 		this.task = task;
+		this.log = new LogCategory("GameBots2004");
 	}
 	
 	/**
@@ -63,6 +66,9 @@ public class GameBots2004 {
 	}	
 	
 	public synchronized void start(UCCWrapperConf conf) {
+		log.warning("STARTING!");
+		
+		log.warning("Starting UCC Wrapper...");
 		this.uccWrapper = new UCCWrapper(conf);
 		
 		UT2004AgentParameters params = new UT2004AgentParameters();
@@ -71,7 +77,11 @@ public class GameBots2004 {
 		UT2004ServerFactory factory = new UT2004ServerFactory(module);
 		UT2004ServerRunner runner = new UT2004ServerRunner(factory);
 		runner.setLogLevel(Level.SEVERE);
+		
+		log.warning("Starting UT2004Server...");
 		server = (UT2004Server) runner.startAgents(params).get(0);
+		
+		log.warning("Starting the thread...");
 		
 		thread = new Thread(new Runnable() {
 
@@ -82,16 +92,22 @@ public class GameBots2004 {
 			
 		}, "GameBots2004-Thread");
 		thread.start();
+		
+		log.warning("Started.");
 	}
 	
 	public synchronized void stop() {
 		if (uccWrapper == null) return;
+		
+		log.warning("STOPPING!");
 
+		log.warning("Ending the task...");
 		try {
 			task.end();
 		} catch (Exception e) {			
 		}
 		
+		log.warning("Interrupting the thread...");
 		try {
 			thread.interrupt();
 			thread.join(5000);
@@ -99,17 +115,21 @@ public class GameBots2004 {
 		}
 		thread = null;
 		
+		log.warning("Stopping the UT2004Server...");
 		try {
 			server.stop();
 		} catch (Exception e) {
 		}
 		server = null;
 		
+		log.warning("Stopping the UCC Wrapper...");
 		try {
 			uccWrapper.stop();
 		} catch (Exception e) {			
 		}
 		uccWrapper = null;
+		
+		log.warning("Stopped.");
 	}
 	
 }

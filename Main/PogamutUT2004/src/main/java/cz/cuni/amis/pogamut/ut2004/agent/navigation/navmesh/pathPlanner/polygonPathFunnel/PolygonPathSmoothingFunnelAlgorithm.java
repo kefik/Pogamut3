@@ -37,11 +37,21 @@ public class PolygonPathSmoothingFunnelAlgorithm {
     		return crossings;
     	}
     	
+    	{
+    		// DEBUG
+    		FunnelDebug.debugFunnel_DrawInit(leadIn, boundaries, leadOut);
+    	}
+    	
     	Funnel gatewayFunnel = Funnel.createFromBoundary(
     		leadIn,
     		boundaries.get(0),
     		0
     	);
+    	
+    	{
+        	// DEBUG
+        	FunnelDebug.debugFunnel_drawGateway(gatewayFunnel);
+        }
 	    
         // now we will go further over the boundaries until the boundary falls outside the funnel or until we find target point inside the funnel
         
@@ -54,6 +64,11 @@ public class PolygonPathSmoothingFunnelAlgorithm {
         	);
             FunnelRay newLeftRay = newGatewayFunnel.getLeftRay();
             FunnelRay newRightRay = newGatewayFunnel.getRightRay();
+            
+            {
+            	// DEBUG
+            	FunnelDebug.debugFunnel_NextStep(gatewayFunnel, newGatewayFunnel, leadIn, boundaries, leadOut, crossings);
+            }
            
             FunnelZone newLeftRayZone = gatewayFunnel.determineZone( newLeftRay.getCrossing().getLocation().asPoint3D() );
             switch ( newLeftRayZone ) {
@@ -68,7 +83,12 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             	// the path bends to the right, add right ray's crossing to the path and restart from it
             	Location crossing =  gatewayFunnel.getRightRay().getCrossing();
             	crossings.add( crossing );
-                
+            	
+            	{
+            		// DEBUG
+            		FunnelDebug.debugFunnel_NewCrossing(crossing);
+            	}
+            	
             	index = gatewayFunnel.getRightRay().getIndex() + 1;
             	
             	// TODO: trying to fix occasional bug when the destination is after the bending the path to the right... is this correct?
@@ -79,6 +99,11 @@ public class PolygonPathSmoothingFunnelAlgorithm {
 //            		// the next boundary shares the vertex we picked as a crossing so skip it            		
 //            		++index;
 //            	}
+            	
+            	if (index >= boundaries.size()) {
+            		// WE'RE BENDING ON THE LAST BOUNDARY...
+            		break;
+            	}
             	
                 gatewayFunnel = Funnel.createFromBoundary( 
             		crossing,
@@ -99,6 +124,12 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             case OUTSIDE_LEFT:
             	// the path bends to the left, add left ray's crossing to the path and restart from it
             	Location crossing = gatewayFunnel.getLeftRay().getCrossing();
+            	
+            	{
+            		// DEBUG
+            		FunnelDebug.debugFunnel_NewCrossing(crossing);
+            	}
+            	
             	crossings.add( crossing );
             	
             	index = gatewayFunnel.getLeftRay().getIndex() + 1;
@@ -111,6 +142,12 @@ public class PolygonPathSmoothingFunnelAlgorithm {
 //            		// the next boundary shares the vertex we picked as a crossing so skip it
 //            		++index;
 //            	}
+            	
+            	if (index >= boundaries.size()) {
+            		//System.out.println("OUCH!");
+            		// WE'RE BENDING ON THE LAST BOUNDARY...
+            		break;
+            	}
             	
                 gatewayFunnel = Funnel.createFromBoundary( 
             		crossing,
@@ -130,10 +167,18 @@ public class PolygonPathSmoothingFunnelAlgorithm {
         switch ( gatewayFunnel.determineZone(leadOut.getLocation().asPoint3D()) ) {
         case OUTSIDE_LEFT:
         	// the path bends to the left
+	        {
+	    		// DEBUG
+	    		FunnelDebug.debugFunnel_NewCrossing(gatewayFunnel.getLeftRay().getCrossing());
+	    	}
             crossings.add( gatewayFunnel.getLeftRay().getCrossing());
         	break;
         case OUTSIDE_RIGHT:
         	// the path bends to the right
+	        {
+	    		// DEBUG
+	    		FunnelDebug.debugFunnel_NewCrossing(gatewayFunnel.getRightRay().getCrossing());
+	    	}
         	crossings.add( gatewayFunnel.getRightRay().getCrossing());
         	break;
         case INSIDE:
