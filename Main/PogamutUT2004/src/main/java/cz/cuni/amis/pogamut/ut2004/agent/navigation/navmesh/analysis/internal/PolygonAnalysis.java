@@ -66,14 +66,21 @@ public class PolygonAnalysis {
 			polygonInfo.shape = new SimplePlanarPolygon3D(verticesAsPoint3D);
 		}
 		
-		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() {
+		// create polygon representation for BSP
+		final HashMap<Integer,List<Location>> polygonIdToLocations = Maps.newHashMap();
+		for ( Integer polygonId : allPolygonIds ) {
+			ArrayList<Location> locations = Lists.newArrayList();
+			for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
+				locations.add( vertexIdToInfoMap.get(vertexId).location );
+			}
+			
+			polygonIdToLocations.put( polygonId, locations );
+		}
+		
+		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() { 			
 			@Override
 			protected List<Location> getPolygonVertexLocations(Integer polygonId) {
-				ArrayList<Location> locations = Lists.newArrayList();
-				for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
-					locations.add( vertexIdToInfoMap.get(vertexId).location );
-				}
-				return locations;
+				return polygonIdToLocations.get(polygonId);
 			}			
 		};
 		xyProjectionBsp = BspTree.make( partitioningStrategy, allPolygonIds );

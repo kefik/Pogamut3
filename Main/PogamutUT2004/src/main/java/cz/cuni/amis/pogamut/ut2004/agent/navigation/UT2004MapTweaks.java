@@ -173,6 +173,11 @@ public class UT2004MapTweaks {
 		builder.removeEdge("PlayerStart12", "PathNode106");
 		builder.removeEdge("PathNode126", "InventorySpot44");
 		builder.removeEdge("PathNode34", "PathNode33");
+		builder.removeEdge("PathNode14", "PathNode13");
+		builder.removeEdgesBetween("PathNode28", "PathNode31");
+		builder.removeEdge("PathNode79", "PathNode75");
+		builder.removeEdge("PathNode126", "PathNode28");
+		builder.removeEdge("PathNode90", "PathNode75");
 		
 		builder.modifyNavPoint("InventorySpot28").addZ(-50).apply();
 		builder.modifyNavPoint("InventorySpot29").addZ(-50).apply();

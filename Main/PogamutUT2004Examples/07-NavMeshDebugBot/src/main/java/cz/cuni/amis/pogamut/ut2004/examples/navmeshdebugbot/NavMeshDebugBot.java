@@ -2,6 +2,7 @@ package cz.cuni.amis.pogamut.ut2004.examples.navmeshdebugbot;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -78,7 +79,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     /**
      * Perform syntehetic test from the start ... probing many paths, stress-testing navmesh path-finder...
      */
-    private boolean synthTest = true;
+    private boolean synthTest = false;
     
     /**
      * Navpoint we are running to.
@@ -89,7 +90,25 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
      * Set of visited navpoints; such a navpoints are not chosen to navigate to...
      */
     private Set<NavPoint> visited = new HashSet<NavPoint>();
+    
+    /**
+     * List of different path colors to use.
+     */
+    private List<Color> pathColors = new ArrayList<Color>();
+    private int lastPathColor = -1;
 
+    @Override
+    public void prepareBot(UT2004Bot bot) {
+    	super.prepareBot(bot);
+    	
+    	for (int shade = 0; shade <= 255; shade += 10) {
+    		float[] hsb = new float[3];
+    		Color.RGBtoHSB(255, shade, shade, hsb);
+    		pathColors.add(Color.getHSBColor(hsb[0], hsb[1], hsb[2]));    		
+    	}
+    	Collections.shuffle(pathColors);
+    }
+    
     @Override
     public void initializeController(UT2004Bot bot) {
     	super.initializeController(bot);
@@ -218,8 +237,9 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     		if (autoclear) {
     			draw.clearAll();
     		}
-    		draw.drawPolyLine( Color.RED, navigation.getCurrentPathDirect());
-    		draw.drawCube( Color.RED, targetNavpoint, 20);
+    		Color pathColor = pathColors.get((++lastPathColor) % pathColors.size());
+    		draw.drawPolyLine( pathColor, navigation.getCurrentPathDirect());
+    		draw.drawCube( pathColor, targetNavpoint, 20);
     	} else {
     		sayGlobal("NO PATH TO: " + targetNavpoint.getId().getStringId());
     	}

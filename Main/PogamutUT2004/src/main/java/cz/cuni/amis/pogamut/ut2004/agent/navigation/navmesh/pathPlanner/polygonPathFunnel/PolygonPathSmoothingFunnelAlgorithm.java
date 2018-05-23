@@ -91,14 +91,15 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             	
             	index = gatewayFunnel.getRightRay().getIndex() + 1;
             	
-            	// TODO: trying to fix occasional bug when the destination is after the bending the path to the right... is this correct?
-//            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
-//            			||
-//            			crossing.equals( boundaries.get(index).getDestinationVertex() )
-//            	) {
-//            		// the next boundary shares the vertex we picked as a crossing so skip it            		
-//            		++index;
-//            	}
+            	while ( index < boundaries.size()
+            			&&
+            			(crossing.equals( boundaries.get(index).getSourceVertex() )
+            			||
+            			crossing.equals( boundaries.get(index).getDestinationVertex()) )
+            	) {
+            		// the next boundary shares the vertex we picked as a crossing so skip it            		
+            		++index;
+            	}
             	
             	if (index >= boundaries.size()) {
             		// WE'RE BENDING ON THE LAST BOUNDARY...
@@ -134,17 +135,17 @@ public class PolygonPathSmoothingFunnelAlgorithm {
             	
             	index = gatewayFunnel.getLeftRay().getIndex() + 1;
             	
-            	// TODO: trying to fix occasional bug when the destination is after the bending the path to the right... is this correct?
-//            	while ( crossing.equals( boundaries.get(index).getSourceVertex() )
-//            			||
-//            			crossing.equals( boundaries.get(index).getDestinationVertex() )
-//            	) {
-//            		// the next boundary shares the vertex we picked as a crossing so skip it
-//            		++index;
-//            	}
+            	while ( index < boundaries.size()
+            			&&
+            			(crossing.equals( boundaries.get(index).getSourceVertex() )
+            			||
+            			crossing.equals( boundaries.get(index).getDestinationVertex()) )
+            	) {
+            		// the next boundary shares the vertex we picked as a crossing so skip it
+            		++index;
+            	}
             	
             	if (index >= boundaries.size()) {
-            		//System.out.println("OUCH!");
             		// WE'RE BENDING ON THE LAST BOUNDARY...
             		break;
             	}
