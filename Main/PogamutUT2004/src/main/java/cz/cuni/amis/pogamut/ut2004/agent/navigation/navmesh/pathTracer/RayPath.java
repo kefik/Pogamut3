@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
-import math.geom2d.Point2D;
 
 /** Ray traced path
  *

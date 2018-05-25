@@ -158,10 +158,14 @@ public class NavMeshConstruction {
 		vertices = coordinator.getVertices();
 		offMeshPoints = coordinator.getOffMeshPoints();
 		
+		XyProjectionPolygonPartitioningStrategy partitioningStrategy = new XyProjectionPolygonPartitioningStrategy();
+		
 		xyProjectionBsp = BspTree.make(
-			new XyProjectionPolygonPartitioningStrategy(),
+				partitioningStrategy,
 			new ArrayList<NavMeshPolygon>( polygons )
 		);
+		
+		partitioningStrategy.clearCache();
 	}
 	
     public Set<NavMeshPolygon> getPolygons() {

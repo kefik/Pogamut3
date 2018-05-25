@@ -1,7 +1,10 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.bsp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import com.google.common.collect.Maps;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import math.bsp.BspOccupation;
@@ -17,6 +20,14 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	
     public static int STOP_SPLITTING_NUMBER_OF_POLYGONS = 1;
     
+    protected HashMap<TPolygon, ArrayList<Location>> polygonToVertexLocationsMap = Maps.newHashMap();
+    
+	/** Clear objects cached to speed up BSP tree construction
+	 */
+	public void clearCache() {
+		polygonToVertexLocationsMap.clear();
+	}
+	
 	@Override
 	public boolean shouldSplit(IConstBspLeafNode<ArrayList<TPolygon>, StraightLine2D> leafNode) {
 		return leafNode.getData().size() > STOP_SPLITTING_NUMBER_OF_POLYGONS;
@@ -86,5 +97,18 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		return new Point2D( point.getX(), point.getY() );
 	}
 	
-	protected abstract List<Location> getPolygonVertexLocations(TPolygon polygon);
+	protected ArrayList<Location> getPolygonVertexLocations(TPolygon polygon) {
+		
+		if ( polygonToVertexLocationsMap.containsKey(polygon) ) {
+			return polygonToVertexLocationsMap.get(polygon);
+		}
+		
+		ArrayList<Location> locations = getPolygonVertexLocationsUncached( polygon );
+
+		polygonToVertexLocationsMap.put( polygon,  locations );
+		
+		return locations;
+	}
+	
+	protected abstract ArrayList<Location> getPolygonVertexLocationsUncached(TPolygon polygon);
 }

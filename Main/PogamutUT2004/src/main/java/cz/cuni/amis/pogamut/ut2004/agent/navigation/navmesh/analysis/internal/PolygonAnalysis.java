@@ -2,7 +2,6 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -65,10 +64,10 @@ public class PolygonAnalysis {
 			}
 			polygonInfo.shape = new SimplePlanarPolygon3D(verticesAsPoint3D);
 		}
-		
-		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() {
+			
+		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() { 			
 			@Override
-			protected List<Location> getPolygonVertexLocations(Integer polygonId) {
+			protected ArrayList<Location> getPolygonVertexLocationsUncached(Integer polygonId) {
 				ArrayList<Location> locations = Lists.newArrayList();
 				for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
 					locations.add( vertexIdToInfoMap.get(vertexId).location );
@@ -77,6 +76,7 @@ public class PolygonAnalysis {
 			}			
 		};
 		xyProjectionBsp = BspTree.make( partitioningStrategy, allPolygonIds );
+		partitioningStrategy.clearCache();
 	}
 	
 	public Integer getPolygonIdBelow(Location location ) {
