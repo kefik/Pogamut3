@@ -35,12 +35,38 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	public boolean shouldSplit(IConstBspLeafNode<ArrayList<TPolygon>, StraightLine2D> leafNode) {
 		return leafNode.getData().size() > STOP_SPLITTING_NUMBER_OF_POLYGONS;
 	}
+	
+	static ArrayList<Point2D> trivialBoundaryOffsets = Lists.newArrayList();
+	static {
+		trivialBoundaryOffsets.add( new Point2D(  1, 0 ) );
+		trivialBoundaryOffsets.add( new Point2D(  1, 1 ) );
+		trivialBoundaryOffsets.add( new Point2D(  0, 1 ) );
+		trivialBoundaryOffsets.add( new Point2D( -1, 1 ) );
+	}
 
 	@Override
 	public StraightLine2D findBoundary(IConstBspLeafNode<ArrayList<TPolygon>, StraightLine2D> leafNode) {
 		StraightLine2D bestBoundary = null;
 		double bestBoundaryEliminationCount = 0;
 		double sufficientEliminationFraction = getSufficientEliminationFraction();
+		double totalPolygonCount = leafNode.getData().size();
+		
+		Point2D nodeDataCenter = getDataCenter( leafNode.getData() );
+		for ( Point2D trivialBoundaryOffset : trivialBoundaryOffsets ) {
+			StraightLine2D candidateBoundary = new StraightLine2D( nodeDataCenter, nodeDataCenter.plus(trivialBoundaryOffset) );
+			
+			double candidateBoundaryEliminationCount = computeEliminationCount( candidateBoundary, leafNode.getData() );
+	        
+	        if (bestBoundaryEliminationCount < candidateBoundaryEliminationCount) {
+	        	bestBoundary = candidateBoundary;
+	        	bestBoundaryEliminationCount = candidateBoundaryEliminationCount;
+	        }
+	        
+	        if ( bestBoundaryEliminationCount > totalPolygonCount*sufficientEliminationFraction )
+	        {
+	        	return bestBoundary;
+	        }
+		}
 		
 		for ( TPolygon splittingPolygon : leafNode.getData() ) {
 			List<Point2D> vertices = getPolygonVertices(splittingPolygon);
@@ -50,21 +76,7 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 				
 				StraightLine2D candidateBoundary = new StraightLine2D( a, b );
 				
-				double totalPolygonCount = leafNode.getData().size();
-	        	double negativeSidePolygonCount = 0;
-	        	double positiveSidePolygonCount = 0;
-	        	
-		        for (TPolygon polygon : leafNode.getData()) {
-		        	BspOccupation occupation = determineElementOccupation( candidateBoundary, polygon );
-		            if (occupation.intersectsNegative()) {
-		            	++negativeSidePolygonCount;
-		            }
-		            if (occupation.intersectsPositive()) {
-		            	++positiveSidePolygonCount;
-		            }
-		        }
-		        
-		        double candidateBoundaryEliminationCount = Math.min( totalPolygonCount-negativeSidePolygonCount, totalPolygonCount-positiveSidePolygonCount);
+		        double candidateBoundaryEliminationCount = computeEliminationCount( candidateBoundary, leafNode.getData() );
 		        
 		        if (bestBoundaryEliminationCount < candidateBoundaryEliminationCount) {
 		        	bestBoundary = candidateBoundary;
@@ -73,12 +85,30 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		        
 		        if ( bestBoundaryEliminationCount > totalPolygonCount*sufficientEliminationFraction )
 		        {
-		        	break;
+		        	return bestBoundary;
 		        }
 			}
 		}
 		
 		return bestBoundary;
+	}
+	
+	public double computeEliminationCount( StraightLine2D boundary, List<TPolygon> polygons ) {
+		double totalPolygonCount = polygons.size();
+    	double negativeSidePolygonCount = 0;
+    	double positiveSidePolygonCount = 0;
+    	
+        for (TPolygon polygon : polygons) {
+        	BspOccupation occupation = determineElementOccupation( boundary, polygon );
+            if (occupation.intersectsNegative()) {
+            	++negativeSidePolygonCount;
+            }
+            if (occupation.intersectsPositive()) {
+            	++positiveSidePolygonCount;
+            }
+        }
+        
+        return Math.min( totalPolygonCount-negativeSidePolygonCount, totalPolygonCount-positiveSidePolygonCount);
 	}
 	
 	@Override
@@ -100,6 +130,17 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		} else {
 			return BspOccupation.NEGATIVE;
 		}
+	}
+	
+	protected Point2D getDataCenter( ArrayList<TPolygon> polygons ) {
+		double x = 0;
+		double y = 0;
+		for ( TPolygon polygon : polygons ) {
+			Point2D polygonCenter = getPolygonVertexCenter(polygon);
+			x += polygonCenter.getX();
+			y += polygonCenter.getY();
+		}
+		return new Point2D( x / polygons.size(), y / polygons.size() );
 	}
 	
 	protected Point2D projectToXyPlane( Location point ) {
@@ -129,6 +170,28 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	 */
 	protected double getSufficientEliminationFraction() {
 		return 0.49;
+	}
+	
+	protected Point2D getPolygonVertexCenter(TPolygon polygon) {
+		if ( polygonToVertexCenterMap.containsKey(polygon) ) {
+			return polygonToVertexCenterMap.get(polygon);
+		}
+		
+		double x = 0;
+		double y = 0;
+		
+		ArrayList<Point2D> vertices = getPolygonVertices(polygon);
+		for ( Point2D vertex : vertices ) {
+			x += vertex.x;
+			y += vertex.y;
+		}
+		
+		Point2D center = new Point2D( x / vertices.size(), y / vertices.size() );
+		
+		polygonToVertexCenterMap.put( polygon, center );
+		
+		return center;
+		
 	}
 	
 	protected abstract ArrayList<Location> getPolygonVerticesUncached(TPolygon polygon);
