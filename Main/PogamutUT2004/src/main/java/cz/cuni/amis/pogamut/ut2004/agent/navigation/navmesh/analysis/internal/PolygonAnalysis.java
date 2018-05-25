@@ -67,7 +67,7 @@ public class PolygonAnalysis {
 			
 		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() { 			
 			@Override
-			protected ArrayList<Location> getPolygonVertexLocationsUncached(Integer polygonId) {
+			protected ArrayList<Location> getPolygonVerticesUncached(Integer polygonId) {
 				ArrayList<Location> locations = Lists.newArrayList();
 				for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
 					locations.add( vertexIdToInfoMap.get(vertexId).location );

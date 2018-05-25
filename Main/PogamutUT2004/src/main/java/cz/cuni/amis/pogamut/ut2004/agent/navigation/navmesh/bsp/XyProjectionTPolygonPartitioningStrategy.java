@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
@@ -20,12 +21,14 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	
     public static int STOP_SPLITTING_NUMBER_OF_POLYGONS = 1;
     
-    protected HashMap<TPolygon, ArrayList<Location>> polygonToVertexLocationsMap = Maps.newHashMap();
+    protected HashMap<TPolygon, ArrayList<Point2D>> polygonToVertexLocationsMap = Maps.newHashMap();
+    protected HashMap<TPolygon, Point2D> polygonToVertexCenterMap = Maps.newHashMap();
     
 	/** Clear objects cached to speed up BSP tree construction
 	 */
 	public void clearCache() {
 		polygonToVertexLocationsMap.clear();
+		polygonToVertexCenterMap.clear();
 	}
 	
 	@Override
@@ -39,12 +42,12 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		double bestBoundaryMetric = 0;
 		
 		for ( TPolygon splittingPolygon : leafNode.getData() ) {
-			List<Location> vertexLocations = getPolygonVertexLocations(splittingPolygon);
-			for (int i=0; i<vertexLocations.size(); ++i) {
-				Location a = vertexLocations.get(i);
-				Location b = vertexLocations.get( (i+1)%vertexLocations.size() );
+			List<Point2D> vertices = getPolygonVertices(splittingPolygon);
+			for (int i=0; i<vertices.size(); ++i) {
+				Point2D a = vertices.get(i);
+				Point2D b = vertices.get( (i+1)%vertices.size() );
 				
-				StraightLine2D candidateBoundary = new StraightLine2D( projectToXyPlane(a), projectToXyPlane(b) );
+				StraightLine2D candidateBoundary = new StraightLine2D( a, b );
 				
 				double totalPolygonCount = leafNode.getData().size();
 	        	double negativeSidePolygonCount = 0;
@@ -76,8 +79,8 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	public BspOccupation determineElementOccupation(StraightLine2D boundary, TPolygon element) {
 		boolean intersectsPositive = false;
 		boolean intersectsNegative = false;
-		for ( Location vertexLocation : getPolygonVertexLocations(element) ) {
-			BspOccupation vertexOccupation = determinePointOccupation(boundary, vertexLocation);
+		for ( Point2D vertex : getPolygonVertices(element) ) {
+			BspOccupation vertexOccupation = determinePointOccupation(boundary, vertex);
 			intersectsPositive = intersectsPositive || vertexOccupation.intersectsPositive();
 			intersectsNegative = intersectsNegative || vertexOccupation.intersectsNegative();
 		}
@@ -85,8 +88,8 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		return BspOccupation.get(intersectsNegative, intersectsPositive);
 	}
 	
-	public BspOccupation determinePointOccupation(StraightLine2D boundary, Location point) {
-		if ( boundary.getSignedDistance( projectToXyPlane(point) ) >= 0 ) {
+	public BspOccupation determinePointOccupation(StraightLine2D boundary, Point2D point) {
+		if ( boundary.getSignedDistance( point ) >= 0 ) {
 			return BspOccupation.POSITIVE;
 		} else {
 			return BspOccupation.NEGATIVE;
@@ -97,18 +100,21 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		return new Point2D( point.getX(), point.getY() );
 	}
 	
-	protected ArrayList<Location> getPolygonVertexLocations(TPolygon polygon) {
+	protected ArrayList<Point2D> getPolygonVertices(TPolygon polygon) {
 		
 		if ( polygonToVertexLocationsMap.containsKey(polygon) ) {
 			return polygonToVertexLocationsMap.get(polygon);
 		}
 		
-		ArrayList<Location> locations = getPolygonVertexLocationsUncached( polygon );
+		ArrayList<Point2D> locations = Lists.newArrayList();
+		for ( Location location : getPolygonVerticesUncached( polygon ) ) {
+			locations.add( projectToXyPlane( location ) );
+		}
 
 		polygonToVertexLocationsMap.put( polygon,  locations );
 		
 		return locations;
 	}
 	
-	protected abstract ArrayList<Location> getPolygonVertexLocationsUncached(TPolygon polygon);
+	protected abstract ArrayList<Location> getPolygonVerticesUncached(TPolygon polygon);
 }

@@ -14,7 +14,7 @@ public class XyProjectionPolygonPartitioningStrategy extends XyProjectionTPolygo
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	protected ArrayList<Location> getPolygonVertexLocationsUncached(NavMeshPolygon polygon) {
+	protected ArrayList<Location> getPolygonVerticesUncached(NavMeshPolygon polygon) {
 		
 		ArrayList<Location> locations = Lists.newArrayList();
 		
