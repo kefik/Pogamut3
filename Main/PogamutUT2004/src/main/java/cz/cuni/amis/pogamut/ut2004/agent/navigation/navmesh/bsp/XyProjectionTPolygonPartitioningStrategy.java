@@ -39,7 +39,8 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 	@Override
 	public StraightLine2D findBoundary(IConstBspLeafNode<ArrayList<TPolygon>, StraightLine2D> leafNode) {
 		StraightLine2D bestBoundary = null;
-		double bestBoundaryMetric = 0;
+		double bestBoundaryEliminationCount = 0;
+		double sufficientEliminationFraction = getSufficientEliminationFraction();
 		
 		for ( TPolygon splittingPolygon : leafNode.getData() ) {
 			List<Point2D> vertices = getPolygonVertices(splittingPolygon);
@@ -63,12 +64,17 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		            }
 		        }
 		        
-		        double candidateBoundaryMetric = Math.min( totalPolygonCount-negativeSidePolygonCount, totalPolygonCount-positiveSidePolygonCount);
+		        double candidateBoundaryEliminationCount = Math.min( totalPolygonCount-negativeSidePolygonCount, totalPolygonCount-positiveSidePolygonCount);
 		        
-		        if (bestBoundaryMetric < candidateBoundaryMetric) {
+		        if (bestBoundaryEliminationCount < candidateBoundaryEliminationCount) {
 		        	bestBoundary = candidateBoundary;
-		        	bestBoundaryMetric = candidateBoundaryMetric;
-		        }        	        
+		        	bestBoundaryEliminationCount = candidateBoundaryEliminationCount;
+		        }
+		        
+		        if ( bestBoundaryEliminationCount > totalPolygonCount*sufficientEliminationFraction )
+		        {
+		        	break;
+		        }
 			}
 		}
 		
@@ -114,6 +120,15 @@ public abstract class XyProjectionTPolygonPartitioningStrategy<TPolygon>
 		polygonToVertexLocationsMap.put( polygon,  locations );
 		
 		return locations;
+	}
+	
+	/** Elimination fraction that is sufficient for a candidate boundary.
+	 * <br>
+	 * If candidate boundary achieves this elimination fraction - splits polygons such that at least this fraction of them is eliminated on both sides,
+	 * then stop looking for a better candidate.
+	 */
+	protected double getSufficientEliminationFraction() {
+		return 0.49;
 	}
 	
 	protected abstract ArrayList<Location> getPolygonVerticesUncached(TPolygon polygon);

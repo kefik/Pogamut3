@@ -73,7 +73,12 @@ public class PolygonAnalysis {
 					locations.add( vertexIdToInfoMap.get(vertexId).location );
 				}
 				return locations;
-			}			
+			}
+			
+			@Override
+			protected double getSufficientEliminationFraction() {
+				return 0.3; // prefer fast construction over BSP performance, since it won't be used long enough to amortize
+			}
 		};
 		xyProjectionBsp = BspTree.make( partitioningStrategy, allPolygonIds );
 		partitioningStrategy.clearCache();
