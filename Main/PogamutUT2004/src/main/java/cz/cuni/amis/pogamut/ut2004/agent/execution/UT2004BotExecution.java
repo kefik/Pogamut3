@@ -129,14 +129,14 @@ public class UT2004BotExecution {
      * (whether the process is running or is dead). Usage of {@link FlagListener} is advised, see {@link ImmutableFlag#addListener(FlagListener)}.
      * 
      * @param host GB2004 host
-     * @param port GB2004 bot port
+     * @param botPort GB2004 bot port
      */
-	public void start(String host, int port) throws PogamutIOException {
+	public void start(String host, int botPort) throws PogamutIOException {
 		String javaHome = System.getenv("JAVA_HOME");
 		if (javaHome == null || (javaHome.trim().equals(""))) {
-			start(host, port, -1, null);
+			start(host, botPort, -1, -1, null);
 		} else {
-			start(host, port, -1, javaHome);
+			start(host, botPort, -1, -1, javaHome);
 		}
 	}
 	
@@ -155,9 +155,31 @@ public class UT2004BotExecution {
 	public void start(String host, int botPort, int controlPort) throws PogamutIOException {
 		String javaHome = System.getenv("JAVA_HOME");
 		if (javaHome == null || (javaHome.trim().equals(""))) {
-			start(host, botPort, controlPort, null);
+			start(host, botPort, controlPort, -1, null);
 		} else {
-			start(host, botPort, controlPort, javaHome);
+			start(host, botPort, controlPort, -1, javaHome);
+		}
+	}
+	
+	/**
+     * Start the bot process. Throws {@link PogamutIOException} if it fails to start the JVM.
+     * <p><p>
+     * JVM is located via $JAVA_HOME environment variable.
+     * <p><p>
+     * It is wise to observe the state of the {@link UT2004BotExecution#getRunning()} flag to obtain the state of the process
+     * (whether the process is running or is dead). Usage of {@link FlagListener} is advised, see {@link ImmutableFlag#addListener(FlagListener)}.
+     * 
+     * @param host GB2004 host
+     * @param botPort GB2004 bot port
+     * @param controlPort GB2004 control port
+     * @param observerPort GB2004 observer port
+     */
+	public void start(String host, int botPort, int controlPort, int observerPort) throws PogamutIOException {
+		String javaHome = System.getenv("JAVA_HOME");
+		if (javaHome == null || (javaHome.trim().equals(""))) {
+			start(host, botPort, controlPort, observerPort, null);
+		} else {
+			start(host, botPort, controlPort, observerPort, javaHome);
 		}
 	}
     
@@ -170,9 +192,10 @@ public class UT2004BotExecution {
      * @param host GB2004 host
      * @param botPort GB2004 bot port
      * @param controlPort GB2004 control port
+     * @param observerPort GB2004 observer port
      * @param javaHome path/to/dir which is JAVA home
      */
-	public void start(String host, int botPort, int controlPort, String javaHome) throws PogamutIOException {
+	public void start(String host, int botPort, int controlPort, int observerPort, String javaHome) throws PogamutIOException {
 		synchronized(running) {
 			if (running.getFlag()) {
 				throw new PogamutException("Could not start the bot again, it is already running! stop() it first!", log, this);
@@ -212,6 +235,16 @@ public class UT2004BotExecution {
 				Object origControlPort = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_SERVER_PORT.getKey(), controlPort);
 				if (origControlPort != null) {
 					if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_SERVER_PORT.getKey() + " from value '" + String.valueOf(origControlPort) + "' to value '" + controlPort + "'.");
+				}
+			}
+			if (observerPort > 0) {
+				Object origObserverHost = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_OBSERVER_HOST.getKey(), host);
+				if (origObserverHost != null) {
+					if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_OBSERVER_HOST.getKey() + " from value '" + String.valueOf(origObserverHost) + "' to value '" + host + "'.");
+				}
+				Object origObserverPort = config.setParameter(PogamutUT2004Property.POGAMUT_UT2004_OBSERVER_PORT.getKey(), observerPort);
+				if (origObserverPort != null) {
+					if (log != null && log.isLoggable(Level.WARNING)) log.warning("Reconfiguring Bot[id=" + config.getBotId().getToken() + "] parameter " + PogamutUT2004Property.POGAMUT_UT2004_OBSERVER_PORT.getKey() + " from value '" + String.valueOf(origObserverPort) + "' to value '" + observerPort + "'.");
 				}
 			}
 			

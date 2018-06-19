@@ -834,7 +834,7 @@ public abstract class UT2004Match<CONFIG extends UT2004MatchConfig, RESULT exten
 						bots.bots.put(botConfig.getBotId(), execution);
 						
 						// START THE BOT
-						execution.start(ucc.getHost(), ucc.getBotPort());
+						execution.start(ucc.getHost(), ucc.getBotPort(), ucc.getControlPort(), ucc.getObserverPort());
 						
 						// WAIT TILL WE CATCH HIS ID / OR TIMEOUT / OR BOT FAILURE
 						latch.get().await(2 * 60 * 1000, TimeUnit.MILLISECONDS);						

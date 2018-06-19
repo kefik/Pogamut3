@@ -135,7 +135,7 @@ public class TCMessage implements IWorldChangeEvent, IWorldEvent, Serializable {
 			  in = new ObjectInputStream(bis);
 			  message = (Serializable)in.readObject(); 		  
 			} catch (Exception e) {
-				throw new PogamutException("Failed to deserialize TCMessage of type " + messageType.getToken() + "...", this);
+				throw new PogamutException("Failed to deserialize TCMessage of type " + messageType.getToken() + "...", e, this);
 			} finally {
 			  if (bis != null) {
 				  try {

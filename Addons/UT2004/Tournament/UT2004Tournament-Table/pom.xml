@@ -14,11 +14,16 @@
 	<version>3.8.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ut2004-tournament-dm-table</name>
+	<name>ut2004-tournament-table</name>
 	<url>http://diana.ms.mff.cuni.cz/maven-sites/pogamut/${project.version}/${project.artifactId}/</url>
 	
 	<properties>
-		<main.deathmatch.console.class>cz.cuni.amis.pogamut.ut2004.tournament.dm.table.MainNew</main.deathmatch.console.class>
+		<main.deathmatch.console.class>cz.cuni.amis.pogamut.ut2004.tournament.dm.table.Main</main.deathmatch.console.class>
+		<main.deathmatch.excel.class>cz.cuni.amis.pogamut.ut2004.tournament.dm.table.MainExcel</main.deathmatch.excel.class>
+		<main.teamdeathmatch.console.class>cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.Main</main.teamdeathmatch.console.class>
+		<main.teamdeathmatch.excel.class>cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.MainExcel</main.teamdeathmatch.excel.class>
+		<main.capturetheflag.console.class>cz.cuni.amis.pogamut.ut2004.tournament.ctf.table.Main</main.capturetheflag.console.class>
+		<main.capturetheflag.excel.class>cz.cuni.amis.pogamut.ut2004.tournament.ctf.table.MainExcel</main.capturetheflag.excel.class>
 	</properties>
 
 	<dependencies>
@@ -78,7 +83,9 @@
 						<artifactId>onejar-maven-plugin</artifactId>
 						<version>1.4.4</version>
 						<executions>
+						  <!-- DEATHMATCH -->
 							<execution>
+							  <id>DM-ONEJAR</id>
 								<phase>package</phase>
 								<configuration>
 									<!-- Optional -->
@@ -100,6 +107,76 @@
 									<goal>one-jar</goal>
 								</goals>
 							</execution>
+							<execution>
+							  <id>DM-EXCEL-ONEJAR</id>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>dm-excel-onejar</classifier>
+									<mainClass>${main.deathmatch.excel.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+							
+							<!-- TEAM DEATHMATCH -->							
+							<execution>
+							  <id>TDM-ONEJAR</id>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>tdm-onejar</classifier>
+									<mainClass>${main.teamdeathmatch.console.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+							<execution>
+							  <id>TDM-EXCEL-ONEJAR</id>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>tdm-excel-onejar</classifier>
+									<mainClass>${main.teamdeathmatch.excel.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+							
+							<!-- CAPTURE THE FLAG 
+							<execution>
+							  <id>CTF-ONEJAR</id>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>ctf-onejar</classifier>
+									<mainClass>${main.capturetheflag.console.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+							<execution>
+							  <id>CTF-EXCEL-ONEJAR</id>
+								<phase>package</phase>
+								<configuration>
+									<onejarVersion>0.97</onejarVersion>
+									<attachToBuild>true</attachToBuild>
+									<classifier>ctf-excel-onejar</classifier>
+									<mainClass>${main.capturetheflag.excel.class}</mainClass>
+								</configuration>
+								<goals>
+									<goal>one-jar</goal>
+								</goals>
+							</execution>
+							-->
 						</executions>
 					</plugin>
 				</plugins>

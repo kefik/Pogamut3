@@ -178,11 +178,19 @@ public class UT2004MapTweaks {
 		builder.removeEdge("PathNode79", "PathNode75");
 		builder.removeEdge("PathNode126", "PathNode28");
 		builder.removeEdge("PathNode90", "PathNode75");
+		builder.removeEdge("PathNode34", "PathNode33");
+		builder.removeEdgesBetween("PathNode30", "PathNode31");
 		
+		builder.removeEdge("PathNode126", "InventorySpot28");
+		
+		builder.modifyEdge("InventorySpot28", "PathNode35").removeJumpFlag().modifyEdge();
+				
 		builder.modifyNavPoint("InventorySpot28").addZ(-50).apply();
 		builder.modifyNavPoint("InventorySpot29").addZ(-50).apply();
 		builder.modifyNavPoint("InventorySpot30").addZ(-50).apply();
 		builder.modifyNavPoint("InventorySpot31").addZ(-50).apply();
+		
+		
 	}
 
 	protected void tweak_DM_1on1_Albatross(NavigationGraphBuilder builder) {

@@ -1,14 +1,20 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report.CSV.CSVRow;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV.CSVRow;
+import cz.cuni.amis.utils.Const;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.maps.HashMapMap;
 import cz.cuni.amis.utils.maps.LazyMap;
@@ -24,6 +30,9 @@ public class DMTableResults {
 		
 	};
 	
+	/**
+	 * Player1 -> Player2 -> DMMatchResult
+	 */
 	public HashMapMap<String, String, DMMatchResult> results = new HashMapMap<String, String, DMMatchResult>();
 	
 	protected void info(String msg) {
@@ -47,7 +56,7 @@ public class DMTableResults {
 		return results.get(plr1, plr2);
 	}
 	
-	public DMMatchResult addResult(String plr1, String plr2, int score1, int score2) {
+	public DMMatchResult addResult(String plr1, String plr2, int score1, int score2, boolean[] botLogicEx, String[] botEx) {
 		if (plr1.compareToIgnoreCase(plr2) == 0) {
 			throw new RuntimeException("Could not add result for " + plr1 + " vs. " + plr2 + " as their names are the same!");
 		}
@@ -56,12 +65,24 @@ public class DMTableResults {
 			String temp = plr2;
 			plr2 = plr1;
 			plr1 = temp;
+			
+			int tempI = score2;
+			score2 = score1;
+			score1 = tempI;
+			
+			boolean tempB = botLogicEx[1];
+			botLogicEx[1] = botLogicEx[0];
+			botLogicEx[0] = tempB;
+			
+			String tempS = botEx[1];
+			botEx[1] = botEx[0];
+			botEx[0] = tempS;
 		}
 		
 		DMTablePlayerResult player1 = players.get(plr1);
 		DMTablePlayerResult player2 = players.get(plr2);
 		
-		DMMatchResult result = new DMMatchResult(plr1, plr2, score1, score2);
+		DMMatchResult result = new DMMatchResult(plr1, plr2, score1, score2, botLogicEx[0], botLogicEx[1], botEx[0], botEx[1]);
 		
 		DMMatchResult old = results.put(plr1, plr2, result);
 		
@@ -83,6 +104,10 @@ public class DMTableResults {
 
 			@Override
 			public int compare(DMTablePlayerResult o1, DMTablePlayerResult o2) {
+				if (o1.wins == o2.wins) {
+					DMMatchResult result = getMatchResult(o1.player, o2.player);
+					return result.getScore(o2.player) - result.getScore(o1.player);
+				}
 				return o2.wins - o1.wins;
 			}
 			
@@ -137,15 +162,61 @@ public class DMTableResults {
 			}
 		}
 		
-		// RESORT PLAYERS ACCORDING TO THEIR REAL POSITION
-		Collections.sort(results, new Comparator<DMTablePlayerResult>() {
-
-			@Override
-			public int compare(DMTablePlayerResult o1, DMTablePlayerResult o2) {
-				return o1.position - o1.position;
+		// NOW GO RESOLVE "THE SAME WINS"
+		
+		for (int start = 0; start < results.size(); ) {
+			int position = results.get(start).position;
+			int end;
+			for (end = start+1; end < results.size() && position == results.get(end).position; ++end);
+			--end;
+			
+			if (start == end) {
+				++start;
+				continue;
 			}
 			
-		});
+			// RESOLVE THE SITUATION
+			// Do we have a player that dominates them all?		
+			boolean dominating = false;
+			for (int candidate = start; candidate <= end; ++candidate) {
+				boolean candidateDominating = true;
+				DMTablePlayerResult result = results.get(candidate);
+				String candidatePlr = result.player;
+				for (int other = start; other <= end; ++other) {
+					if (candidate == other) continue;
+					String otherPlr = results.get(other).player;
+					DMMatchResult match = getMatchResult(candidatePlr, otherPlr);
+					if (!match.isWin(candidatePlr)) {
+						candidateDominating = false;
+						break;
+					}						
+				}
+				if (candidateDominating) {
+					// WE HAVE THE BEST OF THEM ALL
+					if (candidate != start) {
+						// => swap candidate and the start
+						DMTablePlayerResult candidateResult = results.get(candidate);
+						DMTablePlayerResult startResult = results.get(start);
+						results.set(start, candidateResult);
+						results.set(candidate, startResult);
+					}
+					// => renumber the positions
+					results.get(start).position = results.get(start).position - (end - start); 
+					dominating = true;
+					break;
+				}
+			}
+			if (dominating) {
+				// WE HAVE FOUND DOMINATING CANDIDATE
+				++start;
+				continue;
+			} else {
+				// WE HAVE NOT
+				start = end+1;
+				continue;
+			}			
+		}
+		
 		
 		return results;
 	}
@@ -178,12 +249,19 @@ public class DMTableResults {
 		
 		info("Found result file: " + file.getAbsolutePath());
 		
-		File botScoresFile = new File(file.getAbsolutePath().replace("-result\\.csv", "-bot-scores.csv"));
+		File botScoresFile = new File(file.getAbsolutePath().replace("-result.csv", "-bot-scores.csv"));
 		if (!botScoresFile.exists()) {
 			error("Cannot locate bot-scores file at: " + botScoresFile);
 			return;
 		}
-		info("Found bot-scores file: " + file.getAbsolutePath());
+		info("Found bot-scores file: " + botScoresFile.getAbsolutePath());
+		
+		File logFile = new File(file.getAbsolutePath().replace("-result.csv", ".log"));
+		if (!logFile.exists()) {
+			error("Cannot locate log file at: " + logFile);
+			return;
+		}
+		info("Found log file: " + logFile.getAbsolutePath());
 		
 		CSV csv = new CSV(file, ";", true);
 		if (csv.rows.size() != 1) {
@@ -201,16 +279,15 @@ public class DMTableResults {
 			return;
 		}
 		
-		probeBotScoresFile(botScoresFile);
+		probeBotScoresAndLogFile(botScoresFile, logFile);
 	}
 		
-		
-	private void probeBotScoresFile(File file) throws FileNotFoundException, IOException { 
-		if (!file.exists() || !file.isFile() || !file.getAbsolutePath().toLowerCase().endsWith("-bot-scores.csv")) return;
+	private void probeBotScoresAndLogFile(File botScoresFile, File logFile) throws FileNotFoundException, IOException { 
+		if (!botScoresFile.exists() || !botScoresFile.isFile() || !botScoresFile.getAbsolutePath().toLowerCase().endsWith("-bot-scores.csv")) return;
 		
 		CSV csv;
 		
-		csv = new CSV(file, ";", true);
+		csv = new CSV(botScoresFile, ";", true);
 		
 		if (csv.rows.size() != 2) {
 			warn("-- Bot-scores file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
@@ -235,7 +312,66 @@ public class DMTableResults {
 		String player2 = row2.getString("botId");
 		int score2 = row2.getInt("score");
 		
-		DMMatchResult result = addResult(player1, player2, score1, score2);
+		// CHECK LOG FILE
+		boolean[] botLogicEx = new boolean[] { false, false };
+		String[] botEx = new String[] { "", "" };		
+		boolean[] fatalErrorEvent = new boolean[] { false, false };
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(logFile));
+			
+			while (reader.ready()) {
+				String line = reader.readLine();
+				
+				String player = null;
+				int plrIndex = -1;
+				int otherIndex = -1;
+				
+				if (line.contains(" " + player1 + "-StdOut ")) {
+					plrIndex = 0;
+					otherIndex = 1;
+					player = player1;
+				} else
+				if (line.contains(" " + player2 + "-StdOut ")) {
+					plrIndex = 1;
+					otherIndex = 0;
+					player = player2;
+				} else {
+					continue;
+				}
+				
+				if (line.endsWith("Logic iteration exception.")) {
+					botLogicEx[plrIndex] = true;
+				}
+								
+				if (line.endsWith(" FatalErrorEvent[")) {
+					fatalErrorEvent[plrIndex] = true;
+				}
+				
+				if (fatalErrorEvent[plrIndex]) {
+					botEx[plrIndex] += Const.NEW_LINE + line;
+					if (line.endsWith(" " + player + "-StdOut ]")) {
+						fatalErrorEvent[plrIndex] = false;
+					}
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			error("Failed to probe log file at: " + logFile.getAbsolutePath());
+			return;
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {					
+				}
+			}
+		}
+		
+		DMMatchResult result = addResult(player1, player2, score1, score2, botLogicEx, botEx);
 		
 		info("-- " + result.toString());
 	}

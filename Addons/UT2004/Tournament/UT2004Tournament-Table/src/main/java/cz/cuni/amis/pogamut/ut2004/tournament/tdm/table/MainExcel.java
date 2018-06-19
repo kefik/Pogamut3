@@ -1,38 +1,21 @@
-package cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report;
+package cz.cuni.amis.pogamut.ut2004.tournament.tdm.table;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
-
-import org.apache.commons.io.FileUtils;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
-import com.martiansoftware.jsap.Switch;
 
-import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
-import cz.cuni.amis.pogamut.ut2004.tournament.UT2004Ini;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch1v1;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatchConfig;
-import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004BotConfig;
+import cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.summary.TDMMatchesExcelReport;
 
 /**
  * Creates an excel with results out of respective matches.
  *
  * @author Jimmy
- *
  */
-public class MainExcelReport {
+public class MainExcel {
 	
 	private static final char ARG_RESULT_DIR_SHORT = 'r';
 	
@@ -65,7 +48,6 @@ public class MainExcelReport {
 	private static File outputFile;
 
 	
-	
 	private static void fail(String errorMessage) {
 		fail(errorMessage, null);
 	}
@@ -78,7 +60,7 @@ public class MainExcelReport {
 			e.printStackTrace();
 			System.out.println("");
 		}		
-        System.out.println("Usage: java -jar ut2004-tournament-dm-table.jar ");
+        System.out.println("Usage: java -jar ut2004-tournament-tdm-excel-onejar.jar ");
         System.out.println("                " + jsap.getUsage());
         System.out.println();
         System.out.println(jsap.getHelp());
@@ -89,9 +71,9 @@ public class MainExcelReport {
 	private static void header() {
 		if (headerOutput) return;
 		System.out.println();
-		System.out.println("================================================");
-		System.out.println("Pogamut UT2004 DeathMatch Table Result Generator");
-		System.out.println("================================================");
+		System.out.println("====================================================");
+		System.out.println("Pogamut UT2004 TeamDeathMatch Table Result Generator");
+		System.out.println("====================================================");
 		System.out.println();
 		headerOutput = true;
 	}
@@ -117,7 +99,7 @@ public class MainExcelReport {
 	    	.setShortFlag(ARG_RESULT_DIR_SHORT)
 	    	.setLongFlag(ARG_RESULT_DIR_LONG)
 	    	.setDefault(".");
-	    opt8.setHelp("PATH/TO/directory where to search for results (output directory of DMTable).");
+	    opt8.setHelp("PATH/TO/directory where to search for results (output directory of TDMTable).");
 	    
 	    jsap.registerParameter(opt8);	
 	    
@@ -136,7 +118,7 @@ public class MainExcelReport {
 	    	.setRequired(false) 
 	    	.setShortFlag(ARG_OUTPUT_FILE_NAME_SHORT)
 	    	.setLongFlag(ARG_OUTPUT_FILE_NAME_LONG)
-	    	.setDefault("DMTable-Results.xls");
+	    	.setDefault("TDMTable-Results.xls");
 	    opt1.setHelp("Name of the filename to produce. If it won't end with .xls, it will be extended with this suffix.");
 	
 	    jsap.registerParameter(opt1);	    	   
@@ -209,7 +191,7 @@ public class MainExcelReport {
 	}
 	
 	private static void generate() {
-		ExcelReport report = new ExcelReport(resultDirFile, outputFile);
+		TDMMatchesExcelReport report = new TDMMatchesExcelReport(resultDirFile, outputFile);
 		report.generate();
 	}
 
@@ -218,9 +200,9 @@ public class MainExcelReport {
 		if (args == null || args.length == 0) {
 			args = new String[] {
 				"-r",
-				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2017-Labs\\Tournaments\\Tournament2017-3-Deathmatch\\Result\\",
+				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\_Results\\",
 				"-o",
-				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2017-Labs\\Tournaments\\Tournament2017-3-Deathmatch\\Result\\",
+				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\_Results\\",
 			};
 		}
 		

@@ -1099,6 +1099,26 @@ public class NavigationGraphBuilder extends SensorModule<UT2004Bot> {
 	}
 	
 	/**
+	 * Creates a modifier for already existing {@link NavPointNeighbourLink} between 'navPointFromId' and 'navPointToId'.
+	 * <p><p>
+	 * The modifier allows you to change existing edges or add new ones.
+	 * 
+	 * @param navPointFromId will be auto-prefixed (if enabled, which is default)
+	 * @param navPointToId will be auto-prefixed (if enabled, which is default)
+	 * @return edge modifier
+	 */
+	public ExistingNavPointEdgeBuilder modifyEdge(String navPointFromId, String navPointToId) {
+		used = true;
+		NullCheck.check(navPointFromId, "navPointFromId");
+		NullCheck.check(navPointToId, "navPointToId");
+		navPointFromId = autoPrefix(navPointFromId);
+		navPointToId = autoPrefix(navPointToId);
+		
+		ExistingNavPointModifier np = modifyNavPoint(navPointFromId);
+		return np.modifyEdgeTo(navPointToId);		
+	}
+	
+	/**
 	 * Creates simple (non-altered == no flags == no needed jump, etc.) leading 'fromNavPointId' to 'toNavPointId' (only one edge is created).
 	 * <p><p>
 	 * If uses {@link ExistingNavPointModifier#modifyEdgeTo(String)} for creation of new edge, so it won't replace an existing edge if such exist.

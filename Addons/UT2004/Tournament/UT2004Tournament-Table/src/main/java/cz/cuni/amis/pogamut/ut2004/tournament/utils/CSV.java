@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report;
+package cz.cuni.amis.pogamut.ut2004.tournament.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -141,5 +141,15 @@ public class CSV {
                 return null;
             }
         }
+        
+        @Override
+        public String toString() {
+        	StringBuffer result = new StringBuffer();
+        	for (String key : row.keySet()) {
+        		result.append("|" + key + " => " + row.get(key));
+        	}
+        	return result.toString();
+        }
+        
     }
 }

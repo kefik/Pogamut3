@@ -1,7 +1,6 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.dm.table;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,9 +24,8 @@ import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.tournament.UT2004Ini;
 import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch;
 import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatchConfig;
-import cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report.CSV;
-import cz.cuni.amis.pogamut.ut2004.tournament.dm.table.report.MainExcelReport;
 import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004BotConfig;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV;
 
 /**
  * Locate Bot Jar Files in some folder automatically.
@@ -35,7 +33,7 @@ import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004BotConfig;
  * @author Jimmy
  *
  */
-public class MainNew {
+public class Main {
 	
 	private static final char ARG_UT2004_HOME_DIR_SHORT = 'u';
 	
@@ -395,7 +393,7 @@ public class MainNew {
 				while (botName.endsWith(".")) botName = botName.substring(0, botName.length()-1);
 				if (botName.toLowerCase().endsWith("-snapshot")) botName = botName.substring(0, botName.toLowerCase().indexOf("-snapshot"));
 				if (botName.startsWith("DMBot-")) botName = botName.substring(6);
-				if (botName.startsWith("20") && botName.charAt(4) == '-') botName = botName.substring(5);
+				if (botName.startsWith("2") && botName.charAt(4) == '-') botName = botName.substring(5);
 				while (botName.contains("-")) botName = botName.substring(0, botName.indexOf("-"));
 				botNames.add(botName); 
 			}
@@ -922,35 +920,38 @@ public class MainNew {
 	}
 
 	public static void main(String[] args) throws JSAPException {
-		String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
-		
-		String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\";
-		
-		String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\_Results\\";
-		
-//      FOR TESTING		
-		args = new String[] {
-			"-u",
-			ut2004Dir,
-			"-a",
-			botsDir,
-			"-r",
-			resultsDir,
-			"-s",
-			"DMServer",
-			"-m",
-			"DM-1on1-Roughinery-FPS",
-			"-f",
-			"20",
-			"-t",
-			"10",
-			//"-h", // human-like log			
-		    "-c",
-		    "2",  // concurrent thread count
-		    //"-g", // generate batch-files
-	        "-d", // debug
-            "-o"  // continue		
-		};
+		if (args == null || args.length == 0) {
+			// FOR TESTING 
+			
+			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
+			
+			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\";
+			
+			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\_Results\\";
+			
+			args = new String[] {
+				"-u",
+				ut2004Dir,
+				"-a",
+				botsDir,
+				"-r",
+				resultsDir,
+				"-s",
+				"DMServer",
+				"-m",
+				"DM-1on1-Roughinery-FPS",
+				"-f",
+				"20",
+				"-t",
+				"10",
+				//"-h", // human-like log			
+			    "-c",
+			    "2",  // concurrent thread count
+			    //"-g", // generate batch-files
+		        "-d", // debug
+	            "-o"  // continue		
+			};
+		}
 		
 		initJSAP();
 	    
@@ -974,11 +975,11 @@ public class MainNew {
 	    	fail("ERROR", e);
 	    }
 	    
-	    MainExcelReport.main(new String[] {
+	    MainExcel.main(new String[] {
 	    	"-r",
-	    	resultsDir,
+	    	resultDir,
 	    	"-o",
-	    	resultsDir
+	    	resultDir
 	    });
 	    
 	}

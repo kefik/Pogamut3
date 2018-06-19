@@ -630,7 +630,23 @@ public class TCMinaClient implements IoHandler {
 		}
 		
 		switch(tcMessage.getTarget()) {
-		case GLOBAL:
+		case GLOBAL: {
+			Serializable data;
+			try {
+				data = tcMessage.getMessage();
+			} catch (Exception e) {
+				Player sender = ((Player)teamWorldView.get(tcMessage.getSource()));
+				if (sender != null && owner.getBotTeam() != sender.getTeam()) {
+					// bot from the different team has sent some garbage...
+					log.fine(ExceptionToString.process("Invalid request data, failed to deserialize TCMessage.getMessage(): " + String.valueOf(tcMessage), e));	
+				} else {				
+					log.warning(ExceptionToString.process("Invalid request data, failed to deserialize TCMessage.getMessage(): " + String.valueOf(tcMessage), e));
+				}
+				return;
+			}
+			botMessage(tcMessage, data);
+			return;
+		}
 		case TEAM:
 		case CHANNEL:
 		case PRIVATE:
@@ -981,6 +997,11 @@ public class TCMinaClient implements IoHandler {
 			
 			log.info("TCMinaClient stopped!");
 		}
+	}
+
+	@Override
+	public void inputClosed(IoSession arg0) throws Exception {
+		connected.setFlag(false);
 	}
 
 }

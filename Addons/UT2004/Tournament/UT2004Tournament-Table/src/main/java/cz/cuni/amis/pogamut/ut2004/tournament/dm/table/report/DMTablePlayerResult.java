@@ -14,6 +14,8 @@ public class DMTablePlayerResult {
 	
 	public int loses = 0;
 	
+	public int exceptions = 0;
+	
 	public int position = -1;
 	
 	public DMTablePlayerResult(String player) {
@@ -21,6 +23,17 @@ public class DMTablePlayerResult {
 	}
 	
 	public void result(DMMatchResult result) {
+		if (result.isException(player)) {
+			// I HAVE FAILED...
+			exceptions += 1;
+			return;
+		}
+		if (result.isException()) {
+			// THE OTHER BOT EXCEPTION
+			++wins;
+			return;
+		}
+		
 		if (result.player1.equals(player)) {
 			// I AM PLAYER 1
 			frags += result.score1;
@@ -51,5 +64,9 @@ public class DMTablePlayerResult {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "" + position + ". " + player + " [W" + wins + ":D" + draws + ";L" + loses + ":E" + exceptions + "]";
+	}
 	
 }

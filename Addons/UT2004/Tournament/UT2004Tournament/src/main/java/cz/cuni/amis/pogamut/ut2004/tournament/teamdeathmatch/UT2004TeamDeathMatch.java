@@ -24,6 +24,7 @@ import cz.cuni.amis.pogamut.base.utils.guice.AdaptableProvider;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.execution.UT2004BotExecution;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentInfo;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.AgentStats;
 import cz.cuni.amis.pogamut.ut2004.analyzer.IUT2004AnalyzerObserver;
 import cz.cuni.amis.pogamut.ut2004.analyzer.UT2004Analyzer;
@@ -398,7 +399,7 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 						config.getScoreLimit(),
 						config.getTimeLimit(),
 						result.getMatchTimeEnd(),
-						result.isDraw() ? "DRAW" : "TEAM" + String.valueOf(result.getWinnerTeam())
+						result.isDraw() ? "DRAW" : (result.getWinnerTeam() == AgentInfo.TEAM_RED ? config.teamRedId : (result.getWinnerTeam() == AgentInfo.TEAM_BLUE ? config.teamBlueId : "TEAM" + result.getWinnerTeam()))
 					);
 			try {
 				writer.close();
@@ -441,7 +442,7 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 			
 			for (TeamScore score : teams) {
 				writer.format("\n");
-				writer.format("%s", "TEAM" + score.getTeam());
+				writer.format("%s", (score.getTeam() == AgentInfo.TEAM_RED ? config.teamRedId : (score.getTeam() == AgentInfo.TEAM_BLUE ? config.teamBlueId : "TEAM" + score.getTeam())));
 				writer.format(";%d", score.getScore());								
 			}
 			
@@ -485,7 +486,7 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 			result.setHumans(humans);
 			
 			writer.format("botId");
-			writer.format(";name;score;kills;killedByOthers;deaths;suicides");
+			writer.format(";team;name;score;kills;killedByOthers;deaths;suicides");
 			for (IToken token : config.getAllBotIds()) {
 				writer.format(";");
 				writer.format(token.getToken());
@@ -493,7 +494,9 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 			
 			for (IToken token : config.getAllBotIds()) {
 				writer.format("\n");
-				writer.format(token.getToken());
+				writer.format(token.getToken());				
+				int botTeam = config.getBots().get(token).getBotTeam();
+				writer.format(";%s", "" + (botTeam == AgentInfo.TEAM_RED ? config.teamRedId : (botTeam == AgentInfo.TEAM_BLUE ? config.teamBlueId : "TEAM" + botTeam)));								
 				writer.format(";%s", result.getNames().get(token));
 				writer.format(";%d", result.getFinalScores().get(token).getScore());
 				writer.format(";%d", result.getTotalKills().get(token));
@@ -545,7 +548,7 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 		boolean exception = false;
 		
 		// HACK!!!
-		// We must set frag limit to actually BIGGER NUMBER because otherwise GB2004 would drop the connection sooner before telling us that some bot
+		// We must set score limit to actually BIGGER NUMBER because otherwise GB2004 would drop the connection sooner before telling us that some bot
 		// has achieved required score :-/
 		targetScoreLimit = getConfig().getScoreLimit();
 		getConfig().setScoreLimit(targetScoreLimit + 10); 

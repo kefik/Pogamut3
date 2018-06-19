@@ -18,6 +18,10 @@ public class UT2004TeamDeathMatchConfig extends UT2004MatchConfig {
 	
 	protected int timeLimitInMin = 20;
 	
+	protected String teamRedId = "TEAM-RED";
+	
+	protected String teamBlueId = "TEAM-BLUE";
+	
 	public UT2004TeamDeathMatchConfig() {
 		super();
 		getGb2004Ini().setCTFScoreLimit(scoreLimit);
@@ -148,11 +152,29 @@ public class UT2004TeamDeathMatchConfig extends UT2004MatchConfig {
 		return this;
 	}
 	
-	public UT2004MatchConfig setNativeBot(UT2004NativeBotConfig... bots) {
+	public UT2004TeamDeathMatchConfig setNativeBot(UT2004NativeBotConfig... bots) {
 		super.setNativeBot(bots);
 		return this;
-	}
+	}	
 	
+	public String getTeamRedId() {
+		return teamRedId;
+	}
+
+	public UT2004TeamDeathMatchConfig setTeamRedId(String teamRedId) {
+		this.teamRedId = teamRedId;
+		return this;
+	}
+
+	public String getTeamBlueId() {
+		return teamBlueId;
+	}
+
+	public UT2004TeamDeathMatchConfig setTeamBlueId(String teamBlueId) {
+		this.teamBlueId = teamBlueId;
+		return this;
+	}
+
 	@Override
 	protected void validateInner() {
 		super.validateInner();

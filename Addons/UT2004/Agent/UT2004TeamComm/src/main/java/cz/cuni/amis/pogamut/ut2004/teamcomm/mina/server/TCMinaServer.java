@@ -170,7 +170,7 @@ public class TCMinaServer implements IoHandler {
 				}
 				log.warning("Disposing ioAcceptor...");
 				try {
-					ioAcceptor.dispose();
+					ioAcceptor.dispose(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 					ioAcceptor = null;
@@ -843,6 +843,11 @@ public class TCMinaServer implements IoHandler {
 			
 		}
 		
+	}
+
+	@Override
+	public void inputClosed(IoSession arg0) throws Exception {
+		// TODO: should we react?
 	}
 	
 }

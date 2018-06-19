@@ -1,10 +1,9 @@
-package cz.cuni.amis.pogamut.ut2004.tournament.dm.table;
+package cz.cuni.amis.pogamut.ut2004.tournament.tdm.table;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -21,14 +20,14 @@ import com.martiansoftware.jsap.Switch;
 
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.tournament.UT2004Ini;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatch1v1;
-import cz.cuni.amis.pogamut.ut2004.tournament.deathmatch.UT2004DeathMatchConfig;
 import cz.cuni.amis.pogamut.ut2004.tournament.match.UT2004BotConfig;
+import cz.cuni.amis.pogamut.ut2004.tournament.teamdeathmatch.UT2004TeamDeathMatch;
+import cz.cuni.amis.pogamut.ut2004.tournament.teamdeathmatch.UT2004TeamDeathMatchConfig;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV;
 
 /**
- * Specify Bot Jar Files manually. 
- *
+ * Locate Bot Jar Files in some folder automatically.
+ * 
  * @author Jimmy
  *
  */
@@ -40,15 +39,20 @@ public class Main {
 	
 	private static final char ARG_BOT_JARs_SHORT = 'a';
 	
-	private static final String ARG_BOT_JARs_LONG = "bot-jars";
+	private static final String ARG_BOT_JARs_LONG = "bot-jars-dir";
 	
-	private static final char ARG_BOT_NAMEs_SHORT = 'b';
+	private static final char ARG_TEAM_BOT_COUNT_SHORT = 'n';
 	
-	private static final String ARG_BOT_NAMEs_LONG = "bot-names";
+	private static final String ARG_TEAM_BOT_COUNT_LONG = "team-bot-count";
+
+//  BOT NAMES ARE DETERMINED FROM THE JAR FILE NAME
+//	private static final char ARG_BOT_NAMEs_SHORT = 'b';
+//	
+//	private static final String ARG_BOT_NAMEs_LONG = "bot-names";
 	
-	private static final char ARG_MAP_NAME_SHORT = 'm';
+	private static final char ARG_MAP_NAMES_SHORT = 'm';
 	
-	private static final String ARG_MAP_NAME_LONG = "map-name";
+	private static final String ARG_MAP_NAMES_LONG = "map-names";
 		
 	private static final char ARG_RESULT_DIR_SHORT = 'r';
 	
@@ -58,9 +62,9 @@ public class Main {
 	
 	private static final String ARG_SERVER_NAME_LONG = "server-name";
 	
-	private static final char ARG_FRAG_LIMIT_SHORT = 'f';
+	private static final char ARG_SCORE_LIMIT_SHORT = 'f';
 	
-	private static final String ARG_FRAG_LIMIT_LONG = "frag-limit";
+	private static final String ARG_SCORE_LIMIT_LONG = "score-limit";
 	
 	private static final char ARG_TIMEOUT_MINUTES_SHORT = 't';
 	
@@ -78,9 +82,10 @@ public class Main {
 	
 	private static final String ARG_CONCURRENT_THREADS_LONG = "threads";
 	
-	private static final char ARG_GENERATE_BATCH_FILES_SHORT = 'g';
-	
-	private static final String ARG_GENERATE_BATCH_FILES_LONG = "generate-batch-files";
+//  NOT IMPLEMENTED
+//	private static final char ARG_GENERATE_BATCH_FILES_SHORT = 'g';
+//	
+//	private static final String ARG_GENERATE_BATCH_FILES_LONG = "generate-batch-files";
 	
 	private static final char ARG_DEBUG_SHORT = 'd';
 	
@@ -98,23 +103,21 @@ public class Main {
 
 	private static String ut2004HomeDir;
 
-	private static String botJars;
+	private static String botJarDir;
 	
-	private static String[] botJarsSeparated;
-
-	private static String botNames;
+	private static int teamBotCount;
 	
-	private static String[] botNamesSeparated;
+	private static List<String> teamNames;
 	
-	private static File[] botJarFiles;
+	private static List<File> teamBotJarFiles;
 	
-	private static String map;
+	private static String[] maps;
 
 	private static String serverName;
 
 	private static String resultDir;
 
-	private static int fragLimit;
+	private static int scoreLimit;
 	
 	private static int timeoutMinutes;
 
@@ -124,7 +127,7 @@ public class Main {
 
 	private static File mapsDirFile;
 
-	private static File mapFile;
+	private static File[] mapsFile;
 
 	private static File ut2004SystemDirFile;
 
@@ -136,7 +139,8 @@ public class Main {
 	
 	private static int threadCount;
 	
-	private static boolean generateBatchFiles;
+//  NOT IMPLEMENTED
+//	private static boolean generateBatchFiles;
 	
 	private static boolean debug;
 	
@@ -154,7 +158,7 @@ public class Main {
 			e.printStackTrace();
 			System.out.println("");
 		}		
-        System.out.println("Usage: java -jar ut2004-tournament-dm-table.jar ");
+        System.out.println("Usage: java -jar ut2004-tournament-tdm-onejar.jar ");
         System.out.println("                " + jsap.getUsage());
         System.out.println();
         System.out.println(jsap.getHelp());
@@ -165,9 +169,9 @@ public class Main {
 	private static void header() {
 		if (headerOutput) return;
 		System.out.println();
-		System.out.println("========================================");
-		System.out.println("Pogamut UT2004 DeathMatch Table Executor");
-		System.out.println("========================================");
+		System.out.println("============================================");
+		System.out.println("Pogamut UT2004 TeamDeathMatch Table Executor");
+		System.out.println("============================================");
 		System.out.println();
 		headerOutput = true;
 	}
@@ -201,25 +205,35 @@ public class Main {
 	    	.setRequired(true) 
 	    	.setShortFlag(ARG_BOT_JARs_SHORT)
 	    	.setLongFlag(ARG_BOT_JARs_LONG);    
-	    opt2.setHelp("Semicolon separated PATH/TO/JAR/file1;PATH/TO/JAR/file2 containing executable jars of bots.");
-	
+	    opt2.setHelp("PATH/TO/DIR where to look for *one-jar*.jar files that are treated as bot-jar-files that contains a bot for tournament. Each JAR file is thought to execute SINGLE bot; it will be run multiple times according to --" + ARG_TEAM_BOT_COUNT_LONG + " number, default: 3.");
+	    
 	    jsap.registerParameter(opt2);
 	    
-	    FlaggedOption opt3 = new FlaggedOption(ARG_BOT_NAMEs_LONG)
-	    	.setStringParser(JSAP.STRING_PARSER)
-	    	.setRequired(true) 
-	    	.setShortFlag(ARG_BOT_NAMEs_SHORT)
-	    	.setLongFlag(ARG_BOT_NAMEs_LONG);    
-	    opt3.setHelp("Semicolon separated name1;name2;name3 (ids) that should be given to bots.");
+	    FlaggedOption opt21 = new FlaggedOption(ARG_TEAM_BOT_COUNT_LONG)
+		   	.setStringParser(JSAP.INTEGER_PARSER)
+	    	.setRequired(false) 
+	    	.setShortFlag(ARG_TEAM_BOT_COUNT_SHORT)
+	    	.setLongFlag(ARG_TEAM_BOT_COUNT_LONG)
+	    	.setDefault("3");    
+	    opt21.setHelp("How many bots to spawn into the team.");
 	
-	    jsap.registerParameter(opt3);
+	    jsap.registerParameter(opt21);
+	    
+//	    FlaggedOption opt3 = new FlaggedOption(ARG_BOT_NAMEs_LONG)
+//	    	.setStringParser(JSAP.STRING_PARSER)
+//	    	.setRequired(true) 
+//	    	.setShortFlag(ARG_BOT_NAMEs_SHORT)
+//	    	.setLongFlag(ARG_BOT_NAMEs_LONG);    
+//	    opt3.setHelp("Semicolon separated name1;name2;name3 (ids) that should be given to bots.");
+//	
+//	    jsap.registerParameter(opt3);
     
-	    FlaggedOption opt6 = new FlaggedOption(ARG_MAP_NAME_LONG)
+	    FlaggedOption opt6 = new FlaggedOption(ARG_MAP_NAMES_LONG)
 	    	.setStringParser(JSAP.STRING_PARSER)
 	    	.setRequired(true) 
-	    	.setShortFlag(ARG_MAP_NAME_SHORT)
-	    	.setLongFlag(ARG_MAP_NAME_LONG);    
-	    opt6.setHelp("Map where the game should be played (e.g. DM-1on1-Albatross).");
+	    	.setShortFlag(ARG_MAP_NAMES_SHORT)
+	    	.setLongFlag(ARG_MAP_NAMES_LONG);    
+	    opt6.setHelp("Map(s) where the game should be played (e.g. DM-Rankin); semicolon separated list of values, e.g.: DM-Rankin;DM-Roughinery. One map may appear multiple times. There will be the same amount of matches between two teams as there is number of maps specified.");
 	
 	    jsap.registerParameter(opt6);
         
@@ -243,11 +257,11 @@ public class Main {
 		
 		jsap.registerParameter(opt9);
 		
-		FlaggedOption opt10 = new FlaggedOption(ARG_FRAG_LIMIT_LONG)
+		FlaggedOption opt10 = new FlaggedOption(ARG_SCORE_LIMIT_LONG)
 			.setStringParser(JSAP.INTEGER_PARSER)
 			.setRequired(false) 
-			.setShortFlag(ARG_FRAG_LIMIT_SHORT)
-			.setLongFlag(ARG_FRAG_LIMIT_LONG)
+			.setShortFlag(ARG_SCORE_LIMIT_SHORT)
+			.setLongFlag(ARG_SCORE_LIMIT_LONG)
 			.setDefault("20");
 		opt10.setHelp("Frag limit for the match.");
 		
@@ -291,12 +305,12 @@ public class Main {
 		
 		jsap.registerParameter(opt14);
 		
-		Switch opt15 = new Switch(ARG_GENERATE_BATCH_FILES_LONG)
-			.setShortFlag(ARG_GENERATE_BATCH_FILES_SHORT)
-			.setLongFlag(ARG_GENERATE_BATCH_FILES_LONG);
-		opt15.setHelp("Generate batch file for every match executed (requires ut2004-tournament.jar and java on PATH to execute then).");
-		
-		jsap.registerParameter(opt15);
+//		Switch opt15 = new Switch(ARG_GENERATE_BATCH_FILES_LONG)
+//			.setShortFlag(ARG_GENERATE_BATCH_FILES_SHORT)
+//			.setLongFlag(ARG_GENERATE_BATCH_FILES_LONG);
+//		opt15.setHelp("Generate batch file for every match executed (requires ut2004-tournament.jar and java on PATH to execute then).");
+//		
+//		jsap.registerParameter(opt15);
 		
 		Switch opt16 = new Switch(ARG_DEBUG_LONG)
 			.setShortFlag(ARG_DEBUG_SHORT)
@@ -339,21 +353,68 @@ public class Main {
     	}
 		
 		ut2004HomeDir = config.getString(ARG_UT2004_HOME_DIR_LONG);
-		botJars = config.getString(ARG_BOT_JARs_LONG);
-	    botJarsSeparated = botJars == null ? null : botJars.split(";");
-	    botNames = config.getString(ARG_BOT_NAMEs_LONG);
-	    botNamesSeparated = botNames == null ? null : botNames.split(";");
-	    map = config.getString(ARG_MAP_NAME_LONG);
+		botJarDir = config.getString(ARG_BOT_JARs_LONG);
+		teamBotCount = config.getInt(ARG_TEAM_BOT_COUNT_LONG);
+	    maps = config.getString(ARG_MAP_NAMES_LONG).split(";");
 	    serverName = config.getString(ARG_SERVER_NAME_LONG);
 	    resultDir = config.getString(ARG_RESULT_DIR_LONG);
-	    fragLimit = config.getInt(ARG_FRAG_LIMIT_LONG);
+	    scoreLimit = config.getInt(ARG_SCORE_LIMIT_LONG);
 	    timeoutMinutes = config.getInt(ARG_TIMEOUT_MINUTES_LONG);
 	    humanLikeLog = config.getBoolean(ARG_HUMAN_LIKE_LOG_LONG);
 	    ut2004Port = config.getInt(ARG_UT2004_PORT_LONG);
 	    threadCount = config.getInt(ARG_CONCURRENT_THREADS_LONG);
-	    generateBatchFiles = config.getBoolean(ARG_GENERATE_BATCH_FILES_LONG);
+//	    generateBatchFiles = config.getBoolean(ARG_GENERATE_BATCH_FILES_LONG);
 	    debug = config.getBoolean(ARG_DEBUG_LONG);
 	    shouldContinue = config.getBoolean(ARG_CONTINUE_LONG);
+	}
+	
+	private static void findBotJarFiles() {
+		teamBotJarFiles = new ArrayList<File>();
+		teamNames = new ArrayList<String>();
+		
+		File baseDir = new File(botJarDir);
+		
+		if (!baseDir.exists()) {
+			fail("Directory that should contain bot jars '" + botJarDir + "' that resolved to '" + baseDir.getAbsolutePath() + "' does not exist.");
+		}
+		if (!baseDir.exists() || !baseDir.isDirectory()) {
+			fail("Directory that should contain bot jars '" + botJarDir + "' that resolved to '" + baseDir.getAbsolutePath() + "' is not directory.");
+		}
+		
+		locateJarFiles(baseDir);
+	}
+	
+	private static void locateJarFiles(File dir) {
+		if (!dir.isDirectory()) return;
+		if (!dir.exists()) return;
+		
+		for (File file : dir.listFiles()) {
+			if (!file.exists()) continue;
+			if (file.isDirectory()) {
+				locateJarFiles(file);
+				continue;
+			} 
+			if (!file.isFile()) {
+				continue;
+			}
+			
+			String name = file.getName();
+			if (name.endsWith(".jar") && name.contains("one-jar")) {
+				// JAR FILE!
+				if (name.startsWith("rewrite")) {
+					// BAD ONE
+					continue;
+				}				
+				teamBotJarFiles.add(file);
+				String teamName = name.substring(0, name.indexOf("one-jar"));
+				while (teamName.endsWith(".")) teamName = teamName.substring(0, teamName.length()-1);
+				if (teamName.toLowerCase().endsWith("-snapshot")) teamName = teamName.substring(0, teamName.toLowerCase().indexOf("-snapshot"));
+				if (teamName.startsWith("TDMBot-")) teamName = teamName.substring(7);
+				if (teamName.startsWith("2") && teamName.charAt(4) == '-') teamName = teamName.substring(5);
+				while (teamName.contains("-")) teamName = teamName.substring(0, teamName.indexOf("-"));
+				teamNames.add(teamName); 
+			}
+		}
 	}
 	
 	private static void sanityChecks() {
@@ -377,39 +438,31 @@ public class Main {
 	    }
 	    System.out.println("-- UT2004/System/UT2004.ini file found at '" + ut2004IniFile.getAbsolutePath() + "'");
 	    
-	    if (botJarsSeparated == null) {
-			fail("Bot jar(s) was/were not specified correctly.");
-		}
-		
-		if (botNamesSeparated == null) {
-			fail("Bot name(s) was/were not specified correctly.");
-		}
-		
-		if (botJarsSeparated.length != botNamesSeparated.length) {
-			fail("Bot jar(s) and name(s) numbers mismatch. I've parsed " + botJarsSeparated.length + " bot jar files != " + botNamesSeparated.length + " of bot names.");
-		}
-		
-		if (botJarsSeparated.length < 2) {
-			fail("Not enough bot jars/names specified: " + botJarsSeparated.length + " < 2");
-		}
-		
-		botJarFiles = new File[botJarsSeparated.length];
-	    for (int i = 0; i < botJarsSeparated.length; ++i) {
-	    	botJarFiles[i] = new File(botJarsSeparated[i]);
-	    	if (!botJarFiles[i].exists() || !botJarFiles[i].isFile()) {
-		    	fail("Bot" + (i+1) + " jar file was not found at '"+ botJarFiles[i].getAbsolutePath() + "', path resolved from configuration read as '" + botJarsSeparated[i] + "'.");
+	    System.out.println("-- LOCATED TEAM NAME:JAR FILES (Total: " + teamBotJarFiles.size() + ")");
+	    for (int i = 0; i < teamBotJarFiles.size(); ++i) {
+	    	System.out.println("---- [" + (i+1) + "] " + teamNames.get(i) + " -> " + teamBotJarFiles.get(i).getAbsolutePath());
+	    }
+	    
+	    if (teamBotJarFiles.size() < 2) {
+	    	fail("We need at least 2 bot teams to perform the matches.");
+	    }
+	    
+	    for (int i = 0; i < teamBotJarFiles.size(); ++i) {
+	    	if (!teamBotJarFiles.get(i).exists() || !teamBotJarFiles.get(i).isFile()) {
+		    	fail("Bot" + (i+1) + " jar file was not found at '"+ teamBotJarFiles.get(i).getAbsolutePath() + "'.");
 		    }
-	    	System.out.println("-- Bot" + (i+1) + " jar file found at '" + botJarFiles[i].getAbsolutePath() + "'");
 	    }
-	    System.out.println("-- Bot jars ok");
 	   	
-	    for (int i = 0; i < botNamesSeparated.length; ++i) {
-	    	if (botNamesSeparated[i] == null || botNamesSeparated[i].isEmpty()) {
-	    		fail("Bot " + (i+1) + " invalid name '" + botNamesSeparated[i] +"' specified.");
+	    for (int i = 0; i < teamNames.size(); ++i) {
+	    	if (teamNames.get(i) == null || teamNames.get(i).isEmpty()) {
+	    		fail("Team " + (i+1) + " invalid name '" + teamNames.get(i) +"' specified.");
 	    	}
-	    	System.out.println("-- Bot" + (i+1) + " name set as '" + botNamesSeparated[i] + "'");
 	    }
-	    System.out.println("-- Bot names ok");
+	    
+	    if (teamBotCount < 1) {
+	    	fail("Invalid number of bots to spawn into the team specified == " + teamBotCount + " < 1.");
+	    }
+	    System.out.println("-- Bots per team set as " + teamBotCount);
 	    
 	    mapsDirFile = new File(ut2004HomeDirFile, "Maps");
 	    if (!mapsDirFile.exists() || !mapsDirFile.isDirectory()) {
@@ -417,21 +470,25 @@ public class Main {
 	    }
 	    System.out.println("-- UT2004/Maps directory found at '" + mapsDirFile.getAbsolutePath() + "'");
 	    
-	    mapFile = new File(mapsDirFile, map + ".ut2");
-	    if (!mapFile.exists() || !mapFile.isFile()) {
-	    	fail("Specified map '" + map + "' was not found within UT2004/Maps dir at '" + mapFile.getAbsoluteFile() + "', could not execute the match.");
+	    mapsFile = new File[maps.length];
+	    for (int i = 0; i < maps.length; ++i) {
+		    mapsFile[i] = new File(mapsDirFile, maps[i] + ".ut2");
+		    if (!mapsFile[i].exists() || !mapsFile[i].isFile()) {
+		    	fail("Specified map '" + maps[i] + "' was not found within UT2004/Maps dir at '" + mapsFile[i].getAbsoluteFile() + "', could not execute the match.");
+		    }
+		    System.out.println("-- Map '" + maps[i] + "' found at '" + mapsFile[i].getAbsolutePath() + "'");	    	
 	    }
-	    System.out.println("-- Map '" + map + "' found at '" + mapFile.getAbsolutePath() + "'");
+
 	    	    
 	    if (serverName == null || serverName.isEmpty()) {
 	    	fail("Invalid server name '" + serverName + "' specified.");
 	    }
 	    System.out.println("-- Server name set as '" + serverName + "'");
 	    
-	    if (fragLimit < 1) {
-	    	fail("Invalid frag limit '" + fragLimit +"' specified, must be >= 1.");
+	    if (scoreLimit < 1) {
+	    	fail("Invalid score limit '" + scoreLimit +"' specified, must be >= 1.");
 	    }
-	    System.out.println("-- Frag limit set as '" + fragLimit + "'");
+	    System.out.println("-- Score limit set as '" + scoreLimit + "'");
 	    
 	    if (timeoutMinutes < 1) {
 	    	fail("Invalid time limit '" + timeoutMinutes +"' specified, must be >= 1.");
@@ -590,93 +647,71 @@ public class Main {
 		System.out.println("UT2004 Port and ServerName set.");
 	}
 	
-	private static void generateBatchFile(String matchName, String bot1Jar, String bot1Id, String bot2Jar, String bot2Id) {
-		String fileName = "match-" + bot1Id + "-vs-" + bot2Id + ".bat";
-		File file = new File(fileName);
-		if (file.exists()) {
-			if (file.isFile()) {
-				warning("Batch file already exists, skipping: " + file.getAbsolutePath());				
- 			} else {
- 				severe("Batch file already exists, but it is not file, skipping: " + file.getAbsolutePath());
- 			}
-			return;			
-		}
+	private static String getMatchName(String team1Id, String team2Id, String mapName, int mapNumber) {
+		return "Match-" + team1Id + "-vs-" + team2Id + "-" + (mapNumber+1) + "-" + mapName;
+	}
+	
+	private static File getResultDirMatch(Match match) {
+		return new File(new File(new File(resultDir), "" + (match.mapNumber + 1) + "-" + match.mapName), match.matchName);
+	}
+	
+	private static File getResultDir(Match match) {
+		return new File(new File(resultDir), "" + (match.mapNumber + 1) + "-" + match.mapName);
+	}
+	
+	private static UT2004TeamDeathMatch executeMatch(Match match) {		
+		// DELETE THE RESULT FOLDER
+		File resultFolder = getResultDirMatch(match);
 		try {
-			FileWriter writer = new FileWriter(file);
-			PrintWriter print = new PrintWriter(writer);
-			
-			print.println("java -jar ut2004-tournament.jar ^");
-			print.println("  -u " + ut2004HomeDir + " ^");
-			print.println("  -a " + bot1Jar + ";" + bot2Jar + " ^");
-			print.println("  -b " + bot1Id + ";" + bot2Id + " ^");
-			print.println("  -m " + map + " ^");
-			print.println("  -r " + resultDir + " ^");
-			print.println("  -n " + matchName + " ^");
-			print.println("  -s DMServer-" + matchName + " ^");
-			print.println("  -f " + fragLimit + " ^");
-			print.println("  -t " + timeoutMinutes);
-			
-			try {
-				print.close();
-			} catch (Exception e) {				
-			}
-			try { 
-				writer.close();
-			} catch (Exception e) {				
-			}
-		} catch (Exception e) {
-			
+			FileUtils.deleteDirectory(resultFolder);
+		} catch (Exception e) {			
 		}
-	}
-	
-	private static String getMatchName(String bot1Id, String bot2Id) {
-		return "Match-" + bot1Id + "-vs-" + bot2Id;
-	}
-	
-	private static void generateBatchFiles() {
-		for (int i = 0; i < botJarsSeparated.length; ++i) {
-			String bot1Id = botNamesSeparated[i];
-			String bot1Jar = botJarsSeparated[i];
-			for (int j = i+1; j < botJarsSeparated.length; ++j) {
-				String bot2Id = botNamesSeparated[j];
-				String bot2Jar = botJarsSeparated[j];
-				String matchName = getMatchName(bot1Id, bot2Id);
-				generateBatchFile(matchName, bot1Jar, bot1Id, bot2Jar, bot2Id);
-			}
+		
+		// CONFIGURE AND FIRE THE MATCH
+		UT2004TeamDeathMatchConfig config = new UT2004TeamDeathMatchConfig();
+		
+		// RED TEAM
+		for (int i = 0; i < teamBotCount; ++i) {
+			UT2004BotConfig bot1Config = new UT2004BotConfig();
+			bot1Config.setBotId(match.team1Id + "-" + (i+1));
+			bot1Config.setBotTeam(0); // RED TEAM
+			bot1Config.setPathToBotJar(match.teamBot1Jar.getAbsolutePath());
+			bot1Config.setRedirectStdErr(debug);
+			bot1Config.setRedirectStdOut(debug);
+			
+			config.addBot(bot1Config);
 		}
-	}
-	
-	private static UT2004DeathMatch executeMatch(Match match) {		
-		UT2004DeathMatchConfig config = new UT2004DeathMatchConfig();
 		
-		UT2004BotConfig bot1Config = new UT2004BotConfig();
-		bot1Config.setBotId(match.bot1Id);
-		bot1Config.setPathToBotJar(match.bot1Jar);
-		bot1Config.setRedirectStdErr(debug);
-		bot1Config.setRedirectStdOut(debug);
+		// BLUE TEAM
+		for (int i = 0; i < teamBotCount; ++i) {		
+			UT2004BotConfig bot2Config = new UT2004BotConfig();
+			bot2Config.setBotId(match.team2Id + "-" + (i+1));
+			bot2Config.setBotTeam(1); // BLUE TEAM
+			bot2Config.setPathToBotJar(match.teamBot2Jar.getAbsolutePath());
+			bot2Config.setRedirectStdErr(debug);
+			bot2Config.setRedirectStdOut(debug);
+			
+			config.addBot(bot2Config);
+		}
 		
-		UT2004BotConfig bot2Config = new UT2004BotConfig();
-		bot2Config.setBotId(match.bot2Id);
-		bot2Config.setPathToBotJar(match.bot2Jar);
-		bot2Config.setRedirectStdErr(debug);
-		bot2Config.setRedirectStdOut(debug);
-		
-		config.setBot(bot1Config, bot2Config);
-		config.setOutputDirectory(new File(resultDir));
+		config.setTeamRedId(match.team1Id);
+		config.setTeamBlueId(match.team2Id);
+		config.setOutputDirectory(getResultDir(match));
 	    config.setMatchId(match.matchName);
-	    config.setFragLimit(fragLimit);
+	    config.setScoreLimit(scoreLimit);
 	    config.setTimeLimit(timeoutMinutes);
 	    config.setHumanLikeLogEnabled(humanLikeLog);
+	    config.setStartTCServer(true);
 	    
 	    config.getUccConf().setStartOnUnusedPort(true);
 	    config.getUccConf().setUnrealHome(ut2004HomeDir);
-	    config.getUccConf().setGameType("BotDeathMatch");
-	    config.getUccConf().setMapName(map);
+	    config.getUccConf().setGameType("BotTeamGame");
+	    config.getUccConf().setMapName(match.mapName);
 	     
 	    System.out.println("EXECUTING MATCH!");
 
 	    LogCategory log = new LogCategory(match.matchName);
-	    UT2004DeathMatch ut2004Match = new UT2004DeathMatch(config, log);
+	    UT2004TeamDeathMatch ut2004Match = new UT2004TeamDeathMatch(config, log);
 	    
 	    ut2004Match.getLog().setLevel(Level.INFO);
 	    ut2004Match.getLog().addConsoleHandler();
@@ -689,26 +724,36 @@ public class Main {
 	private static class Match {
 		
 		String matchName;
-		String bot1Jar;
-		String bot1Id;
-		String bot2Jar;
-		String bot2Id;
+		File teamBot1Jar;
+		String team1Id;
+		File teamBot2Jar;
+		String team2Id;
+		String mapName;
+		int mapNumber;
 		
-		public Match(String matchName, String bot1Jar, String bot1Id, String bot2Jar, String bot2Id) {
+		public Match(String matchName, File teamBot1Jar, String team1Id, File teamBot2Jar, String team2Id, String mapName, int mapNumber) {
 			super();
 			this.matchName = matchName;
-			this.bot1Jar = bot1Jar;
-			this.bot1Id = bot1Id;
-			this.bot2Jar = bot2Jar;
-			this.bot2Id = bot2Id;
+			this.teamBot1Jar = teamBot1Jar;
+			this.team1Id = team1Id;
+			this.teamBot2Jar = teamBot2Jar;
+			this.team2Id = team2Id;
+			this.mapName = mapName;
+			this.mapNumber = mapNumber;
 		}
+		
+		@Override
+		public String toString() {
+			return "Match[" + matchName + "]";
+		}
+		
 	}
 	
 	private static class ExecuteOne extends Thread {
 
 		private Match match;
 		
-		private UT2004DeathMatch result;
+		private UT2004TeamDeathMatch result;
 		
 		public boolean done = false;
 		
@@ -771,9 +816,22 @@ public class Main {
 				if (shouldContinue) {
 					while (currentMatch < matches.length) {
 						Match match = matches[currentMatch];
-						File resultFolder = new File(new File(resultDir), match.matchName);
+						File resultFolder = getResultDirMatch(match);
 						if (resultFolder.exists() && resultFolder.isDirectory()) {
-							warning("Result folder for the match " + match.matchName + " already exists, skipping this match.");
+							warning("Result folder for the match " + match.matchName + " already exists, checking the result...");
+							File resultFile = new File(resultFolder, "match-" + match.matchName + "-result.csv");
+							File teamScoresFile = new File(resultFolder, "match-" + match.matchName + "-team-scores.csv");
+							if (!resultFile.exists() || !resultFile.isFile()) {
+								warning("  +-- result file does not exist at: " + resultFile.getAbsolutePath());
+								break;
+							}
+							if (!teamScoresFile.exists() || !teamScoresFile.isFile()) {
+								warning("  +-- team-scores file does not exist at: " + teamScoresFile.getAbsolutePath());
+								break;
+							}
+							if (!isMatchSuccess(resultFile)) {
+								break;
+							}
 							++skipped;
 						} else {
 							break;
@@ -781,7 +839,7 @@ public class Main {
 						++currentMatch;
 					}
 				}
-				
+								
 				if (currentMatch < matches.length) {
 					threads[i] = new ExecuteOne(matches[currentMatch]);
 					++currentMatch;
@@ -807,57 +865,96 @@ public class Main {
 		}
 	}
 	
+	private static boolean isMatchSuccess(File resultFile) {		
+		CSV csv = null;
+		try {
+			csv = new CSV(resultFile, ";", true);
+		} catch (Exception e) {
+			warning("  +-- Failed to open: " + resultFile.getAbsolutePath());
+			e.printStackTrace();
+			return false;
+		}
+		if (csv.rows.size() != 1) {
+			warning("  +-- Result file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
+			return false;
+		}
+		
+		if (!csv.keys.contains("Winner")) {
+			warning("  +-- Result file does not contain column 'Winner'. Ignoring.");
+			return false;
+		}
+		String winner = csv.rows.get(0).getString("Winner");
+		if (winner.toLowerCase().contains("failure")) {
+			warning("  +-- Result file is indicating that the match has FAILED!");
+			return false;
+		}
+		info("  +-- Match success");
+		return true;
+	}
+
 	private static void executeMatches() throws InterruptedException {
 		
-		int matchCount = botJarsSeparated.length * (botJarsSeparated.length-1) / 2;		
+		int matchCount = maps.length * teamBotJarFiles.size() * (teamBotJarFiles.size()-1) / 2;		
 		Match[] matches = new Match[matchCount];
 		
 		int k = 0;
-		for (int i = 0; i < botJarsSeparated.length-1; ++i) {
-			String bot1Id = botNamesSeparated[i];
-			String bot1Jar = botJarsSeparated[i];
-			
-			for (int j = i+1; j < botJarsSeparated.length; ++j) {
-				String bot2Id = botNamesSeparated[j];
-				String bot2Jar = botJarsSeparated[j];
-			
-				String matchName = getMatchName(bot1Id, bot2Id);
+		for (int mapNumber = 0; mapNumber < maps.length; ++mapNumber) {
+			for (int i = 0; i < teamBotJarFiles.size()-1; ++i) {
+				String team1Id = teamNames.get(i);
+				File teamBot1Jar = teamBotJarFiles.get(i);
 				
-				matches[k] = new Match(matchName, bot1Jar, bot1Id, bot2Jar, bot2Id);
-						
-			    ++k;
+				for (int j = i+1; j < teamBotJarFiles.size(); ++j) {
+					String team2Id = teamNames.get(j);
+					File teamBot2Jar = teamBotJarFiles.get(j);
+				
+					String matchName = getMatchName(team1Id, team2Id, maps[mapNumber], mapNumber);
+					
+					matches[k] = new Match(matchName, teamBot1Jar, team1Id, teamBot2Jar, team2Id, maps[mapNumber], mapNumber);
+							
+				    ++k;
+				}
 			}
 		}
+		
+		System.out.println("Going to perform " + matchCount + " matches using " + threadCount + " thread(s).");
 
 		executeInParallel(matches, threadCount);
 	}
 
 	public static void main(String[] args) throws JSAPException {
-//      FOR TESTING		
-//		args = new String[] {
-//			"-u",
-//			"D:\\Games\\UT2004-Devel",
-//			"-a",
-//			"D:\\Workspaces\\Pogamut-Trunk\\Main\\PogamutUT2004Examples\\04-HunterBot\\target\\ut2004-04-hunter-bot-3.6.1-SNAPSHOT.one-jar.jar;D:\\Workspaces\\Pogamut-Trunk\\Main\\PogamutUT2004Examples\\04-HunterBot\\target\\ut2004-04-hunter-bot-3.6.1-SNAPSHOT.one-jar.jar;D:\\Workspaces\\Pogamut-Trunk\\Main\\PogamutUT2004Examples\\04-HunterBot\\target\\ut2004-04-hunter-bot-3.6.1-SNAPSHOT.one-jar.jar",
-//			"-b",
-//			"HunterBot1;HunterBot2;HunterBot3",
-//			"-r",
-//			"./results",
-//			"-s",
-//			"HunterServer",
-//			"-m",
-//			"DM-1on1-Albatross",
-//			"-f",
-//			"3",
-//			"-t",
-//			"3",
-//			"-h", // human-like log			
-//		    "-c",
-//		    "5",
-//		    "-g", // generate batch-files
-//	        "-d", // debug
-//            "-o"  // continue		
-//		};
+		if (args == null || args.length == 0) {
+			// FOR TESTING 
+			
+			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
+			
+			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\";
+			
+			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\_Results\\";
+			
+			args = new String[] {
+				"-u",
+				ut2004Dir,
+				"-a",
+				botsDir,
+				"-n", // number of bots per team
+				"3",
+				"-r",
+				resultsDir,
+				"-s",
+				"TDMServer",
+				"-m",
+				"DM-Rankin-FE;DM-1on1-Roughinery-FPS;DM-DE-Ironic-FE",
+				"-f",
+				"40",
+				"-t",
+				"20",
+				//"-h", // human-like log			
+			    "-c",
+			    "1",  // concurrent thread count
+		        "-d", // debug
+	            "-o"  // continue		
+			};
+		}
 		
 		initJSAP();
 	    
@@ -865,11 +962,9 @@ public class Main {
 	    
 	    readConfig(args);
 	    
-	    sanityChecks();
+	    findBotJarFiles();
 	    
-	    if (generateBatchFiles) {
-	    	generateBatchFiles();
-	    }
+	    sanityChecks();
 	    
 	    setUT2004Ini();
 	    
@@ -878,6 +973,14 @@ public class Main {
 	    } catch (Exception e) {
 	    	fail("ERROR", e);
 	    }
+	    
+	    MainExcel.main(new String[] {
+	    	"-r",
+	    	resultDir,
+	    	"-o",
+	    	resultDir
+	    });
+	    
 	}
 	
 }

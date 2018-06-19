@@ -15,10 +15,18 @@
 	<packaging>jar</packaging>
 
 	<name>ut2004-07-navmesh-debug-bot</name>
-	
+
 	<properties>
 		<bot.main.class>cz.cuni.amis.pogamut.ut2004.examples.navmeshdebugbot.NavMeshDebugBot</bot.main.class>
 	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+	</dependencies>
 
 	<repositories>
 		<repository>

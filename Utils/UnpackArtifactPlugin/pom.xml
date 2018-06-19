@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>cz.cuni.amis</groupId>
 		<artifactId>amis-maven-plugin-pom</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 		<relativePath>../../Poms/AmisMavenPluginPom/pom.xml</relativePath>
 	</parent>
 
