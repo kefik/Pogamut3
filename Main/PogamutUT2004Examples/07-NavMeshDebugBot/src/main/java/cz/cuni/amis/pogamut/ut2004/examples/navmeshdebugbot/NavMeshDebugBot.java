@@ -96,10 +96,10 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     /**
      * Flip by chat message 'drawNavMesh'.
      */
-    private boolean drawNavMesh = false;
+    private boolean drawNavMesh = true;
     
     /**
-     * Perform syntehetic test from the start ... probing many paths, stress-testing navmesh path-finder...; forced to rerun by saying 'synthtest'
+     * Perform synthetic test from the start ... probing many paths, stress-testing navmesh path-finder...; forced to rerun by saying 'synthtest'
      */
     private boolean synthTest = false;
     
@@ -616,7 +616,9 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     		break;
     	case SWITCHED_TO_ANOTHER_PATH_ELEMENT:
     		// next navigation element
-    		pathInfo.lastNavLocations.add(navigation.getPathExecutor().getPathElement());
+    		if (navigation.getPathExecutor().getPathElement() != null) {
+    			pathInfo.lastNavLocations.add(navigation.getPathExecutor().getPathElement());
+    		}
     		while (pathInfo.lastNavLocations.size() > 3) pathInfo.lastNavLocations.remove(0);
     		break;
     	case STUCK:
@@ -627,6 +629,8 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
 	}
 
     private void stuck(UT2004PathExecutorStuckState stuck) {
+    	if (pathInfo.pathFrom == null) return;
+    	
     	pathInfo.stuckInfo = stuck;
     	pathInfo.stuckLocation = info.getLocation();
     	

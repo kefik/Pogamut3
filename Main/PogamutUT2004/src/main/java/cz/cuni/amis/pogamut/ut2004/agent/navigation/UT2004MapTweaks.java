@@ -129,8 +129,45 @@ public class UT2004MapTweaks {
 					}
 				}
 			);
+		register(
+				"DM-Dust2k5", 
+				new IMapTweak() {
+					@Override
+					public void tweak(NavigationGraphBuilder builder) {
+						tweak_DM_Dust2k5(builder);
+					}
+				}
+			);
 	}
 	
+	protected void tweak_DM_Dust2k5(NavigationGraphBuilder builder) {
+		builder.removeEdgesBetween("InventorySpot129", "PathNode104");
+		builder.removeEdgesBetween("InventorySpot128", "InventorySpot138");
+		builder.removeEdgesBetween("InventorySpot129", "InventorySpot138");
+		builder.removeEdgesBetween("InventorySpot128", "InventorySpot140");
+		builder.removeEdgesBetween("InventorySpot129", "InventorySpot140");
+		builder.removeEdgesBetween("InventorySpot128", "InventorySpot106");
+		builder.removeEdgesBetween("InventorySpot129", "PathNode106");
+		builder.removeEdgesBetween("InventorySpot163", "PathNode82");
+		builder.removeEdge("InventorySpot162", "PathNode84");
+		builder.removeEdge("PathNode77", "InventorySpot130");
+		builder.modifyNavPoint("PathNode112").addX(400).apply();
+		builder.removeEdgesBetween("PathNode41", "PathNode39");
+		builder.removeEdgesBetween("PathNode40", "PathNode38");
+		builder.removeEdge("InventorySpot154", "PathNode37");
+		builder.removeEdge("PathNode77", "PathNode113");
+		builder.removeEdge("InventorySpot122", "PathNode111");
+		builder.removeEdgesTo("PathNode37");
+		builder.modifyNavPoint("PathNode10").addY(180).apply();
+		builder.removeEdgesBetween("PlayerStart6", "PathNode53");
+		builder.modifyNavPoint("PathNode73").addY(310).addX(-30).apply();
+		builder.removeEdgesBetween("PathNode73", "PathNode74");
+		builder.removeEdgesBetween("PathNode73", "InventorySpot130");
+		builder.removeEdgesBetween("PathNode75", "PathNode73");
+		builder.removeEdgesBetween("PathNode75", "PathNode64");
+		builder.removeEdge("InventorySpot114", "InventorySpot110");		
+	}
+
 	protected void tweak_CTF_Lostfaith(NavigationGraphBuilder builder) {
 		builder.removeEdge("PathNode27", "JumpSpot20");
 	}

@@ -2,7 +2,6 @@ package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.analysis.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -65,25 +64,24 @@ public class PolygonAnalysis {
 			}
 			polygonInfo.shape = new SimplePlanarPolygon3D(verticesAsPoint3D);
 		}
-		
-		// create polygon representation for BSP
-		final HashMap<Integer,List<Location>> polygonIdToLocations = Maps.newHashMap();
-		for ( Integer polygonId : allPolygonIds ) {
-			ArrayList<Location> locations = Lists.newArrayList();
-			for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
-				locations.add( vertexIdToInfoMap.get(vertexId).location );
-			}
 			
-			polygonIdToLocations.put( polygonId, locations );
-		}
-		
 		XyProjectionTPolygonPartitioningStrategy<Integer> partitioningStrategy = new XyProjectionTPolygonPartitioningStrategy<Integer>() { 			
 			@Override
-			protected List<Location> getPolygonVertexLocations(Integer polygonId) {
-				return polygonIdToLocations.get(polygonId);
-			}			
+			protected ArrayList<Location> getPolygonVerticesUncached(Integer polygonId) {
+				ArrayList<Location> locations = Lists.newArrayList();
+				for ( Integer vertexId : polygonIdToInfoMap.get(polygonId).vertexIds ) {
+					locations.add( vertexIdToInfoMap.get(vertexId).location );
+				}
+				return locations;
+			}
+			
+			@Override
+			protected double getSufficientEliminationFraction() {
+				return 0.3; // prefer fast construction over BSP performance, since it won't be used long enough to amortize
+			}
 		};
 		xyProjectionBsp = BspTree.make( partitioningStrategy, allPolygonIds );
+		partitioningStrategy.clearCache();
 	}
 	
 	public Integer getPolygonIdBelow(Location location ) {
