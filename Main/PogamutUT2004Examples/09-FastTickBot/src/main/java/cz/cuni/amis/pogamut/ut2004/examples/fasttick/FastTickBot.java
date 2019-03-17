@@ -40,7 +40,7 @@ public class FastTickBot extends UT2004BotModuleController {
     @Override
     public void botInitialized(GameInfo gameInfo, ConfigChange currentConfig, InitedMessage init) {
     	// SETTING THE VISION TO 100ms
-    	act.act(new Configuration().setVisionTime(0.1));
+    	act.act(new Configuration().setVisionTime(0.1));    	
     }
     
     @Override

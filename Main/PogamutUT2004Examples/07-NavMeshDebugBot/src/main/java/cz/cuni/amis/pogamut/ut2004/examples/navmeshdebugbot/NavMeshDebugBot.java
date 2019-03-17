@@ -39,6 +39,7 @@ import cz.cuni.amis.utils.ExceptionToString;
 import cz.cuni.amis.utils.FileAppender;
 import cz.cuni.amis.utils.IFilter;
 import cz.cuni.amis.utils.Tuple2;
+import cz.cuni.amis.utils.astar.AStar;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.exception.PogamutException;
 import cz.cuni.amis.utils.flag.FlagListener;
@@ -268,6 +269,8 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	if (restartNavigation) {
     		restartNavigation = false;    		
     	}
+
+    	this.n
     	
     	sayGlobal("New navigation request...");
     	
