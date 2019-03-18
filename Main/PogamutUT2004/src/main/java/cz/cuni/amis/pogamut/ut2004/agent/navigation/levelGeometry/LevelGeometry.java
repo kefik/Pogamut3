@@ -37,6 +37,7 @@ import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Velocity;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensomotoric.BSPRayInfoContainer;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.RawLevelGeometryFile.RawTriangle;
+import cz.cuni.amis.pogamut.ut2004.bot.IUT2004BotController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRay;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.AutoTraceRayMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;

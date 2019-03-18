@@ -9,6 +9,7 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.line.Ray2D;
+import math.geom3d.Point3D;
 import math.geom3d.line.LineSegment3D;
 
 /** Ray-tracer for navigation mesh paths
@@ -94,7 +95,10 @@ public class NavMeshPathTracer {
             	context.getSourceVertex(intersectingEdge).asPoint3D(),
             	context.getDestinationVertex(intersectingEdge).asPoint3D()
             );
-            Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
+            
+            //Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
+            Location edge3DDir = context.getDestinationVertex(intersectingEdge).sub(context.getSourceVertex(intersectingEdge));
+            Location intersection = context.getSourceVertex(intersectingEdge).add(edge3DDir.scale(intersectingEdge2d.project(intersection2d)));
             
             previousPolygon = currentPolygon;
             currentPolygon = context.getAdjacentPolygonByEdge( currentPolygon, intersectingEdge );
