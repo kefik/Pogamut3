@@ -96,7 +96,9 @@ public class NavMeshPathTracer {
             	context.getDestinationVertex(intersectingEdge).asPoint3D()
             );
             
+            // STRANGE, the following line is not working, theoretically sound...
             //Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
+            // REPLACING BY OWN IMPLEMENTATION
             Location edge3DDir = context.getDestinationVertex(intersectingEdge).sub(context.getSourceVertex(intersectingEdge));
             Location intersection = context.getSourceVertex(intersectingEdge).add(edge3DDir.scale(intersectingEdge2d.project(intersection2d)));
             

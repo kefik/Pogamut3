@@ -51,6 +51,9 @@ public class RayCaster
 	@Override
 	public double computeSideSignedDistanceSquare(AxisAlignedPlane3D boundary, StraightLine3D ray) {
 		double intersectionParametric = boundary.getLineIntersectionParametric(ray);
+		if (Double.isNaN(intersectionParametric)) {
+			return boundary.getSignedDistance(ray.getOrigin()) * Double.POSITIVE_INFINITY; 
+		}
 		double sign = Math.signum( boundary.getSignedDistance( ray.getOrigin() ) );
 		if ( Double.isInfinite(intersectionParametric) || intersectionParametric < 0.0 || intersectionParametric > 1.0 ) {
 			return sign * Double.POSITIVE_INFINITY;

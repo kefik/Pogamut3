@@ -6,6 +6,8 @@ import java.util.logging.Level;
 import cz.cuni.amis.pogamut.base.agent.module.SensomotoricModule;
 import cz.cuni.amis.pogamut.base.communication.worldview.IWorldView;
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
+import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEventListener;
+import cz.cuni.amis.pogamut.base.communication.worldview.object.event.WorldObjectUpdatedEvent;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.ManualControlWindow.IManualControlCallback;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.levelGeometry.LevelGeometryModule;
@@ -125,6 +127,12 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 		log.setLevel(Level.ALL);
 		if (window.forward) {
     		body.getLocomotion().moveContinuos();
+    	}    	
+    	if (window.backward) {
+    		body.getLocomotion().strafeTo(
+    				info.getLocation().add(info.getRotation().toLocation().invert().scale(300)), 
+    				info.getLocation().add(info.getRotation().toLocation().scale(300))
+    		);
     	}
     	if (window.left) {
     		body.getLocomotion().turnHorizontal(-15);
@@ -256,7 +264,6 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 			draw.drawLine(Color.blue, nmLoc, nmLoc.add(rayVector.scale(1000)));
 		}		
 	}
-
 	
 	public void drawNavPointVisibility() {
 		if (draw == null) return;
@@ -312,6 +319,33 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 	
 	/*========================================================================*/
 	
+	private class SelfMessageListener implements IWorldObjectEventListener<Self, WorldObjectUpdatedEvent<Self>> 
+	{
+		
+		private IWorldView worldView;
+
+		/**
+		 * Constructor. Registers itself on the given WorldView object.
+		 * @param worldView WorldView object to listent to.
+		 */
+		public SelfMessageListener(IWorldView worldView)
+		{
+			
+			worldView.addObjectListener(Self.class, WorldObjectUpdatedEvent.class, this);
+			this.worldView = worldView;
+		}
+
+		@Override
+		public void notify(WorldObjectUpdatedEvent<Self> event) {
+			tick();
+		}
+		
+	}
+	
+	private SelfMessageListener selfMessageListener;
+	
+	/*========================================================================*/
+	
 	/**
 	 * {@link EndMessage} listener.
 	 */
@@ -352,6 +386,7 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 	private NavPointVisibility navPointVisibility;
 
 	private NavMeshModule navMeshModule;
+
 	
 	/**
 	 * 
@@ -373,6 +408,7 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 		this.navMeshModule = navMeshModule;
 		
 		this.endMessageListener = new EndMessageListener(worldView);
+		this.selfMessageListener = new SelfMessageListener(worldView);
 	}
 	
 	@Override
