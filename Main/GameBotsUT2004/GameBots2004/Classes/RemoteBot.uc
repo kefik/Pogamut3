@@ -2163,6 +2163,7 @@ Begin:
 
 //-------------RemoteBot Specific Functions--------------------
 
+// True if location is closer than 300 UT units
 // True if location loc is in bot's field of view. Does not take into account occlusion by geometry!
 // Possible optimization: Precompute cos(obsController.FovAngle / 2) for InFOV - careful if it can change.
 function bool InFOV(vector loc) {
@@ -2172,10 +2173,12 @@ function bool InFOV(vector loc) {
 	view = vector(Rotation);
 
 	if (Pawn != none) {
-		target = loc - (Pawn.Location + Pawn.EyePosition());
+		target = loc - (Pawn.Location + Pawn.EyePosition());		
 	} else {
 		target = loc - Location;
 	}
+	
+	if (VSize(target) < 300) return true;
 
 	return Acos(Normal(view) dot Normal(target)) < FovAngleRadH ; // Angle between view and target is less than FOV
 	// 57.2957795 = 180/pi = 1 radian in degrees  --  convert from radians to degrees

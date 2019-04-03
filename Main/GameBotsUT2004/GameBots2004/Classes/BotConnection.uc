@@ -673,6 +673,8 @@ function SendNotifyConf()
 		"} {DrawTraceLines " $ theBot.bDrawTraceLines $
 		"} {SynchronousOff " $ theBot.myConnection.bSynchronousMessagesOff $
 		"} {AutoPickupOff " $ theBot.bDisableAutoPickup $
+		"} {SyncNavpoints " $ theBot.myConnection.bSynchronousNavPoints $
+		"} {VisionFOV " $ theBot.FovAngle $
 		"}";
 
 	//notify that variables changed

@@ -92,6 +92,10 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
 		 * 
 		 *   
 		 * 
+		 *   
+		 * 
+		 *   
+		 * 
 		 */
 		public ConfigChangeStaticImpl(
 			UnrealId Id

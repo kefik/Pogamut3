@@ -18,6 +18,7 @@ public class ManualControlWindow extends JFrame {
 		public void drawClear();
 		public void drawNavPointVisibility();
 		public void drawNavPointVisibilityWorldView();
+		public void drawItemsVisibility();
 		public void drawNavMesh();
 		public void drawNavMeshWithLinks();		
 		public void sendGlobalMessage(String msg);
@@ -71,6 +72,7 @@ public class ManualControlWindow extends JFrame {
 				case 'b': drawLevelGeometryBSP(); break;
 				case 'v': drawNavPointVisibility(); break;
 				case 'g': drawNavPointVisibilityWorldView(); break;
+				case 'i': drawItemsVisibility(); break;
 				case 'c': drawClear(); break;
 				case 'n': drawNavMesh(); break;
 				case 'm': drawNavMeshWithLinks(); break;
@@ -112,7 +114,7 @@ public class ManualControlWindow extends JFrame {
 	protected void help() {
 		if (callback == null) return;
 		callback.sendGlobalMessage("Control: WSAD+Space, E - De/Activate");
-		callback.sendGlobalMessage("Level geom - L; Level geom BSP - B; Raycast - R");
+		callback.sendGlobalMessage("Level geom - L; Level geom BSP - B; Raycast - R; I - items visibility");
 		callback.sendGlobalMessage("NavMesh - N; NavMesh+Links - M; Raycast NavMesh - T; Clear - C");
 	}
 
@@ -154,6 +156,11 @@ public class ManualControlWindow extends JFrame {
 	protected void drawNavMeshWithLinks() {
 		if (callback == null) return;
 		callback.drawNavMeshWithLinks();
+	}
+	
+	protected void drawItemsVisibility() {
+		if (callback == null) return;
+		callback.drawItemsVisibility();
 	}
 
 	protected void drawNavMesh() {

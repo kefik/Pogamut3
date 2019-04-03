@@ -19,6 +19,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshPolygon;
 import cz.cuni.amis.pogamut.ut2004.bot.command.CompleteBotCommandsWrapper;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.EndMessage;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
 import cz.cuni.amis.utils.StopWatch;
 import math.geom2d.Vector2D;
@@ -57,6 +58,11 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 		@Override
 		public void drawNavPointVisibility() {
 			ManualControl.this.drawNavPointVisibility();			
+		}
+		
+		@Override
+		public void drawItemsVisibility() {
+			ManualControl.this.drawItemsVisibility();			
 		}
 
 		@Override
@@ -290,6 +296,23 @@ public class ManualControl extends SensomotoricModule<UT2004Bot> {
 		navPointVisibility.drawNavPointVisibilityWorldView(draw);
 		say("Drawing DONE!");
 	}
+	
+	protected void drawItemsVisibility() {
+		if (draw == null) return;
+		
+		say("Drawing items visibility (according to WorldView)...");
+		for (Item item : worldView.getAll(Item.class).values()) {
+			Color color;
+			if (item.isVisible()) {
+				color = Color.green;
+			} else {
+				color = Color.red;
+			}
+			draw.drawCube(color, item.getLocation(), 15);			
+		}
+		say("Drawing DONE!");
+	}
+
 
 	private void say(String text) {
 		body.getCommunication().sendGlobalTextMessage(text);

@@ -43,6 +43,7 @@ function PostBeginPlay() {
 * Helper functions *
 *******************/
 
+// True if location closer than 100 UT units
 // True if location loc is in MyController's field of view. Does not take into account occlusion by geometry!
 // Possible optimization: Precompute cos(obsController.FovAngle / 2) for InFOV - careful if it can change.
 function bool InFOV(vector loc) {
@@ -56,6 +57,8 @@ function bool InFOV(vector loc) {
 	} else {
 		target = loc - MyController.Location;
 	}
+	
+	if (VSize(target) < 300) return true;
 
 	return Acos(Normal(view) dot Normal(target)) * 57.2957795 < MyController.FovAngle / 2; // Angle between view and target is less than FOV
 	// 57.2957795 = 180/pi = 1 radian in degrees  --  convert from radians to degrees

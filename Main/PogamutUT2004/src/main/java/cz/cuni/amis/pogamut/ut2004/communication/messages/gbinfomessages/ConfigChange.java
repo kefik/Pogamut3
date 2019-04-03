@@ -35,7 +35,7 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
  	
     	/** Example how the message looks like - used during parser tests. */
     	public static final String PROTOTYPE =
-    		"CONFCH {Id unreal_id}  {BotId unreal_id}  {ManualSpawn False}  {AutoTrace False}  {Name text}  {SpeedMultiplier 0}  {RotationRate 0,0,0}  {Invulnerable False}  {SelfUpdateTime 0}  {VisionTime 0}  {LocUpdateMultiplier 0}  {ShowDebug False}  {ShowFocalPoint False}  {DrawTraceLines False}  {SynchronousOff False}  {AutoPickupOff False}  {Action text} ";
+    		"CONFCH {Id unreal_id}  {BotId unreal_id}  {ManualSpawn False}  {AutoTrace False}  {Name text}  {SpeedMultiplier 0}  {RotationRate 0,0,0}  {Invulnerable False}  {SelfUpdateTime 0}  {VisionTime 0}  {LocUpdateMultiplier 0}  {ShowDebug False}  {ShowFocalPoint False}  {DrawTraceLines False}  {SynchronousOff False}  {AutoPickupOff False}  {SyncNavpoints False}  {VisionFOV 0}  {Action text} ";
     
     	
     	
@@ -201,6 +201,22 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
 		    			
  		/**
          * 
+			Whether Navpoint.visible information is being exported by GB2004.
+  	   
+         */
+        public abstract boolean isSyncNavpoints()
+ 	;
+		    			
+ 		/**
+         * 
+			Field of view of the bot, in degrees.
+  	   
+         */
+        public abstract double getVisionFOV()
+ 	;
+		    			
+ 		/**
+         * 
 			Name of current BDI action.
 		 
          */
@@ -312,6 +328,12 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
 		              			"AutoPickupOff = " + String.valueOf(isAutoPickupOff()
  	) + " | " + 
 		              		
+		              			"SyncNavpoints = " + String.valueOf(isSyncNavpoints()
+ 	) + " | " + 
+		              		
+		              			"VisionFOV = " + String.valueOf(getVisionFOV()
+ 	) + " | " + 
+		              		
 		              			"Action = " + String.valueOf(getAction()
  	) + " | " + 
 		              		
@@ -368,6 +390,12 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
  	) + " <br/> " + 
 		              		
 		              			"<b>AutoPickupOff</b> = " + String.valueOf(isAutoPickupOff()
+ 	) + " <br/> " + 
+		              		
+		              			"<b>SyncNavpoints</b> = " + String.valueOf(isSyncNavpoints()
+ 	) + " <br/> " + 
+		              		
+		              			"<b>VisionFOV</b> = " + String.valueOf(getVisionFOV()
  	) + " <br/> " + 
 		              		
 		              			"<b>Action</b> = " + String.valueOf(getAction()
@@ -439,6 +467,12 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
  	)									
 								+ ", " + 
 								    String.valueOf(isAutoPickupOff()
+ 	)									
+								+ ", " + 
+								    String.valueOf(isSyncNavpoints()
+ 	)									
+								+ ", " + 
+								    String.valueOf(getVisionFOV()
  	)									
 								+ ", " + 
 									(getAction()

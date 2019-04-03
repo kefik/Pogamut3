@@ -206,6 +206,16 @@ public class AgentConfig extends SensorModule<UT2004Bot> {
 		return !lastConfig.isAutoPickupOff();
 	}
 	
+	/**
+	 * Returns current vision FOV set in GB2004, in degrees.
+	 * @return
+	 */
+	public double getVisionFOV() {
+		if (lastConfig == null) return 170;		
+		return lastConfig.getVisionFOV() * 2;
+	}
+	
+	
 	/**         
      * 
 	 * It enables/disables automatic pickup of the bot. If false is set the items can be picked up through {@link Pick} command.
@@ -322,6 +332,7 @@ public class AgentConfig extends SensorModule<UT2004Bot> {
 		super.cleanUp();
 		lastConfig = null;
 	}
+
 	
 	
 }

@@ -570,10 +570,10 @@ public abstract class Items extends SensorModule<UT2004Bot> {
 	/*========================================================================*/
 	
 	/**
-	 * Returns an underlaying data structure, the {@link TabooSet} that contains
+	 * Returns an underlying data structure, the {@link TabooSet} that contains
 	 * items, which are thought "not to be spawned now". You can alter "taboo times in there"
 	 * if you need to fine-tune the {@link #isPickupSpawned(Item)} believes.
-	 * @return
+	 * @return {@link TabooSet} with "respawn times"
 	 */
 	public TabooSet<Item> getSpawnedTaboos() {
 		return items.itemMissing;

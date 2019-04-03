@@ -101,6 +101,16 @@
 			It enables/disables automatic pickup of the bot. If true the items can be picked up through PICK command.
 		</documentation>
    </property>
+   <property name="SyncNavpoints" type="boolean" category="local">
+      <documentation>
+			Whether Navpoint.visible information is being exported by GB2004.
+  	  </documentation>
+   </property>
+   <property name="VisionFOV" type="double" category="local">
+      <documentation>
+			Field of view of the bot, in degrees.
+  	  </documentation>
+   </property>
    <property name="Action" type="String" category="local">
       <documentation>
 			Name of current BDI action.
