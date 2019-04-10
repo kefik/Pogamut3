@@ -15,6 +15,7 @@ import org.apache.mina.core.future.IoFutureListener;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.FilterEvent;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
@@ -1002,6 +1003,10 @@ public class TCMinaClient implements IoHandler {
 	@Override
 	public void inputClosed(IoSession arg0) throws Exception {
 		connected.setFlag(false);
+	}
+
+	@Override
+	public void event(IoSession arg0, FilterEvent arg1) throws Exception {
 	}
 
 }
