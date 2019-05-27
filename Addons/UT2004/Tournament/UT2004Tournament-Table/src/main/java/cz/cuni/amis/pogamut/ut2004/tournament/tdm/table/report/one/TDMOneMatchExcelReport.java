@@ -160,7 +160,7 @@ public class TDMOneMatchExcelReport extends ExcelReport {
 				
 				if (match.isException(player1.team)) {
 					sheet.addCell(center(newStringCell(col++, row, "E")));
-					FileAppender.appendToFile(exceptions, match.getException(player1.team));
+					FileAppender.appendToFile(exceptions, match.getExceptionsTrace(player1.team));
 				} else {					
 					sheet.addCell(center(newIntCell(col++, row, match.getScore(player1.team))));
 				}

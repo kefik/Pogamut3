@@ -666,6 +666,17 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			break;
 			
 		case 1:
+			speak("Sending VIP Game Config info...");
+			send(new VIPGameStart(config));
+			++subState;
+			break;
+			
+		case 2:
+		case 3:
+			++subState;
+			break;
+			
+		case 4:
 			// ASSIGN VIP first...
 			if (config.isFixedVIP()) {
 				if (!assignFixedVIP())
@@ -688,12 +699,12 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			++subState;
 			break;
 
-		case 2: // RESTART LEVEL
+		case 5: // RESTART LEVEL
 			send(new GameConfiguration().setRestart(true));
 			++subState;
 			break;
 			
-		case 3: // CONFIG ALL BOTS TO MANUAL SPAWN
+		case 6: // CONFIG ALL BOTS TO MANUAL SPAWN
 			speak("Configuring all bots to MANUAL SPAWN...");
 			for (CSBotRecord<PlayerMessage> botRecord : getInGameBots()) {
 				configManualSpawn(botRecord);
@@ -701,20 +712,20 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			++subState;
 			break;
 			
-		case 4: // KILLING ALL BOTS
+		case 7: // KILLING ALL BOTS
 			speak("Killing all bots...");
 			for (CSBotRecord<PlayerMessage> botRecord : getInGameBots()) {
 				killBot(botRecord);
 			}
 			++subState;
 			break;
-		case 5: // LET UT2004 SERVER TO CATCH UP WITH KILLS ... playing safe here a bit
-		case 6:
-		case 7:
+		case 8: // LET UT2004 SERVER TO CATCH UP WITH KILLS ... playing safe here a bit
+		case 9:
+		case 10:
 			++subState;
 			break;
 			
-		case 8: 
+		case 11: 
 			if (ensureAllObserved()) {
 				// MOVE ON!
 				++subState;
@@ -722,32 +733,31 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 				speak("Waiting for bot observers to initialize...");
 			}
 			break;
-		case 9:
+		case 12:
 			if (ensureVIPObserver()) {
 				// MOVE ON!
 				++subState;
 			} else {
 				speak("Waiting for vip-observer to initialize...");
 			}
-			break;
-		
+			break;			
 			
-		case 10: 
+		case 13: 
 			decideOnSafeArea();
 			++subState;
 			break;
 			
-		case 11: // SPAWN ALL RUNNERS
+		case 14: // SPAWN ALL RUNNERS
 			spawnAll();
 			++subState;
 			break;
 		
-		case 12:
-		case 13:
+		case 15:
+		case 16:
 			++subState; // LET BOTS TO CATCH-UP
 			break;		
 		
-		case 14: // ALL BOT SPAWNED, MOVE TO NEXT STATE
+		case 17: // ALL BOT SPAWNED, MOVE TO NEXT STATE
 			speak("ALL BOTS SPAWNED! ROUND " + (roundNumber+1) + " BEGINS");
 			
 			roundTimeLeft = config.getRoundTimeUT();

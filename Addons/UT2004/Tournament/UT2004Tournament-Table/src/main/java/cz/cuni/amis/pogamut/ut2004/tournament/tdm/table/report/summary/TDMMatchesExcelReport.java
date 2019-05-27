@@ -1,7 +1,9 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.summary;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,6 +18,8 @@ import cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.one.TDMOneMatchEx
 import cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.one.TDMOneMatchResult;
 import cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.one.TDMOneMatchTableResults;
 import cz.cuni.amis.pogamut.ut2004.tournament.utils.ExcelReport;
+import cz.cuni.amis.utils.Const;
+import cz.cuni.amis.utils.FileAppender;
 import cz.cuni.amis.utils.maps.LazyMap;
 import jxl.write.WritableSheet;
 import jxl.write.biff.WritableWorkbookImpl;
@@ -110,6 +114,8 @@ public class TDMMatchesExcelReport extends ExcelReport {
 				int deaths2 = 0;
 				int exceptions1 = 0;
 				int exceptions2 = 0;
+				String exceptions1Trace = "";
+				String exceptions2Trace = "";
 				
 				for (TDMOneMatchTableResults mapResult : mapResults) {
 					TDMOneMatchResult oneResult = mapResult.getMatchResult(team1, team2);	
@@ -133,9 +139,19 @@ public class TDMMatchesExcelReport extends ExcelReport {
 					frags2 += oneResult.getScore(team2);
 					deaths1 += oneResult.getScore(team2);
 					deaths2 += oneResult.getScore(team1);
+					
+					if (oneResult.getExceptionsTrace(team1) != null && !oneResult.getExceptionsTrace(team1).isEmpty()) {
+						if (!exceptions1Trace.isEmpty()) exceptions1Trace += Const.NEW_LINE;
+						exceptions1Trace = oneResult.getExceptionsTrace(team1);
+					}
+					if (oneResult.getExceptionsTrace(team2) != null && !oneResult.getExceptionsTrace(team2).isEmpty()) {
+						if (!exceptions2Trace.isEmpty()) exceptions2Trace += Const.NEW_LINE;
+						exceptions2Trace = oneResult.getExceptionsTrace(team2);
+					}
+					
 				}
 				
-				tableResults.addResult(team1, team2, score1, score2, frags1, frags2, deaths1, deaths2, exceptions1, exceptions2);
+				tableResults.addResult(team1, team2, score1, score2, frags1, frags2, deaths1, deaths2, exceptions1, exceptions2, exceptions1Trace, exceptions2Trace);
 			}
 		}
 		
@@ -144,6 +160,9 @@ public class TDMMatchesExcelReport extends ExcelReport {
 		
 		// PRODUCE THE EXCEL
 		produceExcel(outputFile);
+		
+		// SUMMARIZE EXCEPTIONS
+		saveExceptions(tableResults);
 		
 	}
 	
@@ -271,6 +290,24 @@ public class TDMMatchesExcelReport extends ExcelReport {
 			sheet.addCell(center(newIntCell(col++, row, player1.exceptions)));
 		}
 		
+	}
+	
+	private void saveExceptions(TDMMatchesTableResults results) {
+		info("SAVING EXCEPTIONS");
+		
+		for (TDMMatchesTableTeamResult player : results.teams.values()) {
+			if (player.exceptionsStr != null && !player.exceptionsStr.isEmpty()) {
+				File file = new File(resultDir, outputFile.getName() + "." + player.team + ".errors");
+				PrintWriter writer = null;
+				try {
+					writer = new PrintWriter(new FileOutputStream(file));
+					writer.println(player.exceptionsStr);
+				} catch (FileNotFoundException e) {
+				} finally {
+					if (writer != null) writer.close();
+				}
+			}
+		}
 	}
 	
 }

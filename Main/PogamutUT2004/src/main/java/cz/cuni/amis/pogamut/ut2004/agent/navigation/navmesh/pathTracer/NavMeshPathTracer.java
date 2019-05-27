@@ -1,6 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshEdge;
@@ -85,6 +86,16 @@ public class NavMeshPathTracer {
                     intersectingEdge2d = edge2d;
                     break;
                 } 
+            }
+            
+            if (intersectingEdge == null) {
+            	// MATH MAY FAIL, edge cases...
+            	// => RETURN "hit"
+            	if (rayPath.getSteps().size() == 0) return rayPath;
+            	RayPath<TPolygon,TEdge>.PathStep lastStep = Iterables.getLast( rayPath.getSteps() );
+            	if (lastStep == null) return rayPath;
+            	lastStep.polygon = null;
+            	return rayPath;
             }
             
             assert( intersectingEdge != null );

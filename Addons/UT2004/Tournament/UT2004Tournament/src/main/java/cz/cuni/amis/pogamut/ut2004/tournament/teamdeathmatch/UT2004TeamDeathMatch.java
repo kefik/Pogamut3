@@ -498,13 +498,13 @@ public class UT2004TeamDeathMatch extends UT2004Match<UT2004TeamDeathMatchConfig
 				int botTeam = config.getBots().get(token).getBotTeam();
 				writer.format(";%s", "" + (botTeam == AgentInfo.TEAM_RED ? config.teamRedId : (botTeam == AgentInfo.TEAM_BLUE ? config.teamBlueId : "TEAM" + botTeam)));								
 				writer.format(";%s", result.getNames().get(token));
-				writer.format(";%d", result.getFinalScores().get(token).getScore());
+				writer.format(";%d", (result.getFinalScores().get(token) == null ? "0" : result.getFinalScores().get(token).getScore()));
 				writer.format(";%d", result.getTotalKills().get(token));
 				writer.format(";%d", result.getWasKilled().get(token));
-				writer.format(";%d", result.getFinalScores().get(token).getDeaths());
+				writer.format(";%d", (result.getFinalScores().get(token) == null ? "0" : result.getFinalScores().get(token).getDeaths()));
 				writer.format(";%d", result.getSuicides().get(token));				
 				for (IToken token2 : config.getAllBotIds()) {
-					writer.format(";%d", result.getKillCounts().get(token).get(token2));
+					writer.format(";%d", (result.getKillCounts().get(token) == null ? "0" : result.getKillCounts().get(token).get(token2)));
 				}				
 			}
 			
