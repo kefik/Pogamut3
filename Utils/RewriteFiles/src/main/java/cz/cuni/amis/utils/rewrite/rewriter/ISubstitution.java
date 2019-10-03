@@ -4,6 +4,6 @@ public interface ISubstitution {
 	
 	public boolean isMultiLine();
 	
-	public String substitute(String str);
+	public SubstitutionResult substitute(String str);
 
 }

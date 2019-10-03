@@ -82,7 +82,10 @@ public class RewriteFiles {
 			Rewriter rewriter = null;
 			if (includeDir.getSubstitutions() != null && includeDir.getSubstitutions().size() > 0) {
 				logInfo("Initializing substitutions...");
-				rewriter = new Rewriter((List<? extends ISubstitution>)includeDir.getSubstitutions());
+				Boolean maxOneRule = config.getGlobals().isApplyMaxOneRuleOnly();
+				if (includeDir.isApplyMaxOneRuleOnly() != null) maxOneRule = includeDir.isApplyMaxOneRuleOnly();
+				if (maxOneRule == null) maxOneRule = false;
+				rewriter = new Rewriter((List<? extends ISubstitution>)includeDir.getSubstitutions(), maxOneRule);
 				rewriter.setLog(log);
 			} else {
 				logInfo("No substitutions defined.");
@@ -177,7 +180,7 @@ public class RewriteFiles {
 	protected static void example(Logger log) {
 		log.info(              "<RewriteFilesConfig>"
 			+ Const.NEW_LINE + "    <!-- GLOBAL DEFINITIONS THAT APPLIED TO ALL <include> TAGS -->"
-			+ Const.NEW_LINE + "    <globals>"
+			+ Const.NEW_LINE + "    <globals applyMaxOneRuleOnly=\"false\">"
 			+ Const.NEW_LINE + "        <includeFile>pom.xml</includeFile> <!-- WILDCARDS ALLOWED! -->"
 			+ Const.NEW_LINE + ""
 			+ Const.NEW_LINE + "        <!--" 
@@ -214,7 +217,7 @@ public class RewriteFiles {
 		String definition = "config.xml";
 		if (args.length > 0) {
 			definition = args[0];
-			if (definition == null) definition = "RewriteFiles.xml";
+			if (definition == null) definition = "config.xml";
 		}
 		
 		SimpleLogging.initLogging();

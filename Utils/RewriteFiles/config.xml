@@ -1,14 +1,34 @@
 <RewriteFilesConfig encoding="UTF-8">
-			<globals>
-				<includeFile>*.sql</includeFile>
-				<substitutions>
-                    <substitution>
-						<match>Enable_hand_cursor</match>
-						<replace>/var/lib/tomcat7/webapps/</replace>
-						<caseSensitive>false</caseSensitive>
-					</substitution>					
-				</substitutions>
-				<fixLineEndings windowsStyle="false" onlyIfRewritten="true" />
-			</globals>
-			<include dir="D:/Workspaces/Pogamut-Trunk/Utils/RewriteFiles/" />			
+	<globals>
+		<includeFile>*.cs</includeFile>
+		<substitutions>
+			<substitution>
+				<match>(Log\s*\.\s*\w*\s*\(.*\);)</match>
+				<replace>//$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>(Logging\s*\..*;)</match>
+				<replace>//$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>(Debug\s*\.\s*Log\s*\(.*\);)</match>
+				<replace>//$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>(Debug\s*\.\s*LogWarning\s*\(.*\);)</match>
+				<replace>//$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>(Debug\s*\.\s*LogError\s*\(.*\);)</match>
+				<replace>//$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>					
+		</substitutions>
+		<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
+	</globals>
+	<include dir="v:/Projects/AI_Prototype/MasterServerPrototype-GitHub/Assets/AISystem/" />			
 </RewriteFilesConfig>

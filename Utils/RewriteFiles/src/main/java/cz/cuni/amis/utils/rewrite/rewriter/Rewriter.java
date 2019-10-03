@@ -25,14 +25,17 @@ public class Rewriter {
 	
 	private Logger log = null;
 
+	private boolean maxOneRule;
+
 	public Rewriter() {
 		substitutions = new ArrayList<ISubstitution>();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Rewriter(List<? extends ISubstitution> substitutions) {
+	public Rewriter(List<? extends ISubstitution> substitutions, boolean maxOneRule) {
 		if (substitutions == null) throw new IllegalArgumentException("'substitutions' can't be null!");
 		this.substitutions = (List<ISubstitution>) substitutions;
+		this.maxOneRule = maxOneRule;
 	}
 	
 	public Logger getLog() {
@@ -66,35 +69,81 @@ public class Rewriter {
 		String result = text;
 		if (multiLine) {
 			// result contains the whole file! 
+			
+			// APPLY MULTILINES FIRST
+			List<ISubstitution> nonMultiLines = new ArrayList<ISubstitution>();
 			for (ISubstitution subst : substitutions) {
 				if (subst.isMultiLine()) {
-					result = subst.substitute(result);
-				} else {
-					// substitution works per-line basis!
-					// read line-by-line
-					String processing = result;
-					StringBuffer sb = new StringBuffer(); // collecting result line by line into this
-					int index = 0;
-					while (index < processing.length()) {
-						int newLineIndex = processing.indexOf("\n", index);
-						if (newLineIndex < 0) {
-							// no new line
-							String part = processing.substring(index);
-							sb.append(subst.substitute(part));
-							index = processing.length();
-						} else {
-							// new line found
-							String part = null;
-							if (newLineIndex == 0 || processing.charAt(newLineIndex-1) != '\r') {
-								part = processing.substring(index, newLineIndex); 
-							} else {
-								part = processing.substring(index, newLineIndex-1);
-							}
-							sb.append(subst.substitute(part));
-							index = newLineIndex+1;
-							sb.append(NEW_LINE);
-						}
+					SubstitutionResult sres = subst.substitute(result); 
+					result = sres.getResult();
+					if (sres.isApplied() && maxOneRule) {
+						log.info("Substitution " + subst.toString() + " applied, skipping other multi-lines rules.");
+						break;
 					}
+				} else {
+					nonMultiLines.add(subst);
+				}
+			}
+			
+			// APPLY LINE BY LINE RULES
+			if (nonMultiLines.size() > 0) {
+				// we're having also per-line substitutions!
+				// read line-by-line
+				String processing = result;
+				StringBuffer sb = new StringBuffer(); // collecting result line by line into this
+				int index = 0;
+				while (index < processing.length()) {
+					int newLineIndex = processing.indexOf("\n", index);
+					if (newLineIndex < 0) {
+						// no new line
+						String part = processing.substring(index);						
+						// apply substitutions
+						for (ISubstitution subst : nonMultiLines) {
+							SubstitutionResult sres = subst.substitute(part); 
+							part = sres.getResult();
+							if (sres.isApplied() && maxOneRule) {
+								log.info("Substitution " + subst.toString() + " applied, skipping other single-line rules.");
+								break;
+							}
+						}
+						// write result
+						sb.append(part);
+						index = processing.length();
+					} else {
+						// new line found
+						String part = null;
+						if (newLineIndex == 0 || processing.charAt(newLineIndex-1) != '\r') {
+							part = processing.substring(index, newLineIndex); 
+						} else {
+							part = processing.substring(index, newLineIndex-1);
+						}
+						// apply substitutions
+						for (ISubstitution subst : nonMultiLines) {
+							SubstitutionResult sres = subst.substitute(part); 
+							part = sres.getResult();
+							if (sres.isApplied() && maxOneRule) {
+								log.info("Substitution " + subst.toString() + " applied, skipping other single-line rules.");
+								break;
+							}
+						}
+						// write result
+						sb.append(part);
+						index = newLineIndex+1;
+						sb.append(NEW_LINE);
+					}
+				}
+			}
+			
+			for (ISubstitution subst : substitutions) {
+				if (subst.isMultiLine()) {
+					SubstitutionResult sres = subst.substitute(result); 
+					result = sres.getResult();
+					if (sres.isApplied() && maxOneRule) {
+						log.info("Substitution " + subst.toString() + " applied, skipping other rules.");
+						break;
+					}
+				} else {
+					
 				}
 			}
 		} else {
@@ -103,7 +152,12 @@ public class Rewriter {
 				if (subst.isMultiLine()) {
 					throw new RuntimeException("Rewriter.rewrite() called with multiLine == false, but it was configured with multi-line substitution! Invalid!");
 				}
-				result = subst.substitute(result);
+				SubstitutionResult sres = subst.substitute(result); 
+				result = sres.getResult();
+				if (sres.isApplied() && maxOneRule) {
+					log.info("Substitution " + subst.toString() + " applied, skipping other rules.");
+					break;
+				}
 			}		
 		}
 		return result;

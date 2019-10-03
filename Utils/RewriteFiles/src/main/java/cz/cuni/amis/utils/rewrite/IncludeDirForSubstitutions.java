@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import cz.cuni.amis.utils.rewrite.rewriter.Const;
 import cz.cuni.amis.utils.rewrite.rewriter.FixLineEndings;
@@ -17,6 +18,9 @@ public class IncludeDirForSubstitutions extends IncludeDir {
 	
 	@XStreamAlias("fixLineEndings")
 	private FixLineEndings lineEndings = null;
+	
+	@XStreamAsAttribute
+	private Boolean applyMaxOneRuleOnly = null;	
 		
 	public IncludeDirForSubstitutions() {		
 		substitutions = new ArrayList<Substitution>();
@@ -66,6 +70,14 @@ public class IncludeDirForSubstitutions extends IncludeDir {
 		this.substitutions = substitutions;
 	}
 	
+	public Boolean isApplyMaxOneRuleOnly() {
+		return applyMaxOneRuleOnly;
+	}
+
+	public void setApplyMaxOneRuleOnly(Boolean applyMaxOneRuleOnly) {
+		this.applyMaxOneRuleOnly = applyMaxOneRuleOnly;
+	}
+
 	@Override
 	public void initialize() {
 		super.initialize();
@@ -136,7 +148,9 @@ public class IncludeDirForSubstitutions extends IncludeDir {
 			}
 		}
 		
-		sb.append(Const.NEW_LINE + prefix + "  fixLineEndings = " + String.valueOf(lineEndings));		
+		sb.append(Const.NEW_LINE + prefix + "  fixLineEndings = " + String.valueOf(lineEndings));
+		
+		sb.append(Const.NEW_LINE + prefix + "  applyMaxOneRuleOnly = " + String.valueOf(applyMaxOneRuleOnly));
 		
 		sb.append(Const.NEW_LINE + prefix + "]");
 		return sb.toString();

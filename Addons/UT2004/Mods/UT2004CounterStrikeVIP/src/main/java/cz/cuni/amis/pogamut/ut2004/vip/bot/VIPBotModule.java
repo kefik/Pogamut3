@@ -245,7 +245,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * YOUR BOT {@link UnrealId}.
 	 * @return
 	 */
-	public UnrealId getId() {
+	public UnrealId getMyBotId() {
 		return info.getId();
 	}
 	
@@ -326,7 +326,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public boolean isMeCounterTerrorist() {
-		return isCounterTerrorist(getId());
+		return isCounterTerrorist(getMyBotId());
 	}
 	
 	/**
@@ -336,7 +336,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public boolean isMeTerrorist() {
-		return isTerrorist(getId());
+		return isTerrorist(getMyBotId());
 	}
 	
 	/**
@@ -346,7 +346,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public boolean isMeVIP() {
-		return isVIP(getId());
+		return isVIP(getMyBotId());
 	}
 	
 	/**
@@ -356,7 +356,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public CSBotState getMyState() {
-		return getBotState(getId());
+		return getBotState(getMyBotId());
 	}
 	
 	/**
@@ -374,7 +374,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public int getTeamScore() {
-		return ensureRecord(getId()).getMyTeamScore();
+		return ensureRecord(getMyBotId()).getMyTeamScore();
 	}
 	
 	/**
@@ -382,7 +382,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public int getTeamRoundWinCount() {
-		return ensureRecord(getId()).getMyTeamWins();
+		return ensureRecord(getMyBotId()).getMyTeamWins();
 	}
 	
 	/**
@@ -390,7 +390,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	 * @return
 	 */
 	public VIPGameResult getWinningTeam() {
-		return ensureRecord(getId()).getGameResult();
+		return ensureRecord(getMyBotId()).getGameResult();
 	}
 	
 	/**
@@ -573,7 +573,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 		vip.setVIPForThisRound();
 		
 		// PRESET BOT STATE
-		if (vip.getBotId() == getId()) {
+		if (vip.getBotId() == getMyBotId()) {
 			updateBotNameTag();
 		}
 	}
@@ -704,9 +704,9 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	}
 	
 	private void updateBotNameTag() {
-		CSBotState myState = records.get(getId()).getBotState();
+		CSBotState myState = records.get(getMyBotId()).getBotState();
 		if (myState != null) {
-			info.getBotName().setInfo("CS", myState.name() + " | " + records.get(getId()).getMyTeamWins());
+			info.getBotName().setInfo("CS", myState.name() + " | " + records.get(getMyBotId()).getMyTeamWins());
 		}
 	}
 

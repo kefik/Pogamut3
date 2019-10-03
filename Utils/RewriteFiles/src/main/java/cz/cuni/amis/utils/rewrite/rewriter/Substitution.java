@@ -201,8 +201,13 @@ public class Substitution implements ISubstitution {
 	}
 	
 	@Override
-	public String substitute(String str) {
-		return getMatcher(str).replaceAll(reSubst);
+	public SubstitutionResult substitute(String str) {
+		if (getMatcher(str).find()) {
+			return new SubstitutionResult(getMatcher(str).replaceAll(reSubst), true);
+		} else {
+			return new SubstitutionResult(str, false);
+		}
+		
 	}
 	
 	@Override
