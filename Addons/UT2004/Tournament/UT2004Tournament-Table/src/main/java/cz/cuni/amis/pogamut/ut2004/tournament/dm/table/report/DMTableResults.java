@@ -106,6 +106,7 @@ public class DMTableResults {
 			public int compare(DMTablePlayerResult o1, DMTablePlayerResult o2) {
 				if (o1.wins == o2.wins) {
 					DMMatchResult result = getMatchResult(o1.player, o2.player);
+					if (result == null) return 0;
 					return result.getScore(o2.player) - result.getScore(o1.player);
 				}
 				return o2.wins - o1.wins;
@@ -186,6 +187,7 @@ public class DMTableResults {
 					if (candidate == other) continue;
 					String otherPlr = results.get(other).player;
 					DMMatchResult match = getMatchResult(candidatePlr, otherPlr);
+					if (match == null) continue;
 					if (!match.isWin(candidatePlr)) {
 						candidateDominating = false;
 						break;

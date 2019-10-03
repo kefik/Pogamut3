@@ -369,6 +369,38 @@ package cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages;
     				
  		/**
          * 
+			Whether Navpoint.visible information is being exported by GB2004.
+  	   
+         */
+        public  boolean isSyncNavpoints()
+ 	 {
+    					return 
+    						
+    								partLocal.
+    							isSyncNavpoints()
+ 	;
+    				}
+    			
+  					@Override
+    				
+ 		/**
+         * 
+			Field of view of the bot, in degrees.
+  	   
+         */
+        public  double getVisionFOV()
+ 	 {
+    					return 
+    						
+    								partLocal.
+    							getVisionFOV()
+ 	;
+    				}
+    			
+  					@Override
+    				
+ 		/**
+         * 
 			Name of current BDI action.
 		 
          */

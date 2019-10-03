@@ -41,6 +41,9 @@ public class RayPath<TPolygon,TEdge>{
 	{
 		protected Location intersection;
 		protected TEdge edge;
+		/**
+		 * Next polygon to continue to; if null == we are at the edge of NavMesh.
+		 */
 		protected TPolygon polygon;
 		
 		public PathStep(Location intersection, TEdge edge, TPolygon polygon) {

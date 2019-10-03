@@ -14,6 +14,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigC
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GlobalChat;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.PlayerKilled;
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.exception.PogamutException;
@@ -87,7 +88,7 @@ public class WolfBot extends UT2004BotModuleController {
     	// ignore any Yylex whining...
     	bot.getLogger().getCategory("Yylex").setLevel(Level.OFF);
     	// act every 100 ms!
-    	act.act(new Configuration().setVisionTime(0.1).setSyncNavPointsOff(false));
+    	act.act(new Configuration().setVisionTime(0.1).setSyncNavPointsOff(true));
     }
     
     /**
@@ -95,6 +96,8 @@ public class WolfBot extends UT2004BotModuleController {
      */
     @Override
     public void beforeFirstLogic() {
+    	// enable manual spawning
+    	act.act(new Configuration().setManualSpawn(true));
     }
     
     /**
@@ -110,7 +113,16 @@ public class WolfBot extends UT2004BotModuleController {
     
     @EventListener(eventClass=GlobalChat.class)
     public void chatReceived(GlobalChat msg) {
+    	Utils.handleMessage(msg);   
+    	if (msg.getText().toLowerCase().contains("restart")) {
+    		respawn();
+    		return;
+    	}
     }
+    
+    private void respawn() {
+    	body.getAction().respawn();
+	}
     
     /**
      * Some other player has been killed.
@@ -128,7 +140,24 @@ public class WolfBot extends UT2004BotModuleController {
     public void logic() throws PogamutException {
     	log.info("---LOGIC: " + (++logicIterationNumber) + "---");
     	if (lastLogicTime > 0) log.info("   DELTA: " + (System.currentTimeMillis()-lastLogicTime + "ms"));
-    	lastLogicTime = System.currentTimeMillis();  
+    	lastLogicTime = System.currentTimeMillis();
+    	
+    	if (!Utils.gameRunning) {
+    		if (instance == 1) {
+				boolean hasBuddy = false;
+				for (Player player : players.getVisiblePlayers().values()) {
+					if (Utils.isWolf(player)) hasBuddy = true;
+				}
+				if (hasBuddy) {
+					sayGlobal("restart");
+				} else {
+					move.turnHorizontal(60);
+				}	
+    		}
+    		return;
+    	}
+    	
+    	// DO YOUR ACTION-SELECTION HERE
     }
 
     /**

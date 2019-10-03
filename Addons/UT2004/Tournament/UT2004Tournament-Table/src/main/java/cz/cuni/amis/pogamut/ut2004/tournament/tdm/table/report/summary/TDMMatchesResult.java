@@ -16,8 +16,11 @@ public class TDMMatchesResult {
 	
 	public int exceptions1;
 	public int exceptions2;
+	
+	public String exceptions1Str;
+	public String exceptions2Str;
 		
-	public TDMMatchesResult(String team1, String team2, int score1, int score2, int frags1, int frags2, int deaths1, int deaths2, int exceptions1, int exceptions2) {
+	public TDMMatchesResult(String team1, String team2, int score1, int score2, int frags1, int frags2, int deaths1, int deaths2, int exceptions1, int exceptions2, String exceptions1Str, String exceptions2Str) {
 		super();
 		this.team1 = team1;
 		this.team2 = team2;
@@ -29,6 +32,8 @@ public class TDMMatchesResult {
 		this.deaths2 = deaths2;
 		this.exceptions1 = exceptions1;
 		this.exceptions2 = exceptions2;
+		this.exceptions1Str = exceptions1Str;
+		this.exceptions2Str = exceptions2Str;
 	}
 	
 	public boolean isWin(String player) {

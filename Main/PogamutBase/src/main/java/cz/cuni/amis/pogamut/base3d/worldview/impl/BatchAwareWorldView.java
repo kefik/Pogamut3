@@ -51,8 +51,9 @@ public abstract class BatchAwareWorldView extends VisionWorldView {
     /**
      * Sets the visible flag to true on {@link IViewable} objects.
      * @param obj Object that disappeared
+     * @return whether the visibility has changed
      */
-    protected abstract void setDisappearedFlag(IViewable obj);
+    protected abstract boolean setDisappearedFlag(IViewable obj);
     
 //    long lastBatch = 0;
 
@@ -67,17 +68,20 @@ public abstract class BatchAwareWorldView extends VisionWorldView {
 //    			lastBatch = currTime;    			
 //    		}
     		
-            // handle disappeared objects
+            // handle disappeared objects    		
             lastObjectBatch.removeAll(currentObjectBatch);
-            for (IViewable obj : lastObjectBatch) {
-                // set the visibility flag to false
-                setDisappearedFlag(obj);
-                // first generate update event
-                objectUpdated(obj);                
-                // IMPORTANT:               
-                // then generate disappear event ... usually appeared/disappeared events will 
-                // wrap the update event processing (e.g. like html tags they must open/...updates.../close)
-                super.objectDisappeared(obj);                
+            Set<IViewable> lastViewable = new HashSet<IViewable>(lastObjectBatch);
+            for (IViewable obj : lastViewable) {
+                // set the visibility flag to false; check if we did that
+                if (setDisappearedFlag(obj)) {
+                	// OBJECT VISIBILITY FLAG DROPPED
+	                // first generate update event
+	                objectUpdated(obj);                
+	                // IMPORTANT:               
+	                // then generate disappear event ... usually appeared/disappeared events will 
+	                // wrap the update event processing (e.g. like html tags they must open/...updates.../close)
+	                super.objectDisappeared(obj);
+            	}
             }            
             // exchange the two sets and clear current batch
             Set<IViewable> swp = lastObjectBatch;

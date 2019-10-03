@@ -2293,6 +2293,24 @@ SPACE= " "
 				
 			}
 		
+			"{SyncNavpoints " {BOOLEAN} "}" {
+				
+						((ConfigChangeMessage)actObj).
+					SyncNavpoints = booleanValue(yytext());
+				
+					((ConfigChangeMessage)actObj).SyncNavpoints_Set = true;
+				
+			}
+		
+			"{VisionFOV " {DOUBLE} "}" {
+				
+						((ConfigChangeMessage)actObj).
+					VisionFOV = doubleValue(yytext());
+				
+					((ConfigChangeMessage)actObj).VisionFOV_Set = true;
+				
+			}
+		
 			"{Action " {STRING} "}" {
 				
 						((ConfigChangeMessage)actObj).

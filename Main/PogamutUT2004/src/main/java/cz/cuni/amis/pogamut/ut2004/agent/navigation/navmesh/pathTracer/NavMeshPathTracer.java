@@ -1,6 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathTracer;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.node.NavMeshEdge;
@@ -9,6 +10,7 @@ import math.geom2d.Point2D;
 import math.geom2d.Vector2D;
 import math.geom2d.line.LineSegment2D;
 import math.geom2d.line.Ray2D;
+import math.geom3d.Point3D;
 import math.geom3d.line.LineSegment3D;
 
 /** Ray-tracer for navigation mesh paths
@@ -86,6 +88,16 @@ public class NavMeshPathTracer {
                 } 
             }
             
+            if (intersectingEdge == null) {
+            	// MATH MAY FAIL, edge cases...
+            	// => RETURN "hit"
+            	if (rayPath.getSteps().size() == 0) return rayPath;
+            	RayPath<TPolygon,TEdge>.PathStep lastStep = Iterables.getLast( rayPath.getSteps() );
+            	if (lastStep == null) return rayPath;
+            	lastStep.polygon = null;
+            	return rayPath;
+            }
+            
             assert( intersectingEdge != null );
             assert( intersectingEdge2d != null );
             assert( intersection2d != null );
@@ -94,7 +106,12 @@ public class NavMeshPathTracer {
             	context.getSourceVertex(intersectingEdge).asPoint3D(),
             	context.getDestinationVertex(intersectingEdge).asPoint3D()
             );
-            Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
+            
+            // STRANGE, the following line is not working, theoretically sound...
+            //Location intersection = new Location( edge3d.getPoint( intersectingEdge2d.project(intersection2d) ) );
+            // REPLACING BY OWN IMPLEMENTATION
+            Location edge3DDir = context.getDestinationVertex(intersectingEdge).sub(context.getSourceVertex(intersectingEdge));
+            Location intersection = context.getSourceVertex(intersectingEdge).add(edge3DDir.scale(intersectingEdge2d.project(intersection2d)));
             
             previousPolygon = currentPolygon;
             currentPolygon = context.getAdjacentPolygonByEdge( currentPolygon, intersectingEdge );

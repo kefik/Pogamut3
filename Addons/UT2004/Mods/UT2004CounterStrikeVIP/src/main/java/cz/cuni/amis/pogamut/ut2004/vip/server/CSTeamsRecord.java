@@ -65,12 +65,14 @@ public class CSTeamsRecord {
 	// ======
 	
 	public void counterTerroristsWin() {
+		if (config == null) return;
 		wins.put(CSBotTeam.COUNTER_TERRORIST, wins.get(CSBotTeam.COUNTER_TERRORIST) + 1);
 		scores.put(CSBotTeam.COUNTER_TERRORIST, scores.get(CSBotTeam.COUNTER_TERRORIST) + config.getVipSafeCTsScore());
 		scores.put(CSBotTeam.TERRORIST, scores.get(CSBotTeam.TERRORIST) + config.getVipSafeTsScore());
 	}
 	
 	public void terroristsWin() {
+		if (config == null) return;
 		wins.put(CSBotTeam.TERRORIST, wins.get(CSBotTeam.TERRORIST) + 1);
 		scores.put(CSBotTeam.COUNTER_TERRORIST, scores.get(CSBotTeam.COUNTER_TERRORIST) + config.getVipKilledCTsScore());
 		scores.put(CSBotTeam.TERRORIST, scores.get(CSBotTeam.TERRORIST) + config.getVipKilledTsScore());

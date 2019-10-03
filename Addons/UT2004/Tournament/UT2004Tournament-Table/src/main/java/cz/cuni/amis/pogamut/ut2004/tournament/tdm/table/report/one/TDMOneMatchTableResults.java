@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -18,7 +19,11 @@ import java.util.zip.ZipOutputStream;
 
 import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV;
 import cz.cuni.amis.pogamut.ut2004.tournament.utils.CSV.CSVRow;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.MatchLogReader;
+import cz.cuni.amis.pogamut.ut2004.tournament.utils.MatchLogReader.MatchLogReaderResult;
 import cz.cuni.amis.utils.Const;
+import cz.cuni.amis.utils.ExceptionToString;
+import cz.cuni.amis.utils.FileAppender;
 import cz.cuni.amis.utils.collections.MyCollections;
 import cz.cuni.amis.utils.maps.HashMapMap;
 import cz.cuni.amis.utils.maps.LazyMap;
@@ -69,7 +74,7 @@ public class TDMOneMatchTableResults {
 		return results.get(plr1, plr2);
 	}
 	
-	public TDMOneMatchResult addResult(String team1, String team2, int score1, int score2, boolean[] botLogicEx, String[] botEx) {
+	public TDMOneMatchResult addResult(String team1, String team2, int score1, int score2, MatchLogReaderResult log) {
 		if (team1.compareToIgnoreCase(team2) == 0) {
 			throw new RuntimeException("Could not add result for " + team1 + " vs. " + team2 + " as their names are the same!");
 		}
@@ -81,21 +86,13 @@ public class TDMOneMatchTableResults {
 			
 			int tempI = score2;
 			score2 = score1;
-			score1 = tempI;
-			
-			boolean tempB = botLogicEx[1];
-			botLogicEx[1] = botLogicEx[0];
-			botLogicEx[0] = tempB;
-			
-			String tempS = botEx[1];
-			botEx[1] = botEx[0];
-			botEx[0] = tempS;
+			score1 = tempI;			
 		}
 		
 		TDMOneMatchTableTeamResult team1Result = teams.get(team1);
 		TDMOneMatchTableTeamResult team2Result = teams.get(team2);
 		
-		TDMOneMatchResult result = new TDMOneMatchResult(team1, team2, score1, score2, botLogicEx[0], botLogicEx[1], botEx[0], botEx[1]);
+		TDMOneMatchResult result = new TDMOneMatchResult(team1, team2, score1, score2, log.results.get(team1).isException(), log.results.get(team2).isException(), log.results.get(team1).exceptions, log.results.get(team2).exceptions);
 		
 		TDMOneMatchResult old = results.put(team1, team2, result);
 		
@@ -200,6 +197,7 @@ public class TDMOneMatchTableResults {
 					if (candidate == other) continue;
 					String otherPlr = results.get(other).team;
 					TDMOneMatchResult match = getMatchResult(candidatePlr, otherPlr);
+					if (match == null) continue;
 					if (!match.isWin(candidatePlr)) {
 						candidateDominating = false;
 						break;
@@ -244,31 +242,64 @@ public class TDMOneMatchTableResults {
 	}
 	
 	public void probeResults(File dir, boolean recursive) {
+		boolean processed = false;
+		// FIRST CHECK IF WE CAN FIND FULL RESULTS
 		for (File file : dir.listFiles()) {
-			if (!file.exists()) continue;
-			if (file.isDirectory() && recursive) probeResults(file, recursive);
 			if (file.exists() && file.isFile()) {
 				try {
-					probeResultFile(file);
+					if (probeCompleteResult(file)) {
+						processed = true;
+						break;
+					}
 				} catch (Exception e) {
+					FileAppender.appendToFile(new File("dir", "TDM-Report.warnings"), ExceptionToString.process("Exception while processing: " + file.getAbsolutePath(), e));
 					throw new RuntimeException("Failed to process file: " + file.getAbsolutePath(), e);
 				}
 			}
 		}
+		if (processed) return; // MATCH PROCESSED
 		
-	}
-
-	private void probeResultFile(File resultFile) throws FileNotFoundException, IOException {
-		if (!resultFile.exists() || !resultFile.isFile() || !resultFile.getAbsolutePath().toLowerCase().endsWith("-result.csv")) return;
+		// THEN CHECK IF THERE IS ONLY .log FILE
+		for (File file : dir.listFiles()) {
+			if (file.exists() && file.isFile()) {
+				try {
+					if (probeLogResult(file)) {
+						processed = true;
+						break;
+					}
+				} catch (Exception e) {
+					FileAppender.appendToFile(new File("dir", "TDM-Report.warnings"), ExceptionToString.process("Exception while processing: " + file.getAbsolutePath(), e));
+					throw new RuntimeException("Failed to process file: " + file.getAbsolutePath(), e);
+				}
+			}
+		}
+		if (processed) return; // MATCH PROCESSED
+		
+		// NOT A RESULT DIR, try to descend
+		for (File file : dir.listFiles()) {
+			if (!file.exists()) continue;
+			if (file.isDirectory() && recursive) probeResults(file, recursive);			
+		}
+		
+	}	
+	
+	private boolean probeCompleteResult(File resultFile) throws FileNotFoundException, IOException {
+		if (!resultFile.exists() || !resultFile.isFile() || !resultFile.getAbsolutePath().toLowerCase().endsWith("-result.csv")) return false;
 		
 		info("Found result file: " + resultFile.getAbsolutePath());
 		
 		File teamScoresFile = new File(resultFile.getAbsolutePath().replace("-result.csv", "-team-scores.csv"));
 		if (!teamScoresFile.exists()) {
 			error("Cannot locate team-scores file at: " + teamScoresFile);
-			return;
+			return false;
 		}
 		info("Found team-scores file: " + teamScoresFile.getAbsolutePath());
+		
+		CSV resultCSV = new CSV(resultFile, ";", true);
+		if (resultCSV.rows.size() != 1) {
+			warn("-- Result file contains invalid number of data rows (" + resultCSV.rows.size() + "), ignoring.");
+			return false;
+		}
 		
 		File logFile = new File(resultFile.getAbsolutePath().replace("-result.csv", ".log"));
 		if (logFile.exists()) {
@@ -278,51 +309,51 @@ public class TDMOneMatchTableResults {
 		logFile = new File(resultFile.getAbsolutePath().replace("-result.csv", ".log.zip"));
 		if (!logFile.exists()) {
 			error("Cannot locate zipped-log file at: " + logFile);
-			return;
+			return false;
 		}
 		info("Found zipped-log file: " + logFile.getAbsolutePath());
 		
-		CSV resultCSV = new CSV(resultFile, ";", true);
-		if (resultCSV.rows.size() != 1) {
-			warn("-- Result file contains invalid number of data rows (" + resultCSV.rows.size() + "), ignoring.");
-			return;
-		}
-		
 		if (!resultCSV.keys.contains("Winner")) {
 			warn("-- Result file does not contain column 'Winner'. Ignoring.");
-			return;
+			return false;
 		}
 		String winner = resultCSV.rows.get(0).getString("Winner");
 		if (winner.toLowerCase().contains("failure")) {
 			error("-- Result file is indicating that the match has FAILED!");
-			return;
+			return false;
 		}
 		
 		CSV teamScoresCSV = new CSV(teamScoresFile, ";", true);
 		if (teamScoresCSV.rows.size() != 2) {
 			warn("-- Team scores contains invalid number of data rows (" + teamScoresCSV.rows.size() + "), ignoring.");
-			return;
+			return false;
 		}
 		
 		File botScoresFile = new File(resultFile.getAbsolutePath().replace("-result.csv", "-bot-scores.csv"));
 		if (!botScoresFile.exists()) {
 			error("Cannot locate bot-scores file at: " + botScoresFile.getAbsolutePath());
-			return;
+			return false;
 		}
 		info("Found bot-scores file: " + botScoresFile.getAbsolutePath());
-		CSV botScoresCSV = new CSV(botScoresFile, ";", true);
-		if (!botScoresCSV.keys.contains("team")) {
-			warn("-- Bot-scores file does not contain column 'team'. Ignoring.");
-			return;
-		}
-		if (!botScoresCSV.keys.contains("botId")) {
-			warn("-- Bot-scores file does not contain column 'botId'. Ignoring.");
-			return;
+		CSV botScoresCSV = null;
+		try {
+			botScoresCSV = new CSV(botScoresFile, ";", true);
+			if (!botScoresCSV.keys.contains("team")) {
+				warn("-- Bot-scores file does not contain column 'team'. Ignoring.");
+				botScoresCSV = null;
+			}
+			if (!botScoresCSV.keys.contains("botId")) {
+				warn("-- Bot-scores file does not contain column 'botId'. Ignoring.");
+				botScoresCSV = null;
+			}		
+			if (!botScoresCSV.keys.contains("score")) {
+				warn("-- Bot-scores file does not contain column 'score'. Ignoring.");
+				botScoresCSV = null;
+			}
+		} catch (Exception e) {
+			warn("  -- cannot load CSV? Ignoring.");
+			botScoresCSV = null;
 		}		
-		if (!botScoresCSV.keys.contains("score")) {
-			warn("-- Bot-scores file does not contain column 'score'. Ignoring.");
-			return;
-		}
 
 		// resultFile -> global result
 		// teamScoresFile -> contains team IDs
@@ -336,7 +367,48 @@ public class TDMOneMatchTableResults {
 		}
 		
 		// PROBE RESULTS
-		extractResults(team1, team2, resultFile, resultCSV, teamScoresFile, teamScoresCSV, botScoresFile, botScoresCSV, logFile);		
+		extractResults(team1, team2, resultFile, resultCSV, teamScoresFile, teamScoresCSV, botScoresFile, botScoresCSV, logFile);
+		
+		return true;
+	}
+	
+	private boolean probeLogResult(File resultFile) {
+		if (!resultFile.getAbsolutePath().toLowerCase().endsWith(".log") && !resultFile.getAbsolutePath().toLowerCase().endsWith(".zip")) {
+			return false;
+		}
+		
+		if (resultFile.getAbsolutePath().endsWith(".log")) {
+			if (resultFile.exists()) {
+				info("Found non-zipped log file, zipping: " + resultFile.getAbsolutePath());
+				zipLogFile(resultFile);
+			}
+		}
+		if (!resultFile.getAbsolutePath().endsWith(".zip")) {
+			File logFile = new File(resultFile.getAbsolutePath() + ".zip");
+			if (!logFile.exists()) {
+				return false;
+			}
+			resultFile = logFile;
+		}
+		
+		
+		Pattern p = Pattern.compile("^match-Match-(.*)-vs-(.*)-[0-9]+-");
+		Matcher m = p.matcher(resultFile.getName()); 
+		if (!m.find()) {
+			return false;			
+		}
+		
+		String team1 = m.group(1);
+		String team2 = m.group(2);
+		
+		MatchLogReaderResult log = new MatchLogReader().read(resultFile, team1, team2);
+		
+		if (log.results.get(team1).isException() || log.results.get(team2).isException()) {
+			addResult(team1, team2, 0, 0, log);
+			return true;
+		}
+		
+		return false;
 	}
 		
 	private void zipLogFile(File logFile) {
@@ -365,96 +437,43 @@ public class TDMOneMatchTableResults {
 		// EXTRACT SCORES
 		int score1 = 0;
 		int score2 = 0;		
-		for (int i = 0; i < botScoresCSV.rows.size(); ++i) {
-			CSVRow row = botScoresCSV.rows.get(i);
-			String team = row.getString("team");
-			String botId = row.getString("botId");
-			int score = row.getInt("score");
-			
-			if (team.equals(team1)) {
-				score1 += score;
+		if (teamScoresCSV != null) {
+			for (int i = 0; i < teamScoresCSV.rows.size(); ++i) {
+				CSVRow row = teamScoresCSV.rows.get(i);
+				String team = row.getString("teamId");
+				int score = row.getInt("score");					
+				if (team.equals(team1)) {
+					score1 += score;
+				}
+				if (team.equals(team2)) {
+					score2 += score;
+				}			
 			}
-			if (team.equals(team2)) {
-				score2 += score;
-			}			
+		} else 
+		if (botScoresCSV != null) {
+			for (int i = 0; i < botScoresCSV.rows.size(); ++i) {
+				CSVRow row = botScoresCSV.rows.get(i);
+				String team = row.getString("team");
+				String botId = row.getString("botId");
+				int score = row.getInt("score");
+				
+				if (team.equals(team1)) {
+					score1 += score;
+				}
+				if (team.equals(team2)) {
+					score2 += score;
+				}			
+			}
+		} else {
+			throw new RuntimeException("No bot-scores and no team-scores CSVs! Cannot determine scores.");
 		}
 		
 		// CHECK FOR EXCEPTION WITHIN LOG FILE	
-		Pattern team1Pattern = Pattern.compile(team1 + "-[0-9]+-StdOut");
-		Pattern team2Pattern = Pattern.compile(team2 + "-[0-9]+-StdOut");
-		
-		boolean[] teamLogicEx = new boolean[] { false, false };
-		String[] teamEx = new String[] { "", "" };		
-		boolean[] fatalErrorEvent = new boolean[] { false, false };
-		
 		info("-- reading zipped log file...");
 		
-		BufferedReader reader = null;
-		ZipInputStream zippedIS = null;
-		try {
-			
-			zippedIS = new ZipInputStream(new FileInputStream(logFileZip));
-			ZipEntry zipEntry = zippedIS.getNextEntry();
-			
-			reader = new BufferedReader(new InputStreamReader(zippedIS));
-			
-			while (reader.ready()) {
-				String line = reader.readLine();
-				
-				String team = null;
-				int teamIndex = -1;
-				int otherIndex = -1;
-				
-				if (team1Pattern.matcher(line).find()) {
-					teamIndex = 0;
-					otherIndex = 1;
-					team = team1;
-				} else
-				if (team2Pattern.matcher(line).find()) {
-					teamIndex = 1;
-					otherIndex = 0;
-					team = team2;
-				} else {
-					continue;
-				}
-				
-				if (line.endsWith("Logic iteration exception.")) {
-					teamLogicEx[teamIndex] = true;
-				}
-								
-				if (line.endsWith(" FatalErrorEvent[")) {
-					fatalErrorEvent[teamIndex] = true;
-				}
-				
-				if (fatalErrorEvent[teamIndex]) {
-					teamEx[teamIndex] += Const.NEW_LINE + line;
-					if (line.endsWith(" " + team + "-StdOut ]")) {
-						fatalErrorEvent[teamIndex] = false;
-					}
-				}
-				
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			error("Failed to probe log file at: " + logFileZip.getAbsolutePath());
-			return;
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (Exception e) {					
-				}
-			}
-			if (zippedIS != null) {
-				try {
-					zippedIS.close();
-				} catch (Exception e) {					
-				}
-			}			
-		}
+		MatchLogReaderResult log = new MatchLogReader().read(logFileZip, team1, team2);		
 		
-		TDMOneMatchResult result = addResult(team1, team2, score1, score2, teamLogicEx, teamEx);
+		TDMOneMatchResult result = addResult(team1, team2, score1, score2, log);
 		
 		info("-- " + result.toString());
 	}

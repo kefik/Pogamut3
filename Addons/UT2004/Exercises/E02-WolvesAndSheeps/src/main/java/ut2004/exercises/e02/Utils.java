@@ -12,7 +12,9 @@ public class Utils {
 	
 	public static void handleMessage(GlobalChat msg) {
 		if (msg.getText().toLowerCase().contains("restart")) gameRunning = true;
+		else
 		if (msg.getText().toLowerCase().contains("start")) gameRunning = true;
+		else
 		if (msg.getText().toLowerCase().contains("stop")) gameRunning = false;
 	}
 	

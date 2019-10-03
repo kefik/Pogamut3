@@ -242,7 +242,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	// ==============
 	
 	/**
-	 * Your BOT {@link UnrealId}.
+	 * YOUR BOT {@link UnrealId}.
 	 * @return
 	 */
 	public UnrealId getId() {
@@ -551,6 +551,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	
 	protected void playerKilled(PlayerKilled event) {
 		CSBotRecord<Player> record = ensureRecord(event.getId());
+		if (record == null) return;
 		record.botDied(event.getId());
 	}
 	
@@ -568,6 +569,7 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 	
 	protected void csAssignVIP(CSAssignVIP event) {
 		vip = ensureRecord(event.getBotId());
+		if (vip == null) return;
 		vip.setVIPForThisRound();
 		
 		// PRESET BOT STATE
@@ -576,8 +578,10 @@ public class VIPBotModule extends SensorModule<UT2004Bot>{
 		}
 	}
 
-	protected void csBotStateChanged(CSBotStateChanged event) {
-		ensureRecord(event.getBotId()).setBotState(event.getNewStateEnum());
+	protected void csBotStateChanged(CSBotStateChanged event) {		
+		CSBotRecord<Player> record = ensureRecord(event.getBotId());
+		if (record == null) return;
+		record.setBotState(event.getNewStateEnum());
 	}
 
 	protected void csCounterTerroristsWin(CSCounterTerroristsWin event) {

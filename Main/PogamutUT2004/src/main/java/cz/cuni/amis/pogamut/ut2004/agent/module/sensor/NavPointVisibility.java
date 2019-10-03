@@ -12,12 +12,18 @@ import cz.cuni.amis.pogamut.base.communication.worldview.object.IWorldObjectEven
 import cz.cuni.amis.pogamut.base.communication.worldview.object.event.WorldObjectUpdatedEvent;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.base3d.worldview.object.event.WorldObjectAppearedEvent;
+import cz.cuni.amis.pogamut.base3d.worldview.object.event.WorldObjectDisappearedEvent;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.Items.ItemPickedUpListener;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.UT2004Draw;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BeginMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKilled;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ItemPickedUp;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Mover;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPointMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
@@ -27,6 +33,11 @@ import cz.cuni.amis.utils.StopWatch;
 
 public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	
+	/**
+	 * Navpoints in this distance are always considered in FOV.
+	 */
+	private static final double ALL_VISIBLE_DISTANCE = 70;
+
 	/**
 	 * Draw current state of nav point visibility (takes quite a lot of time) according what THIS object is thinking (not what is within {@link IWorldView}.
 	 * You might also consider doing {@link UT2004Draw#clearAll()} first...
@@ -73,9 +84,14 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	private boolean useFieldOfView = true;
 	
 	/**
-	 * Field of view of the bot, used only iff {@link #useFieldOfView}. Check handled in {@link #doNavPointVisibilityQuery(NavPoint)}.
+	 * Field of view of the bot, used only iff {@link #useFieldOfView}. Check handled in {@link #doVisibilityQueryNavPoint(NavPoint)}.
 	 */
 	private double fovAngleDeg = 120;
+	
+	/**
+	 * TODO: Item visibility is weird in UT2004!
+	 */
+	private double fovAngleDegItems = 90;
 	
 	/**
 	 * Whether navpoint vision is capped by the field of view?
@@ -103,12 +119,12 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 		Location loc = location.getLocation();
 		if (loc == null) return false;
 		
-		if (info.getLocation().getDistance(loc) < 70) return true;
+		if (info.getLocation().getDistance(loc) < ALL_VISIBLE_DISTANCE) return true;
 		
 		Location dir = loc.add(info.getLocation().invert()).getNormalized();
-		Location heading = info.getRotation().toLocation().setZ(0).getNormalized();
+		Location heading = info.getRotation().toLocation().getNormalized();
 		
-		double angleDeg = Math.acos(heading.dot(dir)) / Math.PI * 180;
+		double angleDeg = (Math.acos(heading.dot(dir)) / Math.PI) * 180.0d;
 		
 		if (angleDeg < -180) angleDeg += 360;
 		if (angleDeg > 180) angleDeg -= 360;
@@ -127,7 +143,7 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	 * querries.
 	 * @return
 	 */
-	private boolean updateWorldView = true;
+	private boolean enabled = true;
 	
 	/**
 	 * Whether this module should be updating {@link NavPoint#isVisible()} information within agent's {@link WorldView}
@@ -136,7 +152,7 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	 * @return
 	 */
 	public boolean isUpdateWorldView() {
-		return updateWorldView;
+		return enabled;
 	}
 
 	/**
@@ -146,7 +162,7 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	 * @return
 	 */
 	public void setUpdateWorldView(boolean updateWorldView) {
-		this.updateWorldView = updateWorldView;
+		this.enabled = updateWorldView;
 	}
 	
 	/**
@@ -195,20 +211,20 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	protected void refreshNavPointVisibility() {
 		if (visibilityAdapter == null || !visibilityAdapter.isInitialized()) return;
 		
-		if (updateWorldView && (navpointsOff == null || !navpointsOff)) {
+		if (enabled && (navpointsOff == null || !navpointsOff)) {
 			// DISABLE SYNCHRONOUS NAVPOINTS
 			agent.getAct().act(new Configuration().setSyncNavPointsOff(true));
-			navpointsOff = true; // TODO: this assignment should be done according to ConfigChange message, but that does not do that yet...
+			navpointsOff = true;
 		} else
-		if (!updateWorldView && (navpointsOff != null && navpointsOff)) {
+		if (!enabled && (navpointsOff != null && navpointsOff)) {
 			// ENABLE SYNCHRONOUS NAVPOINTS
 			agent.getAct().act(new Configuration().setSyncNavPointsOff(false));
-			navpointsOff = false; // TODO: this assignment should be done according to ConfigChange message, but that does not do that yet...
+			navpointsOff = false;
 		}
 			
 		
 		// LOG INFO
-		if (log != null && log.isLoggable(Level.FINER)) log.finer("Self update => checking navpoint visibility...");
+		if (log != null && log.isLoggable(Level.FINE)) log.fine("Self update => checking navpoint visibility...");
 		StopWatch watch = new StopWatch();
 		
 		Location myLocation = info.getLocation();
@@ -220,7 +236,7 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 			if (navPointDistance > navPointVisionDistance) continue;
 			
 			visibilityQueryCount += 1;
-			if (!doNavPointVisibilityQuery(navPoint)) continue;
+			if (!doVisibilityQueryNavPoint(navPoint)) continue;
 
 			nextVisibleNavPoints.add(navPoint);
 		}
@@ -246,9 +262,9 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 		}		
 		
 		// LOG
-		if (log != null && log.isLoggable(Level.FINE)) {
-			log.fine("#Navpoint querries = " + visibilityQueryCount + ", #Appeared = " + navPointsAppeared + ", #Disappeared = " + navPointsDisappeared + ", #TotalVisible = " + nextVisibleNavPoints.size());
-			log.fine("Total time: " + watch.stopStr());			
+		if (log != null && log.isLoggable(Level.FINER)) {
+			log.finer("#Navpoint querries = " + visibilityQueryCount + ", #Appeared = " + navPointsAppeared + ", #Disappeared = " + navPointsDisappeared + ", #TotalVisible = " + nextVisibleNavPoints.size());
+			log.finer("Total time: " + watch.stopStr());			
 		}
 		
 		// SWAP VISIBLE NAVPOINTS
@@ -265,30 +281,100 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	 * @param navPoint
 	 * @return
 	 */
-	private boolean doNavPointVisibilityQuery(NavPoint navPoint) {
+	private boolean doVisibilityQueryNavPoint(ILocated navPoint) {
 		if (useFieldOfView) {
 			if (!isInFOV(navPoint, fovAngleDeg)) return false;
 		}		
 		return visibilityAdapter.isVisible(info.getLocation(), navPoint);
 	}
 	
-	private void updateNavPointVisibilityInWorldView(NavPoint navPoint, boolean visible) {
-		if (navPoint.isVisible() == visible) {
-			// NO NEED TO UPDATE THE INFORMATION
-			return;
-		}
-		if (!updateWorldView) {
+	/**
+	 * Performs visibility query, uses {@link #visibilityAdapter} to check whether 'item' is visible from bot's current location.
+	 * @param item
+	 * @return
+	 */
+	private boolean doVisibilityQueryItem(ILocated item) {
+		if (useFieldOfView) {
+			if (!isInFOV(item, fovAngleDegItems)) return false;
+		}		
+		return visibilityAdapter.isVisible(info.getLocation(), item);
+	}
+	
+	private void updateNavPointItemSpawnedInWorldView(NavPoint navPoint, boolean itemSpawned) {
+		if (!enabled) {
 			// DO NOT UPDATE WORLDVIEW
 			return;
 		}
-		NavPointMessage update = new NavPointMessage(navPoint.getId(), navPoint.getLocation(), navPoint.getVelocity(), visible, navPoint.getItem(), navPoint.getItemClass(), navPoint.isItemSpawned(), navPoint.isDoorOpened(), navPoint.getMover(), navPoint.getLiftOffset(), navPoint.isLiftJumpExit(), navPoint.isNoDoubleJump(), navPoint.isInvSpot(), navPoint.isPlayerStart(), navPoint.getTeamNumber(), navPoint.isDomPoint(), navPoint.getDomPointController(), navPoint.isDoor(), navPoint.isLiftCenter(), navPoint.isLiftExit(), navPoint.isAIMarker(), navPoint.isJumpSpot(), navPoint.isJumpPad(), navPoint.isJumpDest(), navPoint.isTeleporter(), navPoint.getRotation(), navPoint.isRoamingSpot(), navPoint.isSnipingSpot(), navPoint.getItemInstance(), navPoint.getOutgoingEdges(), navPoint.getIncomingEdges(), navPoint.getPreferedWeapon());;
+		NavPointMessage update = new NavPointMessage(navPoint.getId(), navPoint.getLocation(), navPoint.getVelocity(), itemSpawned ? true : navPoint.isVisible(), navPoint.getItem(), navPoint.getItemClass(), itemSpawned, navPoint.isDoorOpened(), navPoint.getMover(), navPoint.getLiftOffset(), navPoint.isLiftJumpExit(), navPoint.isNoDoubleJump(), navPoint.isInvSpot(), navPoint.isPlayerStart(), navPoint.getTeamNumber(), navPoint.isDomPoint(), navPoint.getDomPointController(), navPoint.isDoor(), navPoint.isLiftCenter(), navPoint.isLiftExit(), navPoint.isAIMarker(), navPoint.isJumpSpot(), navPoint.isJumpPad(), navPoint.isJumpDest(), navPoint.isTeleporter(), navPoint.getRotation(), navPoint.isRoamingSpot(), navPoint.isSnipingSpot(), navPoint.getItemInstance(), navPoint.getOutgoingEdges(), navPoint.getIncomingEdges(), navPoint.getPreferedWeapon());;
+		worldView.notifyImmediately(update);
+	}
+	
+	private void updateNavPointVisibilityInWorldView(NavPoint navPoint, boolean navPointVisible) {
+		if (!enabled) {
+			// DO NOT UPDATE WORLDVIEW
+			return;
+		}
+		boolean itemSpawned = navPoint.isItemSpawned();
+		Item item = navPoint.getItem() == null ? null : worldView.get(navPoint.getItem(), Item.class);
+		
+		if (item != null) {
+			if (item.isVisible()) {
+				itemSpawned = true;
+				navPointVisible = true;				
+			}
+			else 
+			// ITEM NOT VISIBLE
+			if (info.getLocation().getDistance(navPoint.getLocation()) > ALL_VISIBLE_DISTANCE) {
+				if (doVisibilityQueryItem(navPoint) && doVisibilityQueryItem(item.getLocation())) {
+					// NAV POINT VISIBLE, ITEM SHOULD BE VISIBLE AS WELL, BUT GB2004 is reporting the item is not ... consider picked-up
+					itemSpawned = false;					
+				}
+			}
+		}
+		
+		updateNavPointVisibilityInWorldView(navPoint, navPointVisible, itemSpawned);
+	}	
+	
+	private void updateNavPointLocationInWorldView(NavPoint navPoint, Location newLocation) {
+		if (!enabled) {
+			// DO NOT UPDATE WORLDVIEW
+			return;
+		}
+		NavPointMessage update = new NavPointMessage(navPoint.getId(), newLocation, navPoint.getVelocity(), navPoint.isVisible(), navPoint.getItem(), navPoint.getItemClass(), navPoint.isItemSpawned(), navPoint.isDoorOpened(), navPoint.getMover(), navPoint.getLiftOffset(), navPoint.isLiftJumpExit(), navPoint.isNoDoubleJump(), navPoint.isInvSpot(), navPoint.isPlayerStart(), navPoint.getTeamNumber(), navPoint.isDomPoint(), navPoint.getDomPointController(), navPoint.isDoor(), navPoint.isLiftCenter(), navPoint.isLiftExit(), navPoint.isAIMarker(), navPoint.isJumpSpot(), navPoint.isJumpPad(), navPoint.isJumpDest(), navPoint.isTeleporter(), navPoint.getRotation(), navPoint.isRoamingSpot(), navPoint.isSnipingSpot(), navPoint.getItemInstance(), navPoint.getOutgoingEdges(), navPoint.getIncomingEdges(), navPoint.getPreferedWeapon());
+		worldView.notifyImmediately(update);
+	}
+		
+	private void updateNavPointVisibilityInWorldView(NavPoint navPoint, boolean navPointVisible, boolean itemSpawned) {
+		if (!enabled) {
+			// DO NOT UPDATE WORLDVIEW
+			return;
+		}
+		
+		if (navPoint.isVisible() != navPointVisible || navPoint.isItemSpawned() != itemSpawned) {
+			if (log.isLoggable(Level.FINE)) {
+				if (navPoint.isVisible() == navPointVisible)
+				{
+					log.fine(navPoint.getId() + "[visible == " + navPointVisible + (navPoint.isInvSpot() ? ", itemSpawned -> "  +itemSpawned : "") + "]");
+				} else
+				if (navPoint.isItemSpawned() == itemSpawned) {
+					log.fine(navPoint.getId() + "[visible -> " + navPointVisible + (navPoint.isInvSpot() ? ", itemSpawned == " + itemSpawned : "") + "]");
+				} else {
+					log.fine(navPoint.getId() + "[visible -> " + navPointVisible + (navPoint.isInvSpot() ? ", itemSpawned -> " + itemSpawned : "") + "]");	
+				}	
+			}
+		} else {
+			// NOTHING TO UPDATE
+			return;
+		}
+		
+		NavPointMessage update = new NavPointMessage(navPoint.getId(), navPoint.getLocation(), navPoint.getVelocity(), navPointVisible, navPoint.getItem(), navPoint.getItemClass(), itemSpawned, navPoint.isDoorOpened(), navPoint.getMover(), navPoint.getLiftOffset(), navPoint.isLiftJumpExit(), navPoint.isNoDoubleJump(), navPoint.isInvSpot(), navPoint.isPlayerStart(), navPoint.getTeamNumber(), navPoint.isDomPoint(), navPoint.getDomPointController(), navPoint.isDoor(), navPoint.isLiftCenter(), navPoint.isLiftExit(), navPoint.isAIMarker(), navPoint.isJumpSpot(), navPoint.isJumpPad(), navPoint.isJumpDest(), navPoint.isTeleporter(), navPoint.getRotation(), navPoint.isRoamingSpot(), navPoint.isSnipingSpot(), navPoint.getItemInstance(), navPoint.getOutgoingEdges(), navPoint.getIncomingEdges(), navPoint.getPreferedWeapon());;
 		worldView.notifyImmediately(update);
 	}
 	
 	private void dropNavPointVisibilityFlags() {
 		// DROP VISIBILITY INFO
 		for (NavPoint navPoint : visibleNavPoints) {
-			updateNavPointVisibilityInWorldView(navPoint, false);
+			updateNavPointVisibilityInWorldView(navPoint, false, navPoint.isItemSpawned());
 		}
 		visibleNavPoints.clear();		
 	}
@@ -335,6 +421,119 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 	private SelfListener selfListener;
 	
 	/*========================================================================*/
+	
+	/**
+	 * {@link ItemPickedUp} event listener for dropping {@link NavPoint#isItemSpawned()} flag.
+	 * @author Jimmy
+	 */
+	private class ItemPickedUpListener implements IWorldEventListener<ItemPickedUp> {
+
+		public ItemPickedUpListener(IWorldView worldView) {
+			worldView.addEventListener(ItemPickedUp.class, this);;
+		}
+		
+		@Override
+		public void notify(ItemPickedUp event) {
+			if (visibilityAdapter == null || !visibilityAdapter.isInitialized()) return;			
+			if (!enabled) return;
+			Item item = worldView.get(event.getId(), Item.class);
+			if (item == null) return;
+			NavPoint np = item.getNavPoint();
+			if (np == null) return;
+			updateNavPointVisibilityInWorldView(np, np.isVisible(), false);
+		}
+		
+	}
+	
+	/**
+	 * {@link WorldObjectAppearedEvent} for items listener.
+	 */
+	private class ItemAppearedListener implements IWorldObjectEventListener<Item, WorldObjectAppearedEvent<Item>> {
+
+		public ItemAppearedListener(IWorldView worldView) {
+			worldView.addObjectListener(Item.class, WorldObjectAppearedEvent.class, this);;
+		}
+
+		@Override
+		public void notify(WorldObjectAppearedEvent<Item> event) {
+			if (visibilityAdapter == null || !visibilityAdapter.isInitialized()) return;		
+			if (!enabled) return;
+			NavPoint np = event.getObject().getNavPoint();
+			if (np != null) {
+				updateNavPointVisibilityInWorldView(np, true, true);
+			}
+		}
+		
+	}
+	
+	/**
+	 * {@link WorldObjectDisappearedEvent} for items listener.
+	 */
+	private class ItemDisappearedListener implements IWorldObjectEventListener<Item, WorldObjectDisappearedEvent<Item>> {
+
+		public ItemDisappearedListener(IWorldView worldView) {
+			worldView.addObjectListener(Item.class, WorldObjectDisappearedEvent.class, this);;
+		}
+
+		@Override
+		public void notify(WorldObjectDisappearedEvent<Item> event) {
+			if (visibilityAdapter == null || !visibilityAdapter.isInitialized()) return;			
+			if (!enabled) return;
+			NavPoint navPoint = event.getObject().getNavPoint();
+			if (navPoint != null) {
+				if (doVisibilityQueryItem(navPoint)) {
+					if (doVisibilityQueryItem(event.getObject().getLocation())) {
+						// BOTH NAVPOINT & ITEM SHOULD BE VISIBLE, but ITEM is reported that it is not => was picked up 
+						updateNavPointVisibilityInWorldView(navPoint, true, false);
+					}
+				} else {
+					// DROP NAVPOINT VISIBILITY
+					if (!doVisibilityQueryNavPoint(navPoint)) {
+						updateNavPointVisibilityInWorldView(navPoint, false, navPoint.isItemSpawned());
+					}
+				}
+			}
+		}
+		
+	}
+	
+	/** {@link ItemPickedUp} event listener. */
+	ItemPickedUpListener itemPickedUpListener;
+	
+	/** {@link WorldObjectAppearedEvent} for items listener. */
+	ItemAppearedListener itemAppearedListener;
+	
+	/** {@link WorldObjectDisappearedEvent} for items listener. */
+	ItemDisappearedListener itemDisappearedListener;
+	
+	/*========================================================================*/
+
+	/**
+	 * {@link WorldObjectDisappearedEvent} for items listener.
+	 */
+	private class MoverUpdatedListener implements IWorldObjectEventListener<Mover, WorldObjectUpdatedEvent<Mover>> {
+
+		public MoverUpdatedListener(IWorldView worldView) {
+			worldView.addObjectListener(Mover.class, WorldObjectUpdatedEvent.class, this);;
+		}
+
+		@Override
+		public void notify(WorldObjectUpdatedEvent<Mover> event) {
+			if (visibilityAdapter == null || !visibilityAdapter.isInitialized()) return;			
+			if (!enabled) return;
+			NavPoint navPoint = worldView.get(event.getObject().getNavPointMarker(), NavPoint.class);
+			if (navPoint != null) {
+				updateNavPointLocationInWorldView(navPoint, event.getObject().getLocation());
+			}
+			
+		}
+		
+	}
+	
+	/** {@link ItemPickedUp} event listener. */
+	MoverUpdatedListener moverUpdatedListener;
+	
+	/*========================================================================*/
 		
 	/**
 	 * {@link BotKilled} listener counting the number of suicides.
@@ -368,8 +567,10 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 		
 		@Override
 		public void notify(ConfigChange event) {
-			// TODO: change when ConfigChange is updated
-			//navpointsOff = event.isSyncNavpoints();
+			navpointsOff = event.isSyncNavpoints();
+//			fovAngleDeg = event.getVisionFOV();
+//			fovAngleDeg -= 10;
+//			if (fovAngleDeg < 10) fovAngleDeg = 10;
 		}
 		
 	}
@@ -456,6 +657,10 @@ public class NavPointVisibility extends SensorModule<UT2004Bot> {
 		spawnListener = new SpawnListener(worldView);
 		beginMessageListener = new BeginMessageListener(worldView);
 		configChangeListener = new ConfigChangeListener(worldView);
+		itemPickedUpListener = new ItemPickedUpListener(worldView);		
+		itemAppearedListener = new ItemAppearedListener(worldView);
+		itemDisappearedListener = new ItemDisappearedListener(worldView);
+		moverUpdatedListener = new MoverUpdatedListener(worldView);
 		
 		visibleNavPoints = new HashSet<NavPoint>();
 		nextVisibleNavPoints = new HashSet<NavPoint>();

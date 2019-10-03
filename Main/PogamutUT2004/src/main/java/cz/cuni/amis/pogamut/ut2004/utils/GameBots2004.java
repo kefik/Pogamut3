@@ -115,9 +115,9 @@ public class GameBots2004 {
 		}
 		thread = null;
 		
-		log.warning("Stopping the UT2004Server...");
+		log.warning("Killing the UT2004Server...");
 		try {
-			server.stop();
+			server.kill();
 		} catch (Exception e) {
 		}
 		server = null;

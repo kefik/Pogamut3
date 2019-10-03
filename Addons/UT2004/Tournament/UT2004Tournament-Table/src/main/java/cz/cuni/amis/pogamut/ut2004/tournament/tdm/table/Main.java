@@ -927,9 +927,9 @@ public class Main {
 			
 			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
 			
-			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\";
+			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-06-TDM\\Students\\";
 			
-			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-06-TDM\\Students\\_Results\\";
+			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-06-TDM\\Students\\_Results\\";
 			
 			args = new String[] {
 				"-u",
@@ -937,7 +937,7 @@ public class Main {
 				"-a",
 				botsDir,
 				"-n", // number of bots per team
-				"3",
+				"4",
 				"-r",
 				resultsDir,
 				"-s",

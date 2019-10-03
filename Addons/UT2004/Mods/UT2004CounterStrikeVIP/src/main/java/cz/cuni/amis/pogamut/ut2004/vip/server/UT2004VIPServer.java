@@ -32,6 +32,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004Serve
 import cz.cuni.amis.pogamut.ut2004.agent.params.UT2004AgentParameters;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Configuration;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.GameConfiguration;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.GetPlayers;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.KillBot;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Respawn;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.SendControlMessage;
@@ -190,7 +191,7 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 		// getLogger().getCategory(getWorldView()).setLevel(Level.ALL);
 		synchronized (mutex) {
 			getAct().act(new StartPlayers(true, true, false));
-			getAct().act(new Configuration().setVisionTime(0.2d));
+			getAct().act(new Configuration().setVisionTime(0.1d));
 		}
 	}
 
@@ -235,7 +236,7 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 //					+ " ? See javadoc for LevelGeometryModule for more info.");
 //			return;
 //		}
-
+		
 		synchronized (mutex) {
 			if (gameRunning.getFlag()) {
 				failure("Cannot start the game, game is already running!");
@@ -362,15 +363,18 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 	// ==============
 
 	private void playerUpdate(IWorldObjectEvent<PlayerMessage> event) {
+		playerUpdate(event.getObject());
+	}
+	
+	private void playerUpdate(PlayerMessage player) {
 		synchronized (mutex) {
-			PlayerMessage player = event.getObject();
 			CSBotRecord<PlayerMessage> record = ensurePlayer(player.getId());
 			record.setPlayer(player);
 		}
 		synchronized (lastPlayerUpdate) {
-			long lastTime = lastPlayerUpdate.get(event.getObject().getId());
+			long lastTime = lastPlayerUpdate.get(player.getId());
 			long currTime = System.currentTimeMillis();
-			lastPlayerUpdate.put(event.getObject().getId(), currTime);
+			lastPlayerUpdate.put(player.getId(), currTime);
 			long diff = currTime - lastTime;
 //			if (diff > 300) {
 //				log.warning("Player update too slow for Player[id="
@@ -457,6 +461,9 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 
 	private void batchEnd(EndMessage event) {
 		synchronized (mutex) {
+			for (PlayerMessage player : getWorldView().getAll(PlayerMessage.class).values()) {
+				playerUpdate(player);
+			}
 			if (!gameRunning.getFlag())
 				return;
 			if (utTimeDelta <= 0)
@@ -631,7 +638,7 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 	private void stateRoundStarting() {
 		if (getInGameBots().size() < 2) {
 			if (subState == 0) {
-				speak("Not enough players in the game, waiting...");
+				speak("Not enough players in the game (" + getInGameBots().size() + "), waiting...");
 				return;
 			}
 			speakError("Some player has left the game during round-starting, restarting...");
@@ -659,6 +666,17 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			break;
 			
 		case 1:
+			speak("Sending VIP Game Config info...");
+			send(new VIPGameStart(config));
+			++subState;
+			break;
+			
+		case 2:
+		case 3:
+			++subState;
+			break;
+			
+		case 4:
 			// ASSIGN VIP first...
 			if (config.isFixedVIP()) {
 				if (!assignFixedVIP())
@@ -681,12 +699,12 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			++subState;
 			break;
 
-		case 2: // RESTART LEVEL
+		case 5: // RESTART LEVEL
 			send(new GameConfiguration().setRestart(true));
 			++subState;
 			break;
 			
-		case 3: // CONFIG ALL BOTS TO MANUAL SPAWN
+		case 6: // CONFIG ALL BOTS TO MANUAL SPAWN
 			speak("Configuring all bots to MANUAL SPAWN...");
 			for (CSBotRecord<PlayerMessage> botRecord : getInGameBots()) {
 				configManualSpawn(botRecord);
@@ -694,20 +712,20 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 			++subState;
 			break;
 			
-		case 4: // KILLING ALL BOTS
+		case 7: // KILLING ALL BOTS
 			speak("Killing all bots...");
 			for (CSBotRecord<PlayerMessage> botRecord : getInGameBots()) {
 				killBot(botRecord);
 			}
 			++subState;
 			break;
-		case 5: // LET UT2004 SERVER TO CATCH UP WITH KILLS ... playing safe here a bit
-		case 6:
-		case 7:
+		case 8: // LET UT2004 SERVER TO CATCH UP WITH KILLS ... playing safe here a bit
+		case 9:
+		case 10:
 			++subState;
 			break;
 			
-		case 8: 
+		case 11: 
 			if (ensureAllObserved()) {
 				// MOVE ON!
 				++subState;
@@ -715,32 +733,31 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 				speak("Waiting for bot observers to initialize...");
 			}
 			break;
-		case 9:
+		case 12:
 			if (ensureVIPObserver()) {
 				// MOVE ON!
 				++subState;
 			} else {
 				speak("Waiting for vip-observer to initialize...");
 			}
-			break;
-		
+			break;			
 			
-		case 10: 
+		case 13: 
 			decideOnSafeArea();
 			++subState;
 			break;
 			
-		case 11: // SPAWN ALL RUNNERS
+		case 14: // SPAWN ALL RUNNERS
 			spawnAll();
 			++subState;
 			break;
 		
-		case 12:
-		case 13:
+		case 15:
+		case 16:
 			++subState; // LET BOTS TO CATCH-UP
 			break;		
 		
-		case 14: // ALL BOT SPAWNED, MOVE TO NEXT STATE
+		case 17: // ALL BOT SPAWNED, MOVE TO NEXT STATE
 			speak("ALL BOTS SPAWNED! ROUND " + (roundNumber+1) + " BEGINS");
 			
 			roundTimeLeft = config.getRoundTimeUT();
@@ -1147,8 +1164,11 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 		for (CSBotRecord<PlayerMessage> record : records.values()) {
 			if (!record.isInGame())
 				continue;
-			if (record.getPlayer().getJmx() == null)
+			if (!record.isBot()) {
 				continue;
+			}
+//			if (record.getPlayer().getJmx() == null)
+//				continue;
 			result.add(record);
 		}
 		return result;
@@ -1159,8 +1179,11 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 		for (CSBotRecord<PlayerMessage> record : records.values()) {
 			if (!record.isInGame())
 				continue;
-			if (record.getPlayer().getJmx() == null)
+			if (!record.isBot()) {
 				continue;
+			}
+//			if (record.getPlayer().getJmx() == null)
+//				continue;
 			if (!record.isSpawned())
 				continue;
 			result.add(record);
@@ -1173,8 +1196,11 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 		for (CSBotRecord<PlayerMessage> record : records.values()) {
 			if (!record.isInGame())
 				continue;
-			if (record.getPlayer().getJmx() == null)
+			if (!record.isBot()) {
 				continue;
+			}
+//			if (record.getPlayer().getJmx() == null)
+//				continue;
 			if (record.getPlayer().getTeam() != team.ut2004Team)
 				continue;
 			result.add(record);
@@ -1187,8 +1213,11 @@ public class UT2004VIPServer extends UT2004Server implements IUT2004Server {
 		for (CSBotRecord<PlayerMessage> record : records.values()) {
 			if (!record.isInGame())
 				continue;
-			if (record.getPlayer().getJmx() == null)
+			if (!record.isBot()) {
 				continue;
+			}
+//			if (record.getPlayer().getJmx() == null)
+//				continue;
 			if (record.getPlayer().getTeam() != team.ut2004Team)
 				continue;
 			if (!record.isSpawned())

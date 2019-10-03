@@ -176,6 +176,7 @@ public class EmptyBot extends UT2004BotModuleController {
      */
     @Override
     public void beforeFirstLogic() {
+    	//navMeshModule.getNavMeshDraw().draw(true, true);
     }
     
     private void sayGlobal(String msg) {
@@ -225,6 +226,15 @@ public class EmptyBot extends UT2004BotModuleController {
     @Override
     public void logic() throws PogamutException {
     	log.info("---LOGIC: " + (++logicIterationNumber) + "---");
+    	if (players.canSeePlayers()) {
+    		navigation.navigate(players.getNearestVisiblePlayer());
+    		shoot.shoot(players.getNearestVisiblePlayer());
+    	} else {
+    		shoot.stopShooting();
+    		if (!navigation.isNavigating()) {
+    			navigation.navigate(navPoints.getRandomNavPoint());
+    		}
+    	}
     	
 
     }

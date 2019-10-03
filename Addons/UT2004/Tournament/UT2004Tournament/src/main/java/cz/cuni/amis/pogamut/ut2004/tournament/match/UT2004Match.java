@@ -837,7 +837,7 @@ public abstract class UT2004Match<CONFIG extends UT2004MatchConfig, RESULT exten
 						execution.start(ucc.getHost(), ucc.getBotPort(), ucc.getControlPort(), ucc.getObserverPort());
 						
 						// WAIT TILL WE CATCH HIS ID / OR TIMEOUT / OR BOT FAILURE
-						latch.get().await(2 * 60 * 1000, TimeUnit.MILLISECONDS);						
+						latch.get().await(10 * 60 * 1000, TimeUnit.MILLISECONDS);						
 					} finally {
 						// REMOVE THE LISTENER
 						execution.getRunning().removeListener(botObs);
@@ -848,7 +848,7 @@ public abstract class UT2004Match<CONFIG extends UT2004MatchConfig, RESULT exten
 					}
 					if (latch.get().getCount() > 0) {
 						// LATCH TIMEOUT!
-						throw new PogamutException("(CustomBot connecting) Bot[botId=" + botConfig.getBotId().getToken() + "], startup failed! It does not showed up on server for 2 minutes... either failed to start, or " + server + " failed to got its presence from GB2004.", log, this);
+						throw new PogamutException("(CustomBot connecting) Bot[botId=" + botConfig.getBotId().getToken() + "], startup failed! It does not showed up on server for 10 minutes... either failed to start, or " + server + " failed to got its presence from GB2004.", log, this);
 					}
 					
 					// SUCCESS! THE BOT IS UP AND RUNNING

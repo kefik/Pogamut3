@@ -1,5 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.tdm.table.report.summary;
 
+import cz.cuni.amis.utils.Const;
+
 public class TDMMatchesTableTeamResult {
 
 	public final String team;
@@ -18,6 +20,8 @@ public class TDMMatchesTableTeamResult {
 	
 	public int position = -1;
 	
+	public String exceptionsStr = "";
+	
 	public TDMMatchesTableTeamResult(String team) {
 		this.team = team;
 	}
@@ -35,6 +39,11 @@ public class TDMMatchesTableTeamResult {
 			} else {
 				++loses;
 			}
+			exceptions += result.exceptions1;
+			if (result.exceptions1Str != null && !result.exceptions1Str.isEmpty()) {
+				if (!exceptionsStr.isEmpty()) exceptionsStr += Const.NEW_LINE;
+				exceptionsStr += result.exceptions1Str;	
+			}			
 		} else
 		if (result.team2.equals(team)) {
 			// I AM PLAYER 2
@@ -47,6 +56,11 @@ public class TDMMatchesTableTeamResult {
 				++loses;
 			} else {
 				++wins;
+			}
+			exceptions += result.exceptions2;
+			if (result.exceptions2Str != null && !result.exceptions2Str.isEmpty()) {
+				if (!exceptionsStr.isEmpty()) exceptionsStr += Const.NEW_LINE;
+				exceptionsStr += result.exceptions2Str;	
 			}
 		} else {
 			// ??? HUH

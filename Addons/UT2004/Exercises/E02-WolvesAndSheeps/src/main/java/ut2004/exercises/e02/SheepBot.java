@@ -81,7 +81,7 @@ public class SheepBot extends UT2004BotModuleController {
      */
     @Override
     public void beforeFirstLogic() {
-    	act.act(new Configuration().setManualSpawn(true).setVisionTime(0.1));
+    	act.act(new Configuration().setManualSpawn(true).setVisionTime(0.1).setSyncNavPointsOff(true));
     }
      
     @EventListener(eventClass=GlobalChat.class)
@@ -116,26 +116,12 @@ public class SheepBot extends UT2004BotModuleController {
     	logic();
     }
 
-//    private static CountDownLatch cdl = new CountDownLatch(4);
-//    
-//    private boolean a = true;
-    
     /**
      * Main method called 4 times / second. Do your action-selection here.
      */
     @Override
     public void logic() throws PogamutException {    	    	
     	if (!Utils.gameRunning) return;
-    	
-//    	cdl.countDown();
-//    	try {
-//			cdl.await();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//    	
-//    	if (a) { die(); a = false; }
-    	
     	
     	int visibleWolfs = 0;
     	for (Player player : players.getVisiblePlayers().values()) {

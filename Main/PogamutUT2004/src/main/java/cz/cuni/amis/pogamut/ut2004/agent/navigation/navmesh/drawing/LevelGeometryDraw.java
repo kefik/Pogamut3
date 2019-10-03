@@ -70,11 +70,13 @@ public class LevelGeometryDraw extends UT2004Draw {
 		Color lineColor = ray.hitLocation != null ? Color.RED : Color.BLUE;
 		Color cubeColor = ray.hitLocation != null ? Color.ORANGE : Color.CYAN;
 		
-		drawLine(lineColor, new Location(ray.ray.getOrigin()), new Location(ray.ray.getExamplePoint2()));
 		
 		if (ray.hitLocation != null) {
 			Triangle triangle = ray.hitTriangle;
-			drawPolygon(cubeColor, triangle.verticesAsLoc[0], triangle.verticesAsLoc[1], triangle.verticesAsLoc[2]);			
+			drawPolygon(cubeColor, triangle.verticesAsLoc[0], triangle.verticesAsLoc[1], triangle.verticesAsLoc[2]);
+			drawLine(lineColor, new Location(ray.ray.getOrigin()), ray.hitLocation);			
+		} else {
+			drawLine(lineColor, new Location(ray.ray.getOrigin()), new Location(ray.ray.getExamplePoint2()));			
 		}
 		
 		return true;

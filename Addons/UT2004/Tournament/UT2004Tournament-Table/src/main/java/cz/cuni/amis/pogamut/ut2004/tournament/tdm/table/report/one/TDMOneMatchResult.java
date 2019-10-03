@@ -49,7 +49,7 @@ public class TDMOneMatchResult {
 		return 0;
 	}
 	
-	public String getException(String player) {
+	public String getExceptionsTrace(String player) {
 		if (team1.equals(player)) return team1ExceptionTrace;
 		if (team2.equals(player)) return team2ExceptionTrace;
 		return "";

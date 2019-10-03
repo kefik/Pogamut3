@@ -56,6 +56,9 @@ public class NavMeshClearanceComputer {
         );
         
         RayPath<NavMeshPolygon,NavMeshEdge>.PathStep lastStep = Iterables.getLast( rayPath.getSteps() );
+        if (lastStep == null) {
+        	return new ClearanceLimit(null, start);
+        } else
         if ( lastStep.getPolygon() == null ) {
         	return new ClearanceLimit( lastStep.getEdge(), lastStep.getIntersection() );
         } else {

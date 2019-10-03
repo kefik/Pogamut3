@@ -60,7 +60,7 @@ public class TDMMatchesTableResults {
 		return results.get(plr1, plr2);
 	}
 	
-	public TDMMatchesResult addResult(String team1, String team2, int score1, int score2, int frags1, int frags2, int deaths1, int deaths2, int exceptions1, int exceptions2) {
+	public TDMMatchesResult addResult(String team1, String team2, int score1, int score2, int frags1, int frags2, int deaths1, int deaths2, int exceptions1, int exceptions2, String exceptions1Str, String exceptions2Str) {
 		if (team1.compareToIgnoreCase(team2) == 0) {
 			throw new RuntimeException("Could not add result for " + team1 + " vs. " + team2 + " as their names are the same!");
 		}
@@ -85,12 +85,16 @@ public class TDMMatchesTableResults {
 			tempI = exceptions2;
 			exceptions2 = exceptions1;
 			exceptions1 = tempI;
+			
+			temp = exceptions1Str;
+			exceptions1Str = exceptions1Str;
+			exceptions2Str = temp;
 		}
 		
 		TDMMatchesTableTeamResult team1Result = teams.get(team1);
 		TDMMatchesTableTeamResult team2Result = teams.get(team2);
 		
-		TDMMatchesResult result = new TDMMatchesResult(team1, team2, score1, score2, frags1, frags2, deaths1, deaths2, exceptions1, exceptions2);
+		TDMMatchesResult result = new TDMMatchesResult(team1, team2, score1, score2, frags1, frags2, deaths1, deaths2, exceptions1, exceptions2, exceptions1Str, exceptions2Str);
 		
 		TDMMatchesResult old = results.put(team1, team2, result);
 		

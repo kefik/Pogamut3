@@ -306,6 +306,18 @@ public class NavMeshNavigation implements IUT2004Navigation {
         reset(true, NavigationState.STOPPED);
         bot.getAct().act(new Stop());
     }
+    
+    private boolean isSane(ILocated location) {
+    	if (location == null || location.getLocation() == null) {
+            return false;
+        }
+        
+        if (Double.isNaN(location.getLocation().x) || Double.isNaN(location.getLocation().y) || Double.isNaN(location.getLocation().z)) {
+        	return false;
+        }
+        
+        return true;
+    }
 
     @Override
     public void navigate(ILocated target) {
@@ -314,14 +326,14 @@ public class NavMeshNavigation implements IUT2004Navigation {
     		return;
     	}
     	
-        if (target == null) {
+        if (!isSane(target)) {
             if (log != null && log.isLoggable(Level.WARNING)) {
-                log.warning("Cannot navigate to NULL target!");
+                log.warning("Cannot navigate to INVALID target: " + target);
             }
             reset(true, NavigationState.STOPPED);
             return;
         }
-
+        
         if (target instanceof Player) {
             // USE DIFFERENT METHOD INSTEAD
             navigate((Player) target);
@@ -450,13 +462,25 @@ public class NavMeshNavigation implements IUT2004Navigation {
 
     public void setContinueTo(ILocated continueTo) {
         if (!isNavigating()) {
-            log.warning("Cannot continueTo(" + continueTo + ") as navigation is not navigating!");
+        	if (log != null && log.isLoggable(Level.WARNING)) {
+        		log.warning("Cannot continueTo(" + continueTo + ") as navigation is not navigating!");
+        	}
             return;
         }
         if (isNavigatingToPlayer()) {
-            log.warning("Cannot continueTo(" + continueTo + ") as we're navigating to player!");
+        	if (log != null && log.isLoggable(Level.WARNING)) {
+        		log.warning("Cannot continueTo(" + continueTo + ") as we're navigating to player!");
+        	}
             return;
         }
+            
+        if (!isSane(continueTo)) {
+            if (log != null && log.isLoggable(Level.WARNING)) {
+                log.warning("Cannot continue navigation to INVALID target: " + continueTo);
+            }
+            return;
+        }
+        
         this.continueTo = continueTo;
 
         NavPoint from = getNearestNavPoint(currentTarget);

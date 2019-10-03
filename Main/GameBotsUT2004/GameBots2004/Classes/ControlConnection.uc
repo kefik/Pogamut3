@@ -1122,6 +1122,8 @@ function SendNotifyConf(RemoteBot theBot)
 		"} {DrawTraceLines " $ theBot.bDrawTraceLines $
 		"} {SynchronousOff " $ theBot.myConnection.bSynchronousMessagesOff $
 		"} {AutoPickupOff " $ theBot.bDisableAutoPickup $
+		"} {SyncNavpoints " $ theBot.myConnection.bSynchronousNavPoints $
+		"} {VisionFOV " $ theBot.FovAngle $
 		"}";
 
 

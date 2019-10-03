@@ -14,6 +14,7 @@ import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.FilterEvent;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -146,6 +147,10 @@ public class TCMinaServer implements IoHandler {
 		}
 	}
 	
+	private boolean unbound = false;
+    private boolean disposed = false;
+	
+	
 	/**
 	 * Stops this {@link TCMinaServer}. 
 	 *
@@ -156,25 +161,56 @@ public class TCMinaServer implements IoHandler {
 			log.warning("Stopping TCMinaServer!");
 			if (ioAcceptor != null) {
 				log.warning("Closing TCMinaServer Socket!");
+				unbound = false;
+				disposed = false;		
 				try {
 					ioAcceptor.setCloseOnDeactivation(true);
 					int i = 0;
 					for (IoSession ss : ioAcceptor.getManagedSessions().values()) {
-						log.warning("Closing managed sessions: " + "(++i)");
+						log.warning("Closing managed sessions: " + (++i));
 						ss.close(true);
 					}
 					log.warning("Unbinding ioAcceptor...");
-					ioAcceptor.unbind();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							ioAcceptor.unbind();	
+							unbound = true;
+						}						
+					}, "TCMinaServer-ioAcceptor.unbind()").start();
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				log.warning("Sleeping 500ms to let ioAcceptor.unbind()...");
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+				}
+				if (!unbound) {
+					log.warning("Failed to ioAcceptor.unbind() :-(");
+				}				
 				log.warning("Disposing ioAcceptor...");
 				try {
-					ioAcceptor.dispose(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-					ioAcceptor = null;
-				}			
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							ioAcceptor.dispose(true);
+							disposed = true;
+						}						
+					}, "TCMinaServer-ioAcceptor.dispose(true)").start();					
+				} catch (Exception e) {					
+				}		
+				log.warning("Sleeping 500ms to let ioAcceptor.dispose(true)...");
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e1) {
+				}
+				if (!disposed) {
+					log.warning("Failed to ioAcceptor.dispose(true) in 500ms :-(");
+				}
+				ioAcceptor = null;
+			} else {
+				unbound = true;
+				disposed = true;
 			}
 			
 			botSessions.clear();
@@ -186,7 +222,8 @@ public class TCMinaServer implements IoHandler {
 			} catch (Exception e) {			
 			}
 			
-			log.warning("TCMinaServer stopped!");
+			if (unbound && disposed) log.warning("TCMinaServer stopped!");
+			else log.warning("TCMinaServer failed to stop, but we are pretending it did...");
 		}
 	}
 	
@@ -848,6 +885,12 @@ public class TCMinaServer implements IoHandler {
 	@Override
 	public void inputClosed(IoSession arg0) throws Exception {
 		// TODO: should we react?
+	}
+
+	@Override
+	public void event(IoSession arg0, FilterEvent arg1) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

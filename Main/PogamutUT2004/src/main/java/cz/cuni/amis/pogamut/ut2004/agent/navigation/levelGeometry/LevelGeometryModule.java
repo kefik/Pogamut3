@@ -26,6 +26,7 @@ import cz.cuni.amis.pogamut.base.utils.logging.IAgentLogger;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.IUT2004ServerProvider;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.LevelGeometryDraw;
+import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 
 /**
@@ -37,13 +38,15 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInf
 public class LevelGeometryModule {
 	
 	private Logger log;
+	
+	protected boolean autoLoad = true;	
 			
 	//
 	// STATE
 	//
 	
 	private boolean loaded = false;
-	private GameInfo loadedForMap = null;
+	private String loadedForMap = null;
 	
 	//
 	// NAVMESH DATA STRUCTURES
@@ -55,7 +58,7 @@ public class LevelGeometryModule {
 	private IWorldObjectEventListener<GameInfo, IWorldObjectEvent<GameInfo>> gameInfoListener = new IWorldObjectEventListener<GameInfo, IWorldObjectEvent<GameInfo>>() {
 		@Override
 		public void notify(IWorldObjectEvent<GameInfo> event) {
-			load(event.getObject());
+			autoLoad(event.getObject());
 		}
 	};
        
@@ -70,10 +73,22 @@ public class LevelGeometryModule {
     	
     	GameInfo info = worldView.getSingle(GameInfo.class);
     	if (info != null) {
-    		load(info);
+    		autoLoad(info);
     	}
     	
     	draw = new LevelGeometryDraw(null, log, serverProvider);
+    }
+    
+    /**
+     * Determines, whether the module attempts to load data during the bot startup;
+     * set to FALSE in {@link UT2004BotModuleController#initializeModules()} to disable the loading.
+     * 
+     * You can load the level geometry later on manually via {@link #load(String)}, note that it may take quite a lot of time...
+     * 
+     * @param autoLoad
+     */
+    public void setAutoLoad(boolean autoLoad) {
+    	this.autoLoad = autoLoad;
     }
     
     private void clear() {
@@ -96,33 +111,47 @@ public class LevelGeometryModule {
     	}
     }
     
-    private void load(GameInfo info) {
+    private void autoLoad(GameInfo info) {
+    	if (!autoLoad) {
+    		log.warning("Auto-loading of the module is disabled...");
+    		return;
+    	}
+    	
     	if (info == null) {
     		log.severe("Could not load for 'null' GameInfo!");
     		return;
     	}
-        if (loaded) {
+    	
+        // LOAD THE LEVEL GEOMETRY FOR THE MAP FROM 'info'
+        String mapName = info.getLevel();     
+        load(mapName);
+    }
+    
+    /**
+     * Load LevelGeometry data for map 'mapName'.
+     * @param mapName
+     */
+    public void load(String mapName) {
+    	if (loaded) {
         	if (loadedForMap == null) {
         		// WTF?
         		// => clear
         		clear();
         		// => and reload
         	} else {
-        		if (loadedForMap.getLevel().equals(info.getLevel())) {
+        		if (loadedForMap.equals(mapName)) {
         			// ALREADY INITIALIZED FOR THE SAME LEVEL
         			return;
         		}
         	}
         }
-        
-        // LOAD THE LEVEL GEOMETRY FOR THE MAP FROM 'info'
-        String mapName = info.getLevel();        
+    	
         log.warning("Initializing LevelGeometry for: " + mapName);
     	
         if (loadLevelGeometry(mapName)) {	 
         	draw.setLevelGeometry(levelGeometry);
 	        loaded = true;
-	        loadedForMap = info;
+	        loadedForMap = mapName;
 	        return;
         } 
         

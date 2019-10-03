@@ -111,6 +111,8 @@ public class NavMeshDropGrounder implements INavMeshGrounder {
 			SimplePlanarPolygon3D polygon = polygonToShape.apply(candidate);
 			Point3D gravityLineIntersection = gravityLine.getPlaneIntersection( polygon.getPlane() );
 			
+			if (gravityLineIntersection == null) continue;
+			
 			if ( polygon.getDistance( gravityLineIntersection ) > Shape3D.ACCURACY ) {
 				// polygon is not actually above/below 
 				continue;

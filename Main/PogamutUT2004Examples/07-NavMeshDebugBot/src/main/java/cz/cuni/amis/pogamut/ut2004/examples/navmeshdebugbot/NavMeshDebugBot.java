@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.vecmath.Vector3d;
 
@@ -18,9 +19,13 @@ import org.apache.commons.io.FileUtils;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
 import cz.cuni.amis.pogamut.base.agent.navigation.impl.PrecomputedPathFuture;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
+import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.ObjectClassEventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
 import cz.cuni.amis.pogamut.base3d.worldview.object.ILocated;
 import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
+import cz.cuni.amis.pogamut.base3d.worldview.object.event.WorldObjectAppearedEvent;
+import cz.cuni.amis.pogamut.base3d.worldview.object.event.WorldObjectDisappearedEvent;
+import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.ManualControl;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.UT2004Skins;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004PathExecutorStuckState;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.drawing.INavMeshDraw;
@@ -33,6 +38,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigC
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GlobalChat;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage;
+import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoint;
 import cz.cuni.amis.pogamut.ut2004.utils.UT2004BotRunner;
 import cz.cuni.amis.utils.ExceptionToString;
@@ -60,6 +66,10 @@ import cz.cuni.amis.utils.flag.FlagListener;
 public class NavMeshDebugBot extends UT2004BotModuleController {
 
 	private static int INSTANCE = 0;
+	
+	public static final boolean MANUAL_CONTROL = true;
+	
+	public static final boolean AUTOLOAD_LEVEL_GEOMETRY = true;
 	
 	private static final long TIMESTAMP = System.currentTimeMillis();
 	
@@ -96,7 +106,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     /**
      * Flip by chat message 'drawNavMesh'.
      */
-    private boolean drawNavMesh = true;
+    private boolean drawNavMesh = false;
     
     /**
      * Perform synthetic test from the start ... probing many paths, stress-testing navmesh path-finder...; forced to rerun by saying 'synthtest'
@@ -118,11 +128,15 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
      */
     private List<Color> pathColors = new ArrayList<Color>();
     private int lastPathColor = -1;
+    
+    private ManualControl manualControl;
 
     /**
      * Listener to path-events.
      */
     private FlagListener<IPathExecutorState> pathExecutorStateListener;
+
+	private boolean lastManualActive = false;
     
     @Override
     public void prepareBot(UT2004Bot bot) {
@@ -140,6 +154,7 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     public void initializeController(UT2004Bot bot) {
     	super.initializeController(bot);
     	navMeshDraw = navMeshModule.getNavMeshDraw();
+    	levelGeometryModule.setAutoLoad(AUTOLOAD_LEVEL_GEOMETRY);
     }
     
     @Override
@@ -152,6 +167,11 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	super.botInitialized(gameInfo, currentConfig, init);
     	    	
     	loadLastFailures();
+    	
+    	if (MANUAL_CONTROL) {
+    		log.warning("INITIALIZING MANUAL CONTROL WINDOW");
+    		manualControl = new ManualControl(bot, info, body, levelGeometryModule, draw, navPointVisibility, navMeshModule);
+    	}  
     }
     
  	private void sayGlobal(String msg) {
@@ -206,6 +226,26 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	}
     }
     
+    @ObjectClassEventListener(eventClass=WorldObjectAppearedEvent.class, objectClass=Item.class)
+    public void itemAppearedListener(WorldObjectAppearedEvent<Item> event) {
+    	sayGlobal("Item at " + event.getObject().getNavPointId() + " APPEARED");    	
+    }
+
+    @ObjectClassEventListener(eventClass=WorldObjectDisappearedEvent.class, objectClass=Item.class)
+    public void itemDisappearedListener(WorldObjectDisappearedEvent<Item> event) {
+    	sayGlobal("Item at " + event.getObject().getNavPointId() + " DISappeared");    	
+    }
+    
+    @ObjectClassEventListener(eventClass=WorldObjectAppearedEvent.class, objectClass=NavPoint.class)
+    public void NavPointAppearedListener(WorldObjectAppearedEvent<NavPoint> event) {
+    	sayGlobal("NavPoint " + event.getId() + " APPEARED");    	
+    }
+
+    @ObjectClassEventListener(eventClass=WorldObjectDisappearedEvent.class, objectClass=NavPoint.class)
+    public void NavPointDisappearedListener(WorldObjectDisappearedEvent<NavPoint> event) {
+    	sayGlobal("NavPoint " + event.getId() + " DISappeared");    	
+    }
+    
 	@Override
     public void beforeFirstLogic() {
 		pathExecutorStateListener = new FlagListener<IPathExecutorState>() {
@@ -227,18 +267,36 @@ public class NavMeshDebugBot extends UT2004BotModuleController {
     	if (drawNavMesh) {
     		navMeshDraw.draw(drawNavMesh, true);
     	}
-    	sayGlobal("LET'S GO!");
+    	sayGlobal("LEVEL GEOMETRY: " + (levelGeometryModule.isInitialized() ? "LOADED" : "N/A"));
+    	sayGlobal("FOV: " + config.getVisionFOV());
+    	
+    	navPointVisibility.getLog().setLevel(Level.FINE);
     }
    
     @Override
     public void logic() throws PogamutException {
-    	log.info("---LOGIC: " + (++logicIterationNumber) + "---");
+    	//log.info("---LOGIC: " + (++logicIterationNumber) + "---");
     
     	if (!navMeshModule.isInitialized()) {
     		sayGlobal("NAV MESH MODULE NOT INITIALIZED?");
     		sayGlobal("Missing navmesh for: " + game.getMapName() + " ?");
     		return;
-    	}
+    	}    	
+    	
+    	// MANUAL CONTROL
+    	if (manualControl != null && manualControl.isActive()) {
+    		if (!lastManualActive) {
+    			sayGlobal("MANUAL CONTROL");
+        		lastManualActive = true;
+    		}
+    		lastLogicTime = System.currentTimeMillis();
+    		return;
+    	} else {
+    		if (lastManualActive) {
+    			sayGlobal("MANUAL CONTROL DEACTIVATED");
+    			lastManualActive = false;    			
+    		}
+    	}    	
     	
     	if (synthTest) {
     		synthTest = false;
