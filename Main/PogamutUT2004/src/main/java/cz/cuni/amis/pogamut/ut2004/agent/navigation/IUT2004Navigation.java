@@ -142,10 +142,17 @@ public interface IUT2004Navigation {
     public void navigate(Player player);
     
     /**
-     * Let the bot to follow this path.
+     * Let the bot to follow this EXACT path.
      * @param pathHandle
      */
     public void navigate(IPathFuture<ILocated> pathHandle);
+    
+    /**
+     * Let the bot to follow this path.
+     * @param pathHandle
+     * @param smooth if NavMesh navigation is used, the navigation will try to smooth the path (auto-provides better path in case of path-of-navpoints provided)
+     */
+    public void navigate(IPathFuture<ILocated> pathHandle, boolean smooth);
     
     /**
      * When the bot is about to reach its target, it will prolong his path to continue to 'target'.

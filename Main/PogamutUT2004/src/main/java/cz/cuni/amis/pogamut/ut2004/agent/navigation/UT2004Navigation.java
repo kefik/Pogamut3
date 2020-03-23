@@ -386,6 +386,13 @@ public class UT2004Navigation implements IUT2004Navigation {
     	navigate();
 	}
 
+	@Override
+	public void navigate(IPathFuture<ILocated> pathHandle, boolean smooth) {
+		// NO SMOOTHING
+		if (smooth && log != null && log.isLoggable(Level.WARNING)) log.warning("NavGraph navigation cannot smooth paths.");
+		navigate(pathHandle);
+	}
+	
     
     @Override
     public NavPoint getNearestNavPoint(ILocated location) {

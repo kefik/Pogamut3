@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathExecutorState;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathFuture;
 import cz.cuni.amis.pogamut.base.agent.navigation.IPathPlanner;
+import cz.cuni.amis.pogamut.base.agent.navigation.impl.PrecomputedPathFuture;
 import cz.cuni.amis.pogamut.base.communication.worldview.event.IWorldEventListener;
 import cz.cuni.amis.pogamut.base.utils.logging.LogCategory;
 import cz.cuni.amis.pogamut.base.utils.math.DistanceUtils;
@@ -24,6 +25,7 @@ import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004Navigation;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004RunStraight;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMesh;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshModule;
+import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.NavMeshClearanceComputer.ClearanceLimit;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh.pathPlanner.AStar.NavMeshAStarPathPlanner;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.AccUT2004DistanceStuckDetector;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.stuckdetector.AccUT2004PositionStuckDetector;
@@ -38,6 +40,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.NavPoin
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.utils.flag.Flag;
 import cz.cuni.amis.utils.flag.FlagListener;
+import math.geom2d.Vector2D;
 
 /**
  * Facade for navigation in UT2004. Method navigate() can be called both
@@ -61,6 +64,10 @@ public class NavMeshNavigation implements IUT2004Navigation {
      * UT2004PathExecutor that is used for the navigation.
      */
     protected IUT2004PathExecutor<ILocated> pathExecutor;
+    /***
+     * Info module is used to get current position of the bot.
+     */
+    protected AgentInfo info;
     /**
      * NavMeshModule that is used for path planning, its {@link NavMeshModule#getNavMesh()} is saved within {@link #pathPlanner}. 
      */
@@ -149,7 +156,7 @@ public class NavMeshNavigation implements IUT2004Navigation {
         public void notify(BotKilled event) {
             reset(true, NavigationState.STOPPED);
         }
-    };
+    };	
 
     // ===========
     // CONSTRUCTOR
@@ -166,6 +173,7 @@ public class NavMeshNavigation implements IUT2004Navigation {
     public NavMeshNavigation(UT2004Bot bot, AgentInfo info, AdvancedLocomotion move, NavMeshModule navMeshModule) {
         this.log = bot.getLogger().getCategory(this.getClass().getSimpleName());
         this.bot = bot;
+        this.info = info;
         this.navMeshModule = navMeshModule;
         this.pathPlanner = navMeshModule.getAStarPathPlanner();
         
@@ -288,7 +296,7 @@ public class NavMeshNavigation implements IUT2004Navigation {
     public boolean isRunningStraight() {
         return runStraight.isExecuting();
     }
-
+    
     @Override
     public ILocated getFocus() {
         return pathExecutor.getFocus();
@@ -433,14 +441,174 @@ public class NavMeshNavigation implements IUT2004Navigation {
         navigating = true;
         switchState(NavigationState.NAVIGATING);
 
-        currentTarget = pathHandle.getPathTo();
-        currentPathFuture = pathHandle;
+        currentPathFuture = TryToSmoothPathStartFuture(pathHandle); // just fix the beginning of the path
+        currentTarget = (ILocated)currentPathFuture.getPathTo();
+
+        navigate();
+    }
+    
+    /**
+     * Navigate along the given path.
+     * 
+     * If you want to smooth, than pathHandle must be .isDone() already!
+     * 
+     * @param pathHandle
+     * @param smooth whether to smooth the path using NavMesh
+     */
+    @Override
+    public void navigate(IPathFuture<ILocated> pathHandle, boolean smooth) {
+    	if (!isAvailable()) {
+    		log.severe("Cannot navigate as NavMesh was not successfully loaded! Check log during bot initialization to obtain more details.");
+    		return;
+    	}
+    	
+        if (pathHandle == null) {
+            if (log != null && log.isLoggable(Level.WARNING)) {
+                log.warning("Cannot navigate to NULL pathHandle!");
+            }
+            return;
+        }
+
+        if (navigating) {
+            if (currentPathFuture == pathHandle) {
+                // just continue with the execution
+                return;
+            }
+            // NEW TARGET!
+            // => reset - stops pathExecutor as well, BUT DO NOT STOP getBackOnPath (we will need to do that eventually if needed, or it is not running)
+            reset(false, null);
+        }
+
+        if (log != null && log.isLoggable(Level.FINE)) {
+            log.fine("Start running along the path to target: " + pathHandle.getPathTo());
+        }
+
+        navigating = true;
+        switchState(NavigationState.NAVIGATING);
+
+        currentPathFuture = (smooth ? TryToSmoothPathFuture(TryToSmoothPathStartFuture(pathHandle)) : pathHandle);
+        currentTarget = (ILocated)currentPathFuture.getPathTo();
 
         navigate();
     }
 
+	private IPathFuture<ILocated> TryToSmoothPathStartFuture(IPathFuture<ILocated> pathHandle) {
+		if (!pathHandle.isDone()) return pathHandle;
+		
+		List<ILocated> path = pathHandle.get();
+		
+		int lookahead = 4;
+		int[] indices = new int[lookahead];
+		Location[] locations = new Location[lookahead];
+		int nextLocIndex = 0;
+		
+		int index = 0;
+		while (index < path.size() && locations[lookahead-1] == null) {
+			if (path.get(index) != null) {
+				Location loc = path.get(index).getLocation();
+				if (loc != null) {
+					if (info.atLocation(loc)) {
+						// IGNORE				
+					} else {
+						indices[nextLocIndex] = index;
+						locations[nextLocIndex] = loc;
+						nextLocIndex += 1;
+					}	
+				}
+			}			
+			index += 1;
+		}
+		
+		// NOW WE HAVE CANDIDATES FOR PATH-SHORTCUTS IN 'locations' 
+		// AND THEY ARE ON 'indices' ON THE ORIGINAL 'path'
+		// => check if we cannot take direct shortcut to them
+		
+		Location me = info.getLocation();
+		int shortcutIndex = -1;
+		for (int i = 0; i < locations.length && locations[i] != null; ++i) {
+			Location curr = locations[i];
+			ClearanceLimit limit = navMeshModule.getClearanceComputer().findEdge(me, new Vector2D(curr.x - me.x, curr.y - me.y), (curr.sub(me)).getLength()+30, 300);
+			boolean canGoStraight = false;
+			if (limit == null) {
+				canGoStraight = true;				
+			} else {
+				Location edge = limit.getLocation();
+				canGoStraight = (curr.sub(me)).getLength() < edge.sub(me).getLength();
+			}
+			if (canGoStraight) {
+				// WE CAN GO STRAIGHT TO 'curr'
+				shortcutIndex = i;
+			}
+		}
+		
+		if (shortcutIndex >= 0) {
+			// SHORTCUT AVAILABLE!
+			// => create custom PrecomputedPathFuture
+			List<ILocated> newPath = new ArrayList<ILocated>(path.size());
+			newPath.add(me); 						// [0] - my pos
+			newPath.add(locations[shortcutIndex]);  // [1] - location that is directly reachable
+			// COPY THE REST OF THE PATH
+			newPath.addAll(path.subList(indices[shortcutIndex]+1, path.size())); // [2+] - the rest of the path
+			
+			return new PrecomputedPathFuture<ILocated>(me, pathHandle.getPathTo(), newPath);
+		}
+	
+		// NO SHORTCUT AVAILABLE		
+		return pathHandle;
+	}
+	
+	private IPathFuture<ILocated> TryToSmoothPathFuture(IPathFuture<ILocated> pathHandle) {
+		if (!pathHandle.isDone()) return pathHandle;
+		
+		// PATH TO SMOOTH
+		List<ILocated> path = pathHandle.get();
+		
+		// NEW PATH CONSTRUCTION
+		Location curr = info.getLocation(); // my current location
+		List<ILocated> smoothedPath = new ArrayList<ILocated>(); // here we will be forming the new path
+		smoothedPath.add(curr);
+		
+		Location nextDirectlyReachable = null;
+		
+		for (int i = 0; i < path.size(); ++i) {
+			Location next = (path.get(i) != null ? path.get(i).getLocation() : null);
+			if (curr.getDistance(next) < 30) continue;
+			if (next == null) continue;
+			
+			// CAN I GO STRAGHT FROM 'curr' TO 'next'?
+			ClearanceLimit limit = navMeshModule.getClearanceComputer().findEdge(curr, new Vector2D(next.x - curr.x, next.y - curr.y), curr.getDistance2D(next)+10, 300);
+			boolean canGoStraight = false;
+			if (limit == null) {
+				canGoStraight = true;				
+			} else {
+				Location edge = limit.getLocation();
+				canGoStraight = (next.sub(curr)).getLength() < edge.sub(curr).getLength();
+			}
+			if (canGoStraight) {
+				// WE CAN GO STRAIGHT TO 'next'
+				nextDirectlyReachable = next;
+			} else {
+				// WE CANNOT GO STAIGHT TO 'next'
+				// => we have a bending point!
+				if (nextDirectlyReachable != null) {
+					smoothedPath.add(nextDirectlyReachable);
+					curr = nextDirectlyReachable;
+					--i; // let's check if we can skip 'next'
+					nextDirectlyReachable = null;
+				} else {
+					smoothedPath.add(next);
+				}				
+			}
+		}
+		if (nextDirectlyReachable != null) {
+			smoothedPath.add(nextDirectlyReachable);
+		}
 
-    @Override
+		// RETURN SMOOTHED PATH
+		return new PrecomputedPathFuture<ILocated>(info.getLocation(), pathHandle.getPathTo(), smoothedPath);
+	}
+
+	@Override
     public NavPoint getNearestNavPoint(ILocated location) {
         if (location == null) {
             return null;
