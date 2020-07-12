@@ -1,34 +1,52 @@
 <RewriteFilesConfig encoding="UTF-8">
 	<globals>
 		<includeFile>*.cs</includeFile>
+		<excludeFile>AIBrainLog.cs</excludeFile>
 		<substitutions>
-			<substitution>
-				<match>(Log\s*\.\s*\w*\s*\(.*\);)</match>
-				<replace>//$1</replace>
+		  <substitution>
+		    <multiLine>true</multiLine>
+				<match>#if AI_DEBUG\s{0,2}(\s*Log_[a-zA-Z]+\s*\(.*\)\s*;\s*)#endif\s*\r\n</match>
+				<replace>$1</replace>
 				<caseSensitive>true</caseSensitive>
 			</substitution>
 			<substitution>
-				<match>(Logging\s*\..*;)</match>
-				<replace>//$1</replace>
+		    <multiLine>true</multiLine>		                              
+				<match>#if AI_DEBUG\s{0,2}(\s*FrameLog\s*\.(WS|Over)\s*\(.*\)\s*\..*;\s*)#endif\s*\r\n</match>
+				<replace>$1</replace>
 				<caseSensitive>true</caseSensitive>
 			</substitution>
 			<substitution>
-				<match>(Debug\s*\.\s*Log\s*\(.*\);)</match>
-				<replace>//$1</replace>
+				<match>//(Log\s*\.\s*\w*\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
 				<caseSensitive>true</caseSensitive>
 			</substitution>
 			<substitution>
-				<match>(Debug\s*\.\s*LogWarning\s*\(.*\);)</match>
-				<replace>//$1</replace>
+				<match>//(LogJob\s*\.\s*\w*\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>			
+			<substitution>
+				<match>//(Logging\s*\..*;)</match>
+				<replace>$1</replace>
 				<caseSensitive>true</caseSensitive>
 			</substitution>
 			<substitution>
-				<match>(Debug\s*\.\s*LogError\s*\(.*\);)</match>
-				<replace>//$1</replace>
+				<match>//(Debug\s*\.\s*Log\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Debug\s*\.\s*LogWarning\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Debug\s*\.\s*LogError\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
 				<caseSensitive>true</caseSensitive>
 			</substitution>					
 		</substitutions>
 		<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
 	</globals>
-	<include dir="v:/Projects/AI_Prototype/MasterServerPrototype-GitHub/Assets/AISystem/" />			
+	<include dir="v:/MasterServerPrototype/Assets/AISystem/Server/Scripts/Brains/Routines/" />			
 </RewriteFilesConfig>

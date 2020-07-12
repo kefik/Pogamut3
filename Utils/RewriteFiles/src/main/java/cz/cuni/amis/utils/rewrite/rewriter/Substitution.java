@@ -201,7 +201,7 @@ public class Substitution implements ISubstitution {
 	}
 	
 	@Override
-	public SubstitutionResult substitute(String str) {
+	public SubstitutionResult substitute(String str) {	
 		if (getMatcher(str).find()) {
 			return new SubstitutionResult(getMatcher(str).replaceAll(reSubst), true);
 		} else {

@@ -33,6 +33,10 @@ public class IncludeDirForSubstitutions extends IncludeDir {
 	
 	public IncludeDirForSubstitutions(IncludeDirForSubstitutions orig, IncludeDirForSubstitutions globals) {
 		super(orig, globals);
+		lineEndings = orig.lineEndings;
+		if (lineEndings == null) lineEndings = globals.lineEndings;
+		applyMaxOneRuleOnly = orig.applyMaxOneRuleOnly;
+		if (applyMaxOneRuleOnly == null) applyMaxOneRuleOnly = globals.applyMaxOneRuleOnly;
 		substitutions = new ArrayList<Substitution>();
 		if (orig.substitutions != null) {
 			for (Substitution subst : orig.substitutions) {

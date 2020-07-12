@@ -116,7 +116,7 @@ public class NavMeshAStarDistanceHeuristic implements INavMeshAStarHeuristic {
 				double candidateCostEstimate = Double.POSITIVE_INFINITY;
 				for ( Entry<Location, Double> sinkEntry : sinkToDistanceMap.entrySet() ) {
 					double sinkCostEstimate = candidateTeleporterExit.getDistance( sinkEntry.getKey() ) + sinkEntry.getValue();
-					sinkCostEstimate = Math.min( candidateCostEstimate, sinkCostEstimate );
+					candidateCostEstimate = Math.min( candidateCostEstimate, sinkCostEstimate );
 				}
 				
 				if ( candidateCostEstimate < teleporterWithClosestExitCostEstimate ) {
