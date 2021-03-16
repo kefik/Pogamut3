@@ -66,5 +66,8 @@ public class UnrealId extends WorldObjectId implements Serializable {
 		}
 	}
 	
+	private Object readResolve() {
+		return get(token.getToken());
+	}
 	
 }
