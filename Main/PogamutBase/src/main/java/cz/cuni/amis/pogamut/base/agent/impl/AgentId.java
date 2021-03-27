@@ -40,15 +40,16 @@ public class AgentId implements IAgentId {
 	
 	public AgentId() {
 		UUID uuid = null;
+		int agentNum = ++agentCounter;
 		try {
 			synchronized(random) {
 				uuid = new UUID(random.nextLong(), random.nextLong());
 			}
-			this.token = Tokens.get(getClass().getSimpleName() + "-" + (++agentCounter) + "@"
+			this.token = Tokens.get(getClass().getSimpleName() + "-" + agentNum + "@"
 					+ InetAddress.getLocalHost().getCanonicalHostName() + "/" + uuid.toString());
 		} catch (UnknownHostException ex) {
 			if (uuid == null) throw new IllegalStateException("Can't initialize AgentId, instantiation of UUID failed.");
-			this.token = Tokens.get(getClass().getSimpleName() + "-" + (++agentCounter) + "@unknownHost/" + uuid.toString());
+			this.token = Tokens.get(getClass().getSimpleName() + "-" + agentNum + "@unknownHost/" + uuid.toString());
 		}
 	}
 	
@@ -56,14 +57,15 @@ public class AgentId implements IAgentId {
 	public AgentId(@Named(AGENT_NAME_DEPENDENCY) String agentName) {
 		NullCheck.check(agentName, "name");
 		UUID uuid = null;
+		int agentNum = ++agentCounter;
 		try {
 			synchronized(random) {
 				uuid = new UUID(random.nextLong(), random.nextLong());
 			}
-			this.token = Tokens.get(agentName + "-" + (++agentCounter) + "@"
+			this.token = Tokens.get(agentName + "-" + agentNum + "@"
 					+ InetAddress.getLocalHost().getCanonicalHostName() + "/" + uuid.toString());
 		} catch (UnknownHostException ex) {
-			this.token = Tokens.get(getClass().getSimpleName() + "-" + (++agentCounter) + "@unknownHost/" + uuid.toString());
+			this.token = Tokens.get(getClass().getSimpleName() + "-" + agentNum + "@unknownHost/" + uuid.toString());
 		}
 		getName().setFlag(agentName);
 	}
