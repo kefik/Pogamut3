@@ -76,7 +76,7 @@ public class LevelGeometryCache {
 		if (result != null) return result;
 		
 		// try to read it from processed file        
-        String levelGeometryFileName = LevelGeometry.processedLevelGeometryDir + File.pathSeparator + mapName + ".plg";
+        String levelGeometryFileName = LevelGeometry.processedLevelGeometryDir + File.separator + mapName + ".plg";
         File levelGeometryFile = new File(levelGeometryFileName);
         
         ObjectInputStream in = null;
