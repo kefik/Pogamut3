@@ -1,5 +1,7 @@
 package cz.cuni.amis.pogamut.ut2004.agent.navigation.navmesh;
 
+import java.util.NoSuchElementException;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -55,7 +57,11 @@ public class NavMeshClearanceComputer {
     		keepTracingPredicate
         );
         
-        RayPath<NavMeshPolygon,NavMeshEdge>.PathStep lastStep = Iterables.getLast( rayPath.getSteps() );
+        RayPath<NavMeshPolygon,NavMeshEdge>.PathStep lastStep = null;
+        try {
+        	lastStep = Iterables.getLast( rayPath.getSteps() );
+        } catch (NoSuchElementException e) {     
+        }
         if (lastStep == null) {
         	return new ClearanceLimit(null, start);
         } else

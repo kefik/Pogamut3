@@ -277,8 +277,37 @@ public class DMTableResults {
 		}
 		String winner = csv.rows.get(0).getString("Winner");
 		if (winner.toLowerCase().contains("failure")) {
-			error("-- Result file is indicating that the match has FAILED!");
-			return;
+			warn("-- Result file is indicating that the match has FAILED... checking game time");
+			
+			if (!csv.keys.contains("TimeLimit")) {
+				error("-- Result file does not contain column 'TimeLimit'. Ignoring.");
+				return;
+			}
+			if (!csv.keys.contains("TimeEnd")) {
+				error("-- Result file does not contain column 'TimeEnd'. Ignoring.");
+				return;
+			}
+			
+			String timeLimitStr = csv.rows.get(0).getString("TimeLimit").replace(",", ".");
+			String timeEndStr = csv.rows.get(0).getString("TimeEnd").replace(",", ".");
+			
+			try {
+				double timeLimit = Double.parseDouble(timeLimitStr);
+				double timeEnd = Double.parseDouble(timeEndStr);
+				
+				double absDiff = Math.abs(timeLimit * 60 - timeEnd); 
+				
+				if (absDiff < 10) {
+					info("-- |TimeLimit - TimeEnd| = " + absDiff + " < 10 seconds, considering match as successful!");
+				} else {
+					error("-- |TimeLimit - TimeEnd| = " + absDiff + " > 10 seconds, considering match as failure!");
+					return;
+				}
+				
+			} catch (Exception e) {
+				error("-- Cannot parse doubles out of TimeLimit and/or TimeEnd.");
+				return;
+			}
 		}
 		
 		probeBotScoresAndLogFile(botScoresFile, logFile);

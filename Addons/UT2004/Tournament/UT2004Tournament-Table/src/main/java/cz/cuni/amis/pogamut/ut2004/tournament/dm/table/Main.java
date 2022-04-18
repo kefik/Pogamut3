@@ -925,9 +925,9 @@ public class Main {
 			
 			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
 			
-			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-05-EnviroAware\\Students\\";
+			String botsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab05-SpatialAwareness\\Students\\";
 			
-			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-05-EnviroAware\\Students\\_Results\\";
+			String resultsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab05-SpatialAwareness\\Students\\_Results\\";
 			
 			args = new String[] {
 				"-u",
@@ -941,9 +941,9 @@ public class Main {
 				"-m",
 				"DM-1on1-Roughinery-FPS",
 				"-f",
-				"20",
+				"40",
 				"-t",
-				"10",
+				"20",
 				//"-h", // human-like log			
 			    "-c",
 			    "2",  // concurrent thread count

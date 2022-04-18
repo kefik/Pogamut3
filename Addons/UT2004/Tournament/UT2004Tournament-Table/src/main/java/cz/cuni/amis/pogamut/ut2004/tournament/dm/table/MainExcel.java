@@ -201,9 +201,9 @@ public class MainExcel {
 		if (args == null || args.length == 0) {
 			args = new String[] {
 				"-r",
-				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\_Results\\",
+				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2020-Labs\\Lab05-SpatialAwareness\\Students\\_Results\\",
 				"-o",
-				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2018-Labs\\Lab-05-Combat\\Students\\_Results\\",
+				"d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2020-Labs\\Lab05-SpatialAwareness\\Students\\_Results\\",
 			};
 		}
 		

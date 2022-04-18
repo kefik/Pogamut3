@@ -319,8 +319,37 @@ public class TDMOneMatchTableResults {
 		}
 		String winner = resultCSV.rows.get(0).getString("Winner");
 		if (winner.toLowerCase().contains("failure")) {
-			error("-- Result file is indicating that the match has FAILED!");
-			return false;
+			warn("-- Result file is indicating that the match has FAILED... checking game time");
+			
+			if (!resultCSV.keys.contains("TimeLimit")) {
+				error("-- Result file does not contain column 'TimeLimit'. Ignoring.");
+				return false;
+			}
+			if (!resultCSV.keys.contains("TimeEnd")) {
+				error("-- Result file does not contain column 'TimeEnd'. Ignoring.");
+				return false;
+			}
+			
+			String timeLimitStr = resultCSV.rows.get(0).getString("TimeLimit").replace(",", ".");
+			String timeEndStr = resultCSV.rows.get(0).getString("TimeEnd").replace(",", ".");
+			
+			try {
+				double timeLimit = Double.parseDouble(timeLimitStr);
+				double timeEnd = Double.parseDouble(timeEndStr);
+				
+				double absDiff = Math.abs(timeLimit * 60 - timeEnd); 
+				
+				if (absDiff < 10) {
+					info("-- |TimeLimit - TimeEnd| = " + absDiff + " < 10 seconds, considering match as successful!");
+				} else {
+					error("-- |TimeLimit - TimeEnd| = " + absDiff + " > 10 seconds, considering match as failure!");
+					return false;
+				}
+				
+			} catch (Exception e) {
+				error("-- Cannot parse doubles out of TimeLimit and/or TimeEnd.");
+				return false;
+			}
 		}
 		
 		CSV teamScoresCSV = new CSV(teamScoresFile, ";", true);

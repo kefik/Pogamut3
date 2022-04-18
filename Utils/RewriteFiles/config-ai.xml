@@ -1,0 +1,46 @@
+<RewriteFilesConfig encoding="UTF-8">
+	<globals>
+		<includeFile>*.cs</includeFile>
+		<excludeFile>AIBrainLog.cs</excludeFile>
+		<substitutions>
+		  <substitution>
+		    <multiLine>true</multiLine>
+				<match>#if AI_DEBUG\s{0,1}(\s*Log_[a-zA-Z]+\s*\(.*\)\s*;\s*)#endif\s*\r\n</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Log\s*\.\s*\w*\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(LogJob\s*\.\s*\w*\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>			
+			<substitution>
+				<match>//(Logging\s*\..*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Debug\s*\.\s*Log\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Debug\s*\.\s*LogWarning\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>
+			<substitution>
+				<match>//(Debug\s*\.\s*LogError\s*\(.*\)\s*;)</match>
+				<replace>$1</replace>
+				<caseSensitive>true</caseSensitive>
+			</substitution>					
+		</substitutions>
+		<fixLineEndings windowsStyle="true" onlyIfRewritten="true" />
+	</globals>
+	<include dir="v:/MasterServerPrototype/Assets/AISystem/Server/Scripts/ECS/JobSystems/" applyMaxOneRuleOnly="true" />			
+</RewriteFilesConfig>

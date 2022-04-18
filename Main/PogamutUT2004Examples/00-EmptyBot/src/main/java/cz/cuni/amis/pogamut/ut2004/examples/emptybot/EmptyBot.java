@@ -1,25 +1,20 @@
 package cz.cuni.amis.pogamut.ut2004.examples.emptybot;
 
-import java.util.Collection;
-import java.util.logging.Level;
-
 import cz.cuni.amis.introspection.java.JProp;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
 import cz.cuni.amis.pogamut.base.utils.guice.AgentScoped;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.ut2004.agent.module.sensor.NavigationGraphBuilder;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.NavigationState;
 import cz.cuni.amis.pogamut.ut2004.agent.navigation.UT2004MapTweaks.IMapTweak;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004Bot;
 import cz.cuni.amis.pogamut.ut2004.bot.impl.UT2004BotModuleController;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.Initialize;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbcommands.SendMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotDamaged;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.BotKilled;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.ConfigChange;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.GameInfo;
-import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.IncomingProjectile;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.InitedMessage;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Self;
@@ -226,16 +221,8 @@ public class EmptyBot extends UT2004BotModuleController {
     @Override
     public void logic() throws PogamutException {
     	log.info("---LOGIC: " + (++logicIterationNumber) + "---");
-    	if (players.canSeePlayers()) {
-    		navigation.navigate(players.getNearestVisiblePlayer());
-    		shoot.shoot(players.getNearestVisiblePlayer());
-    	} else {
-    		shoot.stopShooting();
-    		if (!navigation.isNavigating()) {
-    			navigation.navigate(navPoints.getRandomNavPoint());
-    		}
-    	}
     	
+    	navigation.navigate(navigation.getNearestNavPoint(new Location(-211, 2696, 455)));    	
 
     }
 

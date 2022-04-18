@@ -95,7 +95,7 @@ public class Main {
 	
 	private static final String ARG_CONTINUE_LONG = "continue";
 
-	private static final long MATCH_START_INTERLEAVE_MILLIS = 2 * 60 * 1000;
+	private static final long MATCH_START_INTERLEAVE_MILLIS = 1 * 30 * 1000;
 
 	private static JSAP jsap;
 
@@ -927,9 +927,9 @@ public class Main {
 			
 			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
 			
-			String botsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-06-TDM\\Students\\";
+			String botsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab06-TDM\\Students\\";
 			
-			String resultsDir = "d:\\Workspaces\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2019-Labs\\Lab-06-TDM\\Students\\_Results\\";
+			String resultsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab06-TDM\\Students\\_Results\\";
 			
 			args = new String[] {
 				"-u",
@@ -945,9 +945,9 @@ public class Main {
 				"-m",
 				"DM-Rankin-FE;DM-1on1-Roughinery-FPS;DM-DE-Ironic-FE",
 				"-f",
-				"40",
+				"100",
 				"-t",
-				"20",
+				"30",
 				//"-h", // human-like log			
 			    "-c",
 			    "1",  // concurrent thread count
