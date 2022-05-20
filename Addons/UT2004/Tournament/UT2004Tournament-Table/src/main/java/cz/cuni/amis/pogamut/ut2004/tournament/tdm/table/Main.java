@@ -927,9 +927,9 @@ public class Main {
 			
 			String ut2004Dir = "e:\\Games\\Devel\\UT2004\\UT2004-Devel\\";
 			
-			String botsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab06-TDM\\Students\\";
+			String botsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2022-Labs\\Lab06-TDM\\Students\\";
 			
-			String resultsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2021-Labs\\Lab06-TDM\\Students\\_Results\\";
+			String resultsDir = "d:\\MFF\\NAIL068-UmeleBytosti\\Lectures\\AB2022-Labs\\Lab06-TDM\\Students\\_Results\\";
 			
 			args = new String[] {
 				"-u",

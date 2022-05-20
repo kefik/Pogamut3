@@ -221,7 +221,7 @@ public class UT2004Bot<WORLD_VIEW extends IVisionWorldView, ACT extends IAct, CO
     	super.startAgent();
     	getWorldView().addEventListener(EndMessage.class, endListener);
    		if (log.isLoggable(Level.INFO)) log.info("Waiting for the handshake to finish for 300s.");
-		if (!endMessageLatch.await(300000, TimeUnit.MILLISECONDS)) {
+		if (!endMessageLatch.await(600000, TimeUnit.MILLISECONDS)) {
 			throw new ComponentCantStartException("The bot did not received first EndMessage in 300 seconds.", this);
 		}
 		if (log.isLoggable(Level.INFO)) log.info("Handshake finished.");
@@ -233,7 +233,7 @@ public class UT2004Bot<WORLD_VIEW extends IVisionWorldView, ACT extends IAct, CO
 		super.startPausedAgent();
 		getWorldView().addEventListener(EndMessage.class, endListener);
    		if (log.isLoggable(Level.INFO)) log.info("Waiting for the handshake to finish for 300s.");
-		if (!endMessageLatch.await(300000, TimeUnit.MILLISECONDS)) {
+		if (!endMessageLatch.await(600000, TimeUnit.MILLISECONDS)) {
 			throw new ComponentCantStartException("The bot did not received first EndMessage in 300 seconds.", this);
 		}
 		if (log.isLoggable(Level.INFO)) log.info("Handshake finished.");

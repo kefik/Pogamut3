@@ -5,9 +5,11 @@
 package cz.cuni.amis.pogamut.ut2004.tournament.utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class CSV {
 		}
 		
 	}
+	
+	public File file;
 	    
     private String delimiter;
     
@@ -48,6 +52,8 @@ public class CSV {
      */
     public CSV(File file, String delimiter, boolean containsHeaderRow) throws FileNotFoundException, IOException {
         super();
+        
+        this.file = file;
         
         this.delimiter = delimiter;
         
@@ -77,6 +83,15 @@ public class CSV {
         	reader.close();
         }
     }
+    
+//    public void save(File file) {
+//    	try {
+//    		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//    		
+//    	} catch (Exception e) {
+//    		throw RuntimeException("Failed to save CSV into " + file.getAbsolutePath(), e);
+//    	}
+//    }
     
     private String[] nextLine(BufferedReader reader) throws IOException {
     	if (reader.ready()) {
@@ -112,7 +127,7 @@ public class CSV {
             this.row = new HashMap<String, String>();
         }
         
-        protected void add(String key, String value) {
+        public void add(String key, String value) {
         	row.put(key, value);
         }
 

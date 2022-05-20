@@ -36,6 +36,14 @@ public class DMMatchResult {
 		return false;
 	}
 	
+	public boolean isWinPlayer1() {
+		return isWin(player1);
+	}
+	
+	public boolean isWinPlayer2() {
+		return isWin(player2);
+	}
+	
 	public boolean isWin(String player) {
 		if (isException() && !isException(player)) return true;
 		if (player1.equals(player) && score1 > score2) return true;
@@ -53,6 +61,13 @@ public class DMMatchResult {
 		if (player1.equals(player)) return player1ExceptionTrace;
 		if (player2.equals(player)) return player2ExceptionTrace;
 		return "";
+	}
+	
+	public String getResult() {
+		if (isException()) return "EXCEPTION";
+		if (isWinPlayer1()) return player1;
+		if (isWinPlayer2()) return player2;
+		return "DRAW";
 	}
 	
 	public String toString() {

@@ -276,6 +276,8 @@ public class DMTableResults {
 			return;
 		}
 		String winner = csv.rows.get(0).getString("Winner");
+		boolean mustEndWithScoring = false;
+		int fragLimit = 0;
 		if (winner.toLowerCase().contains("failure")) {
 			warn("-- Result file is indicating that the match has FAILED... checking game time");
 			
@@ -300,21 +302,32 @@ public class DMTableResults {
 				if (absDiff < 10) {
 					info("-- |TimeLimit - TimeEnd| = " + absDiff + " < 10 seconds, considering match as successful!");
 				} else {
-					error("-- |TimeLimit - TimeEnd| = " + absDiff + " > 10 seconds, considering match as failure!");
-					return;
+					error("-- |TimeLimit - TimeEnd| = " + absDiff + " > 10 seconds, we need to check bot scores whether target frag score has not been reached.");
+					mustEndWithScoring = true;
+					if (!csv.keys.contains("FragLimit")) {
+						error("-- Result file does not contain column 'FragLimit'. Ignoring.");
+						return;
+					}
+					fragLimit = Integer.parseInt(csv.rows.get(0).getString("FragLimit").replace(",", "."));
 				}
 				
 			} catch (Exception e) {
-				error("-- Cannot parse doubles out of TimeLimit and/or TimeEnd.");
+				error("-- Cannot parse doubles/int out of TimeLimit and/or TimeEnd and/or FragLimit.");
 				return;
 			}
 		}
 		
-		probeBotScoresAndLogFile(botScoresFile, logFile);
+		DMMatchResult result = probeBotScoresAndLogFile(botScoresFile, logFile, mustEndWithScoring, fragLimit);
+		
+		if (result != null) {
+			csv.rows.get(0).add("Winner", result.getResult());
+			// TODO: save the file
+		}
+		
 	}
 		
-	private void probeBotScoresAndLogFile(File botScoresFile, File logFile) throws FileNotFoundException, IOException { 
-		if (!botScoresFile.exists() || !botScoresFile.isFile() || !botScoresFile.getAbsolutePath().toLowerCase().endsWith("-bot-scores.csv")) return;
+	private DMMatchResult probeBotScoresAndLogFile(File botScoresFile, File logFile, boolean mustEndWithScoring, int fragLimit) throws FileNotFoundException, IOException { 
+		if (!botScoresFile.exists() || !botScoresFile.isFile() || !botScoresFile.getAbsolutePath().toLowerCase().endsWith("-bot-scores.csv")) return null;
 		
 		CSV csv;
 		
@@ -322,17 +335,17 @@ public class DMTableResults {
 		
 		if (csv.rows.size() != 2) {
 			warn("-- Bot-scores file contains invalid number of data rows (" + csv.rows.size() + "), ignoring.");
-			return;
+			return null;
 		}
 		
 		if (!csv.keys.contains("botId")) {
 			warn("-- Bot-scores file does not contain column 'botId'. Ignoring.");
-			return;
+			return null;
 		}
 		
 		if (!csv.keys.contains("score")) {
 			warn("-- Bot-scores file does not contain column 'score'. Ignoring.");
-			return;
+			return null;
 		}
 		
 		CSVRow row1 = csv.rows.get(0);
@@ -392,7 +405,7 @@ public class DMTableResults {
 		} catch (Exception e) {
 			e.printStackTrace();
 			error("Failed to probe log file at: " + logFile.getAbsolutePath());
-			return;
+			return null;
 		} finally {
 			if (reader != null) {
 				try {
@@ -402,9 +415,18 @@ public class DMTableResults {
 			}
 		}
 		
+		if (mustEndWithScoring) {
+			if (score1 < fragLimit && score2 < fragLimit) {
+				error("-- Match must have ended on frag limit though both player scores " + score1 + ", " + score2 + " < " + fragLimit);
+				return null;
+			}
+		}
+		
 		DMMatchResult result = addResult(player1, player2, score1, score2, botLogicEx, botEx);
 		
 		info("-- " + result.toString());
+		
+		return result;
 	}
 
 	

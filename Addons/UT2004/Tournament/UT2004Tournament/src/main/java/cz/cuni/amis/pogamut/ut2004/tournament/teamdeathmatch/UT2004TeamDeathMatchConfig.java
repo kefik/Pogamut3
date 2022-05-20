@@ -26,7 +26,7 @@ public class UT2004TeamDeathMatchConfig extends UT2004MatchConfig {
 		super();
 		getGb2004Ini().setCTFScoreLimit(scoreLimit);
 		getGb2004Ini().setCTFTimeLimit(timeLimitInMin);
-		getUccConf().setGameType("BotTeamGame");
+		getUccConf().setGameType("BotTeamGame");		
 	}
 	
 	/**
