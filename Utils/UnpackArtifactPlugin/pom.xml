@@ -91,7 +91,7 @@
 	</prerequisites>
 
 	<properties>
-		<maven.version>2.0.9</maven.version>
+		<maven.version>3.8.1</maven.version>
 	</properties>
 
 	<dependencies>
